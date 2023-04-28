@@ -1,0 +1,6 @@
+server/build/
+erp/dist/
+erp/node_modules/
+server/node_modules/
+server/logs
+.env
