@@ -10,5 +10,9 @@ export interface IUserController {
   getAll<T>(request: Request, response: ExtendedResponse<T>): Promise<void>;
   create<T>(request: Request, response: ExtendedResponse<T>): Promise<void>;
   update<T>(request: Request, response: ExtendedResponse<T>): Promise<void>;
+  updatePassword<T>(
+    request: Request,
+    response: ExtendedResponse<T>
+  ): Promise<void>;
   delete<T>(request: Request, response: ExtendedResponse<T>): Promise<void>;
 }

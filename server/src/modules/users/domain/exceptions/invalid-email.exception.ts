@@ -5,3 +5,9 @@ export class InvalidEmailException extends DomainException {
     super(`El email ${email} no es válido`);
   }
 }
+
+export class InvalidPasswordException extends DomainException {
+  constructor(msg: string) {
+    super(msg);
+  }
+}

@@ -28,11 +28,11 @@ export const pool = mysql.createPool({
 export class MysqlDataBase {
   constructor() {}
 
-  static async query<T>(sql: string, args?: string[]): Promise<T[]> {
+  static async query<T>(sql: string, args?: string[]): Promise<any> {
     const connection = await pool.getConnection();
     try {
       const [rows, fields] = await connection.execute(sql, args);
-      return rows as T[];
+      return rows;
     } catch (error) {
       Logger.error(`mysql : query : ${error}`);
       throw new Error("" + error);

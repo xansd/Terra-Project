@@ -12,12 +12,13 @@ export class MySqlUserRepository implements IUserRepository {
 
   async getById(id: string): Promise<IUserDTO | null> {
     try {
-      const [rows] = await MysqlDataBase.query(
-        "SELECT * FROM users WHERE id = ?",
+      const rows = await MysqlDataBase.query(
+        "SELECT * FROM users WHERE user_id = ?",
         [id]
       );
-      if (Array.isArray(rows)) {
-        return rows[0];
+      if (rows.length > 0) {
+        console.log("rows", rows);
+        return rows as unknown as IUserDTO;
       }
       return null;
     } catch (error: unknown) {
@@ -28,9 +29,9 @@ export class MySqlUserRepository implements IUserRepository {
 
   async getAll(): Promise<IUserDTO[] | null> {
     try {
-      const [rows] = await MysqlDataBase.query("SELECT * FROM users");
-      if (Array.isArray(rows)) {
-        return rows.map((row) => row);
+      const rows = await MysqlDataBase.query("SELECT * FROM users");
+      if (rows.length > 0) {
+        return rows as unknown as IUserDTO[];
       }
       return null;
     } catch (error: unknown) {
@@ -40,14 +41,12 @@ export class MySqlUserRepository implements IUserRepository {
   }
 
   async create(user: Entity<IUser>): Promise<IUserDTO | null> {
-    const uid = user._id.value;
-    console.log("uid", uid);
     const userPersistence = this.userPersistenceAdapter.toPersistence(user);
     try {
       const result = await MysqlDataBase.update(
         "INSERT INTO users SET user_id = ?, email = ?, password = ?, role_id = ?",
         [
-          uid!,
+          userPersistence.user_id!.toString(),
           userPersistence.email.toString(),
           userPersistence.password!.toString(),
           userPersistence.role_id!.toString(),
@@ -64,7 +63,8 @@ export class MySqlUserRepository implements IUserRepository {
   }
 
   async update(user: Entity<IUser>): Promise<IUserDTO | null> {
-    const uid = user._id.value;
+    const userPersistence = this.userPersistenceAdapter.toPersistence(user);
+    const uid = userPersistence.user_id!.toString();
     try {
       const [result]: any = await MysqlDataBase.update(
         "UPDATE users SET email = ?, role = ? WHERE id = ?",
@@ -80,12 +80,25 @@ export class MySqlUserRepository implements IUserRepository {
     }
   }
 
-  async delete(user: Entity<IUser>): Promise<IUserDTO | null> {
-    const uid = user._id.value;
+  async updatePassword(user: Entity<IUser>): Promise<IUserDTO | null> {
+    const userPersistence = this.userPersistenceAdapter.toPersistence(user);
+    const uid = userPersistence.user_id!.toString();
+    const password = userPersistence.password!.toString();
     const [result] = await MysqlDataBase.update(
-      `UPDATE users SET
-        deleted_at = CURRENT_TIMESTAMP,
-        user_updated = ?
+      "UPDATE users SET password = ? WHERE user_id = ?",
+      [password, uid]
+    );
+    if (result.affectedRows > 0) {
+      return this.userAdapter.toDTO(user);
+    }
+    return null;
+  }
+
+  async delete(user: Entity<IUser>): Promise<IUserDTO | null> {
+    const userPersistence = this.userPersistenceAdapter.toPersistence(user);
+    const uid = userPersistence.user_id!.toString();
+    const [result] = await MysqlDataBase.update(
+      `DELETE FROM users
         WHERE id_user = ?`,
       [uid]
     );
@@ -106,18 +119,10 @@ export class MySqlUserRepository implements IUserRepository {
     return null;
   }
 
-  async updatePassword(
-    user: Entity<IUser>,
-    password: string
-  ): Promise<IUserDTO | null> {
-    const uid = user._id.value;
-    const [result] = await MysqlDataBase.update(
-      "UPDATE users SET password = ? WHERE id = ?",
-      [password, uid]
-    );
-    if (result.affectedRows > 0) {
-      return this.userAdapter.toDTO(user);
-    }
-    return null;
+  activateUser(user: Entity<IUser>): Promise<IUserDTO | null> {
+    throw new Error("Method not implemented.");
+  }
+  blockUser(user: Entity<IUser>): Promise<IUserDTO | null> {
+    throw new Error("Method not implemented.");
   }
 }

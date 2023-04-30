@@ -13,18 +13,19 @@ export class CreateUserService implements ICreateUser {
     const user = this.userAdapter.toDomain(userDTO);
     const createdUser = await this.userRepository.create(user);
 
-    return userExists
-      ? {
-          success: false,
-          code: 400,
-          message: "El email ya está registrado",
-          data: userExists,
-        }
-      : {
-          success: true,
-          code: 201,
-          message: "Usuario creado correctamente",
-          data: createdUser,
-        };
-  }
+    if (userExists || !createdUser) {
+      return {
+        success: false,
+        code: 400,
+        message: "No ha sido posible crear el usuario",
+        data: userDTO
+      };
+    } else if (userExists && createdUser) {
+      return {
+        success: true,
+        code: 201,
+        message: "Usuario creado correctamente",
+        data: createdUser,
+      };
+    }
 }
