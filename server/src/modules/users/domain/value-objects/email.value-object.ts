@@ -1,5 +1,5 @@
-import { ValueObject } from "../../../shared/domain/value-objects/value-object.";
-import { InvalidEmailException } from "../exceptions/invalid-email.exception";
+import { DomainValidationError } from "../../../shared/domain/domain-validation.exception";
+import { ValueObject } from "../../../shared/domain/value-object";
 
 export class Email extends ValueObject<string> {
   private constructor(value: string) {
@@ -10,7 +10,7 @@ export class Email extends ValueObject<string> {
     const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
 
     if (!email || !email.match(emailRegex)) {
-      throw new InvalidEmailException(email);
+      throw new DomainValidationError("Formato de email no válido");
     }
     return new Email(email);
   }
