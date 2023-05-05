@@ -8,4 +8,5 @@ export interface IUserRepository extends IRepository<IUser> {
   updateRole(user: IUser): Promise<void>;
   activateUser(id: string): Promise<void>;
   blockUser(id: string): Promise<void>;
+  getPasswordHistory(user_id: string): Promise<string[]>;
 }

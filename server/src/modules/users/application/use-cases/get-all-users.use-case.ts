@@ -1,4 +1,4 @@
-import Logger from "../../../shared/infraestructure/logger";
+import Logger from "../../../../apps/utils/logger";
 import { IUser, UsersNotFoundError } from "../../domain";
 import { IUserRepository } from "../../domain/user-repository.interface";
 

@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
-import { ValueObject } from "../../../shared/domain/value-object";
+import { ValueObject } from "../../../shared/domain/value-objects/value-object";
 
 export class UserID extends ValueObject<string> {
   constructor(value: string) {

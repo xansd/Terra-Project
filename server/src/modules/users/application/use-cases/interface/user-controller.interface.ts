@@ -9,4 +9,5 @@ export interface IUserController {
   delete<T>(request: Request, response: Response): Promise<void>;
   activate<T>(request: Request, response: Response): Promise<void>;
   block<T>(request: Request, response: Response): Promise<void>;
+  signin<T>(request: Request, response: Response): Promise<void>;
 }

@@ -12,15 +12,18 @@ import {
 import { check } from "express-validator";
 
 import { UpdatePasswordeUseCase } from "../../../modules/users/application/use-cases/update-password.use-case";
-import { catchValidationErrors } from "../middlewares/validate-fileds";
+import { catchValidationErrors } from "../error/validate-fileds";
 import { MySqlUserRepository } from "../../../modules/users/infraestructure/mysql/mysql-user.repository";
+import authorize from "../middlewares/authorize";
+import { Role } from "../../../modules/users/domain";
+import { SigninUseCase } from "../../../modules/users/application/use-cases/signin.use-case";
 
 const router = Router();
 
 // Repositorio de usuarios
 const userRepository = new MySqlUserRepository();
 
-// Caosos de uso de usuarios
+// Casos de uso de usuarios
 const createUserUseCase = new CreateUserUseCase(userRepository);
 const getUserUseCase = new GetUserUseCase(userRepository);
 const getAllUsersUseCase = new GetAllUsersUseCase(userRepository);
@@ -29,6 +32,7 @@ const updateUserUseCase = new UpdateUserUseCase(userRepository);
 const deleteUserUseCase = new DeleteUserUseCase(userRepository);
 const activateUserUseCase = new ActivateUserUseCase(userRepository);
 const updateRoleUseCase = new UpdateRoleUseCase(userRepository);
+const signinUseCase = new SigninUseCase(userRepository);
 
 // Controlador de usuarios
 const userController = new UserController(
@@ -39,19 +43,26 @@ const userController = new UserController(
   updateUserUseCase,
   deleteUserUseCase,
   activateUserUseCase,
-  updateRoleUseCase
+  updateRoleUseCase,
+  signinUseCase
 );
 
-// GET BY ID
-router.get(
-  "/:id",
-  [check("id", "El id es obligatorio").not().isEmpty()],
-  userController.getById.bind(userController)
+// LOGIN
+router.post(
+  "/signin",
+  [
+    // Validamos que los campos no lleguen vacíos
+    check("email", "El email es obligatorio").not().isEmpty(),
+    check("password", "El password es obligatorio").not().isEmpty(),
+    catchValidationErrors,
+  ],
+  userController.signin.bind(userController)
 );
-// GET ALL
-router.get("/", userController.getAll.bind(userController));
+
+// SIGNUP ERP
 router.post(
   "/",
+  authorize([Role.ADMIN]),
   [
     // Validamos que los campos no lleguen vacíos
     check("email", "El email es obligatorio").not().isEmpty(),
@@ -60,9 +71,39 @@ router.post(
   ],
   userController.create.bind(userController)
 );
+
+// SIGNUP SOCIOS
+router.post(
+  "/signup ",
+  authorize([Role.ADMIN, Role.USER, Role.PARTNER]),
+  [
+    // Validamos que los campos no lleguen vacíos
+    check("email", "El email es obligatorio").not().isEmpty(),
+    check("password", "El password es obligatorio").not().isEmpty(),
+    catchValidationErrors,
+  ],
+  userController.create.bind(userController)
+);
+
+// GET BY ID
+router.get(
+  "/:id",
+  // authorize([Role.ADMIN]),
+  [check("id", "El id es obligatorio").not().isEmpty()],
+  userController.getById.bind(userController)
+);
+
+// GET ALL
+router.get(
+  "/",
+  authorize([Role.ADMIN]),
+  userController.getAll.bind(userController)
+);
+
 // UPDATE PASSWORD
 router.put(
   "/update-password/",
+  authorize([Role.ADMIN, Role.USER, Role.PARTNER]),
   [
     check("id", "El id es obligatorio").not().isEmpty(),
     check("email", "El email es obligatorio").not().isEmpty(),
@@ -74,6 +115,7 @@ router.put(
 // UPDATE
 router.put(
   "/",
+  authorize([Role.ADMIN, Role.USER, Role.PARTNER]),
   [
     check("id", "El id es obligatorio").not().isEmpty(),
     check("email", "El email es obligatorio").not().isEmpty(),
@@ -85,6 +127,7 @@ router.put(
 // UPDATE ROLE
 router.put(
   "/role/",
+  authorize([Role.ADMIN]),
   [
     check("id", "El id es obligatorio").not().isEmpty(),
     check("role", "El role es obligatorio").not().isEmpty(),
@@ -96,6 +139,7 @@ router.put(
 // DELETE
 router.delete(
   "/:id",
+  authorize([Role.ADMIN]),
   [check("id", "El id es obligatorio").not().isEmpty()],
   userController.delete.bind(userController)
 );
@@ -103,6 +147,7 @@ router.delete(
 // ACTIVATE
 router.put(
   "/activate/:id",
+  authorize([Role.ADMIN]),
   [check("id", "El id es obligatorio").not().isEmpty()],
   userController.activate.bind(userController)
 );
@@ -110,6 +155,7 @@ router.put(
 // BLOCK
 router.put(
   "/block/:id",
+  authorize([Role.ADMIN]),
   [check("id", "El id es obligatorio").not().isEmpty()],
   userController.block.bind(userController)
 );

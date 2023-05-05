@@ -1,11 +1,13 @@
 import StatusCodes from "http-status-codes";
-import Logger from "../../../modules/shared/infraestructure/logger";
+import Logger from "../../utils/logger";
+import { IValidationError } from "./validate-fileds";
 
 export interface HttpError {
   status: string;
   statusCode: number;
   message: string;
   stack?: string;
+  validationData?: IValidationError;
 }
 
 export function NotFound(message: string): HttpError {
@@ -23,6 +25,19 @@ export function BadRequest(message: string): HttpError {
     status: "Bad Request",
     statusCode: StatusCodes.BAD_REQUEST,
     message,
+  };
+}
+
+export function HttpValidationError(
+  message: string,
+  validationData: IValidationError
+): HttpError {
+  Logger.error(`http-error : HttpValidationError : ${message}`);
+  return {
+    status: "Http Validation Error",
+    statusCode: StatusCodes.BAD_REQUEST,
+    message,
+    validationData,
   };
 }
 
@@ -44,6 +59,15 @@ export function Unauthorized(message: string): HttpError {
   };
 }
 
+export function HasToReset(message: string): HttpError {
+  Logger.error(`http-error : HasToReset : ${message}`);
+  return {
+    status: "Unauthorized",
+    statusCode: 499,
+    message,
+  };
+}
+
 export function Forbidden(message: string): HttpError {
   Logger.error(`http-error : Forbidden : ${message}`);
   return {
@@ -58,7 +82,7 @@ export function InternalServerError(error: unknown): HttpError {
   const httpError: HttpError = {
     status: "Internal Server Error",
     statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-    message: "Something went wrong",
+    message: "Error interno del servidor",
   };
 
   if (error instanceof Error) {

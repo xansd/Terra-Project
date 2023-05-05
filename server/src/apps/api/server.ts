@@ -7,7 +7,13 @@ import https from "https";
 import { router as userRoutes } from "./routes/user.routes";
 // Config
 import setup from "../../config/app-config";
-import Logger from "../../modules/shared/infraestructure/logger";
+import Logger from "../utils/logger";
+import {
+  errorHandler,
+  errorStatusHandler,
+  notFoundHandler,
+  unautorizedHandler,
+} from "./error/handlers";
 
 export class Server {
   public app: Application;
@@ -52,6 +58,10 @@ export class Server {
 
   routes(): void {
     this.app.use("/api/users", userRoutes);
+    this.app.use(notFoundHandler);
+    this.app.use(unautorizedHandler);
+    this.app.use(errorStatusHandler);
+    this.app.use(errorHandler);
   }
 
   run(): void {

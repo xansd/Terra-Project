@@ -27,6 +27,7 @@ password VARCHAR(255) NOT NULL,
 email VARCHAR(255) NOT NULL UNIQUE,
 role_id INT(11) NOT NULL,
 active TINYINT(1) NOT NULL DEFAULT 0,
+password_last_reset DATETIME DEFAULT NULL,
     user_created CHAR(36) DEFAULT NULL,
     user_updated CHAR(36) DEFAULT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
@@ -34,6 +35,17 @@ active TINYINT(1) NOT NULL DEFAULT 0,
     deleted_at datetime DEFAULT NULL,
     INDEX users_email (email),
 FOREIGN KEY (role_id) REFERENCES roles(role_id)
+);
+
+CREATE TABLE `password_history` (
+  password_id INT NOT NULL AUTO_INCREMENT,
+  password VARCHAR(255) NOT NULL,
+  user_id CHAR(36) NOT NULL,
+  created_at datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at datetime DEFAULT NULL,
+  PRIMARY KEY (password_id),
+  FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
 

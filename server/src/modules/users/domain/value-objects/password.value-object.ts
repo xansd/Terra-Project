@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import config from "../../../../config/app-config";
-import { ValueObject } from "../../../shared/domain/value-object";
+import { ValueObject } from "../../../shared/domain/value-objects/value-object";
 import { DomainValidationError } from "../../../shared/domain/domain-validation.exception";
 
 export class Password extends ValueObject<string> {
@@ -29,6 +29,10 @@ export class Password extends ValueObject<string> {
       );
     }
 
+    return new Password(password);
+  }
+
+  public static createFromPersistence(password: string): Password {
     return new Password(password);
   }
 

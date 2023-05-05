@@ -1,8 +1,12 @@
+import * as dotenv from "dotenv";
+dotenv.config();
+
 export default {
   APP_PORT: 8531,
-  TOKEN_EXPIRES_IN: "8h",
+  TOKEN_EXPIRES_IN: "12h",
   SALT: parseInt(process.env.SALT!),
-  JWT_SECRET: process.env.JWT_SECRET,
+  JWT_SECRET:
+    "MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDkDXDfWtfwDotP",
   CORS: {
     LOCAL: {
       origin: "http://localhost:4200",

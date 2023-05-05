@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
 import { env } from "process";
-import { NotFound, Unauthorized, HttpError } from "./http-error";
+import { NotFound, Unauthorized, HttpError, HasToReset } from "./http-error";
 import { HttpErrorDTO, toDTO } from "./http-error-dto";
 import { UnauthorizedError } from "express-jwt";
 import { isNil } from "../../../../shared/type-checkers";
+import { UserHasToResetError } from "../../../modules/users/domain";
 
 export function notFoundHandler(
   req: Request,
@@ -22,6 +23,19 @@ export function unautorizedHandler(
 ): void {
   if (error instanceof UnauthorizedError) {
     next(Unauthorized(error.message));
+  } else {
+    next(error);
+  }
+}
+
+export function hasToResetHandler(
+  error: Error,
+  req: Request,
+  _res: Response,
+  next: NextFunction
+): void {
+  if (error instanceof UserHasToResetError) {
+    next(HasToReset(error.message));
   } else {
     next(error);
   }

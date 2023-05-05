@@ -11,22 +11,33 @@ import {
 import { Request, Response } from "express";
 import { IUserController } from "../../../modules/users/application/use-cases/interface/user-controller.interface";
 import {
+  InvalidCredentialsError,
+  PasswordHistoryError,
   Role,
   UserAlreadyExistsError,
   UserDoesNotExistError,
+  UserHasToResetError,
+  UserNotActive,
   UsersNotFoundError,
 } from "../../../modules/users/domain";
-import { UserAdapter } from "../../../modules/users/application/user.adapter";
+import { UserMapper } from "../../../modules/users/application/user-dto.mapper";
 import {
   BadRequest,
   NotFound,
   InternalServerError,
   Conflict,
+  Forbidden,
+  HasToReset,
 } from "../error/http-error";
 import { DomainValidationError } from "../../../modules/shared/domain/domain-validation.exception";
+import {
+  LoginRequest,
+  SigninUseCase,
+} from "../../../modules/users/application/use-cases/signin.use-case";
+import { AuthToken } from "../../../modules/shared/domain/value-objects/auth-token";
 
 export class UserController implements IUserController {
-  userAdapter = new UserAdapter();
+  userMapper = new UserMapper();
 
   constructor(
     private readonly createUserUseCase: CreateUserUseCase,
@@ -36,14 +47,39 @@ export class UserController implements IUserController {
     private readonly updateUserUseCase: UpdateUserUseCase,
     private readonly deleteUserUseCase: DeleteUserUseCase,
     private readonly activateUserUseCase: ActivateUserUseCase,
-    private readonly updateRoleUseCase: UpdateRoleUseCase
+    private readonly updateRoleUseCase: UpdateRoleUseCase,
+    private readonly signinUseCase: SigninUseCase
   ) {}
+
+  async signin(request: Request, response: Response): Promise<void> {
+    const { email, password } = request.body;
+    const loginRequest: LoginRequest = {
+      email,
+      password,
+    };
+    try {
+      const token: AuthToken = await this.signinUseCase.signin(loginRequest);
+      response.send(token);
+    } catch (error) {
+      if (error instanceof DomainValidationError) {
+        response.send(BadRequest(error.message));
+      } else if (error instanceof InvalidCredentialsError) {
+        response.send(Forbidden(error.message));
+      } else if (error instanceof UserNotActive) {
+        response.send(Forbidden(error.message));
+      } else if (error instanceof UserHasToResetError) {
+        response.send(HasToReset(error.message));
+      } else {
+        response.send(InternalServerError(error));
+      }
+    }
+  }
 
   async getById(request: Request, response: Response): Promise<void> {
     const { id } = request.params;
     try {
       const user = await this.getUserUseCase.getUser(id);
-      response.send(this.userAdapter.toDTO(user));
+      response.send(this.userMapper.toDTO(user));
     } catch (error) {
       if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));
@@ -58,7 +94,7 @@ export class UserController implements IUserController {
   async getAll(request: Request, response: Response): Promise<void> {
     try {
       const users = await this.getAllUsersUseCase.getAllUsers();
-      response.send(this.userAdapter.toDTOList(users));
+      response.send(this.userMapper.toDTOList(users));
     } catch (error: any) {
       if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));
@@ -71,6 +107,7 @@ export class UserController implements IUserController {
   }
 
   async create(request: Request, response: Response): Promise<void> {
+    console.log("ADSFASDFASDFASDFASDFASDFA", request.body);
     const { email, password } = request.body;
     const role = Role.USER;
     try {
@@ -80,7 +117,7 @@ export class UserController implements IUserController {
         role,
       });
 
-      response.send(this.userAdapter.toDTO(user));
+      response.send(this.userMapper.toDTO(user));
     } catch (error) {
       if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));
@@ -100,6 +137,8 @@ export class UserController implements IUserController {
       response.send();
     } catch (error) {
       if (error instanceof DomainValidationError) {
+        response.send(BadRequest(error.message));
+      } else if (error instanceof PasswordHistoryError) {
         response.send(BadRequest(error.message));
       } else if (error instanceof UserDoesNotExistError) {
         response.send(NotFound(error.message));

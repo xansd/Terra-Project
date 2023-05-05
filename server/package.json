@@ -5,6 +5,7 @@
   "scripts": {
     "build": "tsc -w",
     "dev": "concurrently 'tsc -w' 'nodemon build/src/apps/app.js'",
+    "kill": "npx kill-port 8531 ",
     "test": "jest"
   },
   "jest": {
