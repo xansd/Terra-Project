@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { ITokenDecoder } from '../domain/token-decoder.interface';
+import { ITokenDecoder } from '../domain/token-decoder.port';
 import { IDecodedToken, AuthToken } from '../domain/token';
-import { TokenInvalidError } from '../domain/authentication.exceptions';
+import { TokenInvalidError } from '../domain/auth.exceptions';
 
 @Injectable({
   providedIn: 'root',

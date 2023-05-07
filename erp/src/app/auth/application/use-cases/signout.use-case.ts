@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AuthToken } from '../../domain/token';
-import { ISignoutUseCase } from './port/auth-use-cases.port';
+import { ISignoutUseCase } from './auth.use-case.port';
 
 @Injectable({
   providedIn: 'root',

@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { LoginCredentials } from '../application/use-cases/port/auth-use-cases.port';
+import { LoginCredentials } from '../application/use-cases/auth.use-case.port';
 import { IAuthToken } from '../domain/token';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';

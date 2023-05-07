@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { IAuthToken } from '../../domain/token';
-import { ISigninUseCase, LoginCredentials } from './port/auth-use-cases.port';
+import { ISigninUseCase, LoginCredentials } from './auth.use-case.port';
 import { IAuthAPIPort } from '../../domain/auth-api.port';
 
 export class SigninUseCase implements ISigninUseCase {

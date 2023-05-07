@@ -1,13 +1,17 @@
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { NgForm } from '@angular/forms';
 import { CountdownConfig } from 'ngx-countdown';
 import { AppSettings } from '../../service/app-settings.service';
-import { Component } from '@angular/core';
 
 @Component({
-  selector: 'home',
-  templateUrl: './home.html',
+  selector: 'page-coming-soon',
+  templateUrl: './page-coming-soon.html',
+  styleUrls: ['./page-coming.component.scss'],
 })
-export class HomePage {
-  constructor(private appSettings: AppSettings) {}
+export class ComingSoonPage {
+  constructor(private router: Router, private appSettings: AppSettings) {}
+
   countdownConfig: CountdownConfig = {
     leftTime: 100000 * 10,
     format: 'dd:HH:mm:ss',
@@ -44,15 +48,20 @@ export class HomePage {
       );
     },
   };
+
   ngOnInit() {
     this.appSettings.appSidebarNone = false;
     this.appSettings.appHeaderNone = false;
-    this.appSettings.appContentClass = 'p-4';
+    this.appSettings.appContentClass = 'p-7';
   }
 
   ngOnDestroy() {
     this.appSettings.appSidebarNone = false;
     this.appSettings.appHeaderNone = false;
     this.appSettings.appContentClass = '';
+  }
+
+  formSubmit(f: NgForm) {
+    this.router.navigate(['/']);
   }
 }

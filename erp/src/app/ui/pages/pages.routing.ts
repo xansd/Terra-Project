@@ -23,15 +23,6 @@ const routes: Routes = [
         path: 'registro',
         component: RegisterPage,
       },
-      // {
-      //   path: '404',
-      //   children: [
-      //     {
-      //       path: '',
-      //       component: NotFoundComponent,
-      //     },
-      //   ],
-      // },
     ],
   },
 ];

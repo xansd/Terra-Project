@@ -7,4 +7,5 @@ export default {
     PASSWORD_MIN: 10,
     PASSWORD_MAX: 24,
   },
+  PAGE_ON_CONSTRUCTION: 'Esta página se encuantra en construcción',
 };

@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { ISignoutUseCase } from 'src/app/auth/application/use-cases/port/auth-use-cases.port';
 import { SignoutUseCase } from 'src/app/auth/application/use-cases/signout.use-case';
 import { PagesRoutes } from '../../pages/pages-routes.enum';
 import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
+import { ISignoutUseCase } from 'src/app/auth/application/use-cases/auth.use-case.port';
 
 interface NotificationData {
   icon: string;

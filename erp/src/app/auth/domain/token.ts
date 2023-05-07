@@ -1,6 +1,6 @@
 import { Roles } from 'src/app/users/domain/roles';
 import { Email } from 'src/app/users/domain/value-objects/email.value-object';
-import { JwtTokenDecoder } from '../infrastructure/jwtTokenDecoder';
+import { JwtTokenDecoder } from '../infrastructure/jwtTokenDecoder.adapter';
 import { LocalRepository } from 'src/app/shared/domain/local-repository.port';
 import { Inject, Injectable } from '@angular/core';
 
