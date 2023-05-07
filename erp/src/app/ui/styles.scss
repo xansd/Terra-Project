@@ -1,3 +1,21 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~@fortawesome/fontawesome-free/css/all.css';
 @import '~bootstrap-icons/font/bootstrap-icons.css';
+@import 'node_modules/angular-notifier/styles';
+
+mat-error {
+    font-size : .7rem;
+    display   : block;
+    position  : relative;
+    display   : -webkit-box;
+    display   : -ms-flexbox;
+    display   : flex;
+    text-align: center;
+
+    span {
+        position  : absolute;
+        width     : 100%;
+        color     : #ff6060;
+        margin-top: 2.5px;
+    }
+}

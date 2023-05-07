@@ -35,6 +35,7 @@ export class SigninUseCase implements ISignin {
     }
 
     const lastPasswordUpdate = user.lastReset;
+    console.log("lastPasswordUpdate", lastPasswordUpdate);
 
     if (!lastPasswordUpdate) {
       throw new UserHasToResetError();
@@ -50,7 +51,7 @@ export class SigninUseCase implements ISignin {
 
     const passwordMatch = await Password.validatePasswordHash(
       credentials.password,
-      user.password!.value
+      user.passwordHash!
     );
     if (!passwordMatch) {
       throw new InvalidCredentialsError();

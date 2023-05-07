@@ -9,7 +9,7 @@ export class UserPersistenceMapper implements IAPIMapper<IUser, IUserAPI> {
   // Convierte un objeto de la base de datos a un dominio
   toDomain(api: IUserAPI): IUser {
     const user_id = api.user_id;
-    const username = Email.create(api.email);
+    const email = Email.create(api.email);
     const role = Object.values(Roles).includes(api.role_id)
       ? api.role_id
       : Roles.USER;
@@ -19,7 +19,7 @@ export class UserPersistenceMapper implements IAPIMapper<IUser, IUserAPI> {
       : undefined;
     return User.create({
       id: user_id,
-      username,
+      email,
       role,
       active,
       lastReset,
@@ -28,10 +28,10 @@ export class UserPersistenceMapper implements IAPIMapper<IUser, IUserAPI> {
 
   // Convierte un dominio a un objeto de la base de datos
   toPersistence(domain: IUser): IUserAPI {
-    const { id, username, password, role } = domain;
+    const { id, email, password, role } = domain;
     return {
       user_id: id || '',
-      email: username.value,
+      email: email.value,
       password: password?.value,
       role_id: role === Roles.ADMIN ? Roles.ADMIN : Roles.USER,
       active: domain.active ? 1 : 0,

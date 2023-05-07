@@ -13,11 +13,12 @@ export class UserPersistenceMapper
   toDomain(persistence: IUserPersistence): IUser {
     const user_id = new UserID(persistence.user_id);
     const email = Email.create(persistence.email);
-    const passwordHash = persistence.passwordHash;
+    const passwordHash = persistence.password;
     const role = persistence.role_id === Role.ADMIN ? Role.ADMIN : Role.USER;
     const active = persistence.active === 1 ? true : false;
+
     const lastReset = persistence.password_last_reset
-      ? new Date(persistence.password_last_reset.replace(" ", "T") + "Z")
+      ? new Date(persistence.password_last_reset)
       : undefined;
     return User.create({
       id: user_id,

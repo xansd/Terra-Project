@@ -1,4 +1,4 @@
-import { IUserRepository } from "../../domain/user-repository.interface";
+import { IUserRepository } from "../../domain/user-repository.port";
 import { IUserDTO } from "../user.dto";
 import { UserMapper } from "../user-dto.mapper";
 import { IUser, UserAlreadyExistsError } from "../../domain";

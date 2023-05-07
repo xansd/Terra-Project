@@ -63,76 +63,43 @@
       <div class="row row-grid gx-0">
         <div class="col-4">
           <a
-            routerLink="/email/inbox"
-            class="dropdown-item text-decoration-none p-3 bg-none"
-          >
-            <div class="position-relative">
-              <i
-                class="bi bi-circle-fill position-absolute text-theme top-0 mt-n2 me-n2 fs-6px d-block text-center w-100"
-              ></i>
-              <i class="bi bi-envelope h2 opacity-5 d-block my-1"></i>
-            </div>
-            <div class="fw-500 fs-10px text-inverse">INBOX</div>
-          </a>
-        </div>
-        <div class="col-4">
-          <a
-            routerLink="/pos/customer-order"
+            (click)="notImplemented()"
             target="_blank"
             class="dropdown-item text-decoration-none p-3 bg-none"
           >
             <div>
               <i class="bi bi-hdd-network h2 opacity-5 d-block my-1"></i>
             </div>
-            <div class="fw-500 fs-10px text-inverse">POS SYSTEM</div>
+            <div class="fw-500 fs-10px text-inverse">DISPENSARIO</div>
           </a>
         </div>
         <div class="col-4">
           <a
-            routerLink="/calendar"
+            (click)="notImplemented()"
             class="dropdown-item text-decoration-none p-3 bg-none"
           >
             <div><i class="bi bi-calendar4 h2 opacity-5 d-block my-1"></i></div>
-            <div class="fw-500 fs-10px text-inverse">CALENDAR</div>
+            <div class="fw-500 fs-10px text-inverse">CALENDARIO</div>
           </a>
         </div>
-      </div>
-      <div class="row row-grid gx-0">
+
         <div class="col-4">
           <a
-            routerLink="/helper"
-            class="dropdown-item text-decoration-none p-3 bg-none"
-          >
-            <div><i class="bi bi-terminal h2 opacity-5 d-block my-1"></i></div>
-            <div class="fw-500 fs-10px text-inverse">HELPER</div>
-          </a>
-        </div>
-        <div class="col-4">
-          <a
-            routerLink="/settings"
+            (click)="notImplemented()"
             class="dropdown-item text-decoration-none p-3 bg-none"
           >
             <div class="position-relative">
+              <!-- bi bi-circle-fill (active)-->
               <i
-                class="bi bi-circle-fill position-absolute text-theme top-0 mt-n2 me-n2 fs-6px d-block text-center w-100"
+                class="position-absolute text-theme top-0 mt-n2 me-n2 fs-6px d-block text-center w-100"
               ></i>
               <i class="bi bi-sliders h2 opacity-5 d-block my-1"></i>
             </div>
-            <div class="fw-500 fs-10px text-inverse">SETTINGS</div>
-          </a>
-        </div>
-        <div class="col-4">
-          <a
-            routerLink="/widgets"
-            class="dropdown-item text-decoration-none p-3 bg-none"
-          >
-            <div>
-              <i class="bi bi-collection-play h2 opacity-5 d-block my-1"></i>
-            </div>
-            <div class="fw-500 fs-10px text-inverse">WIDGETS</div>
+            <div class="fw-500 fs-10px text-inverse">AJUSTES</div>
           </a>
         </div>
       </div>
+      <div class="row row-grid gx-0"></div>
     </div>
   </div>
   <div class="menu-item dropdown dropdown-mobile-full">
@@ -149,7 +116,7 @@
       ></div>
     </a>
     <div class="dropdown-menu dropdown-menu-end mt-1 w-300px fs-11px pt-1">
-      <h6 class="dropdown-header fs-10px mb-1">NOTIFICATIONS</h6>
+      <h6 class="dropdown-header fs-10px mb-1">NOTIFICACIONES</h6>
       <div class="dropdown-divider mt-1"></div>
       <ng-container *ngIf="notificationData.length > 0">
         <a
@@ -175,12 +142,17 @@
         <div
           class="d-flex align-items-center py-10px dropdown-item text-wrap fs-6 bg-inverse bg-opacity-15 text-inverse text-opacity-50 h-100px"
         >
-          No record found
+          No hay registros
         </div>
       </ng-container>
       <hr class="my-0 mt-2" />
       <div class="py-10px mb-n2 text-center">
-        <a href="javascript:;" class="text-decoration-none fw-bold">SEE ALL</a>
+        <a
+          href="javascript:;"
+          class="text-decoration-none fw-bold prohibited"
+          (click)="notImplemented()"
+          >VER TODO</a
+        >
       </div>
     </div>
   </div>
@@ -203,25 +175,25 @@
       </div>
     </a>
     <div class="dropdown-menu dropdown-menu-end me-lg-3 fs-11px mt-1">
-      <a class="dropdown-item d-flex align-items-center" routerLink="/profile"
-        >PROFILE
+      <a
+        class="dropdown-item d-flex align-items-center prohibited"
+        (click)="notImplemented()"
+        >PERFIL
         <i class="bi bi-person-circle ms-auto text-theme fs-16px my-n1"></i
       ></a>
       <a
-        class="dropdown-item d-flex align-items-center"
-        routerLink="/email-inbox"
-        >INBOX <i class="bi bi-envelope ms-auto text-theme fs-16px my-n1"></i
+        class="dropdown-item d-flex align-items-center prohibited"
+        (click)="notImplemented()"
+        >CALENDARIO
+        <i class="bi bi-calendar ms-auto text-theme fs-16px my-n1"></i
       ></a>
-      <a class="dropdown-item d-flex align-items-center" routerLink="/calendar"
-        >CALENDAR <i class="bi bi-calendar ms-auto text-theme fs-16px my-n1"></i
-      ></a>
-      <a class="dropdown-item d-flex align-items-center" routerLink="/settings"
-        >SETTINGS <i class="bi bi-gear ms-auto text-theme fs-16px my-n1"></i
+      <a
+        class="dropdown-item d-flex align-items-center prohibited"
+        (click)="notImplemented()"
+        >AJUSTES <i class="bi bi-gear ms-auto text-theme fs-16px my-n1"></i
       ></a>
       <div class="dropdown-divider"></div>
-      <a
-        class="dropdown-item d-flex align-items-center"
-        routerLink="/page/login"
+      <a (click)="signout()" class="dropdown-item d-flex align-items-center"
         >LOGOUT <i class="bi bi-toggle-off ms-auto text-theme fs-16px my-n1"></i
       ></a>
     </div>

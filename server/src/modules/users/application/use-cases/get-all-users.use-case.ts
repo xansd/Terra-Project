@@ -1,6 +1,5 @@
 import Logger from "../../../../apps/utils/logger";
-import { IUser, UsersNotFoundError } from "../../domain";
-import { IUserRepository } from "../../domain/user-repository.interface";
+import { IUser, IUserRepository, UsersNotFoundError } from "../../domain";
 
 export interface IGetAllUsers {
   getAllUsers(id: string): Promise<IUser[]>;

@@ -4,7 +4,7 @@ import { Roles } from './roles';
 
 export interface IUser {
   id?: string;
-  username: Email;
+  email: Email;
   password?: Password;
   role: Roles;
   lastReset?: Date;
@@ -13,14 +13,14 @@ export interface IUser {
 
 export class User implements IUser {
   id?: string;
-  username: Email;
+  email: Email;
   password?: Password;
   role: Roles;
   lastReset?: Date;
   active?: boolean;
 
   private constructor(props: IUser) {
-    this.username = props.username;
+    this.email = props.email;
     this.password = props.password;
     this.role = props.role;
     this.lastReset = props.lastReset;
@@ -36,7 +36,7 @@ export class User implements IUser {
   }
 
   getUserName(): Email {
-    return this.username;
+    return this.email;
   }
 
   getRole(): Roles {

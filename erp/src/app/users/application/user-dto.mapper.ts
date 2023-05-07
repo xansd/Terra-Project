@@ -1,55 +1,50 @@
-import { IDtoMapper } from '../../shared/infraestructure/api-mapper.interface';
-import { Roles } from '../domain/roles';
+import { IDTOMapper } from 'src/app/shared/application/dto-mapper.interface';
 import { IUser } from '../domain/user';
 import { User } from '../domain/user';
 import { Email } from '../domain/value-objects/email.value-object';
-import { IUserPersistence } from './user.dto';
+import { Password } from '../domain/value-objects/password.value-object';
+import { IUserDTO } from './user.dto';
 
-export class UserPersistenceMapper
-  implements IPersistenceMapper<IUser, IUserPersistence>
-{
+export class UserDTOMapper implements IDTOMapper<IUser, IUserDTO> {
   constructor() {}
   // Convierte un objeto de la base de datos a un dominio
-  toDomain(persistence: IUserPersistence): IUser {
-    const user_id = persistence.user_id;
-    const email = Email.create(persistence.email);
-    const passwordHash = persistence.passwordHash;
-    const role = persistence.role_id === Roles.ADMIN ? Roles.ADMIN : Roles.USER;
-    const active = persistence.active === 1 ? true : false;
-    const lastReset = persistence.password_last_reset
-      ? new Date(persistence.password_last_reset.replace(' ', 'T') + 'Z')
-      : undefined;
+  toDomain(dto: IUserDTO): IUser {
+    // const user_id = dto.id;
+    const email = Email.create(dto.email);
+    const password = dto.password ? Password.create(dto.password) : undefined;
+    // const role = dto.role;
+    // const active = dto.active;
+    // const lastReset = dto.lastReset;
     return User.create({
-      id: user_id,
+      id: '',
       email,
-      passwordHash,
-      role,
-      active,
-      lastReset,
+      password,
+      role: 0,
+      active: false,
+      lastReset: new Date(),
     });
   }
 
   // Convierte un dominio a un objeto de la base de datos
-  toPersistence(domain: IUser): IUserPersistence {
-    const { id, email, passwordHash, role } = domain;
+  toDTO(domain: IUser): IUserDTO {
+    const { id, email, password, role, active, lastReset } = domain;
     return {
-      user_id: id!.value,
-      email: email.value,
-      passwordHash: passwordHash,
-      role_id: role === Role.ADMIN ? Role.ADMIN : Role.USER,
-      active: domain.active ? 1 : 0,
+      id: domain.id,
+      email: domain.email.value,
+      password: undefined,
+      role: domain.role,
+      active: domain.active,
+      lastReset: domain.lastReset,
     };
   }
 
   // Convierte una lista de dominio a una lista de DTO
-  toPersistenceList(domainList: IUser[]): IUserPersistence[] {
-    return domainList.map((user) => this.toPersistence(user));
+  toDTOList(domainList: IUser[]): IUserDTO[] {
+    return domainList.map((user) => this.toDTO(user));
   }
 
   // Convierte una lista de DTO a una lista de dominio
-  toDomainList(persistenceList: IUserPersistence[]): IUser[] {
-    return persistenceList.map((userPersistence) =>
-      this.toDomain(userPersistence)
-    );
+  toDomainList(dtoList: IUserDTO[]): IUser[] {
+    return dtoList.map((userDTO) => this.toDomain(userDTO));
   }
 }

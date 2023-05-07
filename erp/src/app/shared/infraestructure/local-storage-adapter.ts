@@ -1,5 +1,9 @@
-import { LocalRepository } from '../../shared/infraestructure/local-repository.interface';
+import { Injectable } from '@angular/core';
+import { LocalRepository } from '../domain/local-repository.port';
 
+@Injectable({
+  providedIn: 'root',
+})
 export class LocalStorageRepository<T extends string>
   implements LocalRepository<T>
 {

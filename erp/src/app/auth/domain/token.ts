@@ -1,13 +1,11 @@
-import { LocalRepository } from 'src/app/shared/infraestructure/local-repository.interface';
 import { Roles } from 'src/app/users/domain/roles';
 import { Email } from 'src/app/users/domain/value-objects/email.value-object';
 import { JwtTokenDecoder } from '../infrastructure/jwtTokenDecoder';
+import { LocalRepository } from 'src/app/shared/domain/local-repository.port';
+import { Inject, Injectable } from '@angular/core';
 
-export interface IToken {
-  authToken: string;
-  key: string;
-  storage: LocalRepository<string>;
-  decoder: JwtTokenDecoder;
+export interface IAuthToken {
+  token: string;
 }
 
 export interface IDecodedToken {
@@ -17,43 +15,43 @@ export interface IDecodedToken {
   HasToReset: boolean;
   iat: number;
 }
-
-export class Token implements IToken {
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthToken {
   key: string = 'authToken';
-  storage: LocalRepository<string>;
-  authToken: string;
-  decoder: JwtTokenDecoder;
+  authToken: IAuthToken | undefined = undefined;
+  // decoder: JwtTokenDecoder;
 
-  private constructor(
-    value: string,
-    storage: LocalRepository<string>,
-    jwtTokenDecoder: JwtTokenDecoder
+  constructor(
+    @Inject('LocalRepository') private storage: LocalRepository<string>,
+    @Inject('JwtTokenDecoder') private jwtTokenDecoder: JwtTokenDecoder
   ) {
-    this.authToken = value;
+    // this.authToken = value;
     this.storage = storage;
-    this.decoder = jwtTokenDecoder;
+    this.jwtTokenDecoder = jwtTokenDecoder;
   }
 
   getToken(): string | null {
-    return this.storage.get(this.key);
+    return this.storage.get('authToken');
   }
 
-  saveToken(token: Token): void {
+  saveToken(token: IAuthToken): void {
     this.storage.remove(this.key);
-    this.storage.set(this.key, token.authToken);
+    this.storage.set('authToken', token as unknown as string);
+  }
+
+  removeToken(): void {
+    this.storage.remove('authToken');
   }
 
   decodeToken(token: string): IDecodedToken {
-    return this.decoder.decodeToken(token);
+    return this.jwtTokenDecoder.decodeToken(token);
   }
 
-  isTokenExpired(): boolean {
-    return this.decoder.isTokenExpired(this.authToken);
+  isTokenExpired(token: IAuthToken): boolean {
+    return this.jwtTokenDecoder.isTokenExpired(
+      this.authToken as unknown as string
+    );
   }
 }
-
-// ejemplo de uso
-// const userRepository = new UserRepository(new LocalStorageRepository());
-// const token = 'abc123';
-// userRepository.saveToken(token);
-// console.log(userRepository.getToken()); // 'abc123'

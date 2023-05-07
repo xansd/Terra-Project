@@ -6,6 +6,7 @@ import {
   IUser,
   UserDoesNotExistError,
   UsersNotFoundError,
+  InvalidCredentialsError,
 } from "../../domain";
 import { UserPersistenceMapper } from "../user-persistence.mapper";
 
@@ -49,6 +50,7 @@ export class MySqlUserRepository implements IUserRepository {
         userPersistence.role_id!.toString(),
       ]
     );
+    console.log(result);
   }
 
   async update(user: IUser): Promise<void> {
@@ -106,13 +108,14 @@ export class MySqlUserRepository implements IUserRepository {
   async findByEmail(email: string): Promise<IUser> {
     const rows = await MysqlDataBase.query(
       `SELECT 
-      user_id, email, password, role_id, active
+      user_id, email, password, role_id, active, password_last_reset
       FROM users WHERE email = ? and deleted_at is null`,
       [email]
     );
     if (isNil(rows[0])) {
       Logger.error(`mysql : findByEmail : UserDoesNotExistError`);
-      throw new UserDoesNotExistError();
+      throw new InvalidCredentialsError();
+      // throw new UserDoesNotExistError();
     }
     return this.userPersistenceMapper.toDomain(rows[0]) as IUser;
   }
@@ -124,7 +127,7 @@ export class MySqlUserRepository implements IUserRepository {
       FROM users WHERE email = ? and deleted_at is null`,
       [email]
     );
-
+    // console.log(!!user.length);
     return !!user.length;
   }
 

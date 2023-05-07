@@ -5,5 +5,5 @@ export * from "./update-password.use-case";
 export * from "./update-user.use-case";
 export * from "./delete-user.use-case";
 export * from "./activate-user.use-case";
-export * from "./interface/user-controller.interface";
 export * from "./update-role.use-case";
+export * from "./signin.use-case";

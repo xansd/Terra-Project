@@ -19,7 +19,6 @@ export class SidebarComponent implements OnInit {
   }
 
   isActive(path: string) {
-    console.log(path);
     return this.router.url === path;
   }
 

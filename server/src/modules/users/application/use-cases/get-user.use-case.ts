@@ -1,5 +1,5 @@
 import { IUser } from "../../domain";
-import { IUserRepository } from "../../domain/user-repository.interface";
+import { IUserRepository } from "../../domain/user-repository.port";
 
 export interface IGetUser {
   getUser(id: string): Promise<IUser>;

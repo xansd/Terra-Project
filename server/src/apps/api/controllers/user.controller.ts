@@ -9,7 +9,7 @@ import {
   UpdateRoleUseCase,
 } from "../../../modules/users/application";
 import { Request, Response } from "express";
-import { IUserController } from "../../../modules/users/application/use-cases/interface/user-controller.interface";
+import { IUserController } from "../../../modules/users/application/use-cases/port/user-controller.port";
 import {
   InvalidCredentialsError,
   PasswordHistoryError,
@@ -59,9 +59,11 @@ export class UserController implements IUserController {
     };
     try {
       const token: AuthToken = await this.signinUseCase.signin(loginRequest);
-      response.send(token);
+      response.json(token);
     } catch (error) {
       if (error instanceof DomainValidationError) {
+        response.send(BadRequest(error.message));
+      } else if (error instanceof UserDoesNotExistError) {
         response.send(BadRequest(error.message));
       } else if (error instanceof InvalidCredentialsError) {
         response.send(Forbidden(error.message));
@@ -107,7 +109,6 @@ export class UserController implements IUserController {
   }
 
   async create(request: Request, response: Response): Promise<void> {
-    console.log("ADSFASDFASDFASDFASDFASDFA", request.body);
     const { email, password } = request.body;
     const role = Role.USER;
     try {
