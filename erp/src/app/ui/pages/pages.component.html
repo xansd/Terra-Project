@@ -1,1 +1,17 @@
+<ng-container *ngIf="!hideBreadcrumbRoutes.includes(activeRoute)"
+  ><ul class="breadcrumb">
+    <li class="breadcrumb-item">
+      <a href="javascript:;"
+        ><i [class]="info.icon" class="text-theme"></i>
+        {{ info.breadcrumbPath }}</a
+      >
+    </li>
+    <li class="breadcrumb-item active">{{ info.breadcrumbActive }}</li>
+  </ul>
+
+  <!-- <i [class]="info.icon"></i> -->
+  <h1 class="page-header">{{ info.pageHeader }}<small></small></h1>
+  <hr
+/></ng-container>
+
 <router-outlet></router-outlet>

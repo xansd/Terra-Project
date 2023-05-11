@@ -1,5 +1,5 @@
 import { Component, EventEmitter } from '@angular/core';
-import { AppSettings } from './service/app-settings.service';
+import { AppSettings } from './services/app-settings.service';
 
 @Component({
   selector: 'app-root',

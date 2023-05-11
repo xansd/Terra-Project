@@ -3,6 +3,7 @@ dotenv.config();
 
 export default {
   APP_PORT: 8531,
+  DEFAULT_USER_PASSWORD: process.env.DEFAULT_USER_PASSWORD,
   TOKEN_EXPIRES_IN: "12h",
   SALT: parseInt(process.env.SALT!),
   JWT_SECRET:

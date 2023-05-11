@@ -40,12 +40,12 @@ const authorize = (roles: number[] = []) => {
           Logger.warn(
             `:${req.socket.remoteAddress} : ${req.email} : hasToReset : Reset password required`
           );
-          res.send(HasToReset(error.message));
+          return res.send(HasToReset(error.message));
         } else if (error instanceof ResourceForbiddenError) {
           Logger.error(
             `:${req.socket.remoteAddress} : Acceso a recurso no autorizado`
           );
-          res.send(Forbidden(error.message));
+          return res.send(Forbidden(error.message));
         } else if (error instanceof UnauthorizedError) {
           Logger.error(
             `:${req.socket.remoteAddress} : ${req.email} : unauthorized : Invalid token`

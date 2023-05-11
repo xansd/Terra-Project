@@ -1,8 +1,8 @@
 export interface IUserPersistence {
   user_id: string;
+  email: string;
   password?: string;
   passwordHash?: string;
-  email: string;
   role_id: number;
   active?: number;
   password_last_reset?: string;

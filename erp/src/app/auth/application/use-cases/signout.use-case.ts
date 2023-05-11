@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AuthToken } from '../../domain/token';
-import { ISignoutUseCase } from './auth.use-case.port';
+
+export interface ISignoutUseCase {
+  signout(): void;
+}
 
 @Injectable({
   providedIn: 'root',

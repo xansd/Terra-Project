@@ -8,8 +8,7 @@ export class LocalStorageRepository<T extends string>
   implements LocalRepository<T>
 {
   set(key: string, value: T): void {
-    const serializedValue = JSON.stringify(value);
-    localStorage.setItem(key, serializedValue);
+    localStorage.setItem(key, value);
   }
 
   get(key: string): T | null {

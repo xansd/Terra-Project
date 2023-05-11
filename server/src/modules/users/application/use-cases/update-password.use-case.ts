@@ -16,7 +16,7 @@ export class UpdatePasswordeUseCase implements IUpdatePassword {
   async updatePassword(userDTO: IUserDTO): Promise<void> {
     const user = this.userMapper.toDomain(userDTO);
     const passwordsHistory = await this.userRepository.getPasswordHistory(
-      user.id?.value!
+      user.user_id?.value!
     );
 
     // Comprobar que la nueva contraseña no coincide con los últimos hashes de contraseñas

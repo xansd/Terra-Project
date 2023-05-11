@@ -14,30 +14,38 @@ export class UserPersistenceMapper
     const user_id = new UserID(persistence.user_id);
     const email = Email.create(persistence.email);
     const passwordHash = persistence.password;
-    const role = persistence.role_id === Role.ADMIN ? Role.ADMIN : Role.USER;
+    const role_id = persistence.role_id === Role.ADMIN ? Role.ADMIN : Role.USER;
     const active = persistence.active === 1 ? true : false;
-
-    const lastReset = persistence.password_last_reset
-      ? new Date(persistence.password_last_reset)
-      : undefined;
+    const password_last_reset = persistence.password_last_reset;
+    const user_created = persistence.user_created;
+    const user_updated = persistence.user_updated;
+    const created_at = persistence.created_at;
+    const updated_at = persistence.updated_at;
+    const deleted_at = persistence.deleted_at;
     return User.create({
-      id: user_id,
+      user_id: user_id,
       email,
       passwordHash,
-      role,
+      role_id,
       active,
-      lastReset,
+      password_last_reset,
+      user_created,
+      user_updated,
+      created_at,
+      updated_at,
+      deleted_at,
     });
   }
 
   // Convierte un dominio a un objeto de la base de datos
   toPersistence(domain: IUser): IUserPersistence {
-    const { id, email, passwordHash, role } = domain;
+    const { user_id, email, passwordHash, role_id, password_last_reset } =
+      domain;
     return {
-      user_id: id!.value,
+      user_id: user_id!.value,
       email: email.value,
       passwordHash: passwordHash,
-      role_id: role === Role.ADMIN ? Role.ADMIN : Role.USER,
+      role_id: role_id === Role.ADMIN ? Role.ADMIN : Role.USER,
       active: domain.active ? 1 : 0,
     };
   }

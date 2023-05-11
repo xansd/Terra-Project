@@ -4,36 +4,51 @@ import { Password } from "./value-objects/password.value-object";
 import { UserID } from "./value-objects/user-id.value-object";
 
 export interface IUser {
-  id?: UserID;
+  user_id?: UserID;
   email: Email;
   password?: Password;
   passwordHash?: string;
-  role: Role;
+  role_id: Role;
   active?: boolean;
-  lastReset?: Date;
+  password_last_reset?: string;
+  user_created?: string;
+  user_updated?: string;
+  created_at?: string;
+  updated_at?: string;
+  deleted_at?: string;
 }
 
 export class User implements IUser {
-  id: UserID;
+  user_id: UserID;
   email: Email;
   password?: Password;
   passwordHash?: string;
-  role: Role;
+  role_id: Role;
   active?: boolean;
-  lastReset?: Date;
+  password_last_reset?: string;
+  user_created?: string;
+  user_updated?: string;
+  created_at?: string;
+  updated_at?: string;
+  deleted_at?: string;
 
   private constructor(props: IUser) {
-    this.id = props.id ? props.id : UserID.create();
+    this.user_id = props.user_id ? props.user_id : UserID.create();
     this.email = props.email;
     this.password = props.password;
     this.passwordHash = props.passwordHash;
-    this.role = props.role;
+    this.role_id = props.role_id;
     this.active = props.active || false;
-    this.lastReset = props.lastReset;
+    this.password_last_reset = props.password_last_reset;
+    this.user_created = props.user_created;
+    this.user_updated = props.user_updated;
+    this.created_at = props.created_at;
+    this.updated_at = props.updated_at;
+    this.deleted_at = props.deleted_at;
   }
 
   get _id(): UserID {
-    return this.id;
+    return this.user_id;
   }
 
   get _email(): Email {
@@ -49,15 +64,15 @@ export class User implements IUser {
   }
 
   get _role(): Role {
-    return this.role;
+    return this.role_id;
   }
 
   get _active(): boolean | undefined {
     return this.active;
   }
 
-  get _lastReset(): Date | undefined {
-    return this.lastReset;
+  get _lastReset(): string | undefined {
+    return this.password_last_reset;
   }
 
   set _password(password: Password | undefined) {
@@ -65,7 +80,7 @@ export class User implements IUser {
   }
 
   set _role(role: Role) {
-    this.role = role;
+    this.role_id = role;
   }
 
   set _email(email: Email) {

@@ -1,9 +1,11 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { SignoutUseCase } from 'src/app/auth/application/use-cases/signout.use-case';
-import { PagesRoutes } from '../../pages/pages-routes.enum';
+import {
+  ISignoutUseCase,
+  SignoutUseCase,
+} from 'src/app/auth/application/use-cases/signout.use-case';
+import { PageRoutes } from '../../pages/pages-info.config';
 import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
-import { ISignoutUseCase } from 'src/app/auth/application/use-cases/auth.use-case.port';
 
 interface NotificationData {
   icon: string;
@@ -48,7 +50,7 @@ export class HeaderComponent implements ISignoutUseCase {
 
   signout(): void {
     this.useCase.signout();
-    this.router.navigateByUrl(PagesRoutes.LOGIN);
+    this.router.navigateByUrl(PageRoutes.LOGIN);
     this.notifier.showNotification('warning', 'Sesión cerrada');
   }
 

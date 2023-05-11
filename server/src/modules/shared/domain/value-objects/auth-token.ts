@@ -16,9 +16,9 @@ export type AuthToken = string;
 export function createToken(user: IUser): AuthToken {
   return jwt.sign(
     {
-      id: user.id!.value,
+      id: user.user_id!.value,
       email: user.email.value,
-      role: user.role,
+      role: user.role_id,
     },
     config.JWT_SECRET!,
     {

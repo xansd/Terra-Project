@@ -2,7 +2,7 @@ import Logger from "../../../../apps/utils/logger";
 import { IUser, IUserRepository, UsersNotFoundError } from "../../domain";
 
 export interface IGetAllUsers {
-  getAllUsers(id: string): Promise<IUser[]>;
+  getAllUsers(): Promise<IUser[]>;
 }
 
 export class GetAllUsersUseCase implements IGetAllUsers {

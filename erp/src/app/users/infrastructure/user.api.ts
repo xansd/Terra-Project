@@ -1,9 +1,9 @@
 export interface IUserAPI {
   user_id: string;
   email: string;
+  password?: string;
   role_id: number;
   active?: number;
-  password?: string;
   password_last_reset?: string;
   user_created?: string;
   user_updated?: string;

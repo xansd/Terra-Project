@@ -1,0 +1,155 @@
+<div class="users-container">
+  <div class="row justify-content-center">
+    <div class="col-xl-12">
+      <div class="mb-5">
+        <card>
+          <card-body class="card-body">
+            <div class="controls-table">
+              <div class="actions-table">
+                <button
+                  class="btn btn-outline-success"
+                  (click)="openCreateUserDialog()"
+                >
+                  <i class="bi bi-person-fill-add"></i> Nuevo
+                </button>
+              </div>
+              <div class="filter-table">
+                <input
+                  (keyup)="applyFilter($event)"
+                  #input
+                  class="form-control"
+                  placeholder="Buscar en la tabla..."
+                />
+              </div>
+            </div>
+
+            <div class="text-inverse text-opacity-50 mb-3 table-container">
+              <mat-table
+                mat-table
+                [dataSource]="dataSource"
+                matSort
+                multiTemplateDataRows
+                #usersListTable
+              >
+                <!-- ID Column -->
+                <ng-container matColumnDef="id">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header
+                    >ID</mat-header-cell
+                  >
+                  <mat-cell *matCellDef="let row">
+                    <div class="mobile-label">ID:</div>
+                    <div class="cell-value">{{ row.user_id }}</div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Email Column -->
+                <ng-container matColumnDef="email">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header
+                    >Email</mat-header-cell
+                  >
+                  <mat-cell *matCellDef="let row">
+                    <div class="mobile-label">Email:</div>
+                    <div class="cell-value">
+                      {{ row.email.value }}
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Rol Column -->
+                <ng-container matColumnDef="role">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header
+                    >Rol</mat-header-cell
+                  >
+                  <mat-cell *matCellDef="let row">
+                    <div class="mobile-label">Rol:</div>
+                    <div class="cell-value">
+                      {{ getRoleFromNumber(row.role_id) }}
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- State Column -->
+                <ng-container matColumnDef="state">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header
+                    >Estado</mat-header-cell
+                  >
+                  <mat-cell *matCellDef="let row">
+                    <div class="mobile-label">Estado:</div>
+                    <div class="cell-value">
+                      <span
+                        *ngIf="row.active"
+                        class="badge border-success text-success"
+                        >ACTIVO</span
+                      >
+                      <span
+                        *ngIf="!row.active"
+                        class="badge border-danger text-danger"
+                        >BLOQUEADO</span
+                      >
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Creation Column -->
+                <ng-container matColumnDef="creation">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header
+                    >Creacion</mat-header-cell
+                  >
+                  <mat-cell *matCellDef="let row">
+                    <div class="mobile-label">Creacion:</div>
+                    <div class="cell-value">
+                      {{ row.created_at | date : "dd/MM/yyyy" }}
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- actions column -->
+                <ng-container matColumnDef="actions">
+                  <mat-header-cell *matHeaderCellDef>Acción</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    <div
+                      class="btn-group btn-group-toggle"
+                      data-toggle="buttons"
+                    >
+                      <button
+                        (click)="openEditUser(row)"
+                        type="button"
+                        class="btn btn-light"
+                      >
+                        <i class="bi bi-pencil-square"></i>
+                      </button>
+                      <button type="button" class="btn btn-danger">
+                        <i class="bi bi-x-circle"></i>
+                      </button>
+                    </div>
+                  </mat-cell>
+                </ng-container>
+                <mat-header-row
+                  mat-header-row
+                  *matHeaderRowDef="getDisplayedColumns(); sticky: true"
+                ></mat-header-row>
+                <mat-row
+                  mat-row
+                  *matRowDef="let row; columns: getDisplayedColumns()"
+                ></mat-row>
+                <!-- Row shown when there is no matching data. -->
+                <tr class="mat-row" *matNoDataRow>
+                  <td
+                    class="mat-cell no-data"
+                    [attr.colspan]="getDisplayedColumns().length"
+                    style="width: 100%"
+                  >
+                    Sin datos
+                  </td>
+                </tr>
+              </mat-table>
+              <mat-paginator
+                [ngStyle]="{ display: isLargeScreen ? 'block' : 'none' }"
+                [pageSize]="10"
+              ></mat-paginator></div
+          ></card-body>
+        </card>
+      </div>
+    </div>
+  </div>
+</div>

@@ -7,7 +7,9 @@ import {
   UserDoesNotExistError,
   UsersNotFoundError,
   InvalidCredentialsError,
+  Role,
 } from "../../domain";
+import { Email } from "../../domain/value-objects/email.value-object";
 import { UserPersistenceMapper } from "../user-persistence.mapper";
 
 export class MySqlUserRepository implements IUserRepository {
@@ -29,7 +31,7 @@ export class MySqlUserRepository implements IUserRepository {
 
   async getAll(): Promise<IUser[]> {
     const rows = await MysqlDataBase.query(`SELECT 
-    user_id, email, password, role_id, active, user_created, user_updated, created_at, updated_at 
+    user_id, email, password, role_id, active, password_last_reset, user_created, user_updated, created_at, updated_at 
     FROM users where deleted_at is null`);
     if (rows.length === 0) {
       Logger.error(`mysql : getAll : UsersNotFoundError`);
@@ -38,19 +40,16 @@ export class MySqlUserRepository implements IUserRepository {
     return this.userPersistenceMapper.toDomainList(rows) as IUser[];
   }
 
-  async create(user: IUser): Promise<void> {
-    const userPersistence = this.userPersistenceMapper.toPersistence(user);
-
+  async create(
+    email: Email,
+    passwordhash: string,
+    role_id: Role
+  ): Promise<IUser> {
     const result = await MysqlDataBase.update(
-      "INSERT INTO users SET user_id = ?, email = ?, password = ?, role_id = ?",
-      [
-        userPersistence.user_id!.toString(),
-        userPersistence.email.toString(),
-        userPersistence.passwordHash!.toString(),
-        userPersistence.role_id!.toString(),
-      ]
+      "INSERT INTO users (email, password, role_id) VALUES (?,?,?)",
+      [email.value, passwordhash, role_id.toString()]
     );
-    console.log(result);
+    return this.userPersistenceMapper.toDomain(result);
   }
 
   async update(user: IUser): Promise<void> {
@@ -66,13 +65,10 @@ export class MySqlUserRepository implements IUserRepository {
     }
   }
 
-  async updateRole(user: IUser): Promise<void> {
-    const userPersistence = this.userPersistenceMapper.toPersistence(user);
-    const uid = userPersistence.user_id!.toString();
-    const role_id = userPersistence.role_id.toString();
+  async updateRole(id: string, role: Role): Promise<void> {
     const result = await MysqlDataBase.update(
       "UPDATE users SET role_id = ? WHERE user_id = ?",
-      [role_id, uid]
+      [role.toString(), id]
     );
     if (result.affectedRows === 0) {
       Logger.error(`mysql : changeRole : UserDoesNotExistError`);
@@ -127,7 +123,6 @@ export class MySqlUserRepository implements IUserRepository {
       FROM users WHERE email = ? and deleted_at is null`,
       [email]
     );
-    // console.log(!!user.length);
     return !!user.length;
   }
 

@@ -96,7 +96,7 @@ router.get(
 // GET ALL
 router.get(
   "/",
-  authorize([Role.ADMIN]),
+  authorize([Role.ADMIN, Role.USER]),
   userController.getAll.bind(userController)
 );
 
@@ -113,20 +113,20 @@ router.put(
   userController.updatePassword.bind(userController)
 );
 // UPDATE
-router.put(
-  "/",
-  authorize([Role.ADMIN, Role.USER, Role.PARTNER]),
-  [
-    check("id", "El id es obligatorio").not().isEmpty(),
-    check("email", "El email es obligatorio").not().isEmpty(),
-    catchValidationErrors,
-  ],
-  userController.update.bind(userController)
-);
+// router.put(
+//   "/",
+//   authorize([Role.ADMIN, Role.USER, Role.PARTNER]),
+//   [
+//     check("id", "El id es obligatorio").not().isEmpty(),
+//     check("email", "El email es obligatorio").not().isEmpty(),
+//     catchValidationErrors,
+//   ],
+//   userController.update.bind(userController)
+// );
 
 // UPDATE ROLE
 router.put(
-  "/role/",
+  "/role/:id",
   authorize([Role.ADMIN]),
   [
     check("id", "El id es obligatorio").not().isEmpty(),

@@ -1,7 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
+// @import "bootstrap/scss/bootstrap";
 @import '~@fortawesome/fontawesome-free/css/all.css';
 @import '~bootstrap-icons/font/bootstrap-icons.css';
 @import 'node_modules/angular-notifier/styles';
+
 
 mat-error {
     font-size : .7rem;
@@ -17,5 +19,123 @@ mat-error {
         width     : 100%;
         color     : #ff6060;
         margin-top: 2.5px;
+    }
+}
+
+mat-table {
+    width: 100%;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    mat-row,
+    mat-header-row {
+        text-align: center;
+    }
+
+
+    mat-cell,
+    mat-header-cell {
+        display         : -webkit-box;
+        display         : -ms-flexbox;
+        display         : flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack   : center;
+        justify-content : center;
+        font-size       : .9rem;
+        font-weight     : 500;
+    }
+
+
+    mat-header-cell {
+        text-transform: uppercase;
+    }
+
+    mat-header-row {
+        position        : -webkit-sticky !important;
+        position        : sticky !important;
+        top             : 0 !important;
+        z-index         : 9 !important;
+        height          : 40px !important;
+        background-color: rgba(60, 210, 165, .9) !important;
+        color           : #35434a !important;
+        height          : 45px !important;
+    }
+
+    mat-row {
+        height: 45px !important;
+
+        &:hover {
+            // background-color: rgba(255, 255, 255, .1) !important;
+        }
+    }
+
+    .mobile-label {
+        display: none;
+    }
+}
+
+@media(max-width: 999px) {
+    .mobile {
+        display: none;
+    }
+
+
+    .table-container {
+        max-height: calc(100vh - 18rem) !important;
+        max-width : calc(100vw - 1rem) !important;
+    }
+
+    .mobile-label {
+        width      : auto;
+        display    : inline-block !important;
+        font-weight: 500;
+        color      : var(--primary);
+    }
+
+    mat-header-row {
+        display: none;
+    }
+
+    mat-cell {
+        padding-left    : 0rem !important;
+        width           : calc(100% - 1rem);
+        -webkit-box-pack: left !important;
+        -ms-flex-pack   : left !important;
+        justify-content : left !important;
+    }
+
+    mat-row {
+        -webkit-box-orient   : vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction   : column;
+        flex-direction       : column;
+        -webkit-box-align    : start;
+        -ms-flex-align       : start;
+        align-items          : start;
+        padding              : .75rem;
+    }
+
+    mat-row:last-child {
+        padding-bottom: 3rem !important;
+    }
+
+    .cell-value {
+        display    : -webkit-box;
+        display    : -ms-flexbox;
+        display    : flex;
+        margin-left: .5rem;
+    }
+}
+
+.btn-danger {
+    background-color: #DC4C64 !important;
+    border-color    : #DC4C64 !important;
+
+    &:hover {
+        background-color: #b82424 !important;
+        border-color    : #b82424 !important;
+
     }
 }

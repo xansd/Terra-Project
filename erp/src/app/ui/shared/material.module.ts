@@ -15,9 +15,15 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 
 const materialModules = [
   MatButtonModule,
+  MatPaginatorModule,
+  MatTableModule,
+  MatSortModule,
   MatIconModule,
   MatMenuModule,
   MatButtonToggleModule,

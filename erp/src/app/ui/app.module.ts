@@ -1,11 +1,12 @@
 // Core Module
 import { Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { CommonModule, JsonPipe } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AppRoutingModule } from './app-routing.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 // App Component
 import { AppComponent } from './app.component';
@@ -18,12 +19,13 @@ import { environment } from 'src/environments/environment';
 import { NotifierModule, NotifierOptions } from 'angular-notifier';
 import { NotifierService } from 'angular-notifier';
 import { NotificationAdapter } from '../shared/infraestructure/notifier.adapter';
+import { ErrorCatchingInterceptor } from './interceptors/error.interceptor';
 
 // Notifier configuration
 const notifierDefaultOptions: NotifierOptions = {
   position: {
     horizontal: {
-      position: 'middle',
+      position: 'right',
       distance: 12,
     },
     vertical: {
@@ -75,17 +77,22 @@ const notifierDefaultOptions: NotifierOptions = {
     ComponentsModule,
     JwtModule.forRoot(AppModule.JWT_Module_Options),
     NotifierModule.withConfig(notifierDefaultOptions),
+    NgbModule,
   ],
   exports: [],
   providers: [
     NotificationAdapter,
     { provide: 'notifier', useExisting: NotifierService },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorCatchingInterceptor,
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent],
 })
 export class AppModule {
   title: string = 'HUD';
-
   constructor(
     private router: Router,
     private titleService: Title,

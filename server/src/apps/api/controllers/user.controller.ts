@@ -96,6 +96,7 @@ export class UserController implements IUserController {
   async getAll(request: Request, response: Response): Promise<void> {
     try {
       const users = await this.getAllUsersUseCase.getAllUsers();
+      const usersDTOs = this.userMapper.toDTOList(users);
       response.send(this.userMapper.toDTOList(users));
     } catch (error: any) {
       if (error instanceof DomainValidationError) {
@@ -109,14 +110,9 @@ export class UserController implements IUserController {
   }
 
   async create(request: Request, response: Response): Promise<void> {
-    const { email, password } = request.body;
-    const role = Role.USER;
+    const { email, role_id } = request.body;
     try {
-      const user = await this.createUserUseCase.createUser({
-        email,
-        password,
-        role,
-      });
+      const user = await this.createUserUseCase.createUser(email, role_id);
 
       response.send(this.userMapper.toDTO(user));
     } catch (error) {
@@ -151,7 +147,9 @@ export class UserController implements IUserController {
 
   async updateRole(request: Request, response: Response): Promise<void> {
     try {
-      const user = await this.updateRoleUseCase.updateRole(request.body);
+      const { id } = request.params;
+      const role = request.body.role_id;
+      const user = await this.updateRoleUseCase.updateRole(id, role);
       response.send();
     } catch (error) {
       if (error instanceof DomainValidationError) {
@@ -199,7 +197,7 @@ export class UserController implements IUserController {
   async activate(request: Request, response: Response): Promise<void> {
     const { id } = request.params;
     try {
-      await this.activateUserUseCase.activateUser(id);
+      const result = await this.activateUserUseCase.activateUser(id);
       response.send();
     } catch (error) {
       if (error instanceof DomainValidationError) {
@@ -215,7 +213,7 @@ export class UserController implements IUserController {
   async block(request: Request, response: Response): Promise<void> {
     const { id } = request.params;
     try {
-      await this.activateUserUseCase.blockUser(id);
+      const result = await this.activateUserUseCase.blockUser(id);
       response.send();
     } catch (error) {
       if (error instanceof DomainValidationError) {

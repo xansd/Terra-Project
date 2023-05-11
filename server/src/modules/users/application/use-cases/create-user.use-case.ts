@@ -1,35 +1,43 @@
 import { IUserRepository } from "../../domain/user-repository.port";
-import { IUserDTO } from "../user.dto";
 import { UserMapper } from "../user-dto.mapper";
-import { IUser, UserAlreadyExistsError } from "../../domain";
+import { IUser, Role, UserAlreadyExistsError } from "../../domain";
 import Logger from "../../../../apps/utils/logger";
 import { Password } from "../../domain/value-objects/password.value-object";
+import { Email } from "../../domain/value-objects/email.value-object";
+import appConfig from "../../../../config/app-config";
+
+const CONFIG = appConfig;
 
 export interface ICreateUser {
-  createUser(user: IUserDTO): Promise<IUser>;
+  createUser(email: string, role_id: Role): Promise<IUser>;
 }
 export class CreateUserUseCase implements ICreateUser {
   private userMapper: UserMapper = new UserMapper();
   constructor(private readonly userRepository: IUserRepository) {}
 
-  async createUser(userDTO: IUserDTO): Promise<IUser> {
+  async createUser(email: string, role_id: Role): Promise<IUser> {
     const userExists = await this.userRepository.checkUserExistenceByEmail(
-      userDTO.email
+      email
     );
 
     if (userExists) {
-      const userAlreadyExistsError = new UserAlreadyExistsError(userDTO.email);
+      const userAlreadyExistsError = new UserAlreadyExistsError(email);
       Logger.error(
         `user-repository : createUser : ${userAlreadyExistsError.message}`
       );
       throw userAlreadyExistsError;
     }
 
-    const user = this.userMapper.toDomain(userDTO);
-    const passwordHash = await Password.genPasswordHash(user.password?.value!);
-    user.passwordHash = passwordHash;
+    const validatedEmail = Email.create(email);
+    const passwordHash = await Password.genPasswordHash(
+      CONFIG.DEFAULT_USER_PASSWORD!
+    );
 
-    await this.userRepository.create(user);
+    const user = await this.userRepository.create(
+      validatedEmail,
+      passwordHash,
+      role_id
+    );
 
     return user;
   }

@@ -34,17 +34,18 @@ export class SigninUseCase implements ISignin {
       throw new UserNotActive();
     }
 
-    const lastPasswordUpdate = user.lastReset;
-    console.log("lastPasswordUpdate", lastPasswordUpdate);
+    const lastPasswordUpdate = user.password_last_reset;
 
     if (!lastPasswordUpdate) {
       throw new UserHasToResetError();
     }
 
     const now = new Date();
+
     const passwordExpirationTime = 90; // días
     const timeSinceLastUpdate =
-      (now.getTime() - lastPasswordUpdate.getTime()) / (1000 * 60 * 60 * 24);
+      (now.getTime() - new Date(lastPasswordUpdate).getTime()) /
+      (1000 * 60 * 60 * 24);
     if (timeSinceLastUpdate > passwordExpirationTime) {
       throw new UserHasToResetError();
     }

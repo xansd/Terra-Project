@@ -1,6 +1,6 @@
 import { Component, Output, HostBinding, AfterViewInit } from '@angular/core';
-import { AppVariablesService } from '../../service/app-variables.service';
-import { AppSettings } from '../../service/app-settings.service';
+import { AppVariablesService } from '../../services/app-variables.service';
+import { AppSettings } from '../../services/app-settings.service';
 
 // declare var bootstrap: any;
 
