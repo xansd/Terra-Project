@@ -37,6 +37,7 @@ export class UpdatePasswordeUseCase implements IUpdatePassword {
     const passwordHash = await Password.genPasswordHash(user.password?.value!);
     user.passwordHash = passwordHash;
 
-    await this.userRepository.updatePassword(user);
+    const result = await this.userRepository.updatePassword(user);
+    return result;
   }
 }

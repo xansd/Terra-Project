@@ -12,6 +12,10 @@ import { EditUserComponent } from '../edit-user/edit-user.component';
 import { GetAllUsersUserCase } from 'src/app/users/application/use-cases/get-all-users.use-case';
 import { NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { CreateUserComponent } from '../create-user/create-user.component';
+import { UserDTOMapper } from 'src/app/users/application/user-dto.mapper';
+import { IUserDTO } from 'src/app/users/application/user.dto';
+import { deleteUserUseCase } from 'src/app/users/application/use-cases/delete-user.case-use';
+import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
 
 const modalOptions: NgbModalOptions = {
   backdrop: 'static',
@@ -24,8 +28,9 @@ const modalOptions: NgbModalOptions = {
   styleUrls: ['./list-users.component.scss'],
 })
 export class ListUsersComponent implements OnInit, OnDestroy {
-  usersList: IUser[] = [];
-  dataSource!: MatTableDataSource<IUser>;
+  userDTOMapper = new UserDTOMapper();
+  usersList: IUserDTO[] = [];
+  dataSource!: MatTableDataSource<IUserDTO>;
   tableHasChanged = false;
   emptyTable = false;
   @ViewChild(MatPaginator)
@@ -33,17 +38,25 @@ export class ListUsersComponent implements OnInit, OnDestroy {
   @ViewChild(MatSort)
   sort!: MatSort;
   @ViewChild(MatTable)
-  usersListTable!: MatTable<IUser>;
-  displayedColumns: string[] = ['id', 'creation', 'email', 'role', 'state'];
+  usersListTable!: MatTable<IUserDTO>;
+  displayedColumns: string[] = [
+    'user_id',
+    'email',
+    'role_id',
+    'active',
+    'created_at',
+    'actions',
+  ];
   columnDefinitions = [
-    { def: 'id', show: false },
+    { def: 'user_id', show: false },
     { def: 'email', show: true },
-    { def: 'role', show: true },
-    { def: 'state', show: true },
-    { def: 'creation', show: true },
+    { def: 'role_id', show: true },
+    { def: 'active', show: true },
+    { def: 'created_at', show: true },
     { def: 'actions', show: true },
   ];
   isLargeScreen = false;
+  isPageSizeDropdownOpen = false;
 
   private destroy$ = new Subject();
 
@@ -51,7 +64,9 @@ export class ListUsersComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private notifier: NotificationAdapter,
     private usersService: GetAllUsersUserCase,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private deleteUserService: deleteUserUseCase,
+    private errorHandler: ErrorHandlerService
   ) {}
 
   ngOnInit(): void {
@@ -72,8 +87,9 @@ export class ListUsersComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (users: IUser[]) => {
-          users.length ? (this.emptyTable = false) : (this.emptyTable = true);
-          this.usersList = users;
+          const list = this.userDTOMapper.toDTOList(users);
+          list.length ? (this.emptyTable = false) : (this.emptyTable = true);
+          this.usersList = list;
           this.dataSource = new MatTableDataSource(this.usersList);
           this.dataSource.paginator = this.paginator;
           this.dataSource.sort = this.sort;
@@ -138,34 +154,61 @@ export class ListUsersComponent implements OnInit, OnDestroy {
       });
   }
 
-  updateTable(updatedUser: IUser) {
+  updateTable(updatedUser: IUserDTO) {
     const index = this.usersList.findIndex(
       (u) => u.user_id === updatedUser.user_id
     );
     this.usersList[index] = updatedUser;
     this.dataSource = new MatTableDataSource(this.usersList);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
     this.usersListTable.renderRows();
   }
 
-  addToTable(newUser: IUser) {
+  addToTable(newUser: IUserDTO) {
     this.usersList.push(newUser);
     this.dataSource = new MatTableDataSource(this.usersList);
     this.usersListTable.renderRows();
+  }
+
+  sustractFromTable(id: string) {
+    const index = this.usersList.findIndex((u) => u.user_id === id);
+    this.usersList.splice(index, 1);
+    this.dataSource = new MatTableDataSource(this.usersList);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.usersListTable.renderRows();
+  }
+
+  deleteUser(id: string): void {
+    this.deleteUserService
+      .deleteUser(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res: any) => {
+          if (res.affectedRows > 0) {
+            this.notifier.showNotification('success', 'Usuario eliminado');
+            this.sustractFromTable(id);
+          } else if (res.statusCode) {
+            this.errorHandler.handleAPIKnowError(res);
+          } else {
+            this.errorHandler.handleUnkonwError(res);
+          }
+        },
+      });
   }
 
   /**
    * Abre la modal de confirmación de eliminación de usuario
    *
    */
-  openConfirmDialog(): void {
+  openConfirmDialog(id: string): void {
     const modalRef = this.modalService.open(ConfirmDialogComponent);
     modalRef.componentInstance.message = 'El usuario será eliminado';
     modalRef.result
       .then((result) => {
         if (result) {
-          console.log('Modal confirmed');
-        } else {
-          console.log('Modal closed');
+          this.deleteUser(id!);
         }
       })
       .catch((error) => {

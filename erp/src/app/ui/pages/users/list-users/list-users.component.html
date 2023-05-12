@@ -23,7 +23,9 @@
               </div>
             </div>
 
-            <div class="text-inverse text-opacity-50 mb-3 table-container">
+            <div
+              class="text-inverse text-opacity-50 mb-3 table-container table-responsive"
+            >
               <mat-table
                 mat-table
                 [dataSource]="dataSource"
@@ -32,7 +34,7 @@
                 #usersListTable
               >
                 <!-- ID Column -->
-                <ng-container matColumnDef="id">
+                <ng-container matColumnDef="user_id">
                   <mat-header-cell *matHeaderCellDef mat-sort-header
                     >ID</mat-header-cell
                   >
@@ -50,13 +52,13 @@
                   <mat-cell *matCellDef="let row">
                     <div class="mobile-label">Email:</div>
                     <div class="cell-value">
-                      {{ row.email.value }}
+                      {{ row.email }}
                     </div>
                   </mat-cell>
                 </ng-container>
 
                 <!-- Rol Column -->
-                <ng-container matColumnDef="role">
+                <ng-container matColumnDef="role_id">
                   <mat-header-cell *matHeaderCellDef mat-sort-header
                     >Rol</mat-header-cell
                   >
@@ -69,7 +71,7 @@
                 </ng-container>
 
                 <!-- State Column -->
-                <ng-container matColumnDef="state">
+                <ng-container matColumnDef="active">
                   <mat-header-cell *matHeaderCellDef mat-sort-header
                     >Estado</mat-header-cell
                   >
@@ -91,7 +93,7 @@
                 </ng-container>
 
                 <!-- Creation Column -->
-                <ng-container matColumnDef="creation">
+                <ng-container matColumnDef="created_at">
                   <mat-header-cell *matHeaderCellDef mat-sort-header
                     >Creacion</mat-header-cell
                   >
@@ -118,7 +120,11 @@
                       >
                         <i class="bi bi-pencil-square"></i>
                       </button>
-                      <button type="button" class="btn btn-danger">
+                      <button
+                        (click)="openConfirmDialog(row.user_id)"
+                        type="button"
+                        class="btn btn-danger"
+                      >
                         <i class="bi bi-x-circle"></i>
                       </button>
                     </div>
@@ -143,12 +149,16 @@
                   </td>
                 </tr>
               </mat-table>
-              <mat-paginator
-                [length]="100"
-                [pageSize]="10"
-                [pageSizeOptions]="[5, 10, 15, 20, 25, 50, 100]"
-              ></mat-paginator></div
-          ></card-body>
+            </div></card-body
+          >
+
+          <div class="mat-paginatory">
+            <mat-paginator
+              [length]="100"
+              [pageSize]="10"
+              [pageSizeOptions]="[5, 10, 15, 20, 25, 50, 100]"
+            ></mat-paginator>
+          </div>
         </card>
       </div>
     </div>

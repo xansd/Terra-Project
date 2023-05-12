@@ -128,10 +128,10 @@ export class UserController implements IUserController {
 
   async updatePassword(request: Request, response: Response): Promise<void> {
     try {
-      const user = await this.updatePasswordUseCase.updatePassword(
+      const result = await this.updatePasswordUseCase.updatePassword(
         request.body
       );
-      response.send();
+      response.send(result);
     } catch (error) {
       if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));
@@ -149,8 +149,8 @@ export class UserController implements IUserController {
     try {
       const { id } = request.params;
       const role = request.body.role_id;
-      const user = await this.updateRoleUseCase.updateRole(id, role);
-      response.send();
+      const result = await this.updateRoleUseCase.updateRole(id, role);
+      response.send(result);
     } catch (error) {
       if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));
@@ -164,8 +164,8 @@ export class UserController implements IUserController {
 
   async update(request: Request, response: Response): Promise<void> {
     try {
-      const user = await this.updateUserUseCase.updateUser(request.body);
-      response.send();
+      const result = await this.updateUserUseCase.updateUser(request.body);
+      response.send(result);
     } catch (error) {
       if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));
@@ -181,8 +181,8 @@ export class UserController implements IUserController {
     const { id } = request.params;
 
     try {
-      await this.deleteUserUseCase.deleteUser(id);
-      response.send();
+      const result = await this.deleteUserUseCase.deleteUser(id);
+      response.send(result);
     } catch (error) {
       if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));
@@ -198,7 +198,7 @@ export class UserController implements IUserController {
     const { id } = request.params;
     try {
       const result = await this.activateUserUseCase.activateUser(id);
-      response.send();
+      response.send(result);
     } catch (error) {
       if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));
@@ -214,7 +214,7 @@ export class UserController implements IUserController {
     const { id } = request.params;
     try {
       const result = await this.activateUserUseCase.blockUser(id);
-      response.send();
+      response.send(result);
     } catch (error) {
       if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));

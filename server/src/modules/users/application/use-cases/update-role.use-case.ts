@@ -9,6 +9,7 @@ export class UpdateRoleUseCase implements IUpdateRole {
   userMapper = new UserMapper();
   constructor(private readonly userRepository: IUserRepository) {}
   async updateRole(id: string, role: Role): Promise<void> {
-    await this.userRepository.updateRole(id, role);
+    const result = await this.userRepository.updateRole(id, role);
+    return result;
   }
 }

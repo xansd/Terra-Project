@@ -74,6 +74,7 @@ export class MySqlUserRepository implements IUserRepository {
       Logger.error(`mysql : updateUser : UserDoesNotExistError`);
       throw new UserDoesNotExistError();
     }
+    return result;
   }
 
   async updateRole(id: string, role: Role): Promise<void> {
@@ -85,6 +86,7 @@ export class MySqlUserRepository implements IUserRepository {
       Logger.error(`mysql : changeRole : UserDoesNotExistError`);
       throw new UserDoesNotExistError();
     }
+    return result;
   }
 
   async updatePassword(user: IUser): Promise<void> {
@@ -99,6 +101,7 @@ export class MySqlUserRepository implements IUserRepository {
       Logger.error(`mysql : updatePassword : UserDoesNotExistError`);
       throw new UserDoesNotExistError();
     }
+    return result;
   }
 
   async delete(id: string): Promise<void> {
@@ -110,6 +113,7 @@ export class MySqlUserRepository implements IUserRepository {
       Logger.error(`mysql : deleteUser : UserDoesNotExistError`);
       throw new UserDoesNotExistError();
     }
+    return result;
   }
 
   async findByEmail(email: string): Promise<IUser> {
@@ -154,6 +158,7 @@ export class MySqlUserRepository implements IUserRepository {
       Logger.error(`mysql : activateUser : UserDoesNotExistError`);
       throw new UserDoesNotExistError();
     }
+    return result;
   }
 
   async blockUser(id: string): Promise<void> {
@@ -165,5 +170,6 @@ export class MySqlUserRepository implements IUserRepository {
       Logger.error(`mysql : blockUser : UserDoesNotExistError`);
       throw new UserDoesNotExistError();
     }
+    return result;
   }
 }

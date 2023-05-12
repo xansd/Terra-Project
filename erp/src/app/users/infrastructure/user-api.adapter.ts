@@ -47,7 +47,9 @@ export class UsersAPIAdapter implements IUserAPIPort {
   }
 
   deleteUser(id: string): Observable<void> {
-    throw new Error('Method not implemented.');
+    return this.http.delete<void>(`${API_URI}/${id}`, {
+      withCredentials: true,
+    });
   }
 
   activateUser(id: string): Observable<void> {

@@ -25,6 +25,9 @@ import { BlockUserUseCase } from 'src/app/users/application/use-cases/block-user
 import { updateRoleUserUseCase } from 'src/app/users/application/use-cases/update-rol.case-use';
 import { AuthAPIAdapter } from 'src/app/auth/infrastructure/auth-api.adapter';
 import { UsersAPIAdapter } from 'src/app/users/infrastructure/user-api.adapter';
+import { ClickOutsideDirective } from '../directives/click-outside.directive';
+import { getSpaninhPaginatorIntl } from '../shared/helpers/mat-paginator-esp.service';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -38,6 +41,7 @@ import { UsersAPIAdapter } from 'src/app/users/infrastructure/user-api.adapter';
     ListUsersComponent,
     EditUserComponent,
     CreateUserComponent,
+    ClickOutsideDirective,
   ],
   imports: [
     CommonModule,
@@ -54,6 +58,7 @@ import { UsersAPIAdapter } from 'src/app/users/infrastructure/user-api.adapter';
     { provide: 'JwtTokenDecoder', useClass: JwtTokenDecoder },
     { provide: 'authAPI', useClass: AuthAPIAdapter },
     { provide: 'usersAPI', useClass: UsersAPIAdapter },
+    { provide: MatPaginatorIntl, useValue: getSpaninhPaginatorIntl() },
   ],
 })
 export class PagesModule {}

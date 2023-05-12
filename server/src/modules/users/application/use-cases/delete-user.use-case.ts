@@ -8,6 +8,7 @@ export class DeleteUserUseCase implements IDeleteUser {
   constructor(private readonly userRepository: IUserRepository) {}
 
   async deleteUser(id: string): Promise<void> {
-    await this.userRepository.delete(id);
+    const result = await this.userRepository.delete(id);
+    return result;
   }
 }

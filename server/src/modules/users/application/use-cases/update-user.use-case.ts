@@ -12,6 +12,7 @@ export class UpdateUserUseCase implements IUpdateUser {
 
   async updateUser(userDTO: IUserDTO): Promise<void> {
     const user = this.userMapper.toDomain(userDTO);
-    await this.userRepository.update(user);
+    const result = await this.userRepository.update(user);
+    return result;
   }
 }

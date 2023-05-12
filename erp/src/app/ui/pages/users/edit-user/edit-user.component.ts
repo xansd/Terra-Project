@@ -68,7 +68,7 @@ export class EditUserComponent implements OnInit {
     const id = this.user.user_id!;
     this.activateUserService.activateUser(id).subscribe({
       next: (res: any) => {
-        if (!res) {
+        if (res.affectedRows > 0) {
           this.notifier.showNotification('success', 'Usuario activado');
           this.user.active = true;
         } else if (res.statusCode) {
@@ -84,7 +84,7 @@ export class EditUserComponent implements OnInit {
     const id = this.user.user_id!;
     this.blockUserService.blockUser(id).subscribe({
       next: (res: any) => {
-        if (!res) {
+        if (res.affectedRows > 0) {
           this.notifier.showNotification('success', 'Usuario bloqueado');
           this.user.active = false;
         } else if (res.statusCode) {
@@ -99,7 +99,7 @@ export class EditUserComponent implements OnInit {
   updateRole(role: number): any {
     this.updateRoleService.updateRoleUser(this.user.user_id!, role).subscribe({
       next: (res: any) => {
-        if (!res) {
+        if (res.affectedRows > 0) {
           this.notifier.showNotification('success', 'Rol actualizado');
           this.user.role_id = role;
         } else if (res.statusCode) {
@@ -116,6 +116,10 @@ export class EditUserComponent implements OnInit {
   }
 
   close(): void {
+    if (JSON.stringify(this.user) === JSON.stringify(this.originalUser)) {
+      // El uusario no modifico nada
+      this.modal.close(false);
+    }
     this.modal.close(this.user);
   }
 }

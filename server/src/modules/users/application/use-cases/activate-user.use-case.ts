@@ -11,10 +11,12 @@ export class ActivateUserUseCase implements IActivateUser {
   constructor(private readonly userRepository: IUserRepository) {}
 
   async activateUser(id: string): Promise<void> {
-    await this.userRepository.activateUser(id);
+    const result = await this.userRepository.activateUser(id);
+    return result;
   }
 
   async blockUser(id: string): Promise<void> {
-    await this.userRepository.blockUser(id);
+    const result = await this.userRepository.blockUser(id);
+    return result;
   }
 }
