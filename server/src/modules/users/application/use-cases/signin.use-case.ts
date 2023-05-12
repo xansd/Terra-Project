@@ -30,7 +30,7 @@ export class SigninUseCase implements ISignin {
     if (!user) {
       throw new InvalidCredentialsError();
     }
-    if (user.active === false) {
+    if (user.active == false) {
       throw new UserNotActive();
     }
 

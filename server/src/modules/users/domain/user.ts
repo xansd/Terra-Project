@@ -47,53 +47,38 @@ export class User implements IUser {
     this.deleted_at = props.deleted_at;
   }
 
-  get _id(): UserID {
-    return this.user_id;
-  }
-
-  get _email(): Email {
-    return this.email;
-  }
-
-  get _password(): Password | undefined {
-    return this.password;
-  }
-
-  get _passwordHash(): string | undefined {
-    return this.passwordHash;
-  }
-
-  get _role(): Role {
-    return this.role_id;
-  }
-
-  get _active(): boolean | undefined {
-    return this.active;
-  }
-
-  get _lastReset(): string | undefined {
-    return this.password_last_reset;
-  }
-
-  set _password(password: Password | undefined) {
-    this.password = password;
-  }
-
-  set _role(role: Role) {
-    this.role_id = role;
-  }
-
-  set _email(email: Email) {
-    this.email = email;
-  }
-
-  set _active(active: boolean | undefined) {
-    this.active = active;
-  }
-
   public static create(props: IUser): User {
     const user = new User(props);
-
     return user;
+  }
+
+  public static roleToString(role: Role): string {
+    switch (role) {
+      case Role.SYS:
+        return "SYS";
+      case Role.ADMIN:
+        return "ADMIN";
+      case Role.USER:
+        return "USER";
+      case Role.PARTNER:
+        return "PARTNER";
+      default:
+        throw new Error("Invalid role");
+    }
+  }
+
+  public static stringToRole(roleString: string): Role {
+    switch (roleString) {
+      case "SYS":
+        return Role.SYS;
+      case "ADMIN":
+        return Role.ADMIN;
+      case "USER":
+        return Role.USER;
+      case "PARTNER":
+        return Role.PARTNER;
+      default:
+        throw new Error("Invalid role string");
+    }
   }
 }

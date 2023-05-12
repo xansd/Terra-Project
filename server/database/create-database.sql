@@ -18,8 +18,10 @@ name VARCHAR(255) NOT NULL,
 description TEXT
 );
 
-INSERT INTO roles (name, description) VALUES ('admin', 'Administrador del sistema');
-INSERT INTO roles (name, description) VALUES ('user', 'Usuario del sistema');
+INSERT INTO roles (name, description) VALUES ('sys', 'usuario sin permisos');
+INSERT INTO roles (name, description) VALUES ('admin', 'administrador del sistema');
+INSERT INTO roles (name, description) VALUES ('user', 'usuario del erp');
+INSERT INTO roles (name, description) VALUES ('partner', 'usuario de la app para socios');
 
 CREATE TABLE users (
 user_id CHAR(36) PRIMARY KEY,

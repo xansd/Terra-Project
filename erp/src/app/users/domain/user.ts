@@ -78,22 +78,22 @@ export class User implements IUser {
       case Roles.PARTNER:
         return 'PARTNER';
       default:
-        return '';
+        return 'SYS';
     }
   }
 
   static getRoleNumberFromName(roleName: string): Roles {
     switch (roleName) {
       case 'SYS':
-        return 0;
-      case 'ADMIN':
         return 1;
-      case 'USER':
+      case 'ADMIN':
         return 2;
-      case 'PARTNER':
+      case 'USER':
         return 3;
+      case 'PARTNER':
+        return 4;
       default:
-        return 0;
+        return 1;
     }
   }
 }

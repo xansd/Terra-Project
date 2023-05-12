@@ -12,6 +12,7 @@ import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.ada
 import { CreateUserUseCase } from 'src/app/users/application/use-cases/create-user.use-case';
 import { Roles } from 'src/app/users/domain/roles';
 import { Email } from 'src/app/users/domain/value-objects/email.value-object';
+import { User } from 'src/app/users/domain/user';
 
 @Component({
   selector: 'app-create-user',
@@ -33,32 +34,33 @@ export class CreateUserComponent {
   ) {}
 
   close(result: boolean): void {
-    if (result) {
-      let email = this.createUserForm.value.email;
-      let rol = this.createUserForm.value.rol;
-      try {
-        email = Email.create(email);
-        this.createUser(email, rol).subscribe({
-          next: (res: any) => {
-            if (res.statusCode) {
-              this.errorHandler.handleKnowError(res);
-            } else {
-              this.notifier.showNotification('success', 'Usuario creado');
-              this.modal.close(true);
-            }
-          },
-        });
-      } catch (error: any) {
-        if (error instanceof DomainValidationError) {
-          this.notifier.showNotification(
-            'error',
-            'Atención el email no es válido'
-          );
-        } else {
-          this.notifier.showNotification('error', `${error.message}`);
+    if (!result) {
+      this.modal.close(false);
+      return;
+    }
+
+    const email = Email.create(this.createUserForm.value.email);
+    const rol = this.createUserForm.value.rol;
+
+    this.createUser(email, rol).subscribe({
+      next: (res: any) => {
+        if (res && res.email && res.role_id) {
+          this.notifier.showNotification('success', 'Usuario creado');
+          this.modal.close(res);
+        } else if (res.statusCode) {
+          this.errorHandler.handleAPIKnowError(res);
         }
-      }
-    } else this.modal.close(false);
+      },
+      error: (error: any) => {
+        if (error instanceof DomainValidationError) {
+          this.errorHandler.handleDomainError(error);
+          console.error(error);
+        } else {
+          this.errorHandler.handleUnkonwError(error);
+          console.error(error);
+        }
+      },
+    });
   }
 
   createUser(email: Email, role_id: Roles): Observable<void> {

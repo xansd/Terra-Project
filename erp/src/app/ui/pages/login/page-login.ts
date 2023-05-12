@@ -74,7 +74,7 @@ export class LoginPage {
       .subscribe({
         next: (res: any) => {
           if (res.statusCode) {
-            this.errorHandler.handleKnowError(res);
+            this.errorHandler.handleAPIKnowError(res);
           } else {
             this.authTokenService.saveToken(res);
             this.notifier.showNotification('success', 'Sesión iniciada');

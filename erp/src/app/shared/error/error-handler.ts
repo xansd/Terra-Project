@@ -19,7 +19,7 @@ export class ErrorHandlerService {
     this.notifier.showNotification('warning', error.message);
   }
 
-  handleKnowError(response: {
+  handleAPIKnowError(response: {
     statusCode: number;
     message: string;
     status?: string;
@@ -34,5 +34,9 @@ export class ErrorHandlerService {
       'error',
       `[${response.statusCode}] ${response.message}`
     );
+  }
+
+  handleDomainError(error: Error) {
+    this.notifier.showNotification('error', `${error.message}`);
   }
 }

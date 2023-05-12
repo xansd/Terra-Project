@@ -1,10 +1,11 @@
 import { IUserRepository } from "../../domain/user-repository.port";
 import { UserMapper } from "../user-dto.mapper";
-import { IUser, Role, UserAlreadyExistsError } from "../../domain";
+import { IUser, Role, User, UserAlreadyExistsError } from "../../domain";
 import Logger from "../../../../apps/utils/logger";
 import { Password } from "../../domain/value-objects/password.value-object";
 import { Email } from "../../domain/value-objects/email.value-object";
 import appConfig from "../../../../config/app-config";
+import { UserID } from "../../domain/value-objects/user-id.value-object";
 
 const CONFIG = appConfig;
 
@@ -32,11 +33,14 @@ export class CreateUserUseCase implements ICreateUser {
     const passwordHash = await Password.genPasswordHash(
       CONFIG.DEFAULT_USER_PASSWORD!
     );
+    const uid = UserID.create();
+    const role = User.stringToRole(role_id as unknown as string);
 
     const user = await this.userRepository.create(
-      validatedEmail,
+      uid.value,
+      validatedEmail.value,
       passwordHash,
-      role_id
+      role
     );
 
     return user;

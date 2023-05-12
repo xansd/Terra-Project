@@ -8,6 +8,7 @@ import {
   UsersNotFoundError,
   InvalidCredentialsError,
   Role,
+  User,
 } from "../../domain";
 import { Email } from "../../domain/value-objects/email.value-object";
 import { UserPersistenceMapper } from "../user-persistence.mapper";
@@ -18,7 +19,7 @@ export class MySqlUserRepository implements IUserRepository {
 
   async getById(id: string): Promise<IUser> {
     const rows = await MysqlDataBase.query(
-      `SELECT user_id, email, password, role_id, active, user_created, user_updated, created_at, updated_at, deleted_at FROM users WHERE user_id = ? and deleted_at is null`,
+      `SELECT user_id, email, password, role_id, active, password_last_reset, user_created, user_updated, created_at, updated_at, deleted_at FROM users WHERE user_id = ? and deleted_at is null`,
       [id]
     );
     if (isNil(rows[0])) {
@@ -41,15 +42,25 @@ export class MySqlUserRepository implements IUserRepository {
   }
 
   async create(
-    email: Email,
+    user_id: string,
+    email: string,
     passwordhash: string,
-    role_id: Role
+    role_id: number
   ): Promise<IUser> {
-    const result = await MysqlDataBase.update(
-      "INSERT INTO users (email, password, role_id) VALUES (?,?,?)",
-      [email.value, passwordhash, role_id.toString()]
-    );
-    return this.userPersistenceMapper.toDomain(result);
+    const insertQuery = `INSERT INTO users (user_id, email, password, role_id) VALUES (?,?,?,?)`;
+
+    const selectQuery = `SELECT user_id, email, password, role_id, active, password_last_reset, user_created, user_updated, created_at, updated_at, deleted_at
+    FROM users WHERE user_id = LAST_INSERT_ID()`;
+    const insertResult = await MysqlDataBase.update(insertQuery, [
+      user_id,
+      email,
+      passwordhash,
+      role_id.toString(),
+    ]);
+    const selectResult = await MysqlDataBase.query(selectQuery);
+    const user = selectResult[0];
+
+    return this.userPersistenceMapper.toDomain(user);
   }
 
   async update(user: IUser): Promise<void> {

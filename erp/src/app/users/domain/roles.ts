@@ -1,6 +1,6 @@
 export enum Roles {
-  SYS = 0,
-  ADMIN = 1,
-  USER = 2,
-  PARTNER = 3,
+  SYS = 1,
+  ADMIN = 2,
+  USER = 3,
+  PARTNER = 4,
 }

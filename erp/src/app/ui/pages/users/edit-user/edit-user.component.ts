@@ -68,11 +68,13 @@ export class EditUserComponent implements OnInit {
     const id = this.user.user_id!;
     this.activateUserService.activateUser(id).subscribe({
       next: (res: any) => {
-        if (res.statusCode) {
-          this.errorHandler.handleKnowError(res);
-        } else {
+        if (!res) {
           this.notifier.showNotification('success', 'Usuario activado');
           this.user.active = true;
+        } else if (res.statusCode) {
+          this.errorHandler.handleAPIKnowError(res);
+        } else {
+          this.errorHandler.handleUnkonwError(res);
         }
       },
     });
@@ -82,11 +84,13 @@ export class EditUserComponent implements OnInit {
     const id = this.user.user_id!;
     this.blockUserService.blockUser(id).subscribe({
       next: (res: any) => {
-        if (res.statusCode) {
-          this.errorHandler.handleKnowError(res);
-        } else {
-          this.notifier.showNotification('warning', 'Usuario bloqueado');
+        if (!res) {
+          this.notifier.showNotification('success', 'Usuario bloqueado');
           this.user.active = false;
+        } else if (res.statusCode) {
+          this.errorHandler.handleAPIKnowError(res);
+        } else {
+          this.errorHandler.handleUnkonwError(res);
         }
       },
     });
@@ -95,11 +99,13 @@ export class EditUserComponent implements OnInit {
   updateRole(role: number): any {
     this.updateRoleService.updateRoleUser(this.user.user_id!, role).subscribe({
       next: (res: any) => {
-        if (res.statusCode) {
-          this.errorHandler.handleKnowError(res);
-        } else {
+        if (!res) {
           this.notifier.showNotification('success', 'Rol actualizado');
           this.user.role_id = role;
+        } else if (res.statusCode) {
+          this.errorHandler.handleAPIKnowError(res);
+        } else {
+          this.errorHandler.handleUnkonwError(res);
         }
       },
     });

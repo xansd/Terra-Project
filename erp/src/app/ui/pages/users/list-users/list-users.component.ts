@@ -138,11 +138,17 @@ export class ListUsersComponent implements OnInit, OnDestroy {
       });
   }
 
-  updateTable(updatedUser: User) {
+  updateTable(updatedUser: IUser) {
     const index = this.usersList.findIndex(
       (u) => u.user_id === updatedUser.user_id
     );
     this.usersList[index] = updatedUser;
+    this.dataSource = new MatTableDataSource(this.usersList);
+    this.usersListTable.renderRows();
+  }
+
+  addToTable(newUser: IUser) {
+    this.usersList.push(newUser);
     this.dataSource = new MatTableDataSource(this.usersList);
     this.usersListTable.renderRows();
   }
@@ -156,7 +162,7 @@ export class ListUsersComponent implements OnInit, OnDestroy {
     modalRef.componentInstance.message = 'El usuario será eliminado';
     modalRef.result
       .then((result) => {
-        if (result === true) {
+        if (result) {
           console.log('Modal confirmed');
         } else {
           console.log('Modal closed');
@@ -171,8 +177,8 @@ export class ListUsersComponent implements OnInit, OnDestroy {
     const modalRef = this.modalService.open(CreateUserComponent, modalOptions);
     modalRef.result
       .then((result) => {
-        if (result === true) {
-          console.log('Modal confirmed');
+        if (result) {
+          this.addToTable(result);
         } else {
           console.log('Modal closed');
         }
