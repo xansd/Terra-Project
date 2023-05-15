@@ -2,6 +2,11 @@
     margin-top: 40px;
 }
 
-.input {
-    margin-bottom: 20px !important;
+.email-container,
+.password-container {
+    height: 50px;
+}
+
+.login {
+    overflow: hidden;
 }

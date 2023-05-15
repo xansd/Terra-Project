@@ -5,7 +5,6 @@ import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Subject, takeUntil } from 'rxjs';
 import { IUser, User } from 'src/app/users/domain/user';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ConfirmDialogComponent } from 'src/app/ui/shared/components/confirm-dialog/confirm-dialog.component';
 import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { EditUserComponent } from '../edit-user/edit-user.component';
@@ -168,6 +167,8 @@ export class ListUsersComponent implements OnInit, OnDestroy {
   addToTable(newUser: IUserDTO) {
     this.usersList.push(newUser);
     this.dataSource = new MatTableDataSource(this.usersList);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
     this.usersListTable.renderRows();
   }
 
@@ -180,41 +181,41 @@ export class ListUsersComponent implements OnInit, OnDestroy {
     this.usersListTable.renderRows();
   }
 
-  deleteUser(id: string): void {
-    this.deleteUserService
-      .deleteUser(id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (res: any) => {
-          if (res.affectedRows > 0) {
-            this.notifier.showNotification('success', 'Usuario eliminado');
-            this.sustractFromTable(id);
-          } else if (res.statusCode) {
-            this.errorHandler.handleAPIKnowError(res);
-          } else {
-            this.errorHandler.handleUnkonwError(res);
-          }
-        },
-      });
-  }
+  // deleteUser(id: string): void {
+  //   this.deleteUserService
+  //     .deleteUser(id)
+  //     .pipe(takeUntil(this.destroy$))
+  //     .subscribe({
+  //       next: (res: any) => {
+  //         if (res.affectedRows > 0) {
+  //           this.notifier.showNotification('success', 'Usuario eliminado');
+  //           this.sustractFromTable(id);
+  //         } else if (res.statusCode) {
+  //           this.errorHandler.handleAPIKnowError(res);
+  //         } else {
+  //           this.errorHandler.handleUnkonwError(res);
+  //         }
+  //       },
+  //     });
+  // }
 
   /**
    * Abre la modal de confirmación de eliminación de usuario
    *
    */
-  openConfirmDialog(id: string): void {
-    const modalRef = this.modalService.open(ConfirmDialogComponent);
-    modalRef.componentInstance.message = 'El usuario será eliminado';
-    modalRef.result
-      .then((result) => {
-        if (result) {
-          this.deleteUser(id!);
-        }
-      })
-      .catch((error) => {
-        if (error) console.error(error);
-      });
-  }
+  // openConfirmDialog(id: string): void {
+  //   const modalRef = this.modalService.open(ConfirmDialogComponent);
+  //   modalRef.componentInstance.message = 'El usuario será eliminado';
+  //   modalRef.result
+  //     .then((result) => {
+  //       if (result) {
+  //         this.deleteUser(id!);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       if (error) console.error(error);
+  //     });
+  // }
 
   openCreateUserDialog(): void {
     const modalRef = this.modalService.open(CreateUserComponent, modalOptions);

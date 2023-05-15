@@ -6,6 +6,10 @@ import { LoginPage } from './login/page-login';
 import { RegisterPage } from './register/page-register';
 import { ListUsersComponent } from './users/list-users/list-users.component';
 import { UserStatisticsComponent } from './users/user-statistics/user-statistics.component';
+import { RestorePasswordComponent } from './restore-password/restore-password.component';
+import { AuthGuard } from '../guards/auth.guard';
+import { Roles } from 'src/app/users/domain/roles';
+import { UsersComponent } from './users/users.component';
 const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
   {
@@ -15,29 +19,37 @@ const routes: Routes = [
       {
         path: 'inicio',
         component: HomePage,
-      },
-      {
-        path: 'login',
-        component: LoginPage,
-      },
-      {
-        path: 'registro',
-        component: RegisterPage,
+        canActivate: [AuthGuard],
+        data: { roles: [Roles.ADMIN, Roles.USER] },
       },
       {
         path: 'usuarios',
+        component: UsersComponent,
         children: [
           {
-            path: 'listado',
+            path: 'gestion',
             component: ListUsersComponent,
+            canActivate: [AuthGuard],
+            data: { roles: [Roles.ADMIN] },
           },
           {
             path: 'estadisticas',
             component: UserStatisticsComponent,
+            canActivate: [AuthGuard],
+            data: { roles: [Roles.ADMIN] },
           },
         ],
       },
     ],
+  },
+  {
+    path: 'login',
+    component: LoginPage,
+  },
+  {
+    path: 'reset-password',
+    component: RestorePasswordComponent,
+    data: { roles: [Roles.ADMIN, Roles.USER] },
   },
 ];
 

@@ -5,12 +5,12 @@ import {
   Validators,
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { ActivateUserUseCase } from 'src/app/auth/application/use-cases/activate-user.use-case';
+import { BlockUserUseCase } from 'src/app/auth/application/use-cases/block-user.use-case';
+import { updateRoleUserUseCase } from 'src/app/auth/application/use-cases/update-rol.case-use';
 import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
 import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
 import { AppStateService } from 'src/app/ui/services/app-state.service';
-import { ActivateUserUseCase } from 'src/app/users/application/use-cases/activate-user.use-case';
-import { BlockUserUseCase } from 'src/app/users/application/use-cases/block-user.use-case';
-import { updateRoleUserUseCase } from 'src/app/users/application/use-cases/update-rol.case-use';
 import { Roles } from 'src/app/users/domain/roles';
 import { IUser, User } from 'src/app/users/domain/user';
 
@@ -50,7 +50,7 @@ export class EditUserComponent implements OnInit {
 
   populateData(): void {
     this.isActive = this.user.active ? true : false;
-    this.editUser.get('rol')!.setValue(this.roles[this.user.role_id]);
+    this.editUser.get('rol')!.setValue(this.roles[this.user.role_id - 1]);
   }
 
   toggleState(): void {
@@ -117,7 +117,7 @@ export class EditUserComponent implements OnInit {
 
   close(): void {
     if (JSON.stringify(this.user) === JSON.stringify(this.originalUser)) {
-      // El uusario no modifico nada
+      // El usuario no modifico nada
       this.modal.close(false);
     }
     this.modal.close(this.user);

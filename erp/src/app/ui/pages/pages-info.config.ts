@@ -1,33 +1,19 @@
 export enum PageRoutes {
   HOME = '/inicio',
   LOGIN = '/login',
+  RESET_PASSWORD = '/reset-password',
   REGISTER = '/registro',
-  USERS_LIST = '/usuarios/listado',
-  USERS_STATS = '/usuarios/estadisticas',
+  USERS = '/usuarios',
 }
 
 export enum PageTitle {
   HOME = 'Inicio',
-  USERS_LIST = 'Listado de usuarios',
-  USER_STATS = 'Estadísticas de usuarios',
+  USERS = 'Usuarios',
 }
 
 export enum PageIcon {
   HOME = 'bi bi-house-fill',
-  USERS = 'bi bi-people-fill',
-  USERS_LIST = USERS,
-  STATISTICS = 'bi bi-bar-chart-fill',
+  USERS = 'bi bi-person-workspace',
+  SETTINGS = 'bi bi-gear-fill',
+  STATS = 'bi bi-bar-chart-fill',
 }
-
-export const BREADCRUMB_CONFIG = {
-  HOME: {
-    icon: PageIcon.HOME,
-    breadcrumbPath: 'General',
-    children: ['inicio'],
-  },
-  USERS: {
-    breadcrumbPath: 'Usuarios',
-    icon: PageIcon.USERS,
-    children: ['listado', 'estadisticas'],
-  },
-};

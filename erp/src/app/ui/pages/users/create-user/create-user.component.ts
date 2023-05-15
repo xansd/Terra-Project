@@ -12,7 +12,6 @@ import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.ada
 import { CreateUserUseCase } from 'src/app/users/application/use-cases/create-user.use-case';
 import { Roles } from 'src/app/users/domain/roles';
 import { Email } from 'src/app/users/domain/value-objects/email.value-object';
-import { User } from 'src/app/users/domain/user';
 
 @Component({
   selector: 'app-create-user',
@@ -21,7 +20,7 @@ import { User } from 'src/app/users/domain/user';
 })
 export class CreateUserComponent implements OnDestroy {
   createUserForm: UntypedFormGroup = this.formBuilder.group({
-    email: [null, Validators.required],
+    email: [null, [Validators.required, Validators.email]],
     rol: [null, Validators.required],
   });
   roles = Object.values(Roles).filter((value) => typeof value === 'string');
@@ -56,7 +55,14 @@ export class CreateUserComponent implements OnDestroy {
   }
 
   createUser(): void {
-    const email = Email.create(this.createUserForm.value.email);
+    let email!: Email;
+    try {
+      email = Email.create(this.createUserForm.value.email);
+    } catch (error: any) {
+      if (error instanceof DomainValidationError) {
+        this.errorHandler.handleDomainError(error);
+      } else this.errorHandler.handleUnkonwError(error);
+    }
     const rol = this.createUserForm.value.rol;
 
     this.apiCreteUserCall(email, rol)

@@ -12,101 +12,86 @@
       <div class="text-inverse text-opacity-50 text-center mb-4">
         Por favor, introduce tus credenciales.
       </div>
-      <div class="mb-3 input">
+      <div class="mb-3">
         <label class="form-label"
           >Email <span class="text-danger">*</span></label
         >
-        <input
-          type="email"
-          class="form-control form-control-lg bg-inverse bg-opacity-5"
-          formControlName="email"
-          placeholder="Ex.: xoan@exemplo.com"
-          matInput
-          [errorStateMatcher]="matcher"
-        />
-        <mat-error
-          *ngIf="emailControl.invalid && (emailControl.dirty || emailControl.touched) "
-        >
-          <span
-            *ngIf="
+
+        <div class="email-container">
+          <input
+            autocomplete="off"
+            type="email"
+            class="form-control form-control-lg bg-inverse bg-opacity-5"
+            formControlName="email"
+            placeholder="Ex.: xoan@exemplo.com"
+            matInput
+            [errorStateMatcher]="matcher"
+          />
+          <mat-error
+            *ngIf="emailControl.invalid && (emailControl.dirty || emailControl.touched) "
+          >
+            <span
+              *ngIf="
         emailControl.hasError('pattern') && !emailControl.hasError('required')
       "
+            >
+              Formato de email inválido.</span
+            >
+          </mat-error>
+          <mat-error
+            *ngIf="emailControl.invalid && (emailControl.dirty || emailControl.touched) "
           >
-            Formato de email inválido.</span
-          >
-        </mat-error>
-        <mat-error
-          *ngIf="emailControl.invalid && (emailControl.dirty || emailControl.touched) "
-        >
-          <span *ngIf="emailControl.hasError('required')">
-            Campo obligatorio.</span
-          >
-        </mat-error>
+            <span *ngIf="emailControl.hasError('required')">
+              Campo obligatorio.</span
+            >
+          </mat-error>
+        </div>
       </div>
-      <div class="mb-3 input">
+      <div class="mb-3">
         <div class="d-flex">
           <label class="form-label"
             >Password <span class="text-danger">*</span></label
           >
-          <!-- <a
-            href="#"
-            class="ms-auto text-inverse text-decoration-none text-opacity-50"
-            >Forgot password?</a
-          > -->
         </div>
-        <input
-          type="password"
-          class="form-control form-control-lg bg-inverse bg-opacity-5"
-          value=""
-          placeholder="Escribe tu password"
-          matInput
-          formControlName="password"
-          [errorStateMatcher]="matcher"
-        />
-        <mat-error
-          *ngIf="passwordControl.invalid && (passwordControl.dirty || passwordControl.touched) "
-        >
-          <span
-            *ngIf="
+        <div class="password-container">
+          <input
+            type="password"
+            autocomplete="off"
+            class="form-control form-control-lg bg-inverse bg-opacity-5"
+            value=""
+            placeholder="Escribe tu password"
+            matInput
+            formControlName="password"
+            [errorStateMatcher]="matcher"
+          />
+          <mat-error
+            *ngIf="passwordControl.invalid && (passwordControl.dirty || passwordControl.touched) "
+          >
+            <span
+              *ngIf="
          (passwordControl.hasError('minlength') ||
            passwordControl.hasError('maxlength')) &&
          !passwordControl.hasError('required')
        "
-            >{{ config.VALIDATION.PASSWORD_MIN }} - {{
-            config.VALIDATION.PASSWORD_MAX }} caracteres.
-          </span>
-        </mat-error>
-        <mat-error
-          *ngIf="passwordControl.invalid && (passwordControl.dirty || passwordControl.touched) "
-        >
-          <span *ngIf="passwordControl.hasError('required')"
-            >Campo obligatorio.</span
+              >{{ config.VALIDATION.PASSWORD_MIN }} - {{
+              config.VALIDATION.PASSWORD_MAX }} caracteres.
+            </span>
+          </mat-error>
+          <mat-error
+            *ngIf="passwordControl.invalid && (passwordControl.dirty || passwordControl.touched) "
           >
-        </mat-error>
-      </div>
-      <!-- <div class="mb-3">
-        <div class="form-check">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            value=""
-            id="customCheck1"
-          />
-          <label class="form-check-label" for="customCheck1">Remember me</label>
+            <span *ngIf="passwordControl.hasError('required')"
+              >Campo obligatorio.</span
+            >
+          </mat-error>
         </div>
-      </div> -->
+      </div>
       <button
         type="submit"
-        class="btn btn-outline-theme btn-lg d-block w-100 fw-500 mb-3 btn-submit input"
+        class="btn btn-outline-theme btn-lg d-block w-100 fw-500 mb-3 btn-submit"
       >
         Enviar
       </button>
-      <!-- <div class="text-center text-inverse text-opacity-50">
-        Don't have an account yet?
-        <a [routerLink]="pageRoutes.REGISTER">Sign up</a>.
-      </div> -->
     </form>
   </div>
-  <!-- END login-content -->
 </div>
-<!-- END login -->

@@ -20,14 +20,13 @@ import { ListUsersComponent } from './users/list-users/list-users.component';
 import { UserStatisticsComponent } from './users/user-statistics/user-statistics.component';
 import { EditUserComponent } from './users/edit-user/edit-user.component';
 import { CreateUserComponent } from './users/create-user/create-user.component';
-import { ActivateUserUseCase } from 'src/app/users/application/use-cases/activate-user.use-case';
-import { BlockUserUseCase } from 'src/app/users/application/use-cases/block-user.use-case';
-import { updateRoleUserUseCase } from 'src/app/users/application/use-cases/update-rol.case-use';
 import { AuthAPIAdapter } from 'src/app/auth/infrastructure/auth-api.adapter';
 import { UsersAPIAdapter } from 'src/app/users/infrastructure/user-api.adapter';
 import { ClickOutsideDirective } from '../directives/click-outside.directive';
 import { getSpaninhPaginatorIntl } from '../shared/helpers/mat-paginator-esp.service';
 import { MatPaginatorIntl } from '@angular/material/paginator';
+import { RestorePasswordComponent } from './restore-password/restore-password.component';
+import { UsersComponent } from './users/users.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +41,8 @@ import { MatPaginatorIntl } from '@angular/material/paginator';
     EditUserComponent,
     CreateUserComponent,
     ClickOutsideDirective,
+    RestorePasswordComponent,
+    UsersComponent,
   ],
   imports: [
     CommonModule,

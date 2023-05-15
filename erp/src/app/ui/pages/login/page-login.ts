@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   AbstractControl,
@@ -22,7 +22,7 @@ import { SigninUseCase } from 'src/app/auth/application/use-cases/signin.use-cas
   templateUrl: './page-login.html',
   styleUrls: ['./page-login.scss'],
 })
-export class LoginPage {
+export class LoginPage implements AfterViewInit {
   matcher = new CustomErrorStateMatcher();
   config = CONFIG;
   public pageRoutes = PageRoutes;
@@ -41,29 +41,30 @@ export class LoginPage {
   constructor(
     private router: Router,
     private appSettings: AppSettings,
-    // private api: AuthAPI,
     private signinUseCase: SigninUseCase,
     private authTokenService: AuthToken,
     private notifier: NotificationAdapter,
     private errorHandler: ErrorHandlerService,
-    private formsHelperService: FormsHelperService
+    private formsHelperService: FormsHelperService,
+    private cdref: ChangeDetectorRef
   ) {}
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.appSettings.appSidebarNone = true;
     this.appSettings.appHeaderNone = true;
     this.appSettings.appContentClass = 'p-0';
+    this.cdref.detectChanges();
   }
 
   ngOnDestroy() {
     this.appSettings.appSidebarNone = false;
     this.appSettings.appHeaderNone = false;
-    this.appSettings.appContentClass = '';
   }
 
   submit(form: FormGroup) {
     if (!this.loginForm.valid) {
       const invalidFields = this.formsHelperService.getInvalidFields(form);
+      this.notifier.showNotification('warning', invalidFields);
       throw new FieldValidationError(invalidFields);
     }
     this.signinUseCase

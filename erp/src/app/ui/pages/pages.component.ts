@@ -1,17 +1,10 @@
 import { Component, OnDestroy } from '@angular/core';
 import { Subject, Subscription, map, takeUntil } from 'rxjs';
 import { AppStateService, IAppState } from '../services/app-state.service';
-import {
-  PageRoutes,
-  PageTitle,
-  PageIcon,
-  BREADCRUMB_CONFIG,
-} from './pages-info.config';
+import { PageRoutes, PageTitle, PageIcon } from './pages-info.config';
 
 export interface IPageInfo {
   pageHeader: string;
-  breadcrumbPath: string;
-  breadcrumbActive: string;
   icon: string;
   description?: string;
 }
@@ -25,13 +18,11 @@ export class PagesComponent implements OnDestroy {
   activeRoute$: Subscription;
   private destroy$ = new Subject();
   activeRoute = PageRoutes.LOGIN;
-  hideBreadcrumbRoutes = [PageRoutes.LOGIN];
+  hideBreadcrumbRoutes = [PageRoutes.LOGIN, PageRoutes.RESET_PASSWORD];
 
   info: IPageInfo = {
     pageHeader: PageTitle.HOME,
     icon: PageIcon.HOME,
-    breadcrumbPath: BREADCRUMB_CONFIG.HOME.breadcrumbPath,
-    breadcrumbActive: BREADCRUMB_CONFIG.HOME.children[0],
   };
 
   constructor(private appStateService: AppStateService) {
@@ -60,26 +51,15 @@ export class PagesComponent implements OnDestroy {
       case PageRoutes.HOME:
         this.info = {
           pageHeader: PageTitle.HOME,
-          breadcrumbPath: BREADCRUMB_CONFIG.HOME.breadcrumbPath,
-          breadcrumbActive: BREADCRUMB_CONFIG.HOME.children[0],
           icon: PageIcon.HOME,
         };
         break;
-      case PageRoutes.USERS_LIST:
+      case PageRoutes.USERS:
         this.info = {
-          pageHeader: PageTitle.USERS_LIST,
-          breadcrumbPath: BREADCRUMB_CONFIG.USERS.breadcrumbPath,
-          breadcrumbActive: BREADCRUMB_CONFIG.USERS.children[0],
+          pageHeader: PageTitle.USERS,
           icon: PageIcon.USERS,
         };
         break;
-      case PageRoutes.USERS_STATS:
-        this.info = {
-          pageHeader: PageTitle.USER_STATS,
-          breadcrumbPath: BREADCRUMB_CONFIG.USERS.breadcrumbPath,
-          breadcrumbActive: BREADCRUMB_CONFIG.USERS.children[1],
-          icon: PageIcon.USERS,
-        };
     }
   }
 }
