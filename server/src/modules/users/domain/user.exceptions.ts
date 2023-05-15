@@ -55,3 +55,10 @@ export class PasswordHistoryError extends Error {
     this.name = "PasswordHistoryError";
   }
 }
+
+export class DefaultPasswordError extends Error {
+  constructor() {
+    super(`No se puede utilizar la contraseña por defecto`);
+    this.name = "DefaultPasswordError";
+  }
+}

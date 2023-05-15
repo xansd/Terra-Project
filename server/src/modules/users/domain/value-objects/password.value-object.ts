@@ -2,16 +2,22 @@ import bcrypt from "bcryptjs";
 import config from "../../../../config/app-config";
 import { ValueObject } from "../../../shared/domain/value-objects/value-object";
 import { DomainValidationError } from "../../../shared/domain/domain-validation.exception";
+import { DefaultPasswordError } from "../user.exceptions";
 
 export class Password extends ValueObject<string> {
+  static DEFAULT_PASSWORD = config.DEFAULT_USER_PASSWORD;
   private constructor(value: string) {
     super(value);
   }
 
-  public static create(password: string): Password {
+  public static create(password: string, isAdminAction?: boolean): Password {
     const passwordMinLength = 10;
     const passwordMaxLength = 24;
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&_-])/;
+
+    if (password === Password.DEFAULT_PASSWORD && !isAdminAction) {
+      throw new DefaultPasswordError();
+    }
 
     if (password.length < passwordMinLength) {
       throw new DomainValidationError(
@@ -29,10 +35,6 @@ export class Password extends ValueObject<string> {
       );
     }
 
-    return new Password(password);
-  }
-
-  public static createFromPersistence(password: string): Password {
     return new Password(password);
   }
 

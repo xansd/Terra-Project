@@ -1,23 +1,37 @@
 import { IUserRepository, PasswordHistoryError } from "../../domain";
 import { Password } from "../../domain/value-objects/password.value-object";
-import { IUserDTO } from "../user.dto";
-import { UserMapper } from "../user-dto.mapper";
 
 export interface IUpdatePassword {
-  updatePassword(user: IUserDTO, password: string): Promise<void>;
+  updatePassword(data: {
+    id: string;
+    password: string;
+    isAdminAction?: boolean;
+  }): Promise<void>;
 }
 
 export class UpdatePasswordeUseCase implements IUpdatePassword {
-  userMapper = new UserMapper();
+  validatedPassword: any;
   numberLastPasswordsToCheck = 5;
 
   constructor(private readonly userRepository: IUserRepository) {}
 
-  async updatePassword(userDTO: IUserDTO): Promise<void> {
-    const user = this.userMapper.toDomain(userDTO);
+  async updatePassword(data: {
+    id: string;
+    password: string;
+    isAdminAction?: boolean;
+  }): Promise<void> {
     const passwordsHistory = await this.userRepository.getPasswordHistory(
-      user.user_id?.value!
+      data.id
     );
+
+    // Comprobar la validez del nuevo password
+    if (data.isAdminAction) {
+      // Si es un reseteo de admin se permite el password por defecto
+      this.validatedPassword = Password.create(
+        data.password,
+        data.isAdminAction
+      );
+    } else this.validatedPassword = Password.create(data.password);
 
     // Comprobar que la nueva contraseña no coincide con los últimos hashes de contraseñas
     for (const historyPasswordHash of passwordsHistory.slice(
@@ -25,7 +39,7 @@ export class UpdatePasswordeUseCase implements IUpdatePassword {
       this.numberLastPasswordsToCheck
     )) {
       const isMatch = await Password.validatePasswordHash(
-        user.password?.value!,
+        data.password,
         historyPasswordHash
       );
       if (isMatch) {
@@ -33,11 +47,14 @@ export class UpdatePasswordeUseCase implements IUpdatePassword {
       }
     }
 
-    // Actualizar la contraseña
-    const passwordHash = await Password.genPasswordHash(user.password?.value!);
-    user.passwordHash = passwordHash;
+    // Generar el hash de contraseña
+    const passwordHash = await Password.genPasswordHash(data.password);
 
-    const result = await this.userRepository.updatePassword(user);
+    // Actualizar el hash enla base de datos
+    const result = await this.userRepository.updatePassword({
+      id: data.id,
+      newPassword: passwordHash,
+    });
     return result;
   }
 }

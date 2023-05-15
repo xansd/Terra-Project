@@ -13,12 +13,13 @@ export interface IPayload {
 
 export type AuthToken = string;
 
-export function createToken(user: IUser): AuthToken {
+export function createToken(user: IUser, hasToReset: boolean): AuthToken {
   return jwt.sign(
     {
       id: user.user_id!.value,
       email: user.email.value,
       role: user.role_id,
+      hasToReset: hasToReset,
     },
     config.JWT_SECRET!,
     {

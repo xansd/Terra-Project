@@ -8,9 +8,7 @@ import {
   UsersNotFoundError,
   InvalidCredentialsError,
   Role,
-  User,
 } from "../../domain";
-import { Email } from "../../domain/value-objects/email.value-object";
 import { UserPersistenceMapper } from "../user-persistence.mapper";
 
 export class MySqlUserRepository implements IUserRepository {
@@ -50,7 +48,7 @@ export class MySqlUserRepository implements IUserRepository {
     const insertQuery = `INSERT INTO users (user_id, email, password, role_id) VALUES (?,?,?,?)`;
 
     const selectQuery = `SELECT user_id, email, password, role_id, active, password_last_reset, user_created, user_updated, created_at, updated_at, deleted_at
-    FROM users WHERE user_id = LAST_INSERT_ID()`;
+    FROM users ORDER BY created_at DESC LIMIT 1`;
     const insertResult = await MysqlDataBase.update(insertQuery, [
       user_id,
       email,
@@ -89,19 +87,25 @@ export class MySqlUserRepository implements IUserRepository {
     return result;
   }
 
-  async updatePassword(user: IUser): Promise<void> {
-    const userPersistence = this.userPersistenceMapper.toPersistence(user);
-    const uid = userPersistence.user_id!.toString();
-    const passwordHash = userPersistence.passwordHash!.toString();
-    const result = await MysqlDataBase.update(
-      "UPDATE users SET password = ?, password_last_reset = NOW() WHERE user_id = ?; INSERT INTO password_history (user_id, password) VALUES (?, ?);",
-      [passwordHash, uid, uid, passwordHash]
+  async updatePassword(data: {
+    id: string;
+    newPassword: string;
+  }): Promise<void> {
+    const uid = data.id.toString();
+    const passwordHash = data.newPassword.toString();
+    const updatePassword = await MysqlDataBase.update(
+      "UPDATE users SET password = ?, password_last_reset = NOW() WHERE user_id = ?",
+      [passwordHash, uid]
     );
-    if (result.affectedRows === 0) {
+    const updateHistory = await MysqlDataBase.update(
+      "INSERT INTO password_history (user_id, password) VALUES (?, ?);",
+      [uid, passwordHash]
+    );
+    if (updatePassword.affectedRows === 0) {
       Logger.error(`mysql : updatePassword : UserDoesNotExistError`);
       throw new UserDoesNotExistError();
     }
-    return result;
+    return updatePassword;
   }
 
   async delete(id: string): Promise<void> {

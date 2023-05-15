@@ -20,11 +20,13 @@ export const catchValidationErrors = (
   const validationErrors = validationResult(req);
   // Si hay errores de validación los devolvemos
   if (!validationErrors.isEmpty()) {
-    HttpValidationError(
-      "http-validation-error",
-      validationErrors.mapped() as IValidationError
+    res.send(
+      HttpValidationError(
+        "http-validation-error",
+        validationErrors.mapped() as IValidationError
+      )
     );
+    return;
   }
-
   next();
 };

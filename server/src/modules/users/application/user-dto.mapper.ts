@@ -2,7 +2,6 @@ import { IUser, User } from "../domain/user";
 import { IUserDTO } from "./user.dto";
 import { Email } from "../domain/value-objects/email.value-object";
 import { Password } from "../domain/value-objects/password.value-object";
-import { Role } from "../domain";
 import { IDTOMapper } from "../../shared/application/dto-mapper.interface";
 import { UserID } from "../domain/value-objects/user-id.value-object";
 
@@ -13,7 +12,7 @@ export class UserMapper implements IDTOMapper<IUser, IUserDTO> {
     const user_id = UserID.create(dto.user_id);
     const email = Email.create(dto.email);
     const password = dto.password ? Password.create(dto.password) : undefined;
-    const role_id = dto.role_id || Role.USER;
+    const role_id = dto.role_id;
     const props = { user_id, email, password, role_id };
     return User.create(props);
   }

@@ -38,7 +38,7 @@ export class User implements IUser {
     this.password = props.password;
     this.passwordHash = props.passwordHash;
     this.role_id = props.role_id;
-    this.active = props.active || false;
+    this.active = props.active || true;
     this.password_last_reset = props.password_last_reset;
     this.user_created = props.user_created;
     this.user_updated = props.user_updated;
@@ -80,5 +80,9 @@ export class User implements IUser {
       default:
         throw new Error("Invalid role string");
     }
+  }
+
+  public static toUserID(id: string): UserID {
+    return UserID.create(id);
   }
 }

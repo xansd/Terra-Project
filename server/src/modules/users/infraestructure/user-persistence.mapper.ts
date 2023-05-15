@@ -14,7 +14,7 @@ export class UserPersistenceMapper
     const user_id = new UserID(persistence.user_id);
     const email = Email.create(persistence.email);
     const passwordHash = persistence.password;
-    const role_id = persistence.role_id === Role.ADMIN ? Role.ADMIN : Role.USER;
+    const role_id = persistence.role_id;
     const active = persistence.active === 1 ? true : false;
     const password_last_reset = persistence.password_last_reset;
     const user_created = persistence.user_created;
@@ -39,13 +39,12 @@ export class UserPersistenceMapper
 
   // Convierte un dominio a un objeto de la base de datos
   toPersistence(domain: IUser): IUserPersistence {
-    const { user_id, email, passwordHash, role_id, password_last_reset } =
-      domain;
+    const { user_id, email, passwordHash, role_id } = domain;
     return {
       user_id: user_id!.value,
       email: email.value,
       passwordHash: passwordHash,
-      role_id: role_id === Role.ADMIN ? Role.ADMIN : Role.USER,
+      role_id: role_id,
       active: domain.active ? 1 : 0,
     };
   }

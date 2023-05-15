@@ -10,4 +10,5 @@ export interface IUserController {
   activate<T>(request: Request, response: Response): Promise<void>;
   block<T>(request: Request, response: Response): Promise<void>;
   signin<T>(request: Request, response: Response): Promise<void>;
+  checkPassword<T>(request: Request, response: Response): Promise<void>;
 }

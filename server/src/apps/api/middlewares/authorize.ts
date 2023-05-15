@@ -27,30 +27,29 @@ const authorize = (roles: number[] = []) => {
 
     async (req: any, res: any, next: any) => {
       try {
-        if (req.auth.hasToReset && req.path !== "/reset/") {
-          throw new UserHasToResetError();
-        }
         if (roles.length && !roles.includes(req.auth.role)) {
           throw new ResourceForbiddenError();
+        }
+        if (req.auth.hasToReset && req.path !== "/update-password") {
+          console.log(req.path);
+          throw new UserHasToResetError();
         }
 
         next();
       } catch (error) {
-        if (error instanceof UserHasToResetError) {
-          Logger.warn(
-            `:${req.socket.remoteAddress} : ${req.email} : hasToReset : Reset password required`
-          );
-          return res.send(HasToReset(error.message));
-        } else if (error instanceof ResourceForbiddenError) {
-          Logger.error(
-            `:${req.socket.remoteAddress} : Acceso a recurso no autorizado`
-          );
+        if (error instanceof ResourceForbiddenError) {
+          Logger.error(`:${req.socket.remoteAddress} : Unauthorized`);
           return res.send(Forbidden(error.message));
         } else if (error instanceof UnauthorizedError) {
           Logger.error(
             `:${req.socket.remoteAddress} : ${req.email} : unauthorized : Invalid token`
           );
           res.send(Unauthorized(error.message));
+        } else if (error instanceof UserHasToResetError) {
+          Logger.error(
+            `:${req.socket.remoteAddress} : ${req.email} : unauthorized : User has to reset`
+          );
+          res.send(HasToReset(error.message));
         } else {
           Logger.error(
             `:${req.socket.remoteAddress} : ${req.email} : Internal server error`
