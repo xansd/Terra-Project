@@ -1,7 +1,11 @@
-import { Observable } from 'rxjs';
-import { IAuthToken } from '../../domain/token';
+import { Observable, tap } from 'rxjs';
+import { AuthToken, IAuthToken } from '../../domain/token';
 import { IAuthAPIPort } from '../../domain/auth-api.port';
 import { Inject, Injectable } from '@angular/core';
+import {
+  IRegisterActiveUserUseCase,
+  RegisterActiveUserUseCase,
+} from 'src/app/users/application/use-cases/socket-io/register-user-io.case-use';
 
 export interface LoginCredentials {
   email: string;
@@ -16,8 +20,21 @@ export interface ISigninUseCase {
   providedIn: 'root',
 })
 export class SigninUseCase implements ISigninUseCase {
-  constructor(@Inject('authAPI') private readonly authAPI: IAuthAPIPort) {}
+  constructor(
+    @Inject('authAPI') private readonly authAPI: IAuthAPIPort,
+    @Inject('authToken') private authTokenService: IAuthToken,
+    @Inject('registerUserIO')
+    private userSocketService: IRegisterActiveUserUseCase
+  ) {}
   signin(credentials: LoginCredentials): Observable<IAuthToken> {
-    return this.authAPI.signin(credentials);
+    return this.authAPI.signin(credentials).pipe(
+      tap((token: IAuthToken) => {
+        if (token) {
+          this.authTokenService.saveToken(token);
+          const uid = this.authTokenService.getUserID();
+          this.userSocketService.registerActiveUserIO(uid);
+        }
+      })
+    );
   }
 }

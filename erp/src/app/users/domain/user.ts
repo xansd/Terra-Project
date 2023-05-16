@@ -47,26 +47,6 @@ export class User implements IUser {
     return new User(props);
   }
 
-  isLoggedIn(): boolean {
-    return !!this.user_id;
-  }
-
-  // getUserName(): Email {
-  //   return this.email;
-  // }
-
-  // getRole(): Roles {
-  //   return this.role_id;
-  // }
-
-  // getLastReset(): string | undefined {
-  //   return this.password_last_reset || undefined;
-  // }
-
-  // getUserID(): string | undefined {
-  //   return this.user_id;
-  // }
-
   static getRoleNameFromNumber(roleNumber: number): string {
     switch (roleNumber) {
       case Roles.SYS:

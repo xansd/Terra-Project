@@ -11,12 +11,8 @@ export class LocalStorageRepository<T extends string>
     localStorage.setItem(key, value);
   }
 
-  get(key: string): T | null {
-    const serializedValue = localStorage.getItem(key);
-    if (serializedValue === null) {
-      return null;
-    }
-    return JSON.parse(serializedValue) as T;
+  get(key: string): string | null {
+    return localStorage.getItem(key);
   }
 
   remove(key: string): void {

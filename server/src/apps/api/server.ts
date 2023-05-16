@@ -3,6 +3,7 @@ import cors from "cors";
 import Helmet from "helmet";
 import fs from "fs";
 import https from "https";
+import http from "http";
 // Routes
 import { router as userRoutes } from "./routes/user.routes";
 // Config
@@ -14,14 +15,20 @@ import {
   notFoundHandler,
   unautorizedHandler,
 } from "./error/handlers";
+import { Server, Socket } from "socket.io";
+import SocketServer from "./socket-server";
+import { GetUserUseCase } from "../../modules/users/application";
+import { MySqlUserRepository } from "../../modules/users/infraestructure/mysql/mysql-user.adapter";
 
-export class Server {
+export class AppServer {
   public app: Application;
+  public io: Server;
   public corsConfig!: { origin: string; credentials: boolean };
   private httpsOptions!: object | undefined;
 
   constructor() {
     this.app = express();
+    this.io = new Server();
     this.init();
   }
 
@@ -70,14 +77,23 @@ export class Server {
 
   private runLocal() {
     const port = this.app.get("port");
-    this.app.listen(port, "0.0.0.0", () => {
+    const httpServer = http.createServer(this.app);
+    const userRepository = new MySqlUserRepository();
+    const getUserService = new GetUserUseCase(userRepository);
+    const socketServer = new SocketServer(httpServer, getUserService);
+
+    httpServer.listen(port, "0.0.0.0", () => {
       Logger.debug(`Server running on port ${port}`);
     });
   }
 
   private runProd() {
-    const server = https.createServer(this.httpsOptions!, this.app);
-    server.listen(this.app.get("port"), "0.0.0.0", () => {
+    const httpsServer = https.createServer(this.httpsOptions!, this.app);
+    const userRepository = new MySqlUserRepository();
+    const getUserService = new GetUserUseCase(userRepository);
+    const socketServer = new SocketServer(httpsServer, getUserService);
+
+    httpsServer.listen(this.app.get("port"), "0.0.0.0", () => {
       Logger.debug(`Server running on port ${this.app.get("port")}`);
     });
   }

@@ -18,6 +18,18 @@ export default {
       credentials: true,
     },
   },
+  CORS_IO: {
+    LOCAL: {
+      origin: "http://localhost:4200",
+      methods: ["GET", "POST"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+    },
+    REMOTE: {
+      origin: "https://erp.appges.com:8080",
+      methods: ["GET", "POST"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+    },
+  },
   HTTPS_OPTIONS: {
     KEY: "/etc/ssl/private/_.appges.com_private_key.key",
     CERT: "/etc/ssl/certs/appges.com_ssl_certificate.cer",

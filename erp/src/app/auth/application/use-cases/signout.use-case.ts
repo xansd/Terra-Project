@@ -1,16 +1,20 @@
-import { Injectable } from '@angular/core';
-import { AuthToken } from '../../domain/token';
+import { Inject, Injectable } from '@angular/core';
+import { AuthToken, IAuthToken } from '../../domain/token';
+import { IUnRegisterActiveUserUseCase } from '../../../users/application/use-cases/socket-io/unregister-user-io.use-case';
 
 export interface ISignoutUseCase {
   signout(): void;
+  signoutFromRemote(id: string): boolean;
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class SignoutUseCase implements ISignoutUseCase {
-  constructor(private authTokenService: AuthToken) {}
-  signout(): void {
-    this.authTokenService.removeToken();
+  constructor() {}
+  signout(): void {}
+
+  signoutFromRemote(id: string): boolean {
+    return true;
   }
 }

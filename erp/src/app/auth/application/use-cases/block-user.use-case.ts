@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { IUserAPIPort } from '../../domain/user-api.port';
+import { IAuthAPIPort } from '../../domain/auth-api.port';
 import { Injectable, Inject } from '@angular/core';
 
 export interface IBlockUserUseCase {
@@ -9,8 +9,8 @@ export interface IBlockUserUseCase {
   providedIn: 'root',
 })
 export class BlockUserUseCase implements IBlockUserUseCase {
-  constructor(@Inject('usersAPI') private readonly usersAPI: IUserAPIPort) {}
+  constructor(@Inject('authAPI') private readonly authAPI: IAuthAPIPort) {}
   blockUser(id: string): Observable<void> {
-    return this.usersAPI.blockUser(id);
+    return this.authAPI.blockUser(id);
   }
 }

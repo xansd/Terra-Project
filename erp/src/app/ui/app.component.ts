@@ -1,17 +1,34 @@
-import { Component, EventEmitter } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Inject,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { AppSettings } from './services/app-settings.service';
+import { UserIOAdapter } from '../users/infrastructure/user-io.adapter';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit, AfterViewInit, OnDestroy {
   title = 'TeERP';
   appEvent = new EventEmitter<string>();
   appLoaded: boolean = false;
 
-  constructor(public appSettings: AppSettings) {}
+  constructor(
+    public appSettings: AppSettings,
+    @Inject('usersIO') private readonly userIOAdapter: UserIOAdapter
+  ) {
+    this.userIOAdapter.createServer();
+  }
+
+  ngOnDestroy(): void {
+    this.userIOAdapter.closeServer();
+  }
 
   handleSetCover(coverClass: string) {
     var htmlElm = document.querySelector('html');

@@ -126,15 +126,6 @@ router.post(
   userController.checkPassword.bind(userController)
 );
 
-// //CONNECT USER
-// router.post("/connect-user", userController.connectUser.bind(userController));
-
-// //DISCONNECT USER
-// router.post(
-//   "/disconnect-user",
-//   userController.disconnectUser.bind(userController)
-// );
-
 // //GET USERS CONNECTED
 // router.get(
 //   "/users-connected",

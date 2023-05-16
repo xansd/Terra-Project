@@ -20,6 +20,7 @@ import { NotifierModule, NotifierOptions } from 'angular-notifier';
 import { NotifierService } from 'angular-notifier';
 import { NotificationAdapter } from '../shared/infraestructure/notifier.adapter';
 import { ErrorCatchingInterceptor } from './interceptors/error.interceptor';
+import { UserIOAdapter } from '../users/infrastructure/user-io.adapter';
 
 // Notifier configuration
 const notifierDefaultOptions: NotifierOptions = {
@@ -88,11 +89,12 @@ const notifierDefaultOptions: NotifierOptions = {
       useClass: ErrorCatchingInterceptor,
       multi: true,
     },
+    { provide: 'usersIO', useClass: UserIOAdapter },
   ],
   bootstrap: [AppComponent],
 })
 export class AppModule {
-  title: string = 'HUD';
+  title: string = 'TerraERP';
   constructor(
     private router: Router,
     private titleService: Title,
@@ -104,7 +106,8 @@ export class AppModule {
           this.route.snapshot.firstChild &&
           this.route.snapshot.firstChild.data['title']
         ) {
-          this.title = 'HUD | ' + this.route.snapshot.firstChild.data['title'];
+          this.title =
+            'TerraERP | ' + this.route.snapshot.firstChild.data['title'];
         }
         this.titleService.setTitle(this.title);
 

@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
-import { IUserAPIPort } from '../../domain/user-api.port';
-import { Roles } from '../../domain/roles';
+import { Roles } from '../../../users/domain/roles';
 import { Inject, Injectable } from '@angular/core';
+import { IAuthAPIPort } from '../../domain/auth-api.port';
 
 export interface IUpdateRoleUserUseCase {
   updateRoleUser(id: string, role: Roles): Observable<void>;
@@ -10,8 +10,8 @@ export interface IUpdateRoleUserUseCase {
   providedIn: 'root',
 })
 export class updateRoleUserUseCase implements IUpdateRoleUserUseCase {
-  constructor(@Inject('usersAPI') private readonly usersAPI: IUserAPIPort) {}
+  constructor(@Inject('authAPI') private readonly authAPI: IAuthAPIPort) {}
   updateRoleUser(id: string, role: Roles): Observable<void> {
-    return this.usersAPI.updateRoleUser(id, role);
+    return this.authAPI.updateRoleUser(id, role);
   }
 }

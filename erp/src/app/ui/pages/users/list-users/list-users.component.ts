@@ -5,7 +5,6 @@ import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { Subject, takeUntil } from 'rxjs';
 import { IUser, User } from 'src/app/users/domain/user';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { EditUserComponent } from '../edit-user/edit-user.component';
 import { GetAllUsersUserCase } from 'src/app/users/application/use-cases/get-all-users.use-case';
@@ -13,8 +12,6 @@ import { NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { CreateUserComponent } from '../create-user/create-user.component';
 import { UserDTOMapper } from 'src/app/users/application/user-dto.mapper';
 import { IUserDTO } from 'src/app/users/application/user.dto';
-import { deleteUserUseCase } from 'src/app/users/application/use-cases/delete-user.case-use';
-import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
 
 const modalOptions: NgbModalOptions = {
   backdrop: 'static',
@@ -56,16 +53,14 @@ export class ListUsersComponent implements OnInit, OnDestroy {
   ];
   isLargeScreen = false;
   isPageSizeDropdownOpen = false;
+  selectedRowIndex: string | null = null;
 
   private destroy$ = new Subject();
 
   constructor(
     private modalService: NgbModal,
-    private notifier: NotificationAdapter,
     private usersService: GetAllUsersUserCase,
-    private breakpointObserver: BreakpointObserver,
-    private deleteUserService: deleteUserUseCase,
-    private errorHandler: ErrorHandlerService
+    private breakpointObserver: BreakpointObserver
   ) {}
 
   ngOnInit(): void {
@@ -75,6 +70,12 @@ export class ListUsersComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+  selectRow(rowId: string) {
+    if (this.selectedRowIndex === rowId) {
+      this.selectedRowIndex = null;
+    } else this.selectedRowIndex = rowId;
   }
 
   /**

@@ -7,4 +7,5 @@ export const environment = {
   production: false,
   API_URI: 'http://localhost:8531/api',
   ALLOWED_DOMAINS: 'localhost:8531',
+  IO_URI: 'http://localhost:8531',
 };

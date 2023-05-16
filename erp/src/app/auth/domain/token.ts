@@ -1,26 +1,37 @@
 import { Roles } from 'src/app/users/domain/roles';
-import { Email } from 'src/app/users/domain/value-objects/email.value-object';
 import { JwtTokenDecoder } from '../infrastructure/jwtTokenDecoder.adapter';
 import { LocalRepository } from 'src/app/shared/domain/local-repository.port';
 import { Inject, Injectable } from '@angular/core';
+import { TokenInvalidError } from './auth.exceptions';
 
 export interface IAuthToken {
-  token: string;
+  key: string;
+  authToken: string | undefined;
+
+  getToken(): string | null;
+  removeToken(): void;
+  saveToken(token: IAuthToken): void;
+  isLogged(): boolean;
+  getUserRole(): Roles | undefined;
+  getUserID(): string;
+  getUserName(): string;
+  decodeToken(token: string): IDecodedToken;
+  isTokenExpired(token: IAuthToken): boolean;
 }
 
 export interface IDecodedToken {
   id: string;
-  email: Email;
+  email: string;
   role: Roles;
-  HasToReset: boolean;
+  hasToReset: boolean;
   iat: number;
 }
 @Injectable({
   providedIn: 'root',
 })
-export class AuthToken {
+export class AuthToken implements IAuthToken {
   key: string = 'authToken';
-  authToken: IAuthToken | undefined = undefined;
+  authToken: string | undefined = undefined;
   // decoder: JwtTokenDecoder;
 
   constructor(
@@ -36,13 +47,57 @@ export class AuthToken {
     return this.storage.get('authToken');
   }
 
+  removeToken(): void {
+    this.storage.remove('authToken');
+  }
+
   saveToken(token: IAuthToken): void {
     this.storage.remove(this.key);
     this.storage.set('authToken', token as unknown as string);
   }
 
-  removeToken(): void {
-    this.storage.remove('authToken');
+  isLogged(): boolean {
+    const token = this.getToken();
+    if (!token) {
+      throw new TokenInvalidError();
+    }
+    return !this.isTokenExpired(token as unknown as IAuthToken);
+  }
+
+  getUserRole(): Roles | undefined {
+    const token = this.getToken();
+    if (!token) {
+      throw new TokenInvalidError();
+    }
+    const decoded = this.decodeToken(token);
+    return decoded.role;
+  }
+
+  getUserName(): string {
+    const token = this.getToken();
+    if (!token) {
+      throw new TokenInvalidError();
+    }
+    const decoded = this.decodeToken(token);
+    return decoded.email;
+  }
+
+  getUserID(): string {
+    const token = this.getToken();
+    if (!token) {
+      throw new TokenInvalidError();
+    }
+    const decoded = this.decodeToken(token);
+    return decoded.id;
+  }
+
+  getUserHasToReset(): boolean {
+    const token = this.getToken();
+    if (!token) {
+      throw new TokenInvalidError();
+    }
+    const decoded = this.decodeToken(token);
+    return decoded.hasToReset;
   }
 
   decodeToken(token: string): IDecodedToken {
@@ -50,8 +105,6 @@ export class AuthToken {
   }
 
   isTokenExpired(token: IAuthToken): boolean {
-    return this.jwtTokenDecoder.isTokenExpired(
-      this.authToken as unknown as string
-    );
+    return this.jwtTokenDecoder.isTokenExpired(token as unknown as string);
   }
 }

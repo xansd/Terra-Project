@@ -38,7 +38,8 @@ export class ErrorCatchingInterceptor implements HttpInterceptor {
           error.status >= 400 &&
           error.status < 500 &&
           error.status !== 401 &&
-          error.status !== 403
+          error.status !== 403 &&
+          error.status !== 499
         ) {
           this.notifier.showNotification(
             'error',
@@ -53,11 +54,15 @@ export class ErrorCatchingInterceptor implements HttpInterceptor {
           this.signOutService.signout();
           this.router.navigate([PageRoutes.LOGIN]);
           console.log(error.error);
-        } else {
+        } else if ([499].indexOf(error.status) !== -1) {
           this.notifier.showNotification(
-            'error',
+            'warning',
             `${error.error.error.status_code} - ${error.error.error.status}`
           );
+          this.router.navigate([PageRoutes.RESET_PASSWORD]);
+          console.log(error.error);
+        } else {
+          this.notifier.showNotification('error', `Error desconocido`);
           console.log(error.error);
         }
         return throwError(() => error);

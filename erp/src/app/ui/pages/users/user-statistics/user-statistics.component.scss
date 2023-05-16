@@ -1,0 +1,93 @@
+@import '../../../tables.scss';
+
+.users-container {
+    -webkit-box-sizing: border-box;
+    box-sizing        : border-box;
+    padding           : 0;
+
+
+    .controls-table {
+        display           : -webkit-box;
+        display           : -ms-flexbox;
+        display           : flex;
+        width             : 100%;
+        -webkit-box-pack  : justify;
+        -ms-flex-pack     : justify;
+        justify-content   : space-between;
+        -webkit-column-gap: 15px;
+        -moz-column-gap   : 15px;
+        column-gap        : 15px;
+
+        .actions-table {
+            -webkit-box-ordinal-group: 3;
+            -ms-flex-order           : 2;
+            order                    : 2;
+            -webkit-box-flex         : 1;
+            -ms-flex-positive        : 1;
+            display                  : -webkit-box;
+            display                  : -ms-flexbox;
+            display                  : flex;
+            -webkit-box-pack         : end;
+            -ms-flex-pack            : end;
+            justify-content          : flex-end;
+        }
+
+        .filter-table {
+            -webkit-box-ordinal-group: 2;
+            -ms-flex-order           : 1;
+            order                    : 1;
+            -webkit-box-flex         : 1;
+            -ms-flex-positive        : 1;
+            flex-grow                : 1;
+        }
+    }
+
+
+    .table-container {
+        max-width            : 100%;
+        margin-top           : 15px;
+        display              : -webkit-box;
+        display              : -ms-flexbox;
+        display              : flex;
+        -webkit-box-orient   : vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction   : column;
+        flex-direction       : column;
+
+        .mat-column-actions {
+
+            .btn-group {
+                display         : -webkit-box;
+                display         : -ms-flexbox;
+                display         : flex;
+                -webkit-box-pack: center;
+                -ms-flex-pack   : center;
+                justify-content : center;
+
+                button {
+                    height: 30px;
+                    width : auto;
+                    cursor: pointer;
+
+                    i {
+                        font-size : 15px;
+                        position  : relative;
+                        top       : -2px;
+                        font-style: normal !important;
+                    }
+                }
+            }
+        }
+
+        .no-data {
+            width           : 100%;
+            display         : -webkit-box;
+            display         : -ms-flexbox;
+            display         : flex;
+            -webkit-box-pack: center;
+            -ms-flex-pack   : center;
+            justify-content : center;
+        }
+    }
+
+}

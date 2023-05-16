@@ -10,13 +10,8 @@ export class AppMenuService {
       { text: 'General', is_header: true },
       { path: '/inicio', icon: PageIcon.HOME, text: 'Inicio' },
       { is_divider: true },
-      { text: 'Usuarios', is_header: true },
-      { path: '/usuarios/listado', text: 'Listado', icon: PageIcon.USERS_LIST },
-      {
-        path: '/usuarios/estadisticas',
-        text: 'Estadísticas',
-        icon: PageIcon.STATISTICS,
-      },
+      { text: 'Aplicación', is_header: true },
+      { path: '/usuarios', text: 'Usuarios', icon: PageIcon.USERS },
     ];
   }
 }

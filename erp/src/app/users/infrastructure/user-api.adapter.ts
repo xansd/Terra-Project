@@ -74,7 +74,7 @@ export class UsersAPIAdapter implements IUserAPIPort {
     );
   }
 
-  restorePassword(id: string, password: string): Observable<void> {
+  restorePassword(data: { id: string; password: string }): Observable<void> {
     throw new Error('Method not implemented.');
   }
 }

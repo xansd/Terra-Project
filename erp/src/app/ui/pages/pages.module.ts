@@ -27,6 +27,8 @@ import { getSpaninhPaginatorIntl } from '../shared/helpers/mat-paginator-esp.ser
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { RestorePasswordComponent } from './restore-password/restore-password.component';
 import { UsersComponent } from './users/users.component';
+import { RegisterActiveUserUseCase } from 'src/app/users/application/use-cases/socket-io/register-user-io.case-use';
+import { UnRegisterActiveUserUseCase } from 'src/app/users/application/use-cases/socket-io/unregister-user-io.use-case';
 
 @NgModule({
   declarations: [
@@ -59,6 +61,9 @@ import { UsersComponent } from './users/users.component';
     { provide: 'JwtTokenDecoder', useClass: JwtTokenDecoder },
     { provide: 'authAPI', useClass: AuthAPIAdapter },
     { provide: 'usersAPI', useClass: UsersAPIAdapter },
+    { provide: 'authToken', useClass: AuthToken },
+    { provide: 'registerUserIO', useClass: RegisterActiveUserUseCase },
+    { provide: 'unRegisterUserIO', useClass: UnRegisterActiveUserUseCase },
     { provide: MatPaginatorIntl, useValue: getSpaninhPaginatorIntl() },
   ],
 })

@@ -18,6 +18,23 @@
     }
 }
 
+mat-error {
+    font-size: .7rem;
+    display  : inline !important;
+
+
+    span {
+        color     : #ff6060;
+        margin-top: 2.5px;
+    }
+}
+
+::ng-deep mat-mdc-form-field-error {
+    display: inline !important;
+}
+
+
+
 
 /* width */
 ::-webkit-scrollbar {

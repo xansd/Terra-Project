@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { AppMenuService } from '../../services/app-menus.service';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { AppMenuService } from 'src/app/ui/services/app-menus.service';
 
 @Component({
   selector: 'sidebar',

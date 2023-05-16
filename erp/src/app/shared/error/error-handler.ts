@@ -15,6 +15,7 @@ export class ErrorHandlerService {
   ) {}
 
   handleUnkonwError(error: Error) {
+    console.error(error);
     // Aquí puedes manejar diferentes tipos de errores y mostrar mensajes de notificación apropiados
     this.notifier.showNotification('warning', error.message);
   }
@@ -24,19 +25,28 @@ export class ErrorHandlerService {
     message: string;
     status?: string;
   }) {
-    if (response.statusCode === 401 || response.statusCode === 403) {
-      this.signOutService.signout();
-      this.router.navigate([PageRoutes.LOGIN]);
+    const { statusCode, message } = response;
+    const notificationMessage = `[${statusCode}] ${message}`;
+    console.error(response);
+    switch (statusCode) {
+      case 401:
+      case 403:
+        this.notifier.showNotification('error', notificationMessage);
+        this.signOutService.signout();
+        this.router.navigate([PageRoutes.LOGIN]);
+        break;
+      case 499:
+        this.notifier.showNotification('error', notificationMessage);
+        this.router.navigate([PageRoutes.RESET_PASSWORD]);
+        break;
+      default:
+        this.notifier.showNotification('error', notificationMessage);
+        break;
     }
-
-    // Aquí puedes manejar diferentes tipos de errores y mostrar mensajes de notificación apropiados
-    this.notifier.showNotification(
-      'error',
-      `[${response.statusCode}] ${response.message}`
-    );
   }
 
   handleDomainError(error: Error) {
+    console.error(error);
     this.notifier.showNotification('error', `${error.message}`);
   }
 }

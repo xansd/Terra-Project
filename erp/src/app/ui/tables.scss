@@ -1,0 +1,171 @@
+.mat-paginator {
+    margin: -20px 0 10px 0;
+}
+
+
+::ng-deep .cdk-overlay-container {
+    position      : fixed !important;
+    z-index       : 1000 !important;
+    pointer-events: none !important;
+    top           : 0 !important;
+    left          : 0 !important;
+    height        : 100% !important;
+    width         : 100% !important;
+
+}
+
+::ng-deep .cdk-overlay-pane {
+    position          : absolute !important;
+    pointer-events    : auto !important;
+    -webkit-box-sizing: border-box !important;
+    box-sizing        : border-box !important;
+    z-index           : 1000 !important;
+    display           : -webkit-box !important;
+    display           : -ms-flexbox !important;
+    display           : flex !important;
+    max-width         : 100% !important;
+    max-height        : 100% !important;
+}
+
+::ng-deep .mdc-menu-surface.mat-mdc-select-panel {
+    max-height      : 120px !important;
+    background-color: rgba(0, 0, 0, .4);
+    color           : #3cd2a5;
+}
+
+
+
+
+mat-table {
+    width: auto;
+
+    &:hover {
+        cursor: pointer;
+    }
+
+    mat-row,
+    mat-header-row {
+        text-align: center;
+    }
+
+
+    mat-cell,
+    mat-header-cell {
+        display         : -webkit-box;
+        display         : -ms-flexbox;
+        display         : flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack   : center;
+        justify-content : center;
+        font-size       : .9rem;
+        font-weight     : 500;
+    }
+
+
+    mat-header-cell {
+        text-transform: uppercase;
+    }
+
+    mat-header-row {
+        position           : -webkit-sticky !important;
+        position           : sticky !important;
+        top                : 0 !important;
+        z-index            : 9 !important;
+        height             : 40px !important;
+        // background-color: rgba(60, 210, 165, .9) !important;
+        background-color   : azure;
+        color              : #35434a !important;
+        height             : 40px !important;
+
+        mat-header-cell {
+            font-weight: 600 !important;
+
+        }
+
+    }
+
+    mat-row {
+        height: 45px !important;
+
+        &:hover {
+            background-color: rgba(0, 0, 0, .1) !important;
+            color           : azure !important;
+        }
+    }
+
+    .mobile-label {
+        display: none;
+    }
+}
+
+@media(min-width: 769px) and (max-width: 1024px) {
+    mat-table {
+        overflow-x: scroll !important;
+
+        mat-cell,
+        mat-header-cell {
+            min-width: 14rem !important;
+        }
+    }
+}
+
+@media(max-width: 768px) {
+    .mobile-label {
+        width      : 80px;
+        display    : inline-block !important;
+        font-weight: bold;
+    }
+
+    mat-header-row {
+        display: none;
+    }
+
+    mat-row {
+        -webkit-box-orient   : vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction   : column;
+        flex-direction       : column;
+        -webkit-box-align    : start;
+        -ms-flex-align       : start;
+        align-items          : start;
+        padding              : 8px 24px;
+        width                : 100% !important;
+    }
+
+    mat-cell,
+    mat-header-cell {
+        word-wrap       : initial;
+        display         : table-cell;
+        padding         : 0px 10px;
+        line-break      : unset;
+        width           : 100%;
+        white-space     : nowrap;
+        overflow        : hidden;
+        vertical-align  : middle;
+        width           : 100% !important;
+        -o-text-overflow: ellipsis;
+        text-overflow   : ellipsis;
+        text-align      : left !important;
+        -webkit-box-pack: left !important;
+        -ms-flex-pack   : left !important;
+        justify-content : left !important;
+        padding-left    : 10px !important;
+
+    }
+
+    mat-row,
+    mat-header-row {
+        display: table-row;
+        width  : 100% !important;
+    }
+
+    mat-header-row {
+        display: none;
+        width  : 100% !important;
+    }
+}
+
+.selected-row {
+    background-color: rgba(0, 0, 0, .1) !important;
+    color           : azure !important;
+}

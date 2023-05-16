@@ -1,5 +1,5 @@
 import * as dotenv from "dotenv";
-import { Server } from "./api/server";
+import { AppServer } from "./api/server";
 
 dotenv.config();
-new Server();
+new AppServer();

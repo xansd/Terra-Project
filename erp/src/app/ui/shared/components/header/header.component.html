@@ -175,12 +175,12 @@
       </div>
     </a>
     <div class="dropdown-menu dropdown-menu-end me-lg-3 fs-11px mt-1">
-      <a
+      <!-- <a
         class="dropdown-item d-flex align-items-center prohibited"
         (click)="notImplemented()"
         >PERFIL
         <i class="bi bi-person-circle ms-auto text-theme fs-16px my-n1"></i
-      ></a>
+      ></a> -->
       <a
         class="dropdown-item d-flex align-items-center prohibited"
         (click)="notImplemented()"
@@ -188,10 +188,15 @@
         <i class="bi bi-calendar ms-auto text-theme fs-16px my-n1"></i
       ></a>
       <a
+        class="dropdown-item d-flex align-items-center"
+        (click)="openCheckPasswordDialog()"
+        >RESET <i class="bi bi-key ms-auto text-theme fs-16px my-n1"></i
+      ></a>
+      <!-- <a
         class="dropdown-item d-flex align-items-center prohibited"
         (click)="notImplemented()"
         >AJUSTES <i class="bi bi-gear ms-auto text-theme fs-16px my-n1"></i
-      ></a>
+      ></a> -->
       <div class="dropdown-divider"></div>
       <a (click)="signout()" class="dropdown-item d-flex align-items-center"
         >LOGOUT <i class="bi bi-toggle-off ms-auto text-theme fs-16px my-n1"></i

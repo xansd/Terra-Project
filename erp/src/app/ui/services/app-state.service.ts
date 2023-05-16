@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 
 export interface IAppState {
   activeRoute: string;
+  lastRoute: string;
 }
 
 export interface IAppStateService {
@@ -18,6 +19,7 @@ export interface IAppStateService {
 export class AppStateService implements IAppStateService {
   state: IAppState = {
     activeRoute: '',
+    lastRoute: '',
   };
   private state$ = new BehaviorSubject<IAppState>(this.state);
 
@@ -25,7 +27,9 @@ export class AppStateService implements IAppStateService {
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         this.state.activeRoute = event.url;
+        this.state.lastRoute = this.state.activeRoute;
         this.addToState('activeRoute', event.url);
+        this.addToState('lastRoute', event.url);
       }
     });
   }
