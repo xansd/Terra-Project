@@ -1,21 +1,50 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+
+export interface ISettings {
+  appMode?: string;
+  appTheme?: string;
+  appCover?: string;
+  appBoxedLayout?: boolean;
+  appHeaderNone?: boolean;
+  appFooter?: boolean;
+  appSidebarNone?: boolean;
+  appSidebarCollapsed?: boolean;
+  appContentClass?: string;
+  appContentFullHeight?: boolean;
+  appContentFullWidth?: boolean;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class AppSettings {
-  public appMode: string = '';
-  public appTheme: string = '';
-  public appCover: string = '';
+  settings: ISettings = {
+    appMode: '',
+    appTheme: '',
+    appCover: '',
+    appContentClass: '',
+    appBoxedLayout: false,
+    appHeaderNone: false,
+    appFooter: false,
+    appSidebarNone: false,
+    appSidebarCollapsed: false,
+    appContentFullHeight: false,
+    appContentFullWidth: false,
+  };
+  private appSettingsSubject: BehaviorSubject<ISettings> =
+    new BehaviorSubject<ISettings>(this.settings);
 
-  public appBoxedLayout: boolean = false;
-  public appHeaderNone: boolean = false;
-  public appFooter: boolean = false;
+  getAppSettings() {
+    return this.settings;
+  }
 
-  public appSidebarNone: boolean = false;
-  public appSidebarCollapsed: boolean = false;
+  updateAppSettings(update: ISettings) {
+    this.settings = { ...this.settings, ...update };
+    this.appSettingsSubject.next(this.settings);
+  }
 
-  public appContentClass: string = '';
-  public appContentFullHeight: boolean = false;
-  public appContentFullWidth: boolean = false;
+  getAppSettingsChanges() {
+    return this.appSettingsSubject.asObservable();
+  }
 }

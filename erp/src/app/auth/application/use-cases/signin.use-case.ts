@@ -1,11 +1,8 @@
 import { Observable, tap } from 'rxjs';
-import { AuthToken, IAuthToken } from '../../domain/token';
+import { IAuthToken } from '../../domain/token';
 import { IAuthAPIPort } from '../../domain/auth-api.port';
 import { Inject, Injectable } from '@angular/core';
-import {
-  IRegisterActiveUserUseCase,
-  RegisterActiveUserUseCase,
-} from 'src/app/users/application/use-cases/socket-io/register-user-io.case-use';
+import { IRegisterActiveUserUseCase } from 'src/app/users/application/use-cases/socket-io/register-user-io.case-use';
 
 export interface LoginCredentials {
   email: string;

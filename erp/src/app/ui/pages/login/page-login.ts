@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   AbstractControl,
@@ -6,7 +6,7 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { AppSettings } from '../../services/app-settings.service';
+import { AppSettings, ISettings } from '../../services/app-settings.service';
 import { PageRoutes } from '../pages-info.config';
 import { AuthToken } from '../../../auth/domain/token';
 import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
@@ -22,7 +22,7 @@ import { SigninUseCase } from 'src/app/auth/application/use-cases/signin.use-cas
   templateUrl: './page-login.html',
   styleUrls: ['./page-login.scss'],
 })
-export class LoginPage implements AfterViewInit {
+export class LoginPage implements OnInit {
   matcher = new CustomErrorStateMatcher();
   config = CONFIG;
   public pageRoutes = PageRoutes;
@@ -49,16 +49,38 @@ export class LoginPage implements AfterViewInit {
     private cdref: ChangeDetectorRef
   ) {}
 
-  ngAfterViewInit() {
-    this.appSettings.appSidebarNone = true;
-    this.appSettings.appHeaderNone = true;
-    this.appSettings.appContentClass = 'p-0';
-    this.cdref.detectChanges();
+  ngOnInit() {
+    setTimeout(() => {
+      // this.updateAppSettingsOnInint();
+      this.appSettings.settings.appHeaderNone = true;
+      this.appSettings.settings.appFooter = false;
+      this.appSettings.settings.appSidebarNone = true;
+      this.appSettings.settings.appContentClass = 'p-0';
+      this.cdref.detectChanges();
+    });
   }
 
   ngOnDestroy() {
-    this.appSettings.appSidebarNone = false;
-    this.appSettings.appHeaderNone = false;
+    this.updateAppSettingsOnDestroy();
+    this.cdref.detectChanges();
+  }
+
+  updateAppSettingsOnInint() {
+    const updatedSettings: ISettings = {
+      appHeaderNone: true,
+      appSidebarNone: true,
+      appContentClass: 'p-0',
+    };
+    this.appSettings.updateAppSettings(updatedSettings);
+  }
+
+  updateAppSettingsOnDestroy() {
+    const updatedSettings: ISettings = {
+      appSidebarNone: false,
+      appHeaderNone: false,
+      appContentClass: '',
+    };
+    this.appSettings.updateAppSettings(updatedSettings);
   }
 
   submit(form: FormGroup) {

@@ -1,5 +1,5 @@
-import { Component, ChangeDetectorRef, AfterViewInit } from '@angular/core';
-import { AppSettings } from '../../services/app-settings.service';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
+import { AppSettings, ISettings } from '../../services/app-settings.service';
 import { CustomErrorStateMatcher } from '../../shared/helpers/custom-error-state-macher';
 import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
 import CONFIG from '../../../config/client.config';
@@ -23,7 +23,7 @@ import { TokenInvalidError } from 'src/app/auth/domain/auth.exceptions';
   templateUrl: './restore-password.component.html',
   styleUrls: ['./restore-password.component.scss'],
 })
-export class RestorePasswordComponent implements AfterViewInit {
+export class RestorePasswordComponent implements OnInit {
   matcher = new CustomErrorStateMatcher();
   config = CONFIG;
   public pageRoutes = PageRoutes;
@@ -65,16 +65,34 @@ export class RestorePasswordComponent implements AfterViewInit {
     private router: Router
   ) {}
 
-  ngAfterViewInit() {
-    this.appSettings.appSidebarNone = true;
-    this.appSettings.appHeaderNone = true;
-    this.appSettings.appContentClass = 'p-0';
-    this.cdref.detectChanges();
+  ngOnInit() {
+    setTimeout(() => {
+      this.updateAppSettingsOnInint();
+      this.cdref.detectChanges();
+    });
   }
 
   ngOnDestroy() {
-    this.appSettings.appSidebarNone = false;
-    this.appSettings.appHeaderNone = false;
+    this.updateAppSettingsOnDestroy();
+    this.cdref.detectChanges();
+  }
+
+  updateAppSettingsOnInint() {
+    const updatedSettings: ISettings = {
+      appHeaderNone: true,
+      appSidebarNone: true,
+      appContentClass: 'p-0',
+    };
+    this.appSettings.updateAppSettings(updatedSettings);
+  }
+
+  updateAppSettingsOnDestroy() {
+    const updatedSettings: ISettings = {
+      appSidebarNone: false,
+      appHeaderNone: false,
+      appContentClass: '',
+    };
+    this.appSettings.updateAppSettings(updatedSettings);
   }
 
   submit(form: FormGroup) {
