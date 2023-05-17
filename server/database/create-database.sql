@@ -40,7 +40,7 @@ FOREIGN KEY (role_id) REFERENCES roles(role_id)
 );
 
 CREATE TABLE `password_history` (
-  password_id INT NOT NULL AUTO_INCREMENT,
+  password_id INT(11) NOT NULL AUTO_INCREMENT,
   password VARCHAR(255) NOT NULL,
   user_id CHAR(36) NOT NULL,
   created_at datetime DEFAULT CURRENT_TIMESTAMP,
@@ -50,7 +50,27 @@ CREATE TABLE `password_history` (
   FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
 
+CREATE TABLE partner_type (
+   partner_type_id INT(11) NOT NULL AUTO_INCREMENT,
+   name VARCHAR(255) NOT NULL,
+   PRIMARY KEY (partner_type_id),
+);
 
+
+INSERT INTO partner_type (name) VALUES ('Usuario');
+INSERT INTO partner_type (name) VALUES ('Directiva');
+INSERT INTO partner_type (name) VALUES ('Colaborador');
+INSERT INTO partner_type (name) VALUES ('Honorario');
+INSERT INTO partner_type (name) VALUES ('Fundador');
+
+
+CREATE TABLE fees(
+    fees_id INT(11) NOT NULL AUTO_INCREMENT,
+    partner_id INT(11) NOT NULL,
+    expiration datetime NOT NULL,
+    paid TINYINT(1) DEFAULT 0,
+    FOREIGN KEY (partner_id) REFERENCES partners (partner_id)       
+)
 
 CREATE TABLE partners (
 partner_id CHAR(36) PRIMARY KEY,
@@ -61,19 +81,25 @@ surname VARCHAR(255) NOT NULL,
 email VARCHAR(255) NOT NULL UNIQUE,
 phone VARCHAR(20) NOT NULL,
 address VARCHAR(255) NOT NULL,
+dni VARCHAR(12) NOT NULL,
 birth_date datetime NOT NULL,
 registration datetime DEFAULT NULL,
 leaves datetime DEFAULT NULL,
-position_id INT(11) NOT NULL
-    user_created CHAR(36) DEFAULT NULL,
-    user_updated CHAR(36) DEFAULT NULL,
-    created_at datetime DEFAULT CURRENT_TIMESTAMP,
-    updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at datetime DEFAULT NULL,
-    INDEX partners_name (name),
-    INDEX surname_name (surname),
-    INDEX partners_acces_code (acces_code),
-    INDEX partners_number (number)
+cannabis_month  DECIMAL(10,2) NOT NULL,
+hash_month  DECIMAL(10,2) NOT NULL,
+extractions_month  DECIMAL(10,2) NOT NULL,
+others_month  DECIMAL(10,2) NOT NULL,
+partner_type_id INT(11) NOT NULL
+user_created CHAR(36) DEFAULT NULL,
+user_updated CHAR(36) DEFAULT NULL,
+created_at datetime DEFAULT CURRENT_TIMESTAMP,
+updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+deleted_at datetime DEFAULT NULL,
+FOREIGN KEY (partner_type_id) REFERENCES partner_type(partner_type_id),
+INDEX partners_name (name),
+INDEX surname_name (surname),
+INDEX partners_acces_code (acces_code),
+INDEX partners_number (number)
 );
 
 
@@ -85,12 +111,12 @@ phone VARCHAR(20) NOT NULL,
 address VARCHAR(255) NOT NULL,
 country VARCHAR(255) NOT NULL,
 type ENUM('mancomunados', 'terceros') NOT NULL,
-    user_created CHAR(36) DEFAULT NULL,
-    user_updated CHAR(36) DEFAULT NULL,
-    created_at datetime DEFAULT CURRENT_TIMESTAMP,
-    updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at datetime DEFAULT NULL,
-    INDEX providers_name (name)
+user_created CHAR(36) DEFAULT NULL,
+user_updated CHAR(36) DEFAULT NULL,
+created_at datetime DEFAULT CURRENT_TIMESTAMP,
+updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+deleted_at datetime DEFAULT NULL,
+INDEX providers_name (name)
 );
 
 
@@ -277,7 +303,7 @@ CREATE TABLE debts (
     sale_id INT(11) NOT NULL,
     amount DECIMAL(10,2) NOT NULL,
     date_occurred DATE NOT NULL,
-    paid BOOLEAN DEFAULT FALSE,
+    paid TINYINT(1) DEFAULT 0,
     user_created CHAR(36) DEFAULT NULL,
     user_updated CHAR(36) DEFAULT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
