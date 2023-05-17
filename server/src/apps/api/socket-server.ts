@@ -1,13 +1,12 @@
 import * as dotenv from "dotenv";
 import { Server, Socket } from "socket.io";
 import Logger from "../utils/logger";
-import setup from "../../config/app-config";
+import SETUP from "../../config/app-config";
 import { GetUserUseCase } from "../../modules/users/application";
 import { IUserDTO } from "../../modules/users/application/user.dto";
 import { UserMapper } from "../../modules/users/application/user-dto.mapper";
 
 dotenv.config();
-const SETUP = setup;
 
 class SocketServer {
   userMapper = new UserMapper();
@@ -21,19 +20,32 @@ class SocketServer {
     this.io = new Server(httpServer, {
       cors:
         process.env.NODE_ENV === "prod"
-          ? setup.CORS_IO.REMOTE
-          : setup.CORS_IO.LOCAL,
+          ? SETUP.CORS_IO.REMOTE
+          : SETUP.CORS_IO.LOCAL,
     });
 
     this.setupEventHandlers();
   }
 
   private setupEventHandlers() {
+    // Connected
     this.io.on("connection", (socket: Socket) => {
       Logger.debug(`Socket connected: ${socket.id}`);
 
       socket.on("registerActiveUser", async (userId: string) => {
         try {
+          // Verify if user is already registered
+          const existingUser = this.activeUsers.find(
+            (user) => user.user_id === userId
+          );
+          // If user is already registered do nothing
+          if (existingUser) {
+            Logger.debug(`socket-io : User already registered: ${userId}`);
+            return;
+          }
+
+          // Create user and push to active users list
+          // TODO: Handle error uid not found
           const user = await this.getUserService.getUser(userId);
           this.activeUsers.push(this.userMapper.toDTO(user));
           Logger.debug(`socket-io : User registerd: ${userId}`);
@@ -43,6 +55,7 @@ class SocketServer {
         }
       });
 
+      // On logout
       socket.on("unRegisterActiveUser", (userId: string) => {
         this.activeUsers = this.activeUsers.filter(
           (user) => user.user_id !== userId
@@ -50,10 +63,12 @@ class SocketServer {
         Logger.debug(`socket-io : User unregistered: ${socket.id}`);
       });
 
+      // Get active users
       socket.on("getActiveUsers", () => {
         socket.emit("activeUsersList", this.activeUsers);
       });
 
+      // Kick user
       socket.on("logoutActiveUser", (userId: string) => {
         socket.emit("removeToken", userId);
         this.activeUsers = this.activeUsers.filter(
@@ -62,9 +77,8 @@ class SocketServer {
         Logger.debug(`socket-io : Logout user ${userId}`);
       });
 
-      // Evento para detectar desconexión
+      // Disconnected (app closed)
       socket.on("disconnect", () => {
-        // Remover usuario activo al desconectar
         this.activeUsers = this.activeUsers.filter(
           (user) => user.user_id !== socket.id
         );

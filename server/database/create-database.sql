@@ -54,19 +54,25 @@ CREATE TABLE `password_history` (
 
 CREATE TABLE partners (
 partner_id CHAR(36) PRIMARY KEY,
-number CHAR(36) NOT NULL,
+acces_code CHAR(36) DEFAULT NULL,
+number INT(11) NOT NULL,
 name VARCHAR(255) NOT NULL,
+surname VARCHAR(255) NOT NULL,
 email VARCHAR(255) NOT NULL UNIQUE,
 phone VARCHAR(20) NOT NULL,
 address VARCHAR(255) NOT NULL,
+birth_date datetime NOT NULL,
 registration datetime DEFAULT NULL,
 leaves datetime DEFAULT NULL,
+position_id INT(11) NOT NULL
     user_created CHAR(36) DEFAULT NULL,
     user_updated CHAR(36) DEFAULT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,
     INDEX partners_name (name),
+    INDEX surname_name (surname),
+    INDEX partners_acces_code (acces_code),
     INDEX partners_number (number)
 );
 

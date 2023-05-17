@@ -13,6 +13,7 @@ import { SignoutUseCase } from '../auth/application/use-cases/signout.use-case';
 import { Subject, takeUntil } from 'rxjs';
 import { Router } from '@angular/router';
 import { PageRoutes } from './pages/pages-info.config';
+import { AuthToken } from '../auth/domain/token';
 
 @Component({
   selector: 'app-root',
@@ -31,7 +32,8 @@ export class AppComponent implements OnInit, OnDestroy {
     @Inject('usersIO') private readonly userIOAdapter: UserIOAdapter,
     private signoutService: SignoutUseCase,
     private router: Router,
-    private cdref: ChangeDetectorRef
+    private cdref: ChangeDetectorRef,
+    private authTokenService: AuthToken
   ) {
     this.userIOAdapter.createServer();
     this.getKicked();
@@ -67,6 +69,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.checkTokenOnInit();
     this.appSettings = this.appSettingsService.getAppSettings();
     this.appSettingsService.getAppSettingsChanges().subscribe((settings) => {
       this.appSettings = settings;
@@ -111,5 +114,13 @@ export class AppComponent implements OnInit, OnDestroy {
           }
         },
       });
+  }
+
+  checkTokenOnInit() {
+    const token = this.authTokenService.getToken();
+    if (token) {
+      const uid = this.authTokenService.getUserID();
+      this.userIOAdapter.registerActiveUser(uid);
+    }
   }
 }
