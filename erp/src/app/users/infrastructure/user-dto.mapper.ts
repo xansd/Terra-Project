@@ -32,7 +32,6 @@ export class UserDTOMapper implements IDTOMapper<IUser, IUserDTO> {
 
   // Convierte un dominio a un objeto DTO
   toDTO(domain: IUser): IUserDTO {
-    console.log(domain);
     const {
       user_id,
       email,

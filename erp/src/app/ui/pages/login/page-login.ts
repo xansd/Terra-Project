@@ -104,6 +104,10 @@ export class LoginPage implements OnInit {
             this.router.navigateByUrl(PageRoutes.HOME);
           }
         },
+        error: (err: any) => {
+          console.log(err);
+          this.errorHandler.handleUnkonwError(err);
+        },
       });
   }
 

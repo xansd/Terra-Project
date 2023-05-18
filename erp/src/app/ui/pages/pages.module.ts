@@ -13,7 +13,6 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { HomePage } from './home/home';
 import { PagesComponent } from './pages.component';
 import { LoginPage } from './login/page-login';
-import { RegisterPage } from './register/page-register';
 import { ErrorPage } from './error/page-error';
 import { PartnersComponent } from './partners/partners.component';
 import { ListUsersComponent } from './users/list-users/list-users.component';
@@ -35,7 +34,6 @@ import { UnRegisterActiveUserUseCase } from 'src/app/users/application/socket-io
     HomePage,
     PagesComponent,
     LoginPage,
-    RegisterPage,
     ErrorPage,
     PartnersComponent,
     UserStatisticsComponent,

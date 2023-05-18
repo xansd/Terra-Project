@@ -7,6 +7,7 @@ import {
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivateUserUseCase } from 'src/app/auth/application/use-cases/activate-user.use-case';
 import { BlockUserUseCase } from 'src/app/auth/application/use-cases/block-user.use-case';
+import { UpdatePasswordUseCase } from 'src/app/auth/application/use-cases/update-password.use-case';
 import { updateRoleUserUseCase } from 'src/app/auth/application/use-cases/update-rol.case-use';
 import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
 import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
@@ -34,6 +35,7 @@ export class EditUserComponent implements OnInit {
     private service: AppStateService,
     private notifier: NotificationAdapter,
     private activateUserService: ActivateUserUseCase,
+    private restorePasswordUseCase: UpdatePasswordUseCase,
     private blockUserService: BlockUserUseCase,
     private updateRoleService: updateRoleUserUseCase,
     private errorHandler: ErrorHandlerService
@@ -62,6 +64,22 @@ export class EditUserComponent implements OnInit {
   onRoleChange(selectElement: HTMLSelectElement) {
     const selectedValue = selectElement.value;
     this.updateRole(User.getRoleNumberFromName(selectedValue));
+  }
+
+  restorePassword(): void {
+    const id = this.user.user_id!;
+    this.restorePasswordUseCase.updatePassword(id, 'reset', true).subscribe({
+      next: (res: any) => {
+        if (res.affectedRows > 0) {
+          this.notifier.showNotification('success', 'Password restablecido');
+          this.user.active = true;
+        } else if (res.statusCode) {
+          this.errorHandler.handleAPIKnowError(res);
+        } else {
+          this.errorHandler.handleUnkonwError(res);
+        }
+      },
+    });
   }
 
   activateUser(): any {

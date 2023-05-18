@@ -17,7 +17,7 @@ export class ErrorHandlerService {
   handleUnkonwError(error: Error) {
     console.error(error);
     // Aquí puedes manejar diferentes tipos de errores y mostrar mensajes de notificación apropiados
-    this.notifier.showNotification('warning', error.message);
+    this.notifier.showNotification('error', error.message);
   }
 
   handleAPIKnowError(response: {

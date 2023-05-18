@@ -20,32 +20,34 @@ export class UpdatePasswordeUseCase implements IUpdatePassword {
     password: string;
     isAdminAction?: boolean;
   }): Promise<void> {
-    const passwordsHistory = await this.userRepository.getPasswordHistory(
+    const passwordsHistory: any = await this.userRepository.getPasswordHistory(
       data.id
     );
 
     // Comprobar la validez del nuevo password
-    if (data.isAdminAction) {
-      // Si es un reseteo de admin se permite el password por defecto
+    if (!data.isAdminAction) {
+      // Creacion del nuevo password aplicando reglas de restricción incluida la de no poder user el password por defecto
+      this.validatedPassword = Password.create(data.password);
+      // Comprobar que la nueva contraseña no coincide con los últimos hashes de contraseñas
+      for (const historyPasswordHash of passwordsHistory.slice(
+        0,
+        this.numberLastPasswordsToCheck
+      )) {
+        const isMatch = await Password.validatePasswordHash(
+          data.password,
+          historyPasswordHash["password"]
+        );
+        if (isMatch) {
+          throw new PasswordHistoryError();
+        }
+      }
+    }
+    // Si es un reseteo de admin se permite el password por defecto y no se comprueba el historial
+    else
       this.validatedPassword = Password.create(
         data.password,
         data.isAdminAction
       );
-    } else this.validatedPassword = Password.create(data.password);
-
-    // Comprobar que la nueva contraseña no coincide con los últimos hashes de contraseñas
-    for (const historyPasswordHash of passwordsHistory.slice(
-      0,
-      this.numberLastPasswordsToCheck
-    )) {
-      const isMatch = await Password.validatePasswordHash(
-        data.password,
-        historyPasswordHash
-      );
-      if (isMatch) {
-        throw new PasswordHistoryError();
-      }
-    }
 
     // Generar el hash de contraseña
     const passwordHash = await Password.genPasswordHash(data.password);

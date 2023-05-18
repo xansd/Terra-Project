@@ -1,9 +1,9 @@
-import { PartnersType } from '../../domain/partner-type.enum';
+import { PartnersType } from '../domain/partner-type.enum';
 
 export interface IPartnerDTO {
-  partner_id: string;
+  partner_id?: string;
   access_code?: string;
-  number: string;
+  number?: string;
   name: string;
   surname: string;
   email: string;

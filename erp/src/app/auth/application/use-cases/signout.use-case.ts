@@ -26,9 +26,12 @@ export class SignoutUseCase implements ISignoutUseCase {
   signoutFromRemote(id: string): boolean {
     try {
       const uid = this.authTokenService.getUserID();
-      this.authTokenService.removeToken();
-      this.userSocketunRegister.unRegisterActiveUserIO(uid);
-      return true;
+      if (uid === id) {
+        this.authTokenService.removeToken();
+        this.userSocketunRegister.unRegisterActiveUserIO(uid);
+        return true;
+      }
+      return false;
     } catch (error) {
       console.log(error);
       return false;

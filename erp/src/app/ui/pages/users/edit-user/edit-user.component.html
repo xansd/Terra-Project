@@ -20,6 +20,19 @@
         </div>
       </div>
 
+      <!--Restore password-->
+      <div class="row">
+        <label for="restore" class="col-sm-4 col-form-label">Password</label>
+        <div class="col-sm-8">
+          <button
+            class="btn btn-secondary float-end"
+            (click)="restorePassword()"
+          >
+            <i class="bi bi-key"> </i> Restablecer
+          </button>
+        </div>
+      </div>
+
       <!--Rol-->
       <div class="row">
         <label for="userRol" class="col-sm-2 col-form-label">Rol:</label>
@@ -66,16 +79,6 @@
         </div>
       </div>
     </div>
-
-    <!--Cerrar sesión-->
-    <!-- <div class="row">
-      <label for="unloggin" class="col-sm-4 col-form-label"
-        >Cerrar sesión</label
-      >
-      <div class="col-sm-8">
-        <button class="btn btn-danger float-end">unloggin</button>
-      </div>
-    </div> -->
 
     <!--<mat-checkbox formControlName="files" [(ngModel)]="checked" ><mat-icon> attach_file</mat-icon></mat-checkbox>-->
   </form>

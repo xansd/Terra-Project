@@ -17,6 +17,7 @@ import { UpdatePasswordUseCase } from 'src/app/auth/application/use-cases/update
 import { AuthToken } from 'src/app/auth/domain/token';
 import { Router } from '@angular/router';
 import { TokenInvalidError } from 'src/app/auth/domain/auth.exceptions';
+import { SignoutUseCase } from 'src/app/auth/application/use-cases/signout.use-case';
 
 @Component({
   selector: 'app-restore-password',
@@ -60,6 +61,7 @@ export class RestorePasswordComponent implements OnInit {
     private errorHandler: ErrorHandlerService,
     private notifier: NotificationAdapter,
     private updatePasswordService: UpdatePasswordUseCase,
+    private sigoutUseCase: SignoutUseCase,
     private tokenService: AuthToken,
     private cdref: ChangeDetectorRef,
     private router: Router
@@ -149,6 +151,11 @@ export class RestorePasswordComponent implements OnInit {
     } else {
       this.password2.setErrors({ matchPasswords: true });
     }
+  }
+
+  cancel() {
+    this.sigoutUseCase.signout();
+    this.router.navigateByUrl(PageRoutes.LOGIN);
   }
 
   get password1(): AbstractControl {

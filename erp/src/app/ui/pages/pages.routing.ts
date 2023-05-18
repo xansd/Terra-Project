@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 import { PagesComponent } from './pages.component';
 import { HomePage } from './home/home';
 import { LoginPage } from './login/page-login';
-import { RegisterPage } from './register/page-register';
 import { ListUsersComponent } from './users/list-users/list-users.component';
 import { UserStatisticsComponent } from './users/user-statistics/user-statistics.component';
 import { RestorePasswordComponent } from './restore-password/restore-password.component';

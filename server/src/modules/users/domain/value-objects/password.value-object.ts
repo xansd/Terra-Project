@@ -43,6 +43,7 @@ export class Password extends ValueObject<string> {
   }
 
   public static async validatePasswordHash(userPassword: string, hash: string) {
-    return await bcrypt.compare(userPassword, hash);
+    const result = await bcrypt.compare(userPassword, hash);
+    return result;
   }
 }

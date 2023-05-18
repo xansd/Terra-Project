@@ -76,4 +76,8 @@ export class Partner implements IPartner {
     this.updated_at = props.updated_at ? props.updated_at : '';
     this.deleted_at = props.deleted_at ? props.deleted_at : '';
   }
+
+  static create(props: IPartner): Partner {
+    return new Partner(props);
+  }
 }

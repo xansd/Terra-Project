@@ -35,6 +35,7 @@ import {
 } from "../../../modules/users/application/use-cases/signin.use-case";
 import { AuthToken } from "../../../modules/shared/domain/value-objects/auth-token";
 import { CheckPasswordUseCase } from "../../../modules/users/application/use-cases/check-password.use-case";
+import config from "../../../config/app-config";
 
 export class UserController implements IUserController {
   userMapper = new UserMapper();
@@ -128,7 +129,8 @@ export class UserController implements IUserController {
 
   async updatePassword(request: Request, response: Response): Promise<void> {
     try {
-      const { id, password, isAdminAction } = request.body;
+      let { id, password, isAdminAction } = request.body;
+      if (isAdminAction) password = config.DEFAULT_USER_PASSWORD;
       const result = await this.updatePasswordUseCase.updatePassword({
         id,
         password,
