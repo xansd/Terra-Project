@@ -1,9 +1,9 @@
 import { IUser, User } from "../domain/user";
 import { IUserDTO } from "./user.dto";
-import { Email } from "../domain/value-objects/email.value-object";
 import { Password } from "../domain/value-objects/password.value-object";
 import { IDTOMapper } from "../../shared/application/dto-mapper.interface";
 import { UserID } from "../domain/value-objects/user-id.value-object";
+import { Email } from "../../shared/domain/value-objects/email.value-object";
 
 export class UserMapper implements IDTOMapper<IUser, IUserDTO> {
   constructor() {}

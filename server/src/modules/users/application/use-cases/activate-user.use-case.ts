@@ -1,4 +1,4 @@
-import { IUserRepository } from "../../domain/user-repository.port";
+import { IUserRepository } from "../../domain/user.repository.port";
 import { UserMapper } from "../user-dto.mapper";
 
 export interface IActivateUser {

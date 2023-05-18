@@ -90,3 +90,5 @@ class SocketServer {
 }
 
 export default SocketServer;
+
+// TODO: Create USE CASES AND DO IMPLEMENTATION TO ACTIVE-USERS.REPOSITURY

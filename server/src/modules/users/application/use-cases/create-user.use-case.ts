@@ -1,11 +1,12 @@
-import { IUserRepository } from "../../domain/user-repository.port";
+import { IUserRepository } from "../../domain/user.repository.port";
 import { UserMapper } from "../user-dto.mapper";
 import { IUser, Role, User, UserAlreadyExistsError } from "../../domain";
 import Logger from "../../../../apps/utils/logger";
 import { Password } from "../../domain/value-objects/password.value-object";
-import { Email } from "../../domain/value-objects/email.value-object";
 import appConfig from "../../../../config/app-config";
 import { UserID } from "../../domain/value-objects/user-id.value-object";
+import { Email } from "../../../shared/domain/value-objects/email.value-object";
+import { DomainValidationError } from "../../../shared/domain/domain-validation.exception";
 
 const CONFIG = appConfig;
 
@@ -29,7 +30,12 @@ export class CreateUserUseCase implements ICreateUser {
       throw userAlreadyExistsError;
     }
 
-    const validatedEmail = Email.create(email);
+    let validatedEmail!: Email;
+    try {
+      validatedEmail = Email.create(email);
+    } catch (error) {
+      throw new DomainValidationError("Formato de email inválido");
+    }
     const passwordHash = await Password.genPasswordHash(
       CONFIG.DEFAULT_USER_PASSWORD!
     );

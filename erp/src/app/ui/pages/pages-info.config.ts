@@ -14,6 +14,6 @@ export enum PageTitle {
 export enum PageIcon {
   HOME = 'bi bi-house-fill',
   USERS = 'bi bi-person-workspace',
-  SETTINGS = 'bi bi-gear-fill',
+  USERS_LIST = 'bi bi-person-lines-fill',
   STATS = 'bi bi-bar-chart-fill',
 }

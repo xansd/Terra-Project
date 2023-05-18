@@ -20,7 +20,7 @@ import { NotifierModule, NotifierOptions } from 'angular-notifier';
 import { NotifierService } from 'angular-notifier';
 import { NotificationAdapter } from '../shared/infraestructure/notifier.adapter';
 import { ErrorCatchingInterceptor } from './interceptors/error.interceptor';
-import { UserIOAdapter } from '../users/infrastructure/user-io.adapter';
+import { UserIORepository } from '../users/infrastructure/user-io.repository';
 
 // Notifier configuration
 const notifierDefaultOptions: NotifierOptions = {
@@ -89,7 +89,7 @@ const notifierDefaultOptions: NotifierOptions = {
       useClass: ErrorCatchingInterceptor,
       multi: true,
     },
-    { provide: 'usersIO', useClass: UserIOAdapter },
+    { provide: 'usersIO', useClass: UserIORepository },
   ],
   bootstrap: [AppComponent],
 })

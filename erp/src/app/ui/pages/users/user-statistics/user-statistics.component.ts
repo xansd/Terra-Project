@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
-import { GetActiveUsersIOUseCase } from 'src/app/users/application/use-cases/socket-io/get-active-users-io.use-case';
-import { LogOutActiveUserUseCase } from 'src/app/users/application/use-cases/socket-io/logout-user-io.use-case';
 import { IUser } from 'src/app/users/domain/user';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { GetActiveUsersIOUseCase } from 'src/app/users/application/socket-io/get-active-users-io.use-case';
+import { LogOutActiveUserUseCase } from 'src/app/users/application/socket-io/logout-user-io.use-case';
 
 @Component({
   selector: 'app-user-statistics',

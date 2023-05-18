@@ -8,7 +8,7 @@ import {
   OnInit,
 } from '@angular/core';
 import { AppSettings, ISettings } from './services/app-settings.service';
-import { UserIOAdapter } from '../users/infrastructure/user-io.adapter';
+import { UserIORepository } from '../users/infrastructure/user-io.repository';
 import { SignoutUseCase } from '../auth/application/use-cases/signout.use-case';
 import { Subject, takeUntil } from 'rxjs';
 import { Router } from '@angular/router';
@@ -29,7 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     private appSettingsService: AppSettings,
-    @Inject('usersIO') private readonly userIOAdapter: UserIOAdapter,
+    @Inject('usersIO') private readonly userIOAdapter: UserIORepository,
     private signoutService: SignoutUseCase,
     private router: Router,
     private cdref: ChangeDetectorRef,

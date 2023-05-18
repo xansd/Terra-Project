@@ -1,4 +1,4 @@
-import { IUserRepository } from "../../domain/user-repository.port";
+import { IUserRepository } from "../../domain/user.repository.port";
 
 export interface IDeleteUser {
   deleteUser(id: string): Promise<void>;

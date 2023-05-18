@@ -1,4 +1,4 @@
-import { Email } from './value-objects/email.value-object';
+import { Email } from '../../shared/domain/value-objects/email.value-object';
 import { Password } from './value-objects/password.value-object';
 import { Roles } from './roles';
 
@@ -36,11 +36,11 @@ export class User implements IUser {
     this.role_id = props.role_id;
     this.password_last_reset = props.password_last_reset;
     this.active = props.active;
-    this.user_created = props.user_created;
-    this.user_updated = props.user_updated;
-    this.created_at = props.created_at;
-    this.updated_at = props.updated_at;
-    this.deleted_at = props.deleted_at;
+    this.user_created = props.user_created ? props.user_created : '';
+    this.user_updated = props.user_updated ? props.user_updated : '';
+    this.created_at = props.created_at ? props.created_at : '';
+    this.updated_at = props.updated_at ? props.updated_at : '';
+    this.deleted_at = props.deleted_at ? props.deleted_at : '';
   }
 
   static create(props: IUser): User {

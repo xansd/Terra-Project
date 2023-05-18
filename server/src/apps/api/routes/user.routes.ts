@@ -7,13 +7,12 @@ import {
   GetAllUsersUseCase,
   GetUserUseCase,
   UpdateRoleUseCase,
-  UpdateUserUseCase,
 } from "../../../modules/users/application";
 import { check } from "express-validator";
 
 import { UpdatePasswordeUseCase } from "../../../modules/users/application/use-cases/update-password.use-case";
 import { catchValidationErrors } from "../error/validate-fileds";
-import { MySqlUserRepository } from "../../../modules/users/infraestructure/mysql/mysql-user.adapter";
+import { MySqlUserRepository } from "../../../modules/users/infrastructure/mysql/mysql-user.adapter";
 import authorize from "../middlewares/authorize";
 import { Role } from "../../../modules/users/domain";
 import { SigninUseCase } from "../../../modules/users/application/use-cases/signin.use-case";
@@ -29,7 +28,6 @@ const createUserUseCase = new CreateUserUseCase(userRepository);
 const getUserUseCase = new GetUserUseCase(userRepository);
 const getAllUsersUseCase = new GetAllUsersUseCase(userRepository);
 const updatePasswordeUseCase = new UpdatePasswordeUseCase(userRepository);
-const updateUserUseCase = new UpdateUserUseCase(userRepository);
 const deleteUserUseCase = new DeleteUserUseCase(userRepository);
 const activateUserUseCase = new ActivateUserUseCase(userRepository);
 const updateRoleUseCase = new UpdateRoleUseCase(userRepository);
@@ -42,7 +40,6 @@ const userController = new UserController(
   getUserUseCase,
   getAllUsersUseCase,
   updatePasswordeUseCase,
-  updateUserUseCase,
   deleteUserUseCase,
   activateUserUseCase,
   updateRoleUseCase,

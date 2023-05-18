@@ -21,14 +21,14 @@ import { UserStatisticsComponent } from './users/user-statistics/user-statistics
 import { EditUserComponent } from './users/edit-user/edit-user.component';
 import { CreateUserComponent } from './users/create-user/create-user.component';
 import { AuthAPIAdapter } from 'src/app/auth/infrastructure/auth-api.adapter';
-import { UsersAPIAdapter } from 'src/app/users/infrastructure/user-api.adapter';
 import { ClickOutsideDirective } from '../directives/click-outside.directive';
 import { getSpaninhPaginatorIntl } from '../shared/helpers/mat-paginator-esp.service';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { RestorePasswordComponent } from './restore-password/restore-password.component';
 import { UsersComponent } from './users/users.component';
-import { RegisterActiveUserUseCase } from 'src/app/users/application/use-cases/socket-io/register-user-io.case-use';
-import { UnRegisterActiveUserUseCase } from 'src/app/users/application/use-cases/socket-io/unregister-user-io.use-case';
+import { UsersAPIRepository } from 'src/app/users/infrastructure/user-api.repository';
+import { RegisterActiveUserUseCase } from 'src/app/users/application/socket-io/register-user-io.case-use';
+import { UnRegisterActiveUserUseCase } from 'src/app/users/application/socket-io/unregister-user-io.use-case';
 
 @NgModule({
   declarations: [
@@ -60,7 +60,7 @@ import { UnRegisterActiveUserUseCase } from 'src/app/users/application/use-cases
     { provide: 'LocalRepository', useClass: LocalStorageRepository },
     { provide: 'JwtTokenDecoder', useClass: JwtTokenDecoder },
     { provide: 'authAPI', useClass: AuthAPIAdapter },
-    { provide: 'usersAPI', useClass: UsersAPIAdapter },
+    { provide: 'usersAPI', useClass: UsersAPIRepository },
     { provide: 'authToken', useClass: AuthToken },
     { provide: 'registerUserIO', useClass: RegisterActiveUserUseCase },
     { provide: 'unRegisterUserIO', useClass: UnRegisterActiveUserUseCase },

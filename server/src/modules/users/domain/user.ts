@@ -1,5 +1,5 @@
+import { Email } from "../../shared/domain/value-objects/email.value-object";
 import { Role } from "./roles.enum";
-import { Email } from "./value-objects/email.value-object";
 import { Password } from "./value-objects/password.value-object";
 import { UserID } from "./value-objects/user-id.value-object";
 
@@ -38,7 +38,7 @@ export class User implements IUser {
     this.password = props.password;
     this.passwordHash = props.passwordHash;
     this.role_id = props.role_id;
-    this.active = props.active || true;
+    this.active = props.active;
     this.password_last_reset = props.password_last_reset;
     this.user_created = props.user_created;
     this.user_updated = props.user_updated;

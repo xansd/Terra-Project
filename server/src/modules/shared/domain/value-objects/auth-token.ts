@@ -1,8 +1,8 @@
 import { IUser, Role } from "../../../users/domain";
-import { Email } from "../../../users/domain/value-objects/email.value-object";
 import { UserID } from "../../../users/domain/value-objects/user-id.value-object";
 import jwt from "jsonwebtoken";
 import config from "../../../../config/app-config";
+import { Email } from "./email.value-object";
 
 export interface IPayload {
   id: UserID;

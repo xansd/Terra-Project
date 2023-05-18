@@ -1,5 +1,5 @@
 import { IUser } from "../../domain";
-import { ActiveUserRepository } from "../../infraestructure/active-user.repository";
+import { ActiveUserRepository } from "../../infrastructure/active-user.repository";
 import { GetUserUseCase } from "./get-user.use-case";
 
 export interface IUserTrackingUseCase {

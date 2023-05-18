@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { Roles } from './roles';
 import { IUser } from './user';
-import { Email } from './value-objects/email.value-object';
+import { Email } from '../../shared/domain/value-objects/email.value-object';
 
 export interface IUserAPIPort {
   getAllUsers(): Observable<IUser[]>;

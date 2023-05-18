@@ -4,7 +4,6 @@ import {
   GetAllUsersUseCase,
   UpdatePasswordeUseCase,
   DeleteUserUseCase,
-  UpdateUserUseCase,
   ActivateUserUseCase,
   UpdateRoleUseCase,
 } from "../../../modules/users/application";
@@ -14,7 +13,6 @@ import {
   DefaultPasswordError,
   InvalidCredentialsError,
   PasswordHistoryError,
-  Role,
   UserAlreadyExistsError,
   UserDoesNotExistError,
   UserHasToResetError,
@@ -29,7 +27,6 @@ import {
   Conflict,
   Forbidden,
   HasToReset,
-  Unauthorized,
 } from "../error/http-error";
 import { DomainValidationError } from "../../../modules/shared/domain/domain-validation.exception";
 import {
@@ -47,7 +44,6 @@ export class UserController implements IUserController {
     private readonly getUserUseCase: GetUserUseCase,
     private readonly getAllUsersUseCase: GetAllUsersUseCase,
     private readonly updatePasswordUseCase: UpdatePasswordeUseCase,
-    private readonly updateUserUseCase: UpdateUserUseCase,
     private readonly deleteUserUseCase: DeleteUserUseCase,
     private readonly activateUserUseCase: ActivateUserUseCase,
     private readonly updateRoleUseCase: UpdateRoleUseCase,
@@ -101,7 +97,7 @@ export class UserController implements IUserController {
     try {
       const users = await this.getAllUsersUseCase.getAllUsers();
       const usersDTOs = this.userMapper.toDTOList(users);
-      response.json(this.userMapper.toDTOList(users));
+      response.json(usersDTOs);
     } catch (error: any) {
       if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));
@@ -196,20 +192,20 @@ export class UserController implements IUserController {
     }
   }
 
-  async update(request: Request, response: Response): Promise<void> {
-    try {
-      const result = await this.updateUserUseCase.updateUser(request.body);
-      response.send(result);
-    } catch (error) {
-      if (error instanceof DomainValidationError) {
-        response.send(BadRequest(error.message));
-      } else if (error instanceof UserDoesNotExistError) {
-        response.send(NotFound(error.message));
-      } else {
-        response.send(InternalServerError(error));
-      }
-    }
-  }
+  // async update(request: Request, response: Response): Promise<void> {
+  //   try {
+  //     const result = await this.updateUserUseCase.updateUser(request.body);
+  //     response.send(result);
+  //   } catch (error) {
+  //     if (error instanceof DomainValidationError) {
+  //       response.send(BadRequest(error.message));
+  //     } else if (error instanceof UserDoesNotExistError) {
+  //       response.send(NotFound(error.message));
+  //     } else {
+  //       response.send(InternalServerError(error));
+  //     }
+  //   }
+  // }
 
   async delete(request: Request, response: Response): Promise<void> {
     const { id } = request.params;

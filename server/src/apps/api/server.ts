@@ -18,7 +18,7 @@ import {
 import { Server, Socket } from "socket.io";
 import SocketServer from "./socket-server";
 import { GetUserUseCase } from "../../modules/users/application";
-import { MySqlUserRepository } from "../../modules/users/infraestructure/mysql/mysql-user.adapter";
+import { MySqlUserRepository } from "../../modules/users/infrastructure/mysql/mysql-user.adapter";
 
 export class AppServer {
   public app: Application;

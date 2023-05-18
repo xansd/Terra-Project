@@ -53,11 +53,12 @@ CREATE TABLE `password_history` (
 CREATE TABLE partner_type (
    partner_type_id INT(11) NOT NULL AUTO_INCREMENT,
    name VARCHAR(255) NOT NULL,
-   PRIMARY KEY (partner_type_id),
+   PRIMARY KEY (partner_type_id)
 );
 
 
 INSERT INTO partner_type (name) VALUES ('Usuario');
+INSERT INTO partner_type (name) VALUES ('Usuario/Terapéutico');
 INSERT INTO partner_type (name) VALUES ('Directiva');
 INSERT INTO partner_type (name) VALUES ('Colaborador');
 INSERT INTO partner_type (name) VALUES ('Honorario');
@@ -65,12 +66,24 @@ INSERT INTO partner_type (name) VALUES ('Fundador');
 
 
 CREATE TABLE fees(
-    fees_id INT(11) NOT NULL AUTO_INCREMENT,
-    partner_id INT(11) NOT NULL,
+    fees_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    partner_id CHAR(36) NOT NULL,
     expiration datetime NOT NULL,
     paid TINYINT(1) DEFAULT 0,
     FOREIGN KEY (partner_id) REFERENCES partners (partner_id)       
-)
+);
+
+CREATE TABLE partner_documents (
+    document_id INT(11) NOT NULL AUTO_INCREMENT,
+    partner_id CHAR(36) NOT NULL,
+    document_type ENUM('dni/nie/pasaporte') NOT NULL,
+    document_url VARCHAR(255) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (document_id),
+    FOREIGN KEY (partner_id) REFERENCES partners(partner_id)
+);
+
 
 CREATE TABLE partners (
 partner_id CHAR(36) PRIMARY KEY,
@@ -89,7 +102,8 @@ cannabis_month  DECIMAL(10,2) NOT NULL,
 hash_month  DECIMAL(10,2) NOT NULL,
 extractions_month  DECIMAL(10,2) NOT NULL,
 others_month  DECIMAL(10,2) NOT NULL,
-partner_type_id INT(11) NOT NULL
+partner_type_id INT(11) NOT NULL,
+active TINYINT(1) DEFAULT 1,
 user_created CHAR(36) DEFAULT NULL,
 user_updated CHAR(36) DEFAULT NULL,
 created_at datetime DEFAULT CURRENT_TIMESTAMP,

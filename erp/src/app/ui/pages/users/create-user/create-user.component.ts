@@ -7,11 +7,11 @@ import {
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { DomainValidationError } from 'src/app/shared/domain/domain-validation.exception';
+import { Email } from 'src/app/shared/domain/value-objects/email.value-object';
 import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
 import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
-import { CreateUserUseCase } from 'src/app/users/application/use-cases/create-user.use-case';
+import { CreateUserUseCase } from 'src/app/users/application/create-user.use-case';
 import { Roles } from 'src/app/users/domain/roles';
-import { Email } from 'src/app/users/domain/value-objects/email.value-object';
 
 @Component({
   selector: 'app-create-user',

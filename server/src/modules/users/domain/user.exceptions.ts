@@ -1,4 +1,4 @@
-import { Email } from "./value-objects/email.value-object";
+import { Email } from "../../shared/domain/value-objects/email.value-object";
 
 export class UserAlreadyExistsError extends Error {
   constructor(email: Email | string) {

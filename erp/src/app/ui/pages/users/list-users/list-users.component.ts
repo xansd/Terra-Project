@@ -7,11 +7,11 @@ import { IUser, User } from 'src/app/users/domain/user';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { EditUserComponent } from '../edit-user/edit-user.component';
-import { GetAllUsersUserCase } from 'src/app/users/application/use-cases/get-all-users.use-case';
 import { NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { CreateUserComponent } from '../create-user/create-user.component';
-import { UserDTOMapper } from 'src/app/users/application/user-dto.mapper';
-import { IUserDTO } from 'src/app/users/application/user.dto';
+import { UserDTOMapper } from 'src/app/users/infrastructure/user-dto.mapper';
+import { IUserDTO } from 'src/app/users/infrastructure/user.dto';
+import { GetAllUsersUserCase } from 'src/app/users/application/get-all-users.use-case';
 
 const modalOptions: NgbModalOptions = {
   backdrop: 'static',
