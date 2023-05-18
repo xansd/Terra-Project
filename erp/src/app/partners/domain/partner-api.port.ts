@@ -1,10 +1,10 @@
 import { Observable } from 'rxjs';
 import { IPartner } from './partner';
 
-export interface IPartnerPort {
+export interface IPartnerAPIPort {
   getPartner(partnerId: string): Observable<IPartner>;
   getAllPartners(): Observable<IPartner[]>;
-  createPartner(): Observable<void>;
+  createPartner(partner: IPartner): Observable<void>;
   updatePartner(partner: IPartner): Observable<void>;
   deletePartner(partnerId: string): Observable<void>;
   makeActive(partnerId: string): Observable<void>;

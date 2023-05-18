@@ -19,10 +19,6 @@ export class UsersAPIRepository implements IUserAPIPort {
     this.userDTOMapper = new UserDTOMapper();
   }
 
-  getUserByID(id: string): Observable<IUser> {
-    throw new Error('Method not implemented.');
-  }
-
   getAllUsers(): Observable<IUser[]> {
     return this.http
       .get<IUserDTO[]>(`${API_URI}`, { withCredentials: true })

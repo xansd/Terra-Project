@@ -2,7 +2,7 @@ import { IDTOMapper } from 'src/app/shared/application/dto-mapper.interface';
 import { IPartner, Partner } from '../domain/partner';
 import { IPartnerDTO } from './partner.dto';
 
-export class UserDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
+export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
   constructor() {}
   // Convierte un objeto DTO a un dominio
   toDomain(dto: IPartnerDTO): IPartner {

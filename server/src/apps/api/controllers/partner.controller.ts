@@ -17,15 +17,17 @@ import {
   PartnerDoesNotExistError,
   PartnersNotFoundError,
 } from "../../../modules/partners/domain/partner.exceptions";
+import { ManagePartnersDocumentationUseCase } from "../../../modules/partners/application/use-cases/manage-partners-documentd.use-case";
 
-export class UserController {
+export class PartnerController {
   partnerMapper = new PartnerMapper();
   constructor(
     private readonly createPartnerUseCase: CreatePartnerUseCase,
     private readonly getPartnersUseCase: GetPartnerUseCase,
     private readonly deletePartnerUseCase: DeletePartnerUseCase,
     private readonly toggleActivePartnerUserCase: ToggleActivePartnerUseCase,
-    private readonly updatePartnerUseCase: UpdatePartnerUseCase
+    private readonly updatePartnerUseCase: UpdatePartnerUseCase,
+    private readonly managePartnerDocumentationUseCase: ManagePartnersDocumentationUseCase
   ) {}
 
   async getById(request: Request, response: Response): Promise<void> {
@@ -144,4 +146,9 @@ export class UserController {
       }
     }
   }
+
+  async uploadDocument(request: Request, response: Response): Promise<void> {}
+  async getDocument(request: Request, response: Response): Promise<void> {}
+  async getAllDocuments(request: Request, response: Response): Promise<void> {}
+  async deleteDocument(request: Request, response: Response): Promise<void> {}
 }

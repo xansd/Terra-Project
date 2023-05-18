@@ -1,14 +1,14 @@
 import { IPartnerRepository } from "../../domain/partner.repository";
 
-export interface IManagePartnersDocumentation {
+export interface IManagePartnersDocumentationUseCase {
   uploadPartnerDocument(partnerId: string, file: File): Promise<void>;
   deletePartnerDocument(partnerId: string, documentId: string): Promise<void>;
   getPartnerDocument(partnerId: string, documentId: string): Promise<File>;
   getPartnerDocuments(partnerId: string): Promise<File[]>;
 }
 
-export class ManagePartnersDocumentation
-  implements IManagePartnersDocumentation
+export class ManagePartnersDocumentationUseCase
+  implements IManagePartnersDocumentationUseCase
 {
   constructor(private readonly userRepository: IPartnerRepository) {}
   uploadPartnerDocument(partnerId: string, file: File): Promise<void> {

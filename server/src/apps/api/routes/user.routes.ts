@@ -123,13 +123,6 @@ router.post(
   userController.checkPassword.bind(userController)
 );
 
-// //GET USERS CONNECTED
-// router.get(
-//   "/users-connected",
-//   authorize([Role.ADMIN]),
-//   userController.getAllUsersConnected.bind(userController)
-// );
-
 // UPDATE ROLE
 router.put(
   "/role/:id",
