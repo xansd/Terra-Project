@@ -14,6 +14,7 @@
       <div
         *ngIf="!menu.is_divider && !menu.is_header"
         class="menu-item"
+        routerLinkActive="active"
         [ngClass]="{
           active:
             (menu.path && isActive(menu.path)) ||
@@ -36,6 +37,7 @@
           <ng-template ngFor let-childmenu [ngForOf]="menu.children">
             <div
               class="menu-item"
+              routerLinkActive="active"
               [ngClass]="{ active: isActive(childmenu.path) }"
             >
               <a [routerLink]="childmenu.path" class="menu-link">

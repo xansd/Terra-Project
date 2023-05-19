@@ -63,7 +63,7 @@ export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
   toDTO(domain: IPartner): IPartnerDTO {
     return {
       partner_id: domain.partner_id.value,
-      access_code: domain.access_code ? domain.access_code : undefined,
+      access_code: undefined,
       number: domain.number.value,
       name: domain.name,
       surname: domain.surname,

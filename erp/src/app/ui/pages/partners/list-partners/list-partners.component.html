@@ -1,0 +1,263 @@
+<div class="partners-container">
+  <div class="row justify-content-center">
+    <div class="col-xl-12">
+      <div class="mb-5">
+        <card>
+          <card-body class="card-body">
+            <div class="text-light text-uppercase mb-3 text-center fw-600 fs-5">
+              Listado de socios
+            </div>
+            <div class="controls-table">
+              <div class="actions-table">
+                <button
+                  class="btn btn-outline-success"
+                  (click)="openCreatePartnerDialog()"
+                >
+                  <i class="bi bi-person-fill-add"></i> Nuevo
+                </button>
+              </div>
+              <div class="filter-table">
+                <input
+                  (keyup)="applyFilter($event)"
+                  #input
+                  class="form-control"
+                  placeholder="Buscar en la tabla..."
+                />
+              </div>
+            </div>
+
+            <div
+              class="text-inverse text-opacity-50 mb-3 table-container table-responsive"
+            >
+              <mat-table
+                mat-table
+                [dataSource]="dataSource"
+                matSort
+                multiTemplateDataRows
+                #usersListTable
+              >
+                <!-- ID column -->
+                <ng-container matColumnDef="partner_id">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header
+                    >ID</mat-header-cell
+                  >
+                  <mat-cell *matCellDef="let row">
+                    <div class="mobile-label">ID:</div>
+                    <div class="cell-value">{{ row.partner_id }}</div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Number column -->
+                <ng-container matColumnDef="number">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header
+                    >Número</mat-header-cell
+                  >
+                  <mat-cell *matCellDef="let row">
+                    <div class="mobile-label">Número:</div>
+                    <div class="cell-value">
+                      {{ row.number }}
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- name column -->
+                <ng-container matColumnDef="name">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header
+                    >Nombre</mat-header-cell
+                  >
+                  <mat-cell *matCellDef="let row">
+                    <div class="mobile-label">Nombre:</div>
+                    <div class="cell-value">
+                      {{ row.surname }}, {{ row.name }}
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- wallet column -->
+                <ng-container matColumnDef="wallet">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header
+                    >Monedero</mat-header-cell
+                  >
+                  <mat-cell *matCellDef="let row">
+                    <div class="mobile-label">wallet:</div>
+                    <div class="cell-value">
+                      {{ 0 | currency : "EUR" : "symbol" : "1.2-2" }}
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- fee column -->
+                <ng-container matColumnDef="fee">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header
+                    >Cuota</mat-header-cell
+                  >
+                  <mat-cell *matCellDef="let row">
+                    <div class="mobile-label">Cuota:</div>
+                    <div class="cell-value">
+                      <span
+                        *ngIf="true"
+                        class="badge border border-success text-success px-2 pt-5px pb-5px rounded fs-12px d-inline-flex align-items-center"
+                        ><i class="fa fa-circle fs-9px fa-fw me-5px"></i>
+                        PAGADA</span
+                      >
+                      <span
+                        *ngIf="false"
+                        class="badge border border-danger text-danger px-2 pt-5px pb-5px rounded fs-12px d-inline-flex align-items-center"
+                        ><i class="fa fa-circle fs-9px fa-fw me-5px"></i>
+                        PENDING</span
+                      >
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- registration column -->
+                <ng-container matColumnDef="registration">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header
+                    >Alta</mat-header-cell
+                  >
+                  <mat-cell *matCellDef="let row">
+                    <div class="mobile-label">Alta:</div>
+                    <div class="cell-value"></div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- leaves column -->
+                <ng-container matColumnDef="leaves">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header
+                    >Baja</mat-header-cell
+                  >
+                  <mat-cell *matCellDef="let row">
+                    <div class="mobile-label">Baja:</div>
+                    <div class="cell-value">Sin datos</div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- State column -->
+                <ng-container matColumnDef="active">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header
+                    >Estado</mat-header-cell
+                  >
+                  <mat-cell *matCellDef="let row">
+                    <div class="mobile-label">Estado:</div>
+                    <div class="cell-value">
+                      <span
+                        *ngIf="row.active"
+                        class="badge border border-success text-success px-2 pt-5px pb-5px rounded fs-12px d-inline-flex align-items-center"
+                        ><i class="fa fa-circle fs-9px fa-fw me-5px"></i>
+                        ACTIVO</span
+                      >
+                      <span
+                        *ngIf="!row.active"
+                        class="badge border border-warning text-warning px-2 pt-5px pb-5px rounded fs-12px d-inline-flex align-items-center"
+                        ><i class="fa fa-circle fs-9px fa-fw me-5px"></i>
+                        INACTIVO</span
+                      >
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- cannabis column -->
+                <ng-container matColumnDef="cannabis">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header
+                    >Cannabis</mat-header-cell
+                  >
+                  <mat-cell *matCellDef="let row">
+                    <div class="mobile-label">Cannabis:</div>
+                    <div class="cell-value">
+                      {{ 0 | number : "1.2-2" }}
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- hash column -->
+                <ng-container matColumnDef="hash">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header
+                    >Hash
+                  </mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    <div class="mobile-label">Hash:</div>
+                    <div class="cell-value">
+                      {{ 0 | number : "1.2-2" }}
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- extractions column -->
+                <ng-container matColumnDef="extractions">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>
+                    Extracc.</mat-header-cell
+                  >
+                  <mat-cell *matCellDef="let row">
+                    <div class="mobile-label">Extracc.:</div>
+                    <div class="cell-value">
+                      {{ 0 | number : "1.2-2" }}
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- actions column -->
+                <ng-container matColumnDef="actions">
+                  <mat-header-cell *matHeaderCellDef>Acción</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    <div
+                      class="btn-group btn-group-toggle"
+                      data-toggle="buttons"
+                    >
+                      <button
+                        (click)="openEditPartnerDialog(row)"
+                        type="button"
+                        class="btn btn-primary"
+                        title="Gestión de usuario"
+                      >
+                        <i class="bi bi-pencil-square"> </i>
+                      </button>
+
+                      <button
+                        (click)="openEditPartnerDialog(row)"
+                        type="button"
+                        class="btn btn-danger"
+                        title="Gestión de usuario"
+                      >
+                        <i class="bi bi-person-x"> </i>
+                      </button>
+                    </div>
+                  </mat-cell>
+                </ng-container>
+                <mat-header-row
+                  mat-header-row
+                  *matHeaderRowDef="getDisplayedColumns(); sticky: true"
+                ></mat-header-row>
+                <mat-row
+                  mat-row
+                  *matRowDef="let row; columns: getDisplayedColumns()"
+                  [ngClass]="{
+                    'selected-row': selectedRowIndex === row.partner_id
+                  }"
+                  (click)="selectRow(row.partner_id)"
+                ></mat-row>
+                <!-- Row shown when there is no matching data. -->
+                <tr class="mat-row" *matNoDataRow>
+                  <td
+                    class="mat-cell no-data"
+                    [attr.colspan]="getDisplayedColumns().length"
+                    style="width: 100%"
+                  >
+                    Sin datos
+                  </td>
+                </tr>
+              </mat-table>
+            </div></card-body
+          >
+
+          <div class="mat-paginatory">
+            <mat-paginator
+              [length]="100"
+              [pageSize]="10"
+              [pageSizeOptions]="[5, 10, 15, 20, 25, 50, 100]"
+            ></mat-paginator>
+          </div>
+        </card>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { PageIcon } from '../pages-info.config';
+import { PageIcon, PageRoutes } from '../pages-info.config';
 
 @Component({
   selector: 'app-users',
@@ -8,4 +8,6 @@ import { PageIcon } from '../pages-info.config';
 })
 export class UsersComponent {
   icons = PageIcon;
+  usersRoutes = PageRoutes;
+  constructor() {}
 }

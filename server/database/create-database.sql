@@ -73,15 +73,42 @@ CREATE TABLE fees(
     FOREIGN KEY (partner_id) REFERENCES partners (partner_id)       
 );
 
-CREATE TABLE partner_documents (
-    document_id INT(11) NOT NULL AUTO_INCREMENT,
-    partner_id CHAR(36) NOT NULL,
-    document_type ENUM('dni/nie/pasaporte') NOT NULL,
+CREATE TABLE file_type (
+    file_type_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT
+);
+
+INSERT INTO file_type (name, description) VALUES ('DNI/NIE', '');
+INSERT INTO file_type (name, description) VALUES ('IMAGE', '');
+INSERT INTO file_type (name, description) VALUES ('COVER', '');
+INSERT INTO file_type (name, description) VALUES ('ALTA', '');
+INSERT INTO file_type (name, description) VALUES ('CUOTA', '');
+INSERT INTO file_type (name, description) VALUES ('FACTURA', '');
+
+CREATE TABLE entity_type (
+    entity_type_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT
+);
+
+INSERT INTO entity_type (name, description) VALUES ('SOCIOS', '');
+INSERT INTO entity_type (name, description) VALUES ('PRODUCTOS', '');
+INSERT INTO entity_type (name, description) VALUES ('INGRESOS', '');
+INSERT INTO entity_type (name, description) VALUES ('GASTOS', '');
+
+
+CREATE TABLE files (
+    file_id INT(11) NOT NULL AUTO_INCREMENT,
+    reference_id CHAR(36) NOT NULL,
+    entity_type_id INT(11) NOT NULL,
+    file_type_id INT(11) NOT NULL,
     document_url VARCHAR(255) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    PRIMARY KEY (document_id),
-    FOREIGN KEY (partner_id) REFERENCES partners(partner_id)
+    PRIMARY KEY (file_id),
+    FOREIGN KEY (entity_type_id) REFERENCES entity_type (entity_type_id),
+    FOREIGN KEY (file_type_id) REFERENCES file_type (file_type_id)
 );
 
 

@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { PageIcon } from '../pages/pages-info.config';
-
+import { PageIcon, PageRoutes, PageTitle } from '../pages/pages-info.config';
 @Injectable({
   providedIn: 'root',
 })
@@ -8,10 +7,16 @@ export class AppMenuService {
   getAppMenus() {
     return [
       { text: 'General', is_header: true },
-      { path: '/inicio', icon: PageIcon.HOME, text: 'Inicio' },
+      { path: PageRoutes.HOME, icon: PageIcon.HOME, text: PageTitle.HOME },
       { is_divider: true },
       { text: 'Aplicación', is_header: true },
-      { path: '/usuarios', text: 'Usuarios', icon: PageIcon.USERS },
+      { path: PageRoutes.USERS, icon: PageIcon.USERS, text: PageTitle.USERS },
+      { text: 'Asociación', is_header: true },
+      {
+        path: PageRoutes.PARTNERS,
+        icon: PageIcon.PARTNERS,
+        text: PageTitle.PARTNERS,
+      },
     ];
   }
 }

@@ -5,9 +5,9 @@ import SERVER from '../../config/server.config';
 import { IPartnerAPIPort } from '../domain/partner-api.port';
 import { PartnerDTOMapper } from './partner-dto.mapper';
 import { IPartnerDTO } from './partner.dto';
-import { IPartner, Partner } from '../domain/partner';
+import { IPartner } from '../domain/partner';
 
-const API_URI = SERVER.API_URI + '/users';
+const API_URI = SERVER.API_URI + '/partners';
 
 @Injectable({ providedIn: 'root' })
 export class PartnerAPIRepository implements IPartnerAPIPort {
@@ -16,6 +16,7 @@ export class PartnerAPIRepository implements IPartnerAPIPort {
   constructor(private http: HttpClient) {
     this.partnerDTOMapper = new PartnerDTOMapper();
   }
+
   getPartner(partnerId: string): Observable<IPartner> {
     return this.http
       .get<IPartner>(`${API_URI}/${partnerId}`, {
@@ -66,21 +67,5 @@ export class PartnerAPIRepository implements IPartnerAPIPort {
     return this.http.put<void>(`${API_URI}/block/${partnerId}`, {
       withCredentials: true,
     });
-  }
-
-  uploadPartnerDocument(partnerId: string, file: File): Observable<void> {
-    throw new Error('Method not implemented.');
-  }
-
-  getPartnerDocument(partnerId: string): Observable<File> {
-    throw new Error('Method not implemented.');
-  }
-
-  getAllPartnerDocuments(partnerId: string): Observable<File[]> {
-    throw new Error('Method not implemented.');
-  }
-
-  deletePartnerDocument(documentId: string): Observable<void> {
-    throw new Error('Method not implemented.');
   }
 }

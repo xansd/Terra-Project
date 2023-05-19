@@ -1,20 +1,23 @@
 <ul class="nav nav-pills mb-3">
   <li class="nav-item">
-    <a class="nav-link active" data-bs-toggle="pill" href="#admin-tab"
-      ><i [class]="icons.USERS_LIST"></i> Listado</a
+    <a
+      class="nav-link"
+      [routerLink]="usersRoutes.USERS_LIST"
+      routerLinkActive="active"
     >
+      <i [class]="icons.USERS_LIST"></i> Listado
+    </a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" data-bs-toggle="pill" href="#stats-tab"
-      ><i [class]="icons.STATS"></i> Online</a
+    <a
+      class="nav-link"
+      [routerLink]="usersRoutes.USERS_ONLINE"
+      routerLinkActive="active"
     >
+      <i [class]="icons.STATS"></i> Online
+    </a>
   </li>
 </ul>
 <div class="tab-content" id="pills-tabContent">
-  <div class="tab-pane fade show active" id="admin-tab">
-    <app-list-users></app-list-users>
-  </div>
-  <div class="tab-pane fade" id="stats-tab">
-    <app-user-statistics></app-user-statistics>
-  </div>
+  <router-outlet></router-outlet>
 </div>

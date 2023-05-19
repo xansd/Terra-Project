@@ -9,7 +9,9 @@ import { Observable, Subject, takeUntil } from 'rxjs';
 import { DomainValidationError } from 'src/app/shared/domain/domain-validation.exception';
 import { Email } from 'src/app/shared/domain/value-objects/email.value-object';
 import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
+import { FieldValidationError } from 'src/app/shared/error/field-validation-error';
 import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
+import { FormsHelperService } from 'src/app/ui/shared/helpers/forms-helper.service';
 import { CreateUserUseCase } from 'src/app/users/application/create-user.use-case';
 import { Roles } from 'src/app/users/domain/roles';
 
@@ -32,7 +34,8 @@ export class CreateUserComponent implements OnDestroy {
     private formBuilder: UntypedFormBuilder,
     private notifier: NotificationAdapter,
     private createUserService: CreateUserUseCase,
-    private errorHandler: ErrorHandlerService
+    private errorHandler: ErrorHandlerService,
+    private formsHelperService: FormsHelperService
   ) {}
 
   ngOnDestroy(): void {
@@ -46,11 +49,11 @@ export class CreateUserComponent implements OnDestroy {
       return;
     }
     if (!this.createUserForm.valid) {
-      this.notifier.showNotification(
-        'warning',
-        'Revisa los campos del formulario'
+      const invalidFields = this.formsHelperService.getInvalidFields(
+        this.createUserForm
       );
-      return;
+      this.notifier.showNotification('warning', invalidFields);
+      throw new FieldValidationError(invalidFields);
     } else this.createUser();
   }
 
@@ -69,21 +72,13 @@ export class CreateUserComponent implements OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res: any) => {
-          if (res && res.email && res.role_id) {
+          if (res) {
             this.notifier.showNotification('success', 'Usuario creado');
             this.modal.close(res);
-          } else if (res.statusCode) {
-            this.errorHandler.handleAPIKnowError(res);
           }
         },
-        error: (error: any) => {
-          if (error instanceof DomainValidationError) {
-            this.errorHandler.handleDomainError(error);
-            console.error(error);
-          } else {
-            this.errorHandler.handleUnkonwError(error);
-            console.error(error);
-          }
+        error: (error: Error) => {
+          console.log(error);
         },
       });
   }

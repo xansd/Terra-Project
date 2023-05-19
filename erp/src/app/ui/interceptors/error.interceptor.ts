@@ -1,17 +1,35 @@
 import { Injectable } from '@angular/core';
 import {
-  HttpErrorResponse,
   HttpEvent,
   HttpHandler,
   HttpInterceptor,
   HttpRequest,
+  HttpResponse,
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
 import { SignoutUseCase } from 'src/app/auth/application/use-cases/signout.use-case';
 import { Router } from '@angular/router';
 import { PageRoutes } from '../pages/pages-info.config';
+
+export interface IValidationError {
+  [key: string]: {
+    type: string;
+    msg: string;
+    path: string;
+    location: string;
+  };
+}
+
+export interface HttpError {
+  status: string;
+  statusCode: number;
+  message: string;
+  stack?: string;
+  validationData?: IValidationError;
+}
+
 @Injectable()
 export class ErrorCatchingInterceptor implements HttpInterceptor {
   constructor(
@@ -25,10 +43,21 @@ export class ErrorCatchingInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
     return next.handle(request).pipe(
-      map((res) => {
-        return res;
+      tap((event: HttpEvent<any>) => {
+        // CUSTOM ERRORS
+        if (event instanceof HttpResponse) {
+          if (event.body.statusCode) {
+            const customError: HttpError = {
+              status: event.body.status,
+              statusCode: event.body.statusCode,
+              message: event.body.message,
+            };
+            throw customError;
+          }
+        }
       }),
-      catchError((error: HttpErrorResponse) => {
+      catchError((error: any) => {
+        // Error no controlado, se maneja aquí
         if ([500, 0].indexOf(error.status) !== -1) {
           this.notifier.showNotification(
             'error',
@@ -61,9 +90,13 @@ export class ErrorCatchingInterceptor implements HttpInterceptor {
           );
           this.router.navigate([PageRoutes.RESET_PASSWORD]);
           console.log(error.error);
+        } else if (error.statusCode) {
+          this.notifier.showNotification(
+            'error',
+            `${error.statusCode} - ${error.message}`
+          );
         } else {
           this.notifier.showNotification('error', `Error desconocido`);
-          console.log(error.error);
         }
         return throwError(() => error);
       })

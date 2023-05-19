@@ -96,13 +96,9 @@ export class LoginPage implements OnInit {
       })
       .subscribe({
         next: (res: any) => {
-          if (res.statusCode) {
-            this.errorHandler.handleAPIKnowError(res);
-          } else {
-            this.authTokenService.saveToken(res);
-            this.notifier.showNotification('success', 'Sesión iniciada');
-            this.router.navigateByUrl(PageRoutes.HOME);
-          }
+          this.authTokenService.saveToken(res);
+          this.notifier.showNotification('success', 'Sesión iniciada');
+          this.router.navigateByUrl(PageRoutes.HOME);
         },
         error: (err: any) => {
           console.log(err);

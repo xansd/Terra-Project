@@ -1,1 +1,23 @@
-<p>partners works!</p>
+<ul class="nav nav-pills mb-3">
+  <li class="nav-item">
+    <a
+      class="nav-link"
+      [routerLink]="pagesRoutes.PARTNERS_LIST"
+      routerLinkActive="active"
+    >
+      <i [class]="icons.PARTNERS_LIST"></i> Listado
+    </a>
+  </li>
+  <li class="nav-item">
+    <a
+      class="nav-link"
+      [routerLink]="pagesRoutes.PARTNER_DETAILS"
+      routerLinkActive="active"
+    >
+      <i [class]="icons.PARTNER_DETAILS"></i> Detalles
+    </a>
+  </li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+  <router-outlet></router-outlet>
+</div>

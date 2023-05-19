@@ -6,6 +6,7 @@ import https from "https";
 import http from "http";
 // Routes
 import { router as userRoutes } from "./routes/user.routes";
+import { router as partnerRoutes } from "./routes/partner.routes";
 // Config
 import setup from "../../config/app-config";
 import Logger from "../utils/logger";
@@ -65,6 +66,8 @@ export class AppServer {
 
   routes(): void {
     this.app.use("/api/users", userRoutes);
+    this.app.use("/api/partners", partnerRoutes);
+
     this.app.use(notFoundHandler);
     this.app.use(unautorizedHandler);
     this.app.use(errorStatusHandler);

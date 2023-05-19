@@ -52,7 +52,6 @@ export class ListUsersComponent implements OnInit, OnDestroy {
     { def: 'actions', show: true },
   ];
   isLargeScreen = false;
-  isPageSizeDropdownOpen = false;
   selectedRowIndex: string | null = null;
 
   private destroy$ = new Subject();

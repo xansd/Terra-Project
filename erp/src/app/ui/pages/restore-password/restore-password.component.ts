@@ -58,7 +58,6 @@ export class RestorePasswordComponent implements OnInit {
     private fb: UntypedFormBuilder,
     private appSettings: AppSettings,
     private formsHelperService: FormsHelperService,
-    private errorHandler: ErrorHandlerService,
     private notifier: NotificationAdapter,
     private updatePasswordService: UpdatePasswordUseCase,
     private sigoutUseCase: SignoutUseCase,
@@ -125,11 +124,10 @@ export class RestorePasswordComponent implements OnInit {
             'Debes autenticarte con tus nuevas credenciales'
           );
           this.router.navigate([PageRoutes.LOGIN]);
-        } else if (res.statusCode) {
-          this.errorHandler.handleAPIKnowError(res);
-        } else {
-          this.errorHandler.handleUnkonwError(res);
         }
+      },
+      error: (error: Error) => {
+        console.log(error);
       },
     });
   }

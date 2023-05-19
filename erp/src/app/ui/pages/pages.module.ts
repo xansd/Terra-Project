@@ -28,6 +28,11 @@ import { UsersComponent } from './users/users.component';
 import { UsersAPIRepository } from 'src/app/users/infrastructure/user-api.repository';
 import { RegisterActiveUserUseCase } from 'src/app/users/application/socket-io/register-user-io.case-use';
 import { UnRegisterActiveUserUseCase } from 'src/app/users/application/socket-io/unregister-user-io.use-case';
+import { ListPartnersComponent } from './partners/list-partners/list-partners.component';
+import { CreatePartnerComponent } from './partners/create-partner/create-partner.component';
+import { EditPartnerComponent } from './partners/edit-partner/edit-partner.component';
+import { DetailsPartnerComponent } from './partners/details-partner/details-partner.component';
+import { PartnerAPIRepository } from 'src/app/partners/infratructure/partner-api.repository';
 
 @NgModule({
   declarations: [
@@ -43,6 +48,10 @@ import { UnRegisterActiveUserUseCase } from 'src/app/users/application/socket-io
     ClickOutsideDirective,
     RestorePasswordComponent,
     UsersComponent,
+    ListPartnersComponent,
+    CreatePartnerComponent,
+    EditPartnerComponent,
+    DetailsPartnerComponent,
   ],
   imports: [
     CommonModule,
@@ -59,6 +68,7 @@ import { UnRegisterActiveUserUseCase } from 'src/app/users/application/socket-io
     { provide: 'JwtTokenDecoder', useClass: JwtTokenDecoder },
     { provide: 'authAPI', useClass: AuthAPIAdapter },
     { provide: 'usersAPI', useClass: UsersAPIRepository },
+    { provide: 'partnersAPI', useClass: PartnerAPIRepository },
     { provide: 'authToken', useClass: AuthToken },
     { provide: 'registerUserIO', useClass: RegisterActiveUserUseCase },
     { provide: 'unRegisterUserIO', useClass: UnRegisterActiveUserUseCase },

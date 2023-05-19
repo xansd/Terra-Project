@@ -9,7 +9,6 @@ import { ActivateUserUseCase } from 'src/app/auth/application/use-cases/activate
 import { BlockUserUseCase } from 'src/app/auth/application/use-cases/block-user.use-case';
 import { UpdatePasswordUseCase } from 'src/app/auth/application/use-cases/update-password.use-case';
 import { updateRoleUserUseCase } from 'src/app/auth/application/use-cases/update-rol.case-use';
-import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
 import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
 import { AppStateService } from 'src/app/ui/services/app-state.service';
 import { Roles } from 'src/app/users/domain/roles';
@@ -37,8 +36,7 @@ export class EditUserComponent implements OnInit {
     private activateUserService: ActivateUserUseCase,
     private restorePasswordUseCase: UpdatePasswordUseCase,
     private blockUserService: BlockUserUseCase,
-    private updateRoleService: updateRoleUserUseCase,
-    private errorHandler: ErrorHandlerService
+    private updateRoleService: updateRoleUserUseCase
   ) {}
 
   ngOnInit(): void {
@@ -73,11 +71,10 @@ export class EditUserComponent implements OnInit {
         if (res.affectedRows > 0) {
           this.notifier.showNotification('success', 'Password restablecido');
           this.user.active = true;
-        } else if (res.statusCode) {
-          this.errorHandler.handleAPIKnowError(res);
-        } else {
-          this.errorHandler.handleUnkonwError(res);
         }
+      },
+      error: (error: Error) => {
+        console.log(error);
       },
     });
   }
@@ -89,11 +86,10 @@ export class EditUserComponent implements OnInit {
         if (res.affectedRows > 0) {
           this.notifier.showNotification('success', 'Usuario activado');
           this.user.active = true;
-        } else if (res.statusCode) {
-          this.errorHandler.handleAPIKnowError(res);
-        } else {
-          this.errorHandler.handleUnkonwError(res);
         }
+      },
+      error: (error: Error) => {
+        console.log(error);
       },
     });
   }
@@ -105,10 +101,6 @@ export class EditUserComponent implements OnInit {
         if (res.affectedRows > 0) {
           this.notifier.showNotification('success', 'Usuario bloqueado');
           this.user.active = false;
-        } else if (res.statusCode) {
-          this.errorHandler.handleAPIKnowError(res);
-        } else {
-          this.errorHandler.handleUnkonwError(res);
         }
       },
     });
@@ -120,11 +112,10 @@ export class EditUserComponent implements OnInit {
         if (res.affectedRows > 0) {
           this.notifier.showNotification('success', 'Rol actualizado');
           this.user.role_id = role;
-        } else if (res.statusCode) {
-          this.errorHandler.handleAPIKnowError(res);
-        } else {
-          this.errorHandler.handleUnkonwError(res);
         }
+      },
+      error: (error: Error) => {
+        console.log(error);
       },
     });
   }

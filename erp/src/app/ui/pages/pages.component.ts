@@ -55,9 +55,19 @@ export class PagesComponent implements OnDestroy {
         };
         break;
       case PageRoutes.USERS:
+      case PageRoutes.USERS_LIST:
+      case PageRoutes.USERS_ONLINE:
         this.info = {
           pageHeader: PageTitle.USERS,
           icon: PageIcon.USERS,
+        };
+        break;
+      case PageRoutes.PARTNERS:
+      case PageRoutes.PARTNERS_LIST:
+      case PageRoutes.PARTNER_DETAILS:
+        this.info = {
+          pageHeader: PageTitle.PARTNERS,
+          icon: PageIcon.PARTNERS,
         };
         break;
     }

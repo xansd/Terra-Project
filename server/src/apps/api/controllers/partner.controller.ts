@@ -17,7 +17,6 @@ import {
   PartnerDoesNotExistError,
   PartnersNotFoundError,
 } from "../../../modules/partners/domain/partner.exceptions";
-import { ManagePartnersDocumentationUseCase } from "../../../modules/partners/application/use-cases/manage-partners-documentd.use-case";
 
 export class PartnerController {
   partnerMapper = new PartnerMapper();
@@ -26,8 +25,7 @@ export class PartnerController {
     private readonly getPartnersUseCase: GetPartnerUseCase,
     private readonly deletePartnerUseCase: DeletePartnerUseCase,
     private readonly toggleActivePartnerUserCase: ToggleActivePartnerUseCase,
-    private readonly updatePartnerUseCase: UpdatePartnerUseCase,
-    private readonly managePartnerDocumentationUseCase: ManagePartnersDocumentationUseCase
+    private readonly updatePartnerUseCase: UpdatePartnerUseCase
   ) {}
 
   async getById(request: Request, response: Response): Promise<void> {
@@ -50,7 +48,7 @@ export class PartnerController {
     try {
       const partners = await this.getPartnersUseCase.getAllPartners();
       const partnersDTOs = this.partnerMapper.toDTOList(partners);
-      response.json(this.partnerMapper.toDTOList(partners));
+      response.json(partnersDTOs);
     } catch (error: any) {
       if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));

@@ -21,6 +21,7 @@ import { NotifierService } from 'angular-notifier';
 import { NotificationAdapter } from '../shared/infraestructure/notifier.adapter';
 import { ErrorCatchingInterceptor } from './interceptors/error.interceptor';
 import { UserIORepository } from '../users/infrastructure/user-io.repository';
+import { SharedModule } from './shared/shared.module';
 
 // Notifier configuration
 const notifierDefaultOptions: NotifierOptions = {
@@ -79,6 +80,7 @@ const notifierDefaultOptions: NotifierOptions = {
     JwtModule.forRoot(AppModule.JWT_Module_Options),
     NotifierModule.withConfig(notifierDefaultOptions),
     NgbModule,
+    SharedModule,
   ],
   exports: [],
   providers: [

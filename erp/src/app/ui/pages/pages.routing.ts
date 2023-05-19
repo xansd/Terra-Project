@@ -9,6 +9,9 @@ import { RestorePasswordComponent } from './restore-password/restore-password.co
 import { AuthGuard } from '../guards/auth.guard';
 import { Roles } from 'src/app/users/domain/roles';
 import { UsersComponent } from './users/users.component';
+import { PartnersComponent } from './partners/partners.component';
+import { ListPartnersComponent } from './partners/list-partners/list-partners.component';
+import { DetailsPartnerComponent } from './partners/details-partner/details-partner.component';
 const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
   {
@@ -26,16 +29,44 @@ const routes: Routes = [
         component: UsersComponent,
         children: [
           {
-            path: 'gestion',
+            path: '',
+            redirectTo: 'listado',
+            pathMatch: 'full',
+          },
+          {
+            path: 'listado',
             component: ListUsersComponent,
             canActivate: [AuthGuard],
             data: { roles: [Roles.ADMIN] },
           },
           {
-            path: 'estadisticas',
+            path: 'online',
             component: UserStatisticsComponent,
             canActivate: [AuthGuard],
             data: { roles: [Roles.ADMIN] },
+          },
+        ],
+      },
+      {
+        path: 'socios',
+        component: PartnersComponent,
+        children: [
+          {
+            path: '',
+            redirectTo: 'listado',
+            pathMatch: 'full',
+          },
+          {
+            path: 'listado',
+            component: ListPartnersComponent,
+            canActivate: [AuthGuard],
+            data: { roles: [Roles.ADMIN, Roles.USER] },
+          },
+          {
+            path: 'detalles',
+            component: DetailsPartnerComponent,
+            canActivate: [AuthGuard],
+            data: { roles: [Roles.ADMIN, Roles.USER] },
           },
         ],
       },

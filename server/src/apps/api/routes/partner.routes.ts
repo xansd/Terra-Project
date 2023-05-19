@@ -10,7 +10,6 @@ import { GetPartnerUseCase } from "../../../modules/partners/application/use-cas
 import { UpdatePartnerUseCase } from "../../../modules/partners/application/use-cases/update-partner.use-case";
 import { Role } from "../../../modules/users/domain";
 import { ToggleActivePartnerUseCase } from "../../../modules/partners/application/use-cases/toggle-active-partner.use-case";
-import { ManagePartnersDocumentationUseCase } from "../../../modules/partners/application/use-cases/manage-partners-documentd.use-case";
 
 const router = Router();
 
@@ -25,8 +24,6 @@ const deletePartnerUseCase = new DeletePartnerUseCase(userRepository);
 const toggleActivePartnerUserCase = new ToggleActivePartnerUseCase(
   userRepository
 );
-const managePartnerDocumentationUseCase =
-  new ManagePartnersDocumentationUseCase(userRepository);
 
 // Controlador
 const partnerController = new PartnerController(
@@ -34,8 +31,7 @@ const partnerController = new PartnerController(
   getPartnerUseCase,
   deletePartnerUseCase,
   toggleActivePartnerUserCase,
-  updatePartnerUseCase,
-  managePartnerDocumentationUseCase
+  updatePartnerUseCase
 );
 
 // GET BY ID
@@ -57,22 +53,15 @@ router.get(
 router.post(
   "/",
   authorize([Role.ADMIN, Role.USER]),
-  [
-    check("partner", "El partner es obligatorio").not().isEmpty(),
-    catchValidationErrors,
-  ],
-  partnerController.update.bind(partnerController)
+  [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
+  partnerController.create.bind(partnerController)
 );
 
 // UPDATE
 router.put(
   "/:id",
   authorize([Role.ADMIN, Role.USER]),
-  [
-    check("id", "El id es obligatorio").not().isEmpty(),
-    check("partner", "El partner es obligatorio").not().isEmpty(),
-    catchValidationErrors,
-  ],
+  [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
   partnerController.update.bind(partnerController)
 );
 
@@ -127,11 +116,7 @@ router.delete(
 router.post(
   "/documents/",
   authorize([Role.ADMIN, Role.USER]),
-  [
-    check("id", "El id es obligatorio").not().isEmpty(),
-    check("file", "El fichero es obligatorio").not().isEmpty(),
-    catchValidationErrors,
-  ],
+  [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
   partnerController.uploadDocument.bind(partnerController)
 );
 
