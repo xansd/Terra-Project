@@ -19,7 +19,7 @@ export class PartnerAPIRepository implements IPartnerAPIPort {
 
   getPartner(partnerId: string): Observable<IPartner> {
     return this.http
-      .get<IPartner>(`${API_URI}/${partnerId}`, {
+      .get<IPartnerDTO>(`${API_URI}/${partnerId}`, {
         withCredentials: true,
       })
       .pipe(
@@ -29,12 +29,12 @@ export class PartnerAPIRepository implements IPartnerAPIPort {
 
   getAllPartners(): Observable<IPartner[]> {
     return this.http
-      .get<IPartner[]>(`${API_URI}`, {
+      .get<IPartnerDTO[]>(`${API_URI}`, {
         withCredentials: true,
       })
       .pipe(
-        map((partner: IPartnerDTO[]) =>
-          this.partnerDTOMapper.toDomainList(partner)
+        map((partnersList: IPartnerDTO[]) =>
+          this.partnerDTOMapper.toDomainList(partnersList)
         )
       );
   }

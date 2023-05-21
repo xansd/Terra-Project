@@ -68,6 +68,12 @@ const routes: Routes = [
             canActivate: [AuthGuard],
             data: { roles: [Roles.ADMIN, Roles.USER] },
           },
+          {
+            path: 'alta',
+            component: DetailsPartnerComponent,
+            canActivate: [AuthGuard],
+            data: { roles: [Roles.ADMIN, Roles.USER] },
+          },
         ],
       },
     ],

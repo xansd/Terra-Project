@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
+  AbstractControl,
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
@@ -73,9 +74,6 @@ export class EditUserComponent implements OnInit {
           this.user.active = true;
         }
       },
-      error: (error: Error) => {
-        console.log(error);
-      },
     });
   }
 
@@ -87,9 +85,6 @@ export class EditUserComponent implements OnInit {
           this.notifier.showNotification('success', 'Usuario activado');
           this.user.active = true;
         }
-      },
-      error: (error: Error) => {
-        console.log(error);
       },
     });
   }
@@ -114,9 +109,6 @@ export class EditUserComponent implements OnInit {
           this.user.role_id = role;
         }
       },
-      error: (error: Error) => {
-        console.log(error);
-      },
     });
   }
 
@@ -130,5 +122,9 @@ export class EditUserComponent implements OnInit {
       this.modal.close(false);
     }
     this.modal.close(this.user);
+  }
+
+  get rolControl(): AbstractControl {
+    return this.editUser.controls['rol'];
   }
 }

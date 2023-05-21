@@ -1,5 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import {
+  AbstractControl,
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
@@ -11,9 +12,11 @@ import { Email } from 'src/app/shared/domain/value-objects/email.value-object';
 import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
 import { FieldValidationError } from 'src/app/shared/error/field-validation-error';
 import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
+import { CustomErrorStateMatcher } from 'src/app/ui/shared/helpers/custom-error-state-macher';
 import { FormsHelperService } from 'src/app/ui/shared/helpers/forms-helper.service';
 import { CreateUserUseCase } from 'src/app/users/application/create-user.use-case';
 import { Roles } from 'src/app/users/domain/roles';
+import CONFIG from '../../../../config/client.config';
 
 @Component({
   selector: 'app-create-user',
@@ -21,12 +24,17 @@ import { Roles } from 'src/app/users/domain/roles';
   styleUrls: ['./create-user.component.scss'],
 })
 export class CreateUserComponent implements OnDestroy {
+  config = CONFIG;
   createUserForm: UntypedFormGroup = this.formBuilder.group({
-    email: [null, [Validators.required, Validators.email]],
+    email: [
+      null,
+      [Validators.required, Validators.pattern(CONFIG.REGEX.EMAIL)],
+    ],
     rol: [null, Validators.required],
   });
   roles = Object.values(Roles).filter((value) => typeof value === 'string');
 
+  matcher = new CustomErrorStateMatcher();
   private destroy$ = new Subject();
 
   constructor(
@@ -68,7 +76,7 @@ export class CreateUserComponent implements OnDestroy {
     }
     const rol = this.createUserForm.value.rol;
 
-    this.apiCreteUserCall(email, rol)
+    this.apiCreateUserCall(email, rol)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res: any) => {
@@ -77,13 +85,17 @@ export class CreateUserComponent implements OnDestroy {
             this.modal.close(res);
           }
         },
-        error: (error: Error) => {
-          console.log(error);
-        },
       });
   }
 
-  apiCreteUserCall(email: Email, role_id: Roles): Observable<void> {
+  apiCreateUserCall(email: Email, role_id: Roles): Observable<void> {
     return this.createUserService.createUser(email, role_id);
+  }
+
+  get emailControl(): AbstractControl {
+    return this.createUserForm.controls['email'];
+  }
+  get rolControl(): AbstractControl {
+    return this.createUserForm.controls['rol'];
   }
 }

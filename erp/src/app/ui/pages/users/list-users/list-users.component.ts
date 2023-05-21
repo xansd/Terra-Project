@@ -10,7 +10,6 @@ import { EditUserComponent } from '../edit-user/edit-user.component';
 import { NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { CreateUserComponent } from '../create-user/create-user.component';
 import { UserDTOMapper } from 'src/app/users/infrastructure/user-dto.mapper';
-import { IUserDTO } from 'src/app/users/infrastructure/user.dto';
 import { GetAllUsersUserCase } from 'src/app/users/application/get-all-users.use-case';
 
 const modalOptions: NgbModalOptions = {
@@ -25,16 +24,16 @@ const modalOptions: NgbModalOptions = {
 })
 export class ListUsersComponent implements OnInit, OnDestroy {
   userDTOMapper = new UserDTOMapper();
-  usersList: IUserDTO[] = [];
-  dataSource!: MatTableDataSource<IUserDTO>;
+  usersList: IUser[] = [];
+  dataSource!: MatTableDataSource<IUser>;
   tableHasChanged = false;
-  emptyTable = false;
+  emptyTable = true;
   @ViewChild(MatPaginator)
   paginator!: MatPaginator;
   @ViewChild(MatSort)
   sort!: MatSort;
   @ViewChild(MatTable)
-  usersListTable!: MatTable<IUserDTO>;
+  usersListTable!: MatTable<IUser>;
   displayedColumns: string[] = [
     'user_id',
     'email',
@@ -60,7 +59,11 @@ export class ListUsersComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private usersService: GetAllUsersUserCase,
     private breakpointObserver: BreakpointObserver
-  ) {}
+  ) {
+    this.dataSource = new MatTableDataSource(this.usersList);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
 
   ngOnInit(): void {
     this.getUsers();
@@ -69,12 +72,6 @@ export class ListUsersComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
-  }
-
-  selectRow(rowId: string) {
-    if (this.selectedRowIndex === rowId) {
-      this.selectedRowIndex = null;
-    } else this.selectedRowIndex = rowId;
   }
 
   /**
@@ -86,7 +83,7 @@ export class ListUsersComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (users: IUser[]) => {
-          const list = this.userDTOMapper.toDTOList(users);
+          const list = users;
           list.length ? (this.emptyTable = false) : (this.emptyTable = true);
           this.usersList = list;
           this.dataSource = new MatTableDataSource(this.usersList);
@@ -101,6 +98,71 @@ export class ListUsersComponent implements OnInit, OnDestroy {
           console.log(error);
         },
       });
+  }
+
+  /**
+   * Abre la modal de edición de usuario
+   * @param {IUser} user
+   */
+  openEditUser(user: IUser): void {
+    const modalRef = this.modalService.open(EditUserComponent, modalOptions);
+    modalRef.componentInstance.user = user;
+    modalRef.result
+      .then((result) => {
+        if (result) {
+          this.updateTable(result);
+        }
+      })
+      .catch((error) => {
+        if (error) console.error(error);
+      });
+  }
+
+  /**
+   * Abre la modal de edición de usuario
+   */
+  openCreateUserDialog(): void {
+    const modalRef = this.modalService.open(CreateUserComponent, modalOptions);
+    modalRef.result
+      .then((result) => {
+        if (result) {
+          this.addToTable(result);
+        } else {
+          console.log('Modal closed');
+        }
+      })
+      .catch((error) => {
+        if (error) console.error(error);
+      });
+  }
+
+  /************************* Gestión de tabla ************************************/
+
+  private updateTable(updatedUser: IUser) {
+    const index = this.usersList.findIndex(
+      (u) => u.user_id === updatedUser.user_id
+    );
+    this.usersList[index] = updatedUser;
+    this.renderTable();
+  }
+
+  private addToTable(newUser: IUser) {
+    this.usersList.push(newUser);
+    this.renderTable();
+  }
+
+  private renderTable() {
+    this.dataSource = new MatTableDataSource(this.usersList);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.usersListTable.renderRows();
+  }
+
+  // Esconde el paginator en pantallas pequeñas
+  breakPointObserver(): void {
+    this.breakpointObserver
+      .observe(['(min-width: 500px)'])
+      .subscribe((result) => (this.isLargeScreen = result.matches));
   }
 
   /**
@@ -135,107 +197,11 @@ export class ListUsersComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Abre la modal de edición de usuario
-   * @param {IUser} user
-   */
-  openEditUser(user: IUser): void {
-    const modalRef = this.modalService.open(EditUserComponent, modalOptions);
-    modalRef.componentInstance.user = user;
-    modalRef.result
-      .then((result) => {
-        if (result) {
-          this.updateTable(result);
-        }
-      })
-      .catch((error) => {
-        if (error) console.error(error);
-      });
+  selectRow(rowId: string) {
+    if (this.selectedRowIndex === rowId) {
+      this.selectedRowIndex = null;
+    } else this.selectedRowIndex = rowId;
   }
 
-  updateTable(updatedUser: IUserDTO) {
-    const index = this.usersList.findIndex(
-      (u) => u.user_id === updatedUser.user_id
-    );
-    this.usersList[index] = updatedUser;
-    this.dataSource = new MatTableDataSource(this.usersList);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-    this.usersListTable.renderRows();
-  }
-
-  addToTable(newUser: IUserDTO) {
-    this.usersList.push(newUser);
-    this.dataSource = new MatTableDataSource(this.usersList);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-    this.usersListTable.renderRows();
-  }
-
-  sustractFromTable(id: string) {
-    const index = this.usersList.findIndex((u) => u.user_id === id);
-    this.usersList.splice(index, 1);
-    this.dataSource = new MatTableDataSource(this.usersList);
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-    this.usersListTable.renderRows();
-  }
-
-  // deleteUser(id: string): void {
-  //   this.deleteUserService
-  //     .deleteUser(id)
-  //     .pipe(takeUntil(this.destroy$))
-  //     .subscribe({
-  //       next: (res: any) => {
-  //         if (res.affectedRows > 0) {
-  //           this.notifier.showNotification('success', 'Usuario eliminado');
-  //           this.sustractFromTable(id);
-  //         } else if (res.statusCode) {
-  //           this.errorHandler.handleAPIKnowError(res);
-  //         } else {
-  //           this.errorHandler.handleUnkonwError(res);
-  //         }
-  //       },
-  //     });
-  // }
-
-  /**
-   * Abre la modal de confirmación de eliminación de usuario
-   *
-   */
-  // openConfirmDialog(id: string): void {
-  //   const modalRef = this.modalService.open(ConfirmDialogComponent);
-  //   modalRef.componentInstance.message = 'El usuario será eliminado';
-  //   modalRef.result
-  //     .then((result) => {
-  //       if (result) {
-  //         this.deleteUser(id!);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       if (error) console.error(error);
-  //     });
-  // }
-
-  openCreateUserDialog(): void {
-    const modalRef = this.modalService.open(CreateUserComponent, modalOptions);
-    modalRef.result
-      .then((result) => {
-        if (result) {
-          this.addToTable(result);
-        } else {
-          console.log('Modal closed');
-        }
-      })
-      .catch((error) => {
-        if (error) console.error(error);
-      });
-  }
-
-  // Esconde el paginator en pantallas pequeñas
-  breakPointObserver(): void {
-    this.breakpointObserver
-      .observe(['(min-width: 500px)'])
-      .subscribe((result) => (this.isLargeScreen = result.matches));
-  }
+  /************************* Gestión de tabla ************************************/
 }

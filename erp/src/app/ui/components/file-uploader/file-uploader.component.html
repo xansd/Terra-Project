@@ -1,0 +1,101 @@
+<card class="mb-4">
+  <card-header
+    class="d-flex align-items-center bg-inverse bg-opacity-10 fw-400"
+  >
+    DOCUMENTACIÓN
+  </card-header>
+  <form method="POST" enctype="multipart/form-data">
+    <card-body class="pb-2">
+      <div class="d-block d-lg-flex align-items-center">
+        <span class="btn btn-outline-theme fileinput-button me-2 mb-1">
+          <i class="fa fa-fw fa-plus"></i>
+          <span>Add files...</span>
+        </span>
+        <button type="submit" class="btn btn-outline-default me-2 mb-1 start">
+          <i class="fa fa-fw fa-upload"></i>
+          <span>Start upload</span>
+        </button>
+        <button type="reset" class="btn btn-outline-default me-2 mb-1 cancel">
+          <i class="fa fa-fw fa-ban"></i>
+          <span>Cancel upload</span>
+        </button>
+        <button type="button" class="btn btn-outline-default me-2 mb-1 delete">
+          <i class="fa fa-fw fa-trash"></i>
+          <span>Delete</span>
+        </button>
+        <div class="form-check ms-2 mb-1">
+          <input
+            type="checkbox"
+            id="toggle-delete"
+            class="form-check-input toggle"
+          />
+          <label for="toggle-delete" class="form-check-label"
+            >Select Files</label
+          >
+        </div>
+      </div>
+    </card-body>
+    <table class="table table-card mb-0 fs-13px">
+      <thead>
+        <tr class="fs-12px">
+          <th class="pt-2 pb-2 w-25">PREVIEW</th>
+          <th class="pt-2 pb-2 w-25">FILENAME</th>
+          <th class="pt-2 pb-2 w-25">SIZE</th>
+          <th class="pt-2 pb-2 w-25">ACTION</th>
+        </tr>
+      </thead>
+      <tbody class="files">
+        <tr class="empty-row">
+          <td colspan="4" class="text-center p-3">
+            <div class="text-inverse text-opacity-30 mb-2">
+              <i class="fa fa-file-archive fa-3x"></i>
+            </div>
+            No file uploaded
+          </td>
+        </tr>
+        <tr class="template-upload in">
+          <td>
+            <span
+              class="preview d-flex justify-content-center flex-align-center"
+              style="height: 80px"
+              ><canvas width="120" height="77"></canvas
+            ></span>
+          </td>
+          <td>
+            <p class="name mb-1">page-product-details.ts</p>
+            <strong class="error text-danger">File type not allowed</strong>
+          </td>
+          <td>
+            <p class="size mb-2">0.69 KB</p>
+            <div
+              class="progress progress-sm mb-0 h-10px progress-striped active"
+            >
+              <div
+                class="progress-bar bg-theme"
+                style="min-width: 2em; width: 0%"
+              ></div>
+              <div
+                class="progress-bar bg-theme"
+                style="min-width: 2em; width: 0%"
+              ></div>
+            </div>
+          </td>
+          <td nowrap>
+            <button
+              class="btn btn-outline-theme btn-sm d-block w-100 start"
+              disabled=""
+            >
+              <span>Start</span>
+            </button>
+
+            <button
+              class="btn btn-outline-default btn-sm d-block w-100 cancel mt-2"
+            >
+              <span>Cancel</span>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </form>
+</card>

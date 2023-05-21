@@ -7,29 +7,73 @@
     <div class="form-group mb-3">
       <!--Email-->
       <div class="row">
-        <label for="createEmail" class="col-sm-2 col-form-label">Email:</label>
+        <label for="createEmail" class="col-sm-2 col-form-label">Email</label>
         <div class="col-sm-10">
           <input
             autocomplete="off"
-            type="text"
+            type="email"
             class="form-control float-start"
             id="createEmail"
             placeholder="Escribe el email del usuario"
             formControlName="email"
+            matInput
+            [errorStateMatcher]="matcher"
+            [ngClass]="{
+              'is-invalid': emailControl.invalid,
+              'is-valid': emailControl.valid
+            }"
           />
+          <mat-error
+            *ngIf="
+              emailControl.invalid &&
+              (emailControl.dirty || emailControl.touched)
+            "
+          >
+            <span *ngIf="emailControl.hasError('required')">
+              Campo obligatorio.</span
+            >
+          </mat-error>
+          <mat-error
+            *ngIf="
+              emailControl.invalid &&
+              (emailControl.dirty || emailControl.touched)
+            "
+          >
+            <span
+              *ngIf="
+                emailControl.hasError('pattern') &&
+                !emailControl.hasError('required')
+              "
+            >
+              Formato de email inválido.</span
+            >
+          </mat-error>
         </div>
       </div>
 
       <!--Rol-->
       <div class="row">
-        <label for="createUserRol" class="col-sm-2 col-form-label">Rol:</label>
+        <label for="createUserRol" class="col-sm-2 col-form-label">Rol</label>
         <div class="col-sm-10">
           <select
             id="createUserRol"
             formControlName="rol"
             #selectedRol
             class="form-select float-start"
+            [ngClass]="{
+              'is-invalid': rolControl.invalid,
+              'is-valid': rolControl.valid
+            }"
           >
+            <mat-error
+              *ngIf="
+                rolControl.invalid && (rolControl.dirty || rolControl.touched)
+              "
+            >
+              <span *ngIf="rolControl.hasError('required')">
+                Campo obligatorio.</span
+              >
+            </mat-error>
             <option *ngFor="let rol of roles" [value]="rol">{{ rol }}</option>
           </select>
         </div>

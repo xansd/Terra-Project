@@ -1,0 +1,110 @@
+form {
+    padding: 15px;
+
+    .row {
+        margin-bottom: 20px !important;
+    }
+
+    label {
+        text-transform  : uppercase;
+        display         : -webkit-box;
+        display         : -ms-flexbox;
+        display         : flex;
+        -webkit-box-pack: start;
+        -ms-flex-pack   : start;
+        justify-content : flex-start;
+    }
+
+    .form-group:first-child {
+        margin-top   : 10px;
+        margin-bottom: 60px;
+
+        .num {
+            font-weight       : 600;
+            font-size         : 1rem;
+            max-width         : 200px;
+            background-color  : rgba(0, 0, 0, .4) !important;
+            -webkit-box-shadow: 0px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12) !important;
+            box-shadow        : 0px 3px 3px -2px rgba(0, 0, 0, 0.2), 0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12) !important;
+
+            i {
+                font-size: 1.2rem;
+            }
+        }
+
+        .number-container {
+            display          : -webkit-box;
+            display          : -ms-flexbox;
+            display          : flex;
+            -webkit-box-pack : justify;
+            -ms-flex-pack    : justify;
+            justify-content  : space-between;
+            -webkit-box-align: center;
+            -ms-flex-align   : center;
+            align-items      : center;
+            text-transform   : uppercase;
+            font-size        : 1.1rem;
+            padding          : 15px;
+            position         : relative;
+            top              : -7.5px
+        }
+    }
+
+    .form-group:last-child {
+        margin-top: 60px;
+    }
+
+    .type-label {
+        -webkit-box-pack: end;
+        -ms-flex-pack   : end;
+        justify-content : flex-end;
+    }
+
+    .therapeutic-container,
+    .active-container {
+        display         : -webkit-box;
+        display         : -ms-flexbox;
+        display         : flex;
+        -webkit-box-pack: end;
+        -ms-flex-pack   : end;
+        justify-content : flex-end;
+
+        input {
+            position: relative;
+            top     : 7px;
+            left    : 20px;
+
+        }
+    }
+}
+
+@media (max-width: 1199px) {
+    label {
+        -webkit-box-pack: start;
+        -ms-flex-pack   : start;
+        justify-content : flex-start;
+    }
+
+    .therapeutic-container,
+    .active-container {
+        margin-top      : 20px;
+        -webkit-box-pack: start !important;
+        -ms-flex-pack   : start !important;
+        justify-content : flex-start !important;
+
+    }
+
+    .form-group:first-child {
+        margin-bottom: 50px !important;
+    }
+
+    .num {
+        margin-bottom: 40px;
+    }
+
+    .type-label {
+        -webkit-box-pack: start !important;
+        -ms-flex-pack   : start !important;
+        justify-content : flex-start !important;
+    }
+}

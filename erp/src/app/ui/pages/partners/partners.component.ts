@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { PageIcon, PageRoutes } from '../pages-info.config';
 
 @Component({
@@ -7,6 +7,21 @@ import { PageIcon, PageRoutes } from '../pages-info.config';
   styleUrls: ['./partners.component.scss'],
 })
 export class PartnersComponent {
+  @ViewChild('nav') nav!: ElementRef;
+  isNavFixed = false;
   icons = PageIcon;
   pagesRoutes = PageRoutes;
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    const element = this.nav.nativeElement;
+    const viewportOffset = element.getBoundingClientRect();
+    const top = viewportOffset.top;
+    // if (top <= 50) {
+    //   this.isNavFixed = true;
+    // } else {
+    //   this.isNavFixed = false;
+    // }
+    return (this.isNavFixed = top <= 50);
+  }
 }

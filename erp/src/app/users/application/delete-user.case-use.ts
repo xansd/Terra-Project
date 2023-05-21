@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
-import { IUserAPIPort } from '../../domain/user-api.port';
 import { Injectable, Inject } from '@angular/core';
+import { IUserAPIPort } from '../domain/user-api.port';
 
 export interface IDeleteUserUseCase {
   deleteUser(id: string): Observable<void>;

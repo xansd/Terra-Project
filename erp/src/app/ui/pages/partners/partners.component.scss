@@ -1,0 +1,27 @@
+ul {
+    margin-bottom: 50px !important;
+    position     : -webkit-sticky !important;
+    position     : sticky !important;
+    top          : 50px;
+    z-index      : 999 !important;
+}
+
+.fixed-tabs {
+    background-color: #c0cacf;
+
+    .active {
+        color           : #FFF !important;
+        background-color: #FFF !important;
+    }
+
+
+    li {
+        a {
+            color: #35434a !important;
+
+
+
+        }
+    }
+
+}

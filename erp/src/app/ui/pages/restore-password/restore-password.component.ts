@@ -126,9 +126,6 @@ export class RestorePasswordComponent implements OnInit {
           this.router.navigate([PageRoutes.LOGIN]);
         }
       },
-      error: (error: Error) => {
-        console.log(error);
-      },
     });
   }
 

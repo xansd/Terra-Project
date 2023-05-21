@@ -19,6 +19,8 @@ import { SidebarComponent } from '../shared/components/sidebar/sidebar.component
 import { CheckPasswordComponent } from './check-password/check-password.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../shared/material.module';
+import { PartnerFormDataComponent } from './partner-form-data/partner-form-data.component';
+import { FileUploaderComponent } from './file-uploader/file-uploader.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +37,8 @@ import { MaterialModule } from '../shared/material.module';
     SidebarComponent,
     SidebarMobileBackdropComponent,
     CheckPasswordComponent,
+    PartnerFormDataComponent,
+    FileUploaderComponent,
   ],
   imports: [
     CommonModule,
@@ -57,6 +61,8 @@ import { MaterialModule } from '../shared/material.module';
     NavScrollComponent,
     SidebarComponent,
     SidebarMobileBackdropComponent,
+    PartnerFormDataComponent,
+    FileUploaderComponent,
   ],
   providers: [
     {

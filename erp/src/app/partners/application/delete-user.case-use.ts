@@ -1,16 +1,18 @@
-// import { Observable } from 'rxjs';
-// import { IUserAPIPort } from '../../domain/user-api.port';
-// import { Injectable, Inject } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Injectable, Inject } from '@angular/core';
+import { IPartnerAPIPort } from '../domain/partner-api.port';
 
-// export interface IDeleteUserUseCase {
-//   deleteUser(id: string): Observable<void>;
-// }
-// @Injectable({
-//   providedIn: 'root',
-// })
-// export class deleteUserUseCase implements IDeleteUserUseCase {
-//   constructor(@Inject('usersAPI') private readonly usersAPI: IUserAPIPort) {}
-//   deleteUser(id: string): Observable<void> {
-//     return this.usersAPI.deleteUser(id);
-//   }
-// }
+export interface IDeletePartnerUseCase {
+  deletePartner(id: string): Observable<void>;
+}
+@Injectable({
+  providedIn: 'root',
+})
+export class DeletePartnerUseCase implements IDeletePartnerUseCase {
+  constructor(
+    @Inject('partnersAPI') private readonly partnersAPI: IPartnerAPIPort
+  ) {}
+  deletePartner(id: string): Observable<void> {
+    return this.partnersAPI.deletePartner(id);
+  }
+}

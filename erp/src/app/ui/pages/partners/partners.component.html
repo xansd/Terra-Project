@@ -1,11 +1,15 @@
-<ul class="nav nav-pills mb-3">
+<ul
+  #nav
+  class="nav nav-pills mb-3 nav-fill"
+  [ngClass]="{ 'fixed-tabs': isNavFixed }"
+>
   <li class="nav-item">
     <a
       class="nav-link"
       [routerLink]="pagesRoutes.PARTNERS_LIST"
       routerLinkActive="active"
     >
-      <i [class]="icons.PARTNERS_LIST"></i> Listado
+      <i [class]="icons.PARTNERS_LIST"></i> LISTADO
     </a>
   </li>
   <li class="nav-item">
@@ -14,7 +18,16 @@
       [routerLink]="pagesRoutes.PARTNER_DETAILS"
       routerLinkActive="active"
     >
-      <i [class]="icons.PARTNER_DETAILS"></i> Detalles
+      <i [class]="icons.SEARCH"></i> CONSULTAR
+    </a>
+  </li>
+  <li class="nav-item">
+    <a
+      class="nav-link"
+      [routerLink]="pagesRoutes.PARTNER_ADD"
+      routerLinkActive="active"
+    >
+      <i [class]="icons.PARTNER_ADD"></i> ALTA
     </a>
   </li>
 </ul>

@@ -1,0 +1,203 @@
+<card>
+  <card-header
+    class="d-block d-flex align-items-center bg-inverse bg-opacity-10 fw-400"
+    >DATOS DEL SOCIO</card-header
+  >
+  <div class="card-body">
+    <form [formGroup]="createPartnerForm" class="form-container">
+      <div class="form-group">
+        <div class="row">
+          <!--Number-->
+          <div
+            class="num badge badge-primary border border-info col-xl-2 number-container text-info"
+          >
+            <div class=""><i class="bi bi-person-fill"></i></div>
+            <div class="">0</div>
+          </div>
+
+          <!-- Tipo de socio -->
+          <label for="type" class="col-12 col-xl-1 col-form-label type-label"
+            >Tipo</label
+          >
+          <div class="col-12 col-xl-5">
+            <select
+              id="type"
+              formControlName="type"
+              #selectedType
+              class="form-select float-start"
+            ></select>
+          </div>
+
+          <!-- Terapéutico? -->
+          <div class="therapeutic-container col-12 col-xl-2">
+            <label for="therapeutic" class="col-form-label">Terapéutico</label>
+            <input
+              class="form-check-input"
+              type="checkbox"
+              value=""
+              id="therapeutic"
+              formControlName="therapeutic"
+            />
+          </div>
+
+          <!-- Activo? -->
+          <div class="active-container col-12 col-xl-2">
+            <label for="active" class="col-form-label">Activo</label>
+            <input
+              class="form-check-input"
+              type="checkbox"
+              value=""
+              id="active"
+              [checked]="active"
+              formControlName="active"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <!--Nombre-->
+        <div class="row">
+          <label for="name" class="col-12 col-xl-1 col-form-label"
+            >Nombre</label
+          >
+          <div class="col-12 col-xl-3">
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              formControlName="name"
+            />
+          </div>
+          <!--Apellidos-->
+          <label for="surname" class="col-12 col-xl-1 col-form-label"
+            >Apellidos</label
+          >
+          <div class="col-12 col-xl-4">
+            <input
+              type="text"
+              class="form-control"
+              id="surname"
+              formControlName="surname"
+            />
+          </div>
+          <!--DNI/NIE-->
+          <label for="surname" class="col-12 col-xl-1 col-form-label"
+            >DNI/NIE</label
+          >
+          <div class="col-12 col-xl-2">
+            <input
+              type="text"
+              class="form-control"
+              id="surname"
+              formControlName="surname"
+            />
+          </div>
+        </div>
+        <div class="row mb-12">
+          <!--Email-->
+          <label for="email" class="col-12 col-xl-1 col-form-label"
+            >Email</label
+          >
+          <div class="col-12 col-xl-3">
+            <input
+              type="text"
+              class="form-control"
+              id="email"
+              formControlName="email"
+            />
+          </div>
+          <!--Teléfono-->
+          <label for="phone" class="col-12 col-xl-1 col-form-label"
+            >Teléfono</label
+          >
+          <div class="col-12 col-xl-4">
+            <input
+              type="number"
+              class="form-control"
+              id="phone"
+              formControlName="phone"
+            />
+          </div>
+          <!--Nacimiento-->
+          <label for="name" class="col-12 col-xl-1 col-form-label"
+            >Nacimiento</label
+          >
+          <div class="col-12 col-xl-2">
+            <input
+              type="text"
+              class="form-control"
+              id="name"
+              formControlName="name"
+            />
+          </div>
+        </div>
+        <div class="row mb-12">
+          <!--Telefono-->
+          <label for="address" class="col-12 col-xl-1 col-form-label"
+            >Domicilio</label
+          >
+          <div class="col-12 col-xl-11">
+            <input
+              type="text"
+              class="form-control"
+              id="address"
+              formControlName="address"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="row">
+          <!--Cannabis-->
+          <label for="cannabis" class="col-12 col-xl-1 col-form-label"
+            >María gr/m</label
+          >
+          <div class="col-12 col-xl-2">
+            <input
+              type="number"
+              class="form-control"
+              id="cannabis"
+              formControlName="cannabis"
+            />
+          </div>
+          <!--Hash-->
+          <label for="hash" class="col-12 col-xl-1 col-form-label"
+            >Hash gr/m</label
+          >
+          <div class="col-12 col-xl-2">
+            <input
+              type="number"
+              class="form-control"
+              id="hash"
+              formControlName="hash"
+            />
+          </div>
+          <!--Extracciones-->
+          <label for="extractions" class="col-12 col-xl-1 col-form-label"
+            >Extr. gr/m</label
+          >
+          <div class="col-12 col-xl-2">
+            <input
+              type="number"
+              class="form-control"
+              id="extractions"
+              formControlName="extractions"
+            />
+          </div>
+          <!--Otros-->
+          <label for="others" class="col-12 col-xl-1 col-form-label"
+            >Otros gr/m</label
+          >
+          <div class="col-12 col-xl-2">
+            <input
+              type="number"
+              class="form-control"
+              id="others"
+              formControlName="others"
+            />
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</card>

@@ -3,12 +3,22 @@ import { Component, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, takeUntil } from 'rxjs';
 import { GetPartnerUseCase } from 'src/app/partners/application/get-partners.use-case';
 import { IPartner } from 'src/app/partners/domain/partner';
 import { PartnerDTOMapper } from 'src/app/partners/infratructure/partner-dto.mapper';
-import { IPartnerDTO } from 'src/app/partners/infratructure/partner.dto';
+import { CreatePartnerComponent } from '../create-partner/create-partner.component';
+import { EditPartnerComponent } from '../edit-partner/edit-partner.component';
+import { DeletePartnerUseCase } from 'src/app/partners/application/delete-user.case-use';
+import { NotificationAdapter } from '../../../../shared/infraestructure/notifier.adapter';
+import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
+import { ConfirmDialogComponent } from 'src/app/ui/shared/components/confirm-dialog/confirm-dialog.component';
+
+const modalOptions: NgbModalOptions = {
+  backdrop: 'static',
+  keyboard: false,
+};
 
 @Component({
   selector: 'app-list-partners',
@@ -17,16 +27,16 @@ import { IPartnerDTO } from 'src/app/partners/infratructure/partner.dto';
 })
 export class ListPartnersComponent {
   partnerDTOMapper = new PartnerDTOMapper();
-  partnersList: IPartnerDTO[] = [];
-  dataSource!: MatTableDataSource<IPartnerDTO>;
+  partnersList: IPartner[] = [];
+  dataSource!: MatTableDataSource<IPartner>;
   tableHasChanged = false;
-  emptyTable = false;
+  emptyTable = true;
   @ViewChild(MatPaginator)
   paginator!: MatPaginator;
   @ViewChild(MatSort)
   sort!: MatSort;
   @ViewChild(MatTable)
-  partnersListTable!: MatTable<IPartnerDTO>;
+  partnersListTable!: MatTable<IPartner>;
   displayedColumns: string[] = [
     'partner_id',
     'number',
@@ -63,8 +73,15 @@ export class ListPartnersComponent {
   constructor(
     private modalService: NgbModal,
     private partnersService: GetPartnerUseCase,
-    private breakpointObserver: BreakpointObserver
-  ) {}
+    private breakpointObserver: BreakpointObserver,
+    private deleteService: DeletePartnerUseCase,
+    private notifier: NotificationAdapter,
+    private errorHandler: ErrorHandlerService
+  ) {
+    this.dataSource = new MatTableDataSource(this.partnersList);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
 
   ngOnInit(): void {
     this.getPartners();
@@ -73,12 +90,6 @@ export class ListPartnersComponent {
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
-  }
-
-  selectRow(rowId: string) {
-    if (this.selectedRowIndex === rowId) {
-      this.selectedRowIndex = null;
-    } else this.selectedRowIndex = rowId;
   }
 
   /**
@@ -90,21 +101,85 @@ export class ListPartnersComponent {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (partners: IPartner[]) => {
-          const list = this.partnerDTOMapper.toDTOList(partners);
+          const list = partners;
           list.length ? (this.emptyTable = false) : (this.emptyTable = true);
           this.partnersList = list;
-          this.dataSource = new MatTableDataSource(this.partnersList);
-          this.dataSource.paginator = this.paginator;
-          this.dataSource.sort = this.sort;
+          this.renderTable();
           if (this.tableHasChanged) {
             this.partnersListTable.renderRows();
           }
           this.tableHasChanged = false;
         },
-        error: (error: Error) => {
-          console.error(error);
+      });
+  }
+
+  deletePartner(id: string): void {
+    this.deleteService
+      .deletePartner(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res: any) => {
+          if (res.affectedRows > 0) {
+            this.notifier.showNotification('success', 'Socio eliminado');
+            this.sustractFromTable(id);
+          } else {
+            this.errorHandler.handleUnkonwError(res);
+          }
         },
       });
+  }
+
+  /**
+   * Abre la modal de confirmación de eliminación de usuario
+   *
+   */
+  openConfirmDialog(id: string): void {
+    const modalRef = this.modalService.open(ConfirmDialogComponent);
+    modalRef.componentInstance.message = 'El socio será eliminado';
+    modalRef.result
+      .then((result) => {
+        if (result) {
+          this.deletePartner(id!);
+        }
+      })
+      .catch((error) => {
+        if (error) console.error(error);
+      });
+  }
+
+  /************************* Gestión de tabla ************************************/
+
+  private updateTable(updatedPartner: IPartner) {
+    const index = this.partnersList.findIndex(
+      (p) => p.partner_id === updatedPartner.partner_id
+    );
+    this.partnersList[index] = updatedPartner;
+    this.renderTable();
+  }
+
+  private addToTable(newPartner: IPartner) {
+    this.partnersList.push(newPartner);
+    this.renderTable();
+  }
+
+  private sustractFromTable(id: string) {
+    const index = this.partnersList.findIndex((p) => p.partner_id === id);
+    this.partnersList.splice(index, 1);
+    this.renderTable();
+  }
+
+  private renderTable() {
+    this.dataSource = new MatTableDataSource(this.partnersList);
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.partnersListTable.renderRows();
+  }
+
+  // Esconde el paginator en pantallas pequeñas
+  breakPointObserver(): void {
+    this.breakpointObserver
+      .observe(['(min-width: 500px)'])
+      .subscribe((result) => (this.isLargeScreen = result.matches));
   }
 
   /**
@@ -129,6 +204,42 @@ export class ListPartnersComponent {
       this.dataSource.paginator.firstPage();
     }
   }
-  openCreatePartnerDialog() {}
-  openEditPartnerDialog(row: any) {}
+
+  selectRow(rowId: string) {
+    if (this.selectedRowIndex === rowId) {
+      this.selectedRowIndex = null;
+    } else this.selectedRowIndex = rowId;
+  }
+  /************************* Gestión de tabla ************************************/
+  openCreatePartnerDialog() {
+    const modalRef = this.modalService.open(
+      CreatePartnerComponent,
+      modalOptions
+    );
+    modalRef.result
+      .then((result) => {
+        if (result) {
+          this.addToTable(result);
+        } else {
+          console.log('Modal closed');
+        }
+      })
+      .catch((error) => {
+        if (error) console.error(error);
+      });
+  }
+
+  openEditPartnerDialog(partner: IPartner) {
+    const modalRef = this.modalService.open(EditPartnerComponent, modalOptions);
+    modalRef.componentInstance.partner = partner;
+    modalRef.result
+      .then((result) => {
+        if (result) {
+          this.updateTable(result);
+        }
+      })
+      .catch((error) => {
+        if (error) console.error(error);
+      });
+  }
 }

@@ -1,3 +1,4 @@
+import { Email } from 'src/app/shared/domain/value-objects/email.value-object';
 import { PartnersType } from './partner-type.enum';
 
 export interface IPartner {
@@ -6,7 +7,7 @@ export interface IPartner {
   number?: string;
   name: string;
   surname: string;
-  email: string;
+  email: Email;
   phone: string;
   address: string;
   dni?: string;
@@ -32,7 +33,7 @@ export class Partner implements IPartner {
   number?: string;
   name: string;
   surname: string;
-  email: string;
+  email: Email;
   phone: string;
   address: string;
   dni?: string;

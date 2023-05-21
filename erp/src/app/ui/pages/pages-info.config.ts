@@ -9,6 +9,7 @@ export enum PageRoutes {
   PARTNERS = '/socios',
   PARTNERS_LIST = '/socios/listado',
   PARTNER_DETAILS = '/socios/detalles',
+  PARTNER_ADD = '/socios/alta',
   PRODUCTS = '/productos',
   PRODUCTS_LIST = '/productos/listado',
 }
@@ -27,4 +28,6 @@ export enum PageIcon {
   PARTNERS = 'bi bi-people-fill',
   PARTNERS_LIST = 'bi bi-person-lines-fill',
   PARTNER_DETAILS = 'bi bi-person-circle',
+  SEARCH = 'bi bi-search',
+  PARTNER_ADD = 'bi bi-person-fill-add',
 }

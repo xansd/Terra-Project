@@ -26,10 +26,7 @@ export class LogOutActiveUserUseCase implements ILogOutActiveUserUseCase {
   //       if (id) {
   //         this.signoutService.signoutFromRemote(id);
   //       }
-  //     },
-  //     error: (error: Error) => {
-  //       console.error(error);
-  //     },
+  //     }
   //   });
   // }
 }

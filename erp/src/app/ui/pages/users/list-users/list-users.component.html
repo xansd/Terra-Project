@@ -3,10 +3,11 @@
     <div class="col-xl-12">
       <div class="mb-5">
         <card>
+          <card-header
+            class="d-block d-flex align-items-center justify-content-center bg-inverse bg-opacity-10 fw-600"
+            >LISTADO DE USUARIOS</card-header
+          >
           <card-body class="card-body">
-            <div class="text-light text-uppercase mb-3 text-center fw-600 fs-5">
-              Listado de usuarios
-            </div>
             <div class="controls-table">
               <div class="actions-table">
                 <button
@@ -55,7 +56,7 @@
                   <mat-cell *matCellDef="let row">
                     <div class="mobile-label">Email:</div>
                     <div class="cell-value">
-                      {{ row.email }}
+                      {{ row.email.value }}
                     </div>
                   </mat-cell>
                 </ng-container>

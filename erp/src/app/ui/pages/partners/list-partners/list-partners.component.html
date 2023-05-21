@@ -2,11 +2,12 @@
   <div class="row justify-content-center">
     <div class="col-xl-12">
       <div class="mb-5">
-        <card>
+        <card
+          ><card-header
+            class="d-block d-flex align-items-center justify-content-center bg-inverse bg-opacity-10 fw-600"
+            >LISTADO DE USUARIOS</card-header
+          >
           <card-body class="card-body">
-            <div class="text-light text-uppercase mb-3 text-center fw-600 fs-5">
-              Listado de socios
-            </div>
             <div class="controls-table">
               <div class="actions-table">
                 <button
@@ -50,7 +51,7 @@
                 <!-- Number column -->
                 <ng-container matColumnDef="number">
                   <mat-header-cell *matHeaderCellDef mat-sort-header
-                    >Número</mat-header-cell
+                    >Núm.</mat-header-cell
                   >
                   <mat-cell *matCellDef="let row">
                     <div class="mobile-label">Número:</div>
