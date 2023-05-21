@@ -64,12 +64,27 @@ INSERT INTO partner_type (name) VALUES ('Colaborador');
 INSERT INTO partner_type (name) VALUES ('Honorario');
 INSERT INTO partner_type (name) VALUES ('Fundador');
 
+CREATE TABLE fees_type (
+    fees_type_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    type ENUM('fees', 'inscription') NOT NULL,
+    amount decimal(10,2) DEFAULT 0
+);
+
+INSERT INTO fees_type (name, description, type, amount) VALUES ('CUOTA_20', 'Cuota anual de 20€', 'fees', 20);
+INSERT INTO fees_type (name, description, type,amount) VALUES ('CUOTA_EXENTA', 'Cuota anual exenta', 'fees', 0);
+INSERT INTO fees_type (name, description, type,amount) VALUES ('INSCRIPCION_EXENTA','inscripción exenta', 'inscription', 0);
+INSERT INTO fees_type (name, description, type,amount) VALUES ('INSCRIPCION_20','inscripción de 20€', 'inscription', 20);
+INSERT INTO fees_type (name, description, type,amount) VALUES ('INSCRIPCION_10','inscripción de 10€', 'inscription', 10);
 
 CREATE TABLE fees(
     fees_id INT(11) AUTO_INCREMENT PRIMARY KEY,
     partner_id CHAR(36) NOT NULL,
+    fees_type_id INT(11) NOT NULL,
     expiration datetime NOT NULL,
     paid TINYINT(1) DEFAULT 0,
+    FOREING KEY (fees_type_id) REFERENCES fees_type(fees_type_id),
     FOREIGN KEY (partner_id) REFERENCES partners (partner_id)       
 );
 
@@ -130,6 +145,7 @@ hash_month  DECIMAL(10,2) NOT NULL,
 extractions_month  DECIMAL(10,2) NOT NULL,
 others_month  DECIMAL(10,2) NOT NULL,
 partner_type_id INT(11) NOT NULL,
+therapeutic TINYINT(1) DEFAULT 0,
 active TINYINT(1) DEFAULT 1,
 user_created CHAR(36) DEFAULT NULL,
 user_updated CHAR(36) DEFAULT NULL,
