@@ -55,8 +55,6 @@ export class User implements IUser {
         return 'ADMIN';
       case Roles.USER:
         return 'USER';
-      case Roles.PARTNER:
-        return 'PARTNER';
       default:
         return 'SYS';
     }
@@ -70,8 +68,6 @@ export class User implements IUser {
         return 2;
       case 'USER':
         return 3;
-      case 'PARTNER':
-        return 4;
       default:
         return 1;
     }

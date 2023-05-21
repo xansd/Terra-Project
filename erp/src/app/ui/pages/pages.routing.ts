@@ -22,7 +22,7 @@ const routes: Routes = [
         path: 'inicio',
         component: HomePage,
         canActivate: [AuthGuard],
-        data: { roles: [Roles.ADMIN, Roles.USER] },
+        data: { roles: [Roles.ADMIN, Roles.USER, Roles.SYS] },
       },
       {
         path: 'usuarios',
