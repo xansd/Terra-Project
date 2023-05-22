@@ -30,7 +30,7 @@ export class CreateUserComponent implements OnDestroy {
       null,
       [Validators.required, Validators.pattern(CONFIG.REGEX.EMAIL)],
     ],
-    rol: [null, Validators.required],
+    rol: ['USER', Validators.required],
   });
   roles = Object.values(Roles).filter((value) => typeof value === 'string');
 

@@ -28,13 +28,10 @@ export class CreatePartnerUseCase implements ICreatePartner {
           this.partnerDomain.email.value
         );
       if (partnerExists) {
-        const partnerAlreadyExistsError = new PartnerAlreadyExistsError(
-          this.partnerDomain.email.value
-        );
         Logger.error(
-          `CreatePartnerUseCase : PartnerAlreadyExistsError : ${partnerAlreadyExistsError.message}`
+          `CreatePartnerUseCase : PartnerAlreadyExistsError : ${this.partnerDomain.email.value}`
         );
-        throw partnerAlreadyExistsError;
+        throw new PartnerAlreadyExistsError(this.partnerDomain.email.value);
       }
       // Guardamos el socio en la base de datos
       const partnerRepository = await this.userRepository.create(
@@ -48,6 +45,7 @@ export class CreatePartnerUseCase implements ICreatePartner {
         );
         throw new DomainValidationError(error.message);
       }
+      throw error;
     }
   }
 }

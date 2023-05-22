@@ -49,11 +49,24 @@ router.get(
   partnerController.getAll.bind(partnerController)
 );
 
+// GET TYPES
+router.get(
+  "/details/types",
+  authorize([Role.ADMIN, Role.USER]),
+  partnerController.getTypes.bind(partnerController)
+);
+
+// GET LAST NUMBER
+router.get(
+  "/details/number",
+  authorize([Role.ADMIN, Role.USER]),
+  partnerController.getLastNumber.bind(partnerController)
+);
+
 // CREATE
 router.post(
   "/",
   authorize([Role.ADMIN, Role.USER]),
-  [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
   partnerController.create.bind(partnerController)
 );
 

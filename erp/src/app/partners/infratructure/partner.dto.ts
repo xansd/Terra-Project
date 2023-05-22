@@ -11,7 +11,6 @@ export interface IPartnerDTO {
   address: string;
   dni?: string;
   birthday: string;
-  registration: string;
   leaves?: string;
   cannabis_month: number;
   hash_month: number;

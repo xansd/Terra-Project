@@ -1,6 +1,5 @@
 import { Email } from 'src/app/shared/domain/value-objects/email.value-object';
 import { PartnersType } from './partner-type.enum';
-
 export interface IPartner {
   partner_id?: string;
   access_code?: string;
@@ -12,7 +11,6 @@ export interface IPartner {
   address: string;
   dni?: string;
   birthday: string;
-  registration: string;
   leaves?: string;
   cannabis_month: number;
   hash_month: number;
@@ -27,6 +25,11 @@ export interface IPartner {
   deleted_at?: string;
 }
 
+export interface IPartnersType {
+  partner_type_id: number;
+  name: string;
+}
+
 export class Partner implements IPartner {
   partner_id?: string;
   access_code?: string;
@@ -38,7 +41,6 @@ export class Partner implements IPartner {
   address: string;
   dni?: string;
   birthday: string;
-  registration: string;
   leaves?: string;
   cannabis_month: number;
   hash_month: number;
@@ -63,7 +65,6 @@ export class Partner implements IPartner {
     this.address = props.address;
     this.dni = props.dni;
     this.birthday = props.birthday;
-    this.registration = props.registration;
     this.leaves = props.leaves;
     this.cannabis_month = props.cannabis_month;
     this.hash_month = props.hash_month;

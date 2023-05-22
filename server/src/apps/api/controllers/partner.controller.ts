@@ -17,6 +17,7 @@ import {
   PartnerDoesNotExistError,
   PartnersNotFoundError,
 } from "../../../modules/partners/domain/partner.exceptions";
+import { UserAlreadyExistsError } from "../../../modules/users/domain";
 
 export class PartnerController {
   partnerMapper = new PartnerMapper();
@@ -60,6 +61,24 @@ export class PartnerController {
     }
   }
 
+  async getTypes(request: Request, response: Response): Promise<void> {
+    try {
+      const types = await this.getPartnersUseCase.getTypes();
+      response.json(types);
+    } catch (error: any) {
+      response.send(InternalServerError(error));
+    }
+  }
+
+  async getLastNumber(request: Request, response: Response): Promise<void> {
+    try {
+      const number = await this.getPartnersUseCase.getPartnerLastNumber();
+      response.json(number);
+    } catch (error: any) {
+      response.send(InternalServerError(error));
+    }
+  }
+
   async create(request: Request, response: Response): Promise<void> {
     try {
       const partner = await this.createPartnerUseCase.createPartner(
@@ -71,6 +90,8 @@ export class PartnerController {
       if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));
       } else if (error instanceof PartnerAlreadyExistsError) {
+        response.send(Conflict(error.message));
+      } else if (error instanceof UserAlreadyExistsError) {
         response.send(Conflict(error.message));
       } else {
         response.send(InternalServerError(error));

@@ -2,6 +2,7 @@ import { IDTOMapper } from 'src/app/shared/application/dto-mapper.interface';
 import { IPartner, Partner } from '../domain/partner';
 import { IPartnerDTO } from './partner.dto';
 import { Email } from 'src/app/shared/domain/value-objects/email.value-object';
+import { UntypedFormGroup } from '@angular/forms';
 
 export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
   constructor() {}
@@ -18,7 +19,6 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       address: dto.address,
       dni: dto.dni,
       birthday: dto.birthday,
-      registration: dto.registration,
       leaves: dto.leaves,
       cannabis_month: dto.cannabis_month,
       hash_month: dto.hash_month,
@@ -28,6 +28,9 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       active: dto.active,
       user_created: dto.user_created,
       user_updated: dto.user_updated,
+      created_at: dto.created_at,
+      updated_at: dto.updated_at,
+      deleted_at: dto.deleted_at,
     });
   }
 
@@ -44,7 +47,6 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       address,
       dni,
       birthday,
-      registration,
       leaves,
       cannabis_month,
       hash_month,
@@ -69,7 +71,6 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       address: domain.address,
       dni: domain.dni,
       birthday: domain.birthday,
-      registration: domain.registration,
       leaves: domain.leaves,
       cannabis_month: domain.cannabis_month,
       hash_month: domain.hash_month,
@@ -93,5 +94,26 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
   // Convierte una lista de DTO a una lista de dominio
   toDomainList(dtoList: IPartnerDTO[]): IPartner[] {
     return dtoList.map((partnerDTO) => this.toDomain(partnerDTO));
+  }
+
+  createPartnerFromFormData(form: UntypedFormGroup, user: string): IPartner {
+    const formValues = form.value;
+    const p = {
+      name: formValues.name,
+      surname: formValues.surname,
+      dni: formValues.dni,
+      email: formValues.email,
+      phone: formValues.phone,
+      address: formValues.address,
+      birthday: formValues.birth,
+      cannabis_month: formValues.cannabis,
+      hash_month: formValues.hash,
+      extractions_month: formValues.extractions,
+      others_month: formValues.others,
+      partner_type_id: formValues.type,
+      active: formValues.active,
+      user_created: user,
+    };
+    return p;
   }
 }

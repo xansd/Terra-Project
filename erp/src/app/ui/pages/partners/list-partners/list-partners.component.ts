@@ -14,10 +14,12 @@ import { DeletePartnerUseCase } from 'src/app/partners/application/delete-user.c
 import { NotificationAdapter } from '../../../../shared/infraestructure/notifier.adapter';
 import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
 import { ConfirmDialogComponent } from 'src/app/ui/shared/components/confirm-dialog/confirm-dialog.component';
+import { DatetimeHelperService } from 'src/app/ui/shared/helpers/datetime.helper.service';
 
 const modalOptions: NgbModalOptions = {
   backdrop: 'static',
   keyboard: false,
+  size: 'xl',
 };
 
 @Component({
@@ -58,7 +60,7 @@ export class ListPartnersComponent {
     { def: 'wallet', show: true },
     { def: 'fee', show: true },
     { def: 'registration', show: true },
-    { def: 'leaves', show: false },
+    { def: 'leaves', show: true },
     { def: 'active', show: true },
     { def: 'cannabis', show: true },
     { def: 'hash', show: true },
@@ -76,7 +78,8 @@ export class ListPartnersComponent {
     private breakpointObserver: BreakpointObserver,
     private deleteService: DeletePartnerUseCase,
     private notifier: NotificationAdapter,
-    private errorHandler: ErrorHandlerService
+    private errorHandler: ErrorHandlerService,
+    private dateFormatter: DatetimeHelperService
   ) {
     this.dataSource = new MatTableDataSource(this.partnersList);
     this.dataSource.paginator = this.paginator;
@@ -147,6 +150,42 @@ export class ListPartnersComponent {
       });
   }
 
+  openCreatePartnerDialog() {
+    const modalRef = this.modalService.open(
+      CreatePartnerComponent,
+      modalOptions
+    );
+    modalRef.result
+      .then((result) => {
+        if (result) {
+          this.addToTable(result);
+        } else {
+          console.log('Modal closed');
+        }
+      })
+      .catch((error) => {
+        if (error) console.error(error);
+      });
+  }
+
+  openEditPartnerDialog(partner: IPartner) {
+    const modalRef = this.modalService.open(EditPartnerComponent, modalOptions);
+    modalRef.componentInstance.partner = partner;
+    modalRef.result
+      .then((result) => {
+        if (result) {
+          this.updateTable(result);
+        }
+      })
+      .catch((error) => {
+        if (error) console.error(error);
+      });
+  }
+
+  getFormattedDate(d: any): string {
+    return this.dateFormatter.getFormattedDate(d);
+  }
+
   /************************* Gestión de tabla ************************************/
 
   private updateTable(updatedPartner: IPartner) {
@@ -211,35 +250,4 @@ export class ListPartnersComponent {
     } else this.selectedRowIndex = rowId;
   }
   /************************* Gestión de tabla ************************************/
-  openCreatePartnerDialog() {
-    const modalRef = this.modalService.open(
-      CreatePartnerComponent,
-      modalOptions
-    );
-    modalRef.result
-      .then((result) => {
-        if (result) {
-          this.addToTable(result);
-        } else {
-          console.log('Modal closed');
-        }
-      })
-      .catch((error) => {
-        if (error) console.error(error);
-      });
-  }
-
-  openEditPartnerDialog(partner: IPartner) {
-    const modalRef = this.modalService.open(EditPartnerComponent, modalOptions);
-    modalRef.componentInstance.partner = partner;
-    modalRef.result
-      .then((result) => {
-        if (result) {
-          this.updateTable(result);
-        }
-      })
-      .catch((error) => {
-        if (error) console.error(error);
-      });
-  }
 }

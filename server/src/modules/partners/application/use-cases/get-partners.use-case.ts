@@ -1,5 +1,5 @@
 import Logger from "../../../../apps/utils/logger";
-import { IPartner } from "../../domain/partner";
+import { IPartner, IPartnersType } from "../../domain/partner";
 import { PartnerDoesNotExistError } from "../../domain/partner.exceptions";
 import { PartnersNotFoundError } from "../../domain/partner.exceptions";
 import { IPartnerRepository } from "../../domain/partner.repository";
@@ -37,5 +37,15 @@ export class GetPartnerUseCase implements IGetPartner, IGetAllPartners {
     }
 
     return partners;
+  }
+
+  async getTypes(): Promise<IPartnersType[]> {
+    const types = await this.partnerRepository.getTypes();
+    return types;
+  }
+
+  async getPartnerLastNumber(): Promise<any> {
+    const number = await this.partnerRepository.getPartnerLastNumber();
+    return number;
   }
 }

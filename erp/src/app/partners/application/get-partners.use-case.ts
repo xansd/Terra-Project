@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { Inject, Injectable } from '@angular/core';
-import { IPartner } from '../domain/partner';
+import { IPartner, IPartnersType } from '../domain/partner';
 import { IPartnerAPIPort } from '../domain/partner-api.port';
 
 export interface IGetAllPartnerUserCase {
@@ -23,5 +23,11 @@ export class GetPartnerUseCase
   }
   getPartner(id: string): Observable<IPartner> {
     return this.partnersAPI.getPartner(id);
+  }
+  getPartnersType(): Observable<IPartnersType[]> {
+    return this.partnersAPI.getPartnersType();
+  }
+  getPartnerLastNumber(): Observable<object> {
+    return this.partnersAPI.getPartnerLastNumber();
   }
 }

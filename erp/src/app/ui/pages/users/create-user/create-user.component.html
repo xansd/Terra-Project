@@ -18,10 +18,6 @@
             formControlName="email"
             matInput
             [errorStateMatcher]="matcher"
-            [ngClass]="{
-              'is-invalid': emailControl.invalid,
-              'is-valid': emailControl.valid
-            }"
           />
           <mat-error
             *ngIf="
@@ -29,23 +25,15 @@
               (emailControl.dirty || emailControl.touched)
             "
           >
-            <span *ngIf="emailControl.hasError('required')">
-              Campo obligatorio.</span
+            <span *ngIf="emailControl.hasError('required')"
+              >Campo obligatorio.</span
             >
-          </mat-error>
-          <mat-error
-            *ngIf="
-              emailControl.invalid &&
-              (emailControl.dirty || emailControl.touched)
-            "
-          >
             <span
               *ngIf="
                 emailControl.hasError('pattern') &&
                 !emailControl.hasError('required')
               "
-            >
-              Formato de email inválido.</span
+              >Formato de email inválido.</span
             >
           </mat-error>
         </div>
@@ -60,22 +48,19 @@
             formControlName="rol"
             #selectedRol
             class="form-select float-start"
-            [ngClass]="{
-              'is-invalid': rolControl.invalid,
-              'is-valid': rolControl.valid
-            }"
+            placeholder="Elige el rol del usuario"
           >
-            <mat-error
-              *ngIf="
-                rolControl.invalid && (rolControl.dirty || rolControl.touched)
-              "
-            >
-              <span *ngIf="rolControl.hasError('required')">
-                Campo obligatorio.</span
-              >
-            </mat-error>
             <option *ngFor="let rol of roles" [value]="rol">{{ rol }}</option>
           </select>
+          <mat-error
+            *ngIf="
+              rolControl.invalid && (rolControl.dirty || rolControl.touched)
+            "
+          >
+            <span *ngIf="rolControl.hasError('required')">
+              Campo obligatorio.</span
+            >
+          </mat-error>
         </div>
       </div>
     </div>

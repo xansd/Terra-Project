@@ -1,11 +1,11 @@
-import { Observable, map } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import SERVER from '../../config/server.config';
 import { IPartnerAPIPort } from '../domain/partner-api.port';
 import { PartnerDTOMapper } from './partner-dto.mapper';
 import { IPartnerDTO } from './partner.dto';
-import { IPartner } from '../domain/partner';
+import { IPartner, IPartnersType } from '../domain/partner';
 
 const API_URI = SERVER.API_URI + '/partners';
 
@@ -15,6 +15,12 @@ export class PartnerAPIRepository implements IPartnerAPIPort {
 
   constructor(private http: HttpClient) {
     this.partnerDTOMapper = new PartnerDTOMapper();
+  }
+
+  getPartnerLastNumber(): Observable<object> {
+    return this.http.get<object>(`${API_URI}/details/number`, {
+      withCredentials: true,
+    });
   }
 
   getPartner(partnerId: string): Observable<IPartner> {
@@ -33,10 +39,19 @@ export class PartnerAPIRepository implements IPartnerAPIPort {
         withCredentials: true,
       })
       .pipe(
+        tap((partnersList: IPartnerDTO[]) => {
+          console.log('Datos recibidos:', partnersList);
+        }),
         map((partnersList: IPartnerDTO[]) =>
           this.partnerDTOMapper.toDomainList(partnersList)
         )
       );
+  }
+
+  getPartnersType(): Observable<IPartnersType[]> {
+    return this.http.get<IPartnersType[]>(`${API_URI}/details/types`, {
+      withCredentials: true,
+    });
   }
 
   createPartner(partner: IPartner): Observable<void> {

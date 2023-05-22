@@ -81,7 +81,13 @@
                   >
                   <mat-cell *matCellDef="let row">
                     <div class="mobile-label">wallet:</div>
-                    <div class="cell-value">
+                    <div
+                      class="cell-value"
+                      [ngClass]="{
+                        'text-danger': row.wallet < 0,
+                        'text-success': row.wallet >= 0
+                      }"
+                    >
                       {{ 0 | currency : "EUR" : "symbol" : "1.2-2" }}
                     </div>
                   </mat-cell>
@@ -118,7 +124,9 @@
                   >
                   <mat-cell *matCellDef="let row">
                     <div class="mobile-label">Alta:</div>
-                    <div class="cell-value"></div>
+                    <div class="cell-value">
+                      {{ getFormattedDate(row.created_at) }}
+                    </div>
                   </mat-cell>
                 </ng-container>
 
@@ -129,7 +137,9 @@
                   >
                   <mat-cell *matCellDef="let row">
                     <div class="mobile-label">Baja:</div>
-                    <div class="cell-value">Sin datos</div>
+                    <div class="cell-value">
+                      {{ getFormattedDate(row.leaves) }}
+                    </div>
                   </mat-cell>
                 </ng-container>
 
@@ -186,7 +196,7 @@
                 <!-- extractions column -->
                 <ng-container matColumnDef="extractions">
                   <mat-header-cell *matHeaderCellDef mat-sort-header>
-                    Extracc.</mat-header-cell
+                    Extrac.</mat-header-cell
                   >
                   <mat-cell *matCellDef="let row">
                     <div class="mobile-label">Extracc.:</div>

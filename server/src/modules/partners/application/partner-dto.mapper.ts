@@ -2,7 +2,6 @@ import { IDTOMapper } from "../../shared/application/dto-mapper.interface";
 import { Email } from "../../shared/domain/value-objects/email.value-object";
 import { IPartner, Partner } from "../domain/partner";
 import { PartnerID } from "../domain/value-objects/partner-id.value.object";
-import { PartnerNumber } from "../domain/value-objects/partner-number.value.object";
 import { IPartnerDTO } from "./partner.dto";
 
 export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
@@ -13,9 +12,7 @@ export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       ? PartnerID.create(dto.partner_id)
       : PartnerID.create();
     const access_code = dto.access_code ? dto.access_code : undefined;
-    const number = dto.number
-      ? PartnerNumber.create(dto.number)
-      : PartnerNumber.create();
+    const number = dto.number;
     const name = dto.name;
     const surname = dto.surname;
     const email = Email.create(dto.email);
@@ -23,7 +20,6 @@ export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
     const address = dto.address;
     const dni = dto.dni ? dto.dni : undefined;
     const birthday = dto.birthday;
-    const registration = dto.registration;
     const leaves = dto.leaves;
     const cannabis_month = dto.cannabis_month;
     const hash_month = dto.hash_month;
@@ -44,7 +40,6 @@ export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       address,
       dni,
       birthday,
-      registration,
       leaves,
       cannabis_month,
       hash_month,
@@ -64,7 +59,7 @@ export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
     return {
       partner_id: domain.partner_id.value,
       access_code: undefined,
-      number: domain.number.value,
+      number: domain.number,
       name: domain.name,
       surname: domain.surname,
       email: domain.email.value,
@@ -72,7 +67,6 @@ export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       address: domain.address,
       dni: domain.dni,
       birthday: domain.birthday,
-      registration: domain.registration,
       leaves: domain.leaves,
       cannabis_month: domain.cannabis_month,
       hash_month: domain.hash_month,

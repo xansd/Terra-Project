@@ -1,63 +1,65 @@
 import { Email } from "../../shared/domain/value-objects/email.value-object";
 import { PartnersType } from "./partner-types.enum";
 import { PartnerID } from "./value-objects/partner-id.value.object";
-import { PartnerNumber } from "./value-objects/partner-number.value.object";
 
 export interface IPartner {
   partner_id: PartnerID;
-  access_code?: string;
-  number: PartnerNumber;
+  access_code?: string | null;
+  number: string;
   name: string;
   surname: string;
   email: Email;
   phone: string;
   address: string;
-  dni?: string;
+  dni?: string | null;
   birthday: string;
-  registration: string;
-  leaves?: string;
+  leaves?: string | null;
   cannabis_month: number;
   hash_month: number;
   extractions_month: number;
   others_month: number;
   partner_type_id: PartnersType;
   active: boolean;
-  user_created?: string;
-  user_updated?: string;
-  created_at?: string;
-  updated_at?: string;
-  deleted_at?: string;
+  user_created?: string | null;
+  user_updated?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  deleted_at?: string | null;
+}
+
+export interface IPartnersType {
+  partner_type_id: number;
+  name: string;
 }
 
 export class Partner implements IPartner {
   partner_id: PartnerID;
-  access_code?: string;
-  number: PartnerNumber;
+  access_code?: string | null;
+  number: string;
   name: string;
   surname: string;
   email: Email;
   phone: string;
   address: string;
-  dni?: string;
+  dni?: string | null;
   birthday: string;
-  registration: string;
-  leaves?: string;
+  leaves?: string | null;
   cannabis_month: number;
   hash_month: number;
   extractions_month: number;
   others_month: number;
   partner_type_id: PartnersType;
   active: boolean;
-  user_created?: string;
-  user_updated?: string;
-  created_at?: string;
-  updated_at?: string;
-  deleted_at?: string;
+  user_created?: string | null;
+  user_updated?: string | null;
+  created_at?: string | null;
+  updated_at?: string | null;
+  deleted_at?: string | null;
 
   constructor(props: IPartner) {
     this.partner_id = props.partner_id ? props.partner_id : PartnerID.create();
     this.access_code = props.access_code;
-    this.number = props.number ? props.number : PartnerNumber.create();
+    this.number = props.number;
     this.name = props.name;
     this.surname = props.surname;
     this.email = props.email;
@@ -65,7 +67,6 @@ export class Partner implements IPartner {
     this.address = props.address;
     this.dni = props.dni;
     this.birthday = props.birthday;
-    this.registration = props.registration;
     this.leaves = props.leaves;
     this.cannabis_month = props.cannabis_month;
     this.hash_month = props.hash_month;

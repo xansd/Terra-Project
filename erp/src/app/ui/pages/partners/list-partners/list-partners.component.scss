@@ -92,3 +92,50 @@
     }
 
 }
+
+:host ::ng-deep .mat-column-number {
+    min-width: 50px;
+}
+
+
+:host ::ng-deep .mat-column-name {
+    min-width: 250px;
+}
+
+:host ::ng-deep .mat-column-wallet {
+    min-width: 100px;
+}
+
+:host ::ng-deep .mat-column-fee {
+    min-width: 100px;
+}
+
+:host ::ng-deep .mat-column-registration {
+    min-width: 100px;
+}
+
+:host ::ng-deep .mat-column-leaves {
+    min-width: 100px;
+}
+
+:host ::ng-deep .mat-column-active {
+    min-width: 100px;
+}
+
+:host ::ng-deep .mat-column-cannabis {
+    min-width: 100px;
+}
+
+:host ::ng-deep .mat-column-hash {
+    min-width: 100px;
+}
+
+
+:host ::ng-deep .mat-column-extractions {
+    min-width: 100px;
+}
+
+
+:host ::ng-deep .mat-column-actions {
+    min-width: 120px;
+}

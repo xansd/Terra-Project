@@ -17,11 +17,6 @@ export class PartnersComponent {
     const element = this.nav.nativeElement;
     const viewportOffset = element.getBoundingClientRect();
     const top = viewportOffset.top;
-    // if (top <= 50) {
-    //   this.isNavFixed = true;
-    // } else {
-    //   this.isNavFixed = false;
-    // }
     return (this.isNavFixed = top <= 50);
   }
 }

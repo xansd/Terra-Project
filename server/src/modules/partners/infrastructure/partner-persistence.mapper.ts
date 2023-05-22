@@ -2,7 +2,6 @@ import { Email } from "../../shared/domain/value-objects/email.value-object";
 import { IPersistenceMapper } from "../../shared/infraestructure/persistence-mapper.interface";
 import { IPartner, Partner } from "../domain/partner";
 import { PartnerID } from "../domain/value-objects/partner-id.value.object";
-import { PartnerNumber } from "../domain/value-objects/partner-number.value.object";
 import { IPartnerPersistence } from "./partner.persistence";
 
 export class PartnerPersistenceMapper
@@ -14,15 +13,14 @@ export class PartnerPersistenceMapper
     return Partner.create({
       partner_id: PartnerID.create(persistence.partner_id),
       access_code: persistence.access_code,
-      number: PartnerNumber.create(persistence.number.toString()),
+      number: persistence.number.toString(),
       name: persistence.name,
       surname: persistence.surname,
       email: Email.create(persistence.email),
       phone: persistence.phone,
       address: persistence.address,
       dni: persistence.dni,
-      birthday: persistence.birthday,
-      registration: persistence.registration,
+      birthday: persistence.birth_date,
       leaves: persistence.leaves,
       cannabis_month: persistence.cannabis_month,
       hash_month: persistence.hash_month,
@@ -51,7 +49,6 @@ export class PartnerPersistenceMapper
       address,
       dni,
       birthday,
-      registration,
       leaves,
       cannabis_month,
       hash_month,
@@ -64,25 +61,24 @@ export class PartnerPersistenceMapper
     } = domain;
     return {
       partner_id: partner_id.value,
-      access_code: access_code,
-      number: Number(number.value),
+      access_code: access_code ? access_code : null,
+      number: Number(number),
       name: name,
       surname: surname,
       email: email.value,
       phone: phone,
       address: address,
-      dni: dni,
-      birthday: birthday,
-      registration: registration,
-      leaves: leaves,
+      dni: dni ? dni : null,
+      birth_date: this.toMySQLDateTime(birthday),
+      leaves: leaves ? leaves : null,
       cannabis_month: cannabis_month,
       hash_month: hash_month,
       extractions_month: extractions_month,
       others_month: others_month,
       partner_type_id: partner_type_id,
       active: active == true ? 1 : 0,
-      user_created: user_created,
-      user_updated: user_updated,
+      user_created: user_created ? user_created : null,
+      user_updated: user_updated ? user_updated : null,
     };
   }
 
@@ -96,5 +92,24 @@ export class PartnerPersistenceMapper
     return persistenceList.map((partnerPersistence) =>
       this.toDomain(partnerPersistence)
     );
+  }
+
+  toMySQLDateTime(d: any): string {
+    // Construir la fecha
+    const date = new Date(d.year, d.month - 1, d.day);
+
+    // Obtener los componentes de la fecha
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = "00";
+    const minutes = "00";
+    const seconds = "00";
+
+    // Formatear la fecha en formato datetime de MySQL
+    const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+    console.log(formattedDate);
+    return formattedDate;
   }
 }

@@ -58,7 +58,6 @@ CREATE TABLE partner_type (
 
 
 INSERT INTO partner_type (name) VALUES ('Usuario');
-INSERT INTO partner_type (name) VALUES ('Usuario/Terapéutico');
 INSERT INTO partner_type (name) VALUES ('Directiva');
 INSERT INTO partner_type (name) VALUES ('Colaborador');
 INSERT INTO partner_type (name) VALUES ('Honorario');
@@ -128,36 +127,35 @@ CREATE TABLE files (
 
 
 CREATE TABLE partners (
-partner_id CHAR(36) PRIMARY KEY,
-acces_code CHAR(36) DEFAULT NULL,
-number INT(11) NOT NULL,
-name VARCHAR(255) NOT NULL,
-surname VARCHAR(255) NOT NULL,
-email VARCHAR(255) NOT NULL UNIQUE,
-phone VARCHAR(20) NOT NULL,
-address VARCHAR(255) NOT NULL,
-dni VARCHAR(12) NOT NULL,
-birth_date datetime NOT NULL,
-registration datetime DEFAULT NULL,
-leaves datetime DEFAULT NULL,
-cannabis_month  DECIMAL(10,2) NOT NULL,
-hash_month  DECIMAL(10,2) NOT NULL,
-extractions_month  DECIMAL(10,2) NOT NULL,
-others_month  DECIMAL(10,2) NOT NULL,
-partner_type_id INT(11) NOT NULL,
-therapeutic TINYINT(1) DEFAULT 0,
-active TINYINT(1) DEFAULT 1,
-user_created CHAR(36) DEFAULT NULL,
-user_updated CHAR(36) DEFAULT NULL,
-created_at datetime DEFAULT CURRENT_TIMESTAMP,
-updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-deleted_at datetime DEFAULT NULL,
-FOREIGN KEY (partner_type_id) REFERENCES partner_type(partner_type_id),
-INDEX partners_name (name),
-INDEX surname_name (surname),
-INDEX partners_acces_code (acces_code),
-INDEX partners_number (number)
-);
+  partner_id CHAR(36) PRIMARY KEY,
+  access_code CHAR(36) DEFAULT NULL,
+  number INT(11) NOT NULL AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  surname VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  phone VARCHAR(20) NOT NULL,
+  address VARCHAR(255) NOT NULL,
+  dni VARCHAR(25) NOT NULL,
+  birth_date datetime NOT NULL,
+  leaves datetime DEFAULT NULL,
+  cannabis_month DECIMAL(10, 2) NOT NULL,
+  hash_month DECIMAL(10, 2) NOT NULL,
+  extractions_month DECIMAL(10, 2) NOT NULL,
+  others_month DECIMAL(10, 2) NOT NULL,
+  partner_type_id INT(11) NOT NULL,
+  therapeutic TINYINT(1) DEFAULT 0,
+  active TINYINT(1) DEFAULT 1,
+  user_created CHAR(36) DEFAULT NULL,
+  user_updated CHAR(36) DEFAULT NULL,
+  created_at datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at datetime DEFAULT NULL,
+  FOREIGN KEY (partner_type_id) REFERENCES partner_type(partner_type_id),
+  INDEX partners_name (name),
+  INDEX surname_name (surname),
+  INDEX partners_acces_code (access_code),
+  INDEX partners_number (number)
+) AUTO_INCREMENT=20;
 
 
 CREATE TABLE providers (
