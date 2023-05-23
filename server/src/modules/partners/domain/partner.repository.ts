@@ -10,9 +10,5 @@ export interface IPartnerRepository {
   delete(partnerId: string): Promise<void>;
   makeActive(partnerId: string): Promise<void>;
   makeInactive(partnerId: string): Promise<void>;
-  // uploadPartnerDocument(partnerId: string, file: File): Promise<void>;
-  // getPartnerDocument(partnerId: string): Promise<File>;
-  // getAllPartnerDocuments(partnerId: string): Promise<File[]>;
-  // deletePartnerDocument(documentId: string): Promise<void>;
   checkPartnerExistenceByEmail(email: string): Promise<boolean>;
 }

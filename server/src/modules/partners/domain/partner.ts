@@ -19,7 +19,8 @@ export interface IPartner {
   extractions_month: number;
   others_month: number;
   partner_type_id: PartnersType;
-  active: boolean;
+  active: boolean | number;
+  therapeutic: boolean | number;
   user_created?: string | null;
   user_updated?: string | null;
   created_at?: string | null;
@@ -49,7 +50,8 @@ export class Partner implements IPartner {
   extractions_month: number;
   others_month: number;
   partner_type_id: PartnersType;
-  active: boolean;
+  active: boolean | number;
+  therapeutic: boolean | number;
   user_created?: string | null;
   user_updated?: string | null;
   created_at?: string | null;
@@ -74,6 +76,7 @@ export class Partner implements IPartner {
     this.others_month = props.others_month;
     this.partner_type_id = props.partner_type_id;
     this.active = props.active;
+    this.therapeutic = props.therapeutic;
     this.user_created = props.user_created;
     this.user_updated = props.user_updated;
     this.created_at = props.created_at;

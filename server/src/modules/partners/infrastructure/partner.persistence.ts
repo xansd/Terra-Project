@@ -16,6 +16,7 @@ export interface IPartnerPersistence {
   others_month: number;
   partner_type_id: number;
   active: number;
+  therapeutic: number;
   user_created?: string | null;
   user_updated?: string | null;
   created_at?: string | null;

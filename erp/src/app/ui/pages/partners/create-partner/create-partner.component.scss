@@ -127,3 +127,8 @@ form {
         justify-content : flex-start !important;
     }
 }
+
+
+::ng-deep .dropdown-menu.show {
+    z-index: 1090 !important;
+}

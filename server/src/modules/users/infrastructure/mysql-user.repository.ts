@@ -1,6 +1,6 @@
-import { isNil } from "../../../../../shared/type-checkers";
-import Logger from "../../../../apps/utils/logger";
-import { MysqlDataBase } from "../../../shared/infraestructure/mysql/mysql";
+import { isNil } from "../../../../shared/type-checkers";
+import Logger from "../../../apps/utils/logger";
+import { MysqlDataBase } from "../../shared/infraestructure/mysql/mysql";
 import {
   IUserRepository,
   IUser,
@@ -8,8 +8,8 @@ import {
   UsersNotFoundError,
   InvalidCredentialsError,
   Role,
-} from "../../domain";
-import { UserPersistenceMapper } from "../user-persistence.mapper";
+} from "../domain";
+import { UserPersistenceMapper } from "./user-persistence.mapper";
 
 export class MySqlUserRepository implements IUserRepository {
   private userPersistenceMapper: UserPersistenceMapper =

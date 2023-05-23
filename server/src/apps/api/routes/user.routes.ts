@@ -12,7 +12,7 @@ import { check } from "express-validator";
 
 import { UpdatePasswordeUseCase } from "../../../modules/users/application/use-cases/update-password.use-case";
 import { catchValidationErrors } from "../error/validate-fileds";
-import { MySqlUserRepository } from "../../../modules/users/infrastructure/mysql/mysql-user.adapter";
+import { MySqlUserRepository } from "../../../modules/users/infrastructure/mysql-user.repository";
 import authorize from "../middlewares/authorize";
 import { Role } from "../../../modules/users/domain";
 import { SigninUseCase } from "../../../modules/users/application/use-cases/signin.use-case";

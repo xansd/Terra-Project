@@ -25,6 +25,7 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       extractions_month: dto.extractions_month,
       others_month: dto.others_month,
       partner_type_id: dto.partner_type_id,
+      therapeutic: dto.therapeutic,
       active: dto.active,
       user_created: dto.user_created,
       user_updated: dto.user_updated,
@@ -54,6 +55,7 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       others_month,
       partner_type_id,
       active,
+      therapeutic,
       user_created,
       user_updated,
       created_at,
@@ -78,6 +80,7 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       others_month: domain.hash_month,
       partner_type_id: domain.hash_month,
       active: domain.active,
+      therapeutic: domain.therapeutic,
       user_created: domain.user_created,
       user_updated: domain.user_updated,
       created_at: domain.created_at,
@@ -96,9 +99,15 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
     return dtoList.map((partnerDTO) => this.toDomain(partnerDTO));
   }
 
-  createPartnerFromFormData(form: UntypedFormGroup, user: string): IPartner {
+  createPartnerFormData(
+    form: UntypedFormGroup,
+    mode: string,
+    user: string,
+    partnerId?: string
+  ): IPartner {
     const formValues = form.value;
-    const p = {
+    const id = partnerId ? partnerId : undefined;
+    const partnerData: IPartner = {
       name: formValues.name,
       surname: formValues.surname,
       dni: formValues.dni,
@@ -110,10 +119,21 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       hash_month: formValues.hash,
       extractions_month: formValues.extractions,
       others_month: formValues.others,
-      partner_type_id: formValues.type,
+      partner_type_id: formValues.type.partner_type_id,
       active: formValues.active,
-      user_created: user,
+      therapeutic: formValues.therapeutic,
     };
-    return p;
+
+    if (mode === 'create') {
+      partnerData.user_created = user;
+    } else if (mode === 'edit') {
+      partnerData.user_updated = user;
+    }
+
+    if (id) {
+      partnerData.partner_id = id;
+    }
+
+    return partnerData;
   }
 }

@@ -57,14 +57,14 @@ export class ListPartnersComponent {
     { def: 'partner_id', show: false },
     { def: 'number', show: true },
     { def: 'name', show: true },
-    { def: 'wallet', show: true },
-    { def: 'fee', show: true },
-    { def: 'registration', show: true },
-    { def: 'leaves', show: true },
-    { def: 'active', show: true },
     { def: 'cannabis', show: true },
     { def: 'hash', show: true },
     { def: 'extractions', show: true },
+    { def: 'wallet', show: true },
+    { def: 'fee', show: true },
+    { def: 'leaves', show: false },
+    { def: 'active', show: true },
+    { def: 'registration', show: true },
     { def: 'actions', show: true },
   ];
   isLargeScreen = false;
@@ -168,9 +168,9 @@ export class ListPartnersComponent {
       });
   }
 
-  openEditPartnerDialog(partner: IPartner) {
+  openEditPartnerDialog(uid: string) {
     const modalRef = this.modalService.open(EditPartnerComponent, modalOptions);
-    modalRef.componentInstance.partner = partner;
+    modalRef.componentInstance.uid = uid;
     modalRef.result
       .then((result) => {
         if (result) {

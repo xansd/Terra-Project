@@ -17,7 +17,8 @@ export interface IPartnerDTO {
   extractions_month: number;
   others_month: number;
   partner_type_id: PartnersType;
-  active: boolean;
+  active: boolean | number;
+  therapeutic: boolean | number;
   user_created?: string;
   user_updated?: string;
   created_at?: string;

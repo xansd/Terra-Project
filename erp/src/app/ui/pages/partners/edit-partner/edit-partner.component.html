@@ -1,1 +1,388 @@
-<p>edit-partner works!</p>
+<div class="modal-body">
+  <!-- FORMULARIO CREACION SOCIO -->
+  <card>
+    <card-header
+      class="d-block d-flex align-items-center bg-inverse bg-opacity-10 fw-400"
+      >DATOS DEL SOCIO</card-header
+    >
+    <div class="card-body">
+      <form [formGroup]="editPartnerForm" class="form-container">
+        <div class="form-group">
+          <div class="row">
+            <!--Number-->
+            <div
+              class="num badge badge-primary border border-info col-xl-2 number-container text-info"
+            >
+              <div class=""><i class="bi bi-person-fill"></i></div>
+              <div *ngIf="partner" class="">{{ partner.number || 0 }}</div>
+            </div>
+
+            <!-- Tipo de socio -->
+            <label for="type" class="col-12 col-xl-1 col-form-label type-label"
+              >Tipo</label
+            >
+            <div class="col-12 col-xl-5">
+              <select
+                id="type"
+                formControlName="type"
+                #selectedType
+                class="form-select float-start"
+              >
+                <option *ngFor="let type of types" [ngValue]="type">
+                  {{ type.name }}
+                </option>
+              </select>
+            </div>
+
+            <!-- Terapéutico? -->
+            <div class="therapeutic-container col-12 col-xl-2">
+              <label for="therapeutic" class="col-form-label"
+                >Terapéutico</label
+              >
+              <input
+                class="form-check-input"
+                type="checkbox"
+                value=""
+                id="therapeutic"
+                formControlName="therapeutic"
+              />
+            </div>
+
+            <!-- Activo? -->
+            <div class="active-container col-12 col-xl-2">
+              <label for="active" class="col-form-label">Activo</label>
+              <input
+                class="form-check-input"
+                type="checkbox"
+                value=""
+                id="active"
+                formControlName="active"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <!--Nombre-->
+          <div class="row">
+            <label for="name" class="col-12 col-xl-1 col-form-label"
+              >Nombre</label
+            >
+            <div class="col-12 col-xl-3">
+              <input
+                autocomplete="off"
+                type="text"
+                class="form-control"
+                id="name"
+                formControlName="name"
+                [errorStateMatcher]="matcher"
+                matInput
+              />
+              <mat-error
+                *ngIf="
+                  nameControl.invalid &&
+                  (nameControl.dirty || nameControl.touched)
+                "
+              >
+                <span *ngIf="nameControl.hasError('required')">
+                  Campo obligatorio.</span
+                >
+              </mat-error>
+            </div>
+            <!--Apellidos-->
+            <label for="surname" class="col-12 col-xl-1 col-form-label"
+              >Apellidos</label
+            >
+            <div class="col-12 col-xl-4">
+              <input
+                autocomplete="off"
+                type="text"
+                class="form-control"
+                id="surname"
+                formControlName="surname"
+                [errorStateMatcher]="matcher"
+                matInput
+              />
+              <mat-error
+                *ngIf="
+                  surnameControl.invalid &&
+                  (surnameControl.dirty || surnameControl.touched)
+                "
+              >
+                <span *ngIf="surnameControl.hasError('required')">
+                  Campo obligatorio.</span
+                >
+              </mat-error>
+            </div>
+            <!--DNI/NIE-->
+            <label for="dni" class="col-12 col-xl-1 col-form-label"
+              >DNI/NIE</label
+            >
+            <div class="col-12 col-xl-2">
+              <input
+                autocomplete="off"
+                type="text"
+                class="form-control"
+                id="dni"
+                formControlName="dni"
+                [errorStateMatcher]="matcher"
+                matInput
+              />
+              <mat-error
+                *ngIf="
+                  dniControl.invalid && (dniControl.dirty || dniControl.touched)
+                "
+              >
+                <span *ngIf="dniControl.hasError('required')"
+                  >Campo obligatorio.</span
+                >
+                <span
+                  *ngIf="
+                    dniControl.hasError('maxlength') &&
+                    !dniControl.hasError('required')
+                  "
+                  >Máximo 25 caracteres.</span
+                >
+              </mat-error>
+            </div>
+          </div>
+          <div class="row mb-12">
+            <!--Email-->
+            <label for="email" class="col-12 col-xl-1 col-form-label"
+              >Email</label
+            >
+            <div class="col-12 col-xl-3">
+              <input
+                autocomplete="off"
+                type="text"
+                class="form-control"
+                id="email"
+                formControlName="email"
+                [errorStateMatcher]="matcher"
+                matInput
+              />
+              <mat-error
+                *ngIf="
+                  emailControl.invalid &&
+                  (emailControl.dirty || emailControl.touched)
+                "
+              >
+                <span *ngIf="emailControl.hasError('required')"
+                  >Campo obligatorio.</span
+                >
+                <span
+                  *ngIf="
+                    emailControl.hasError('pattern') &&
+                    !emailControl.hasError('required')
+                  "
+                  >Formato de email inválido.</span
+                >
+              </mat-error>
+            </div>
+            <!--Teléfono-->
+            <label for="phone" class="col-12 col-xl-1 col-form-label"
+              >Teléfono</label
+            >
+            <div class="col-12 col-xl-4">
+              <input
+                autocomplete="off"
+                type="number"
+                class="form-control"
+                id="phone"
+                formControlName="phone"
+                [errorStateMatcher]="matcher"
+                matInput
+              /><mat-error
+                *ngIf="
+                  phoneControl.invalid &&
+                  (phoneControl.dirty || phoneControl.touched)
+                "
+              >
+                <span *ngIf="phoneControl.hasError('required')">
+                  Campo obligatorio.</span
+                >
+              </mat-error>
+            </div>
+            <!--Nacimiento-->
+            <label for="birth" class="col-12 col-xl-1 col-form-label"
+              >Nacimiento</label
+            >
+            <div class="col-12 col-xl-2">
+              <div class="input-group">
+                <input
+                  [minDate]="{ year: 1900, month: 1, day: 1 }"
+                  [maxDate]="{ year: 2100, month: 1, day: 1 }"
+                  autocomplete="off"
+                  class="form-control"
+                  placeholder="yyyy-mm-dd"
+                  name="birth"
+                  id="birth"
+                  formControlName="birth"
+                  ngbDatepicker
+                  #d="ngbDatepicker"
+                  [errorStateMatcher]="matcher"
+                  matInput
+                />
+                <button
+                  class="btn btn-outline-secondary bi bi-calendar3"
+                  (click)="d.toggle()"
+                  type="button"
+                ></button>
+              </div>
+              <mat-error
+                *ngIf="
+                  birthControl.invalid &&
+                  (birthControl.dirty || birthControl.touched)
+                "
+              >
+                <span *ngIf="birthControl.hasError('required')">
+                  Campo obligatorio.</span
+                >
+              </mat-error>
+            </div>
+          </div>
+          <div class="row mb-12">
+            <!--Telefono-->
+            <label for="address" class="col-12 col-xl-1 col-form-label"
+              >Domicilio</label
+            >
+            <div class="col-12 col-xl-11">
+              <input
+                autocomplete="off"
+                type="text"
+                class="form-control"
+                id="address"
+                formControlName="address"
+                [errorStateMatcher]="matcher"
+                matInput
+              /><mat-error
+                *ngIf="
+                  addressControl.invalid &&
+                  (addressControl.dirty || addressControl.touched)
+                "
+              >
+                <span *ngIf="addressControl.hasError('required')">
+                  Campo obligatorio.</span
+                >
+              </mat-error>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="row">
+            <!--Cannabis-->
+            <label for="cannabis" class="col-12 col-xl-1 col-form-label"
+              >María gr/m</label
+            >
+            <div class="col-12 col-xl-2">
+              <input
+                autocomplete="off"
+                type="number"
+                class="form-control"
+                id="cannabis"
+                formControlName="cannabis"
+                [errorStateMatcher]="matcher"
+                matInput
+              /><mat-error
+                *ngIf="
+                  cannabisControl.invalid &&
+                  (cannabisControl.dirty || cannabisControl.touched)
+                "
+              >
+                <span *ngIf="cannabisControl.hasError('required')">
+                  Campo obligatorio.</span
+                >
+              </mat-error>
+            </div>
+            <!--Hash-->
+            <label for="hash" class="col-12 col-xl-1 col-form-label"
+              >Hash gr/m</label
+            >
+            <div class="col-12 col-xl-2">
+              <input
+                autocomplete="off"
+                type="number"
+                class="form-control"
+                id="hash"
+                formControlName="hash"
+                [errorStateMatcher]="matcher"
+                matInput
+              /><mat-error
+                *ngIf="
+                  hashControl.invalid &&
+                  (hashControl.dirty || hashControl.touched)
+                "
+              >
+                <span *ngIf="hashControl.hasError('required')">
+                  Campo obligatorio.</span
+                >
+              </mat-error>
+            </div>
+            <!--Extracciones-->
+            <label for="extractions" class="col-12 col-xl-1 col-form-label"
+              >Extr. gr/m</label
+            >
+            <div class="col-12 col-xl-2">
+              <input
+                autocomplete="off"
+                type="number"
+                class="form-control"
+                id="extractions"
+                formControlName="extractions"
+                [errorStateMatcher]="matcher"
+                matInput
+              /><mat-error
+                *ngIf="
+                  extractionsControl.invalid &&
+                  (extractionsControl.dirty || extractionsControl.touched)
+                "
+              >
+                <span *ngIf="extractionsControl.hasError('required')">
+                  Campo obligatorio.</span
+                >
+              </mat-error>
+            </div>
+            <!--Otros-->
+            <label for="others" class="col-12 col-xl-1 col-form-label"
+              >Otros gr/m</label
+            >
+            <div class="col-12 col-xl-2">
+              <input
+                autocomplete="off"
+                type="number"
+                class="form-control"
+                id="others"
+                formControlName="others"
+                matInput
+                [errorStateMatcher]="matcher"
+              /><mat-error
+                *ngIf="
+                  othersControl.invalid &&
+                  (othersControl.dirty || othersControl.touched)
+                "
+              >
+                <span *ngIf="othersControl.hasError('required')">
+                  Campo obligatorio.</span
+                >
+              </mat-error>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </card>
+  <!-- FORMULARIO CREACION SOCIO -->
+
+  <!-- FORMULARIO DOCUMENTACION -->
+  <app-file-uploader></app-file-uploader>
+  <!-- FORMULARIO DOCUMENTACION -->
+</div>
+<div
+  class="modal-footer d-block d-flex align-items-center bg-inverse bg-opacity-10 fw-400"
+>
+  <button type="button" class="btn btn-warning" (click)="close(false)">
+    Cancelar
+  </button>
+  <button type="button" class="btn btn-outline-theme" (click)="close(true)">
+    Confirmar
+  </button>
+</div>

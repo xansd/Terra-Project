@@ -2,7 +2,7 @@ import { Router } from "express";
 import { check } from "express-validator";
 import { catchValidationErrors } from "../error/validate-fileds";
 import authorize from "../middlewares/authorize";
-import { MySqlPartnerRepository } from "../../../modules/partners/infrastructure/mysql/mysql-partner.adapter";
+import { MySqlPartnerRepository } from "../../../modules/partners/infrastructure/mysql-partner.repository";
 import { PartnerController } from "../controllers/partner.controller";
 import { CreatePartnerUseCase } from "../../../modules/partners/application/use-cases/create-partner.use-case";
 import { DeletePartnerUseCase } from "../../../modules/partners/application/use-cases/delete-partner.use-case";
@@ -72,9 +72,8 @@ router.post(
 
 // UPDATE
 router.put(
-  "/:id",
+  "/",
   authorize([Role.ADMIN, Role.USER]),
-  [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
   partnerController.update.bind(partnerController)
 );
 
@@ -100,37 +99,6 @@ router.put(
   authorize([Role.ADMIN, Role.USER]),
   [check("id", "El id es obligatorio").not().isEmpty()],
   partnerController.makeInactive.bind(partnerController)
-);
-
-// GET DOCUMENT
-router.get(
-  "/documents/:id",
-  authorize([Role.ADMIN, Role.USER]),
-  [check("id", "El id es obligatorio").not().isEmpty()],
-  partnerController.getDocument.bind(partnerController)
-);
-
-// GET ALL DOCUMENTS
-router.get(
-  "/documents",
-  authorize([Role.ADMIN, Role.USER]),
-  partnerController.getAllDocuments.bind(partnerController)
-);
-
-// DELETE DOCUMENT
-router.delete(
-  "/documents/:id",
-  authorize([Role.ADMIN, Role.USER]),
-  [check("id", "El id es obligatorio").not().isEmpty()],
-  partnerController.deleteDocument.bind(partnerController)
-);
-
-// UPLOAD DOCUMENT
-router.post(
-  "/documents/",
-  authorize([Role.ADMIN, Role.USER]),
-  [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
-  partnerController.uploadDocument.bind(partnerController)
 );
 
 export { router };

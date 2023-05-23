@@ -7,6 +7,7 @@ import http from "http";
 // Routes
 import { router as userRoutes } from "./routes/user.routes";
 import { router as partnerRoutes } from "./routes/partner.routes";
+import { router as filesRoutes } from "./routes/files.routes";
 // Config
 import setup from "../../config/app-config";
 import Logger from "../utils/logger";
@@ -19,7 +20,7 @@ import {
 import { Server, Socket } from "socket.io";
 import SocketServer from "./socket-server";
 import { GetUserUseCase } from "../../modules/users/application";
-import { MySqlUserRepository } from "../../modules/users/infrastructure/mysql/mysql-user.adapter";
+import { MySqlUserRepository } from "../../modules/users/infrastructure/mysql-user.repository";
 
 export class AppServer {
   public app: Application;
@@ -67,6 +68,7 @@ export class AppServer {
   routes(): void {
     this.app.use("/api/users", userRoutes);
     this.app.use("/api/partners", partnerRoutes);
+    this.app.use("/api/files", filesRoutes);
 
     this.app.use(notFoundHandler);
     this.app.use(unautorizedHandler);

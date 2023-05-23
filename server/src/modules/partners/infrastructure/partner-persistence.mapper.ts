@@ -28,6 +28,7 @@ export class PartnerPersistenceMapper
       others_month: persistence.others_month,
       partner_type_id: persistence.partner_type_id,
       active: persistence.active == 1 ? true : false,
+      therapeutic: persistence.therapeutic == 1 ? true : false,
       user_created: persistence.user_created,
       user_updated: persistence.user_updated,
       created_at: persistence.created_at,
@@ -56,6 +57,7 @@ export class PartnerPersistenceMapper
       others_month,
       partner_type_id,
       active,
+      therapeutic,
       user_created,
       user_updated,
     } = domain;
@@ -77,6 +79,7 @@ export class PartnerPersistenceMapper
       others_month: others_month,
       partner_type_id: partner_type_id,
       active: active == true ? 1 : 0,
+      therapeutic: therapeutic == true ? 1 : 0,
       user_created: user_created ? user_created : null,
       user_updated: user_updated ? user_updated : null,
     };

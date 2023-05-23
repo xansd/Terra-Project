@@ -13,6 +13,7 @@ import {
 import { PartnerMapper } from "../../../modules/partners/application/partner-dto.mapper";
 import { DomainValidationError } from "../../../modules/shared/domain/domain-validation.exception";
 import {
+  Number20Limit,
   PartnerAlreadyExistsError,
   PartnerDoesNotExistError,
   PartnersNotFoundError,
@@ -93,6 +94,8 @@ export class PartnerController {
         response.send(Conflict(error.message));
       } else if (error instanceof UserAlreadyExistsError) {
         response.send(Conflict(error.message));
+      } else if (error instanceof Number20Limit) {
+        response.send(Conflict(error.message));
       } else {
         response.send(InternalServerError(error));
       }
@@ -101,16 +104,17 @@ export class PartnerController {
 
   async update(request: Request, response: Response): Promise<void> {
     try {
-      const partner = await this.updatePartnerUseCase.updatePartner(
+      const result = await this.updatePartnerUseCase.updatePartner(
         request.body
       );
-      const partnersDTOs = this.partnerMapper.toDTO(partner!);
-      response.json(partnersDTOs);
+      response.send(result);
     } catch (error) {
       if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));
       } else if (error instanceof PartnerDoesNotExistError) {
         response.send(NotFound(error.message));
+      } else if (error instanceof PartnerAlreadyExistsError) {
+        response.send(Conflict(error.message));
       } else {
         response.send(InternalServerError(error));
       }
@@ -165,9 +169,4 @@ export class PartnerController {
       }
     }
   }
-
-  async uploadDocument(request: Request, response: Response): Promise<void> {}
-  async getDocument(request: Request, response: Response): Promise<void> {}
-  async getAllDocuments(request: Request, response: Response): Promise<void> {}
-  async deleteDocument(request: Request, response: Response): Promise<void> {}
 }

@@ -39,9 +39,6 @@ export class PartnerAPIRepository implements IPartnerAPIPort {
         withCredentials: true,
       })
       .pipe(
-        tap((partnersList: IPartnerDTO[]) => {
-          console.log('Datos recibidos:', partnersList);
-        }),
         map((partnersList: IPartnerDTO[]) =>
           this.partnerDTOMapper.toDomainList(partnersList)
         )

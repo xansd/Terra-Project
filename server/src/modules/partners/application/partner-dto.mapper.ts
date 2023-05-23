@@ -27,6 +27,7 @@ export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
     const others_month = dto.others_month;
     const partner_type_id = dto.partner_type_id;
     const active = dto.active;
+    const therapeutic = dto.therapeutic;
     const user_created = dto.user_created;
     const user_updated = dto.user_updated;
     const props = {
@@ -47,6 +48,7 @@ export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       others_month,
       partner_type_id,
       active,
+      therapeutic,
       user_created,
       user_updated,
     };
@@ -74,6 +76,7 @@ export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       others_month: domain.others_month,
       partner_type_id: domain.partner_type_id,
       active: domain.active,
+      therapeutic: domain.therapeutic,
       user_created: domain.user_created,
       user_updated: domain.user_updated,
       created_at: domain.created_at,

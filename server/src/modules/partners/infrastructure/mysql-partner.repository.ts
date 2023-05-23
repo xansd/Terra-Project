@@ -1,14 +1,14 @@
-import { isNil } from "../../../../../shared/type-checkers";
-import Logger from "../../../../apps/utils/logger";
-import { MysqlDataBase } from "../../../shared/infraestructure/mysql/mysql";
-import { IPartner, IPartnersType } from "../../domain/partner";
-import { PartnersType } from "../../domain/partner-types.enum";
+import { isNil } from "../../../../shared/type-checkers";
+import Logger from "../../../apps/utils/logger";
+import { MysqlDataBase } from "../../shared/infraestructure/mysql/mysql";
+import { IPartner, IPartnersType } from "../domain/partner";
 import {
+  Number20Limit,
   PartnerDoesNotExistError,
   PartnersNotFoundError,
-} from "../../domain/partner.exceptions";
-import { IPartnerRepository } from "../../domain/partner.repository";
-import { PartnerPersistenceMapper } from "../partner-persistence.mapper";
+} from "../domain/partner.exceptions";
+import { IPartnerRepository } from "../domain/partner.repository";
+import { PartnerPersistenceMapper } from "./partner-persistence.mapper";
 
 export class MySqlPartnerRepository implements IPartnerRepository {
   private partnerPersistenceMapper: PartnerPersistenceMapper =
@@ -28,7 +28,7 @@ export class MySqlPartnerRepository implements IPartnerRepository {
   }
   async getAll(): Promise<IPartner[]> {
     const rows = await MysqlDataBase.query(
-      `SELECT * FROM partners where deleted_at is null`
+      `SELECT * FROM partners where deleted_at is null ORDER BY number ASC`
     );
     if (rows.length === 0) {
       Logger.error(`mysql : getAll : PartnersNotFoundError`);
@@ -49,16 +49,42 @@ export class MySqlPartnerRepository implements IPartnerRepository {
     return rows as unknown as number;
   }
 
+  async getNextNumber(): Promise<number[]> {
+    const query1 = `SELECT MAX(number) AS maxNumber FROM partners WHERE number < 20`;
+    const query2 = `SELECT MAX(number) AS maxNumber FROM partners WHERE number >= 20`;
+
+    const result1 = await MysqlDataBase.query(query1);
+    const result2 = await MysqlDataBase.query(query2);
+
+    const maxNumberGroup1 = result1[0].maxNumber;
+    const maxNumberGroup2 = result2[0].maxNumber;
+
+    const nextNumberGroup1 = maxNumberGroup1 ? maxNumberGroup1 + 1 : 1;
+    const nextNumberGroup2 = maxNumberGroup2 ? maxNumberGroup2 + 1 : 20;
+
+    if (nextNumberGroup1 === 20) {
+      Logger.error(": mysql : nextNumberGroup : No se puede sobrepasar el n20");
+      throw new Number20Limit();
+    }
+
+    return [nextNumberGroup1, nextNumberGroup2];
+  }
+
   async create(partner: IPartner): Promise<IPartner> {
+    let partnerNumber: string | number = 0;
+    let partnerMaxNumbers: number[] = await this.getNextNumber();
+    if (partner.partner_type_id > 1) partnerNumber = partnerMaxNumbers[0];
+    else partnerNumber = partnerMaxNumbers[1];
     const partnerPersistence =
       this.partnerPersistenceMapper.toPersistence(partner);
-    const insertQuery = `INSERT INTO partners (partner_id, access_code, name, surname, email, phone, address, dni, birth_date, cannabis_month, hash_month, extractions_month, others_month, partner_type_id, active, user_created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+    const insertQuery = `INSERT INTO partners (partner_id, access_code, number, name, surname, email, phone, address, dni, birth_date, cannabis_month, hash_month, extractions_month, others_month, partner_type_id, active, user_created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
 
     const selectQuery = `SELECT * FROM partners ORDER BY created_at DESC LIMIT 1`;
 
     const insertResult = await MysqlDataBase.update(insertQuery, [
       partnerPersistence.partner_id,
       partnerPersistence.access_code!,
+      partnerNumber as unknown as string,
       partnerPersistence.name,
       partnerPersistence.surname,
       partnerPersistence.email,
@@ -82,12 +108,29 @@ export class MySqlPartnerRepository implements IPartnerRepository {
   async update(partner: IPartner): Promise<IPartner> {
     const partnerPersistence =
       this.partnerPersistenceMapper.toPersistence(partner);
+    console.log(
+      partnerPersistence.name,
+      partnerPersistence.surname,
+      partnerPersistence.email,
+      partnerPersistence.phone,
+      partnerPersistence.address,
+      partnerPersistence.dni!,
+      partnerPersistence.birth_date,
+      partnerPersistence.cannabis_month.toString(),
+      partnerPersistence.hash_month.toString(),
+      partnerPersistence.extractions_month.toString(),
+      partnerPersistence.others_month.toString(),
+      partnerPersistence.partner_type_id.toString(),
+      partnerPersistence.active.toString(),
+      partnerPersistence.therapeutic.toString(),
+      partnerPersistence.user_updated!,
+      partnerPersistence.partner_id
+    );
     const result = await MysqlDataBase.update(
-      `UPDATE users SET access_code = ?, name = ?, surname = ?, email = ?, phone = ?, address = ?, dni = ?, birthday = ?,
-       cannabis_month = ?, hash_month = ?, extractions_month = ?, others_month = ?, partner_type_id = ?, active = ?, user_updated = ?
+      `UPDATE partners SET name = ?, surname = ?, email = ?, phone = ?, address = ?, dni = ?, birth_date = ?,
+       cannabis_month = ?, hash_month = ?, extractions_month = ?, others_month = ?, partner_type_id = ?, active = ?, therapeutic = ?, user_updated = ?
        WHERE partner_id = ?`,
       [
-        partnerPersistence.access_code!,
         partnerPersistence.name,
         partnerPersistence.surname,
         partnerPersistence.email,
@@ -101,6 +144,7 @@ export class MySqlPartnerRepository implements IPartnerRepository {
         partnerPersistence.others_month.toString(),
         partnerPersistence.partner_type_id.toString(),
         partnerPersistence.active.toString(),
+        partnerPersistence.therapeutic.toString(),
         partnerPersistence.user_updated!,
         partnerPersistence.partner_id,
       ]

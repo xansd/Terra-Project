@@ -1,13 +1,13 @@
 CREATE TABLE categories (
-  category_id CHAR(36) NOT NULL PRIMARY KEY,
+  category_id VARCHAR(36) NOT NULL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   INDEX categories_name (name)
 );
 
 CREATE TABLE subcategories (
-  subcategory_id CHAR(36) NOT NULL PRIMARY KEY,
+  subcategory_id VARCHAR(36) NOT NULL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
-  category_id CHAR(36) NOT NULL,
+  category_id VARCHAR(36) NOT NULL,
   INDEX subcategories_name (name),
   FOREIGN KEY (category_id) REFERENCES categories(id)
 );
@@ -24,14 +24,14 @@ INSERT INTO roles (name, description) VALUES ('user', 'usuario del erp');
 INSERT INTO roles (name, description) VALUES ('partner', 'usuario de la app para socios');
 
 CREATE TABLE users (
-user_id CHAR(36) PRIMARY KEY,
+user_id VARCHAR(36) PRIMARY KEY,
 password VARCHAR(255) NOT NULL,
 email VARCHAR(255) NOT NULL UNIQUE,
 role_id INT(11) NOT NULL,
 active TINYINT(1) NOT NULL DEFAULT 0,
 password_last_reset DATETIME DEFAULT NULL,
-    user_created CHAR(36) DEFAULT NULL,
-    user_updated CHAR(36) DEFAULT NULL,
+    user_created VARCHAR(36) DEFAULT NULL,
+    user_updated VARCHAR(36) DEFAULT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,
@@ -42,7 +42,7 @@ FOREIGN KEY (role_id) REFERENCES roles(role_id)
 CREATE TABLE `password_history` (
   password_id INT(11) NOT NULL AUTO_INCREMENT,
   password VARCHAR(255) NOT NULL,
-  user_id CHAR(36) NOT NULL,
+  user_id VARCHAR(36) NOT NULL,
   created_at datetime DEFAULT CURRENT_TIMESTAMP,
   updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   deleted_at datetime DEFAULT NULL,
@@ -55,7 +55,6 @@ CREATE TABLE partner_type (
    name VARCHAR(255) NOT NULL,
    PRIMARY KEY (partner_type_id)
 );
-
 
 INSERT INTO partner_type (name) VALUES ('Usuario');
 INSERT INTO partner_type (name) VALUES ('Directiva');
@@ -79,7 +78,7 @@ INSERT INTO fees_type (name, description, type,amount) VALUES ('INSCRIPCION_10',
 
 CREATE TABLE fees(
     fees_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    partner_id CHAR(36) NOT NULL,
+    partner_id  VARCHAR(36) NOT NULL,
     fees_type_id INT(11) NOT NULL,
     expiration datetime NOT NULL,
     paid TINYINT(1) DEFAULT 0,
@@ -93,43 +92,38 @@ CREATE TABLE file_type (
     description TEXT
 );
 
-INSERT INTO file_type (name, description) VALUES ('DNI/NIE', '');
+INSERT INTO file_type (name, description) VALUES ('DNI', '');
 INSERT INTO file_type (name, description) VALUES ('IMAGE', '');
 INSERT INTO file_type (name, description) VALUES ('COVER', '');
 INSERT INTO file_type (name, description) VALUES ('ALTA', '');
 INSERT INTO file_type (name, description) VALUES ('CUOTA', '');
-INSERT INTO file_type (name, description) VALUES ('FACTURA', '');
+INSERT INTO file_type (name, description) VALUES ('RECIBO', '');
 
-CREATE TABLE entity_type (
-    entity_type_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT
-);
-
-INSERT INTO entity_type (name, description) VALUES ('SOCIOS', '');
-INSERT INTO entity_type (name, description) VALUES ('PRODUCTOS', '');
-INSERT INTO entity_type (name, description) VALUES ('INGRESOS', '');
-INSERT INTO entity_type (name, description) VALUES ('GASTOS', '');
 
 
 CREATE TABLE files (
     file_id INT(11) NOT NULL AUTO_INCREMENT,
-    reference_id CHAR(36) NOT NULL,
-    entity_type_id INT(11) NOT NULL,
+    file_name VARCHAR(255) NOT NULL,
+    partner_id  VARCHAR(36) DEFAULT NULL,
+    product_id  VARCHAR(36) DEFAULT NULL,
+    provider_id  VARCHAR(36) DEFAULT NULL,
     file_type_id INT(11) NOT NULL,
     document_url VARCHAR(255) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at datetime DEFAULT NULL,
     PRIMARY KEY (file_id),
-    FOREIGN KEY (entity_type_id) REFERENCES entity_type (entity_type_id),
-    FOREIGN KEY (file_type_id) REFERENCES file_type (file_type_id)
+    FOREIGN KEY (file_type_id) REFERENCES file_type (file_type_id),
+    FOREIGN KEY (partner_id) REFERENCES partners (partner_id),
+    FOREIGN KEY (product_id) REFERENCES products (product_id),
+    FOREIGN KEY (provider_id) REFERENCES providers (provider_id)
 );
 
 
 CREATE TABLE partners (
-  partner_id CHAR(36) PRIMARY KEY,
-  access_code CHAR(36) DEFAULT NULL,
-  number INT(11) NOT NULL AUTO_INCREMENT,
+  partner_id VARCHAR(36) PRIMARY KEY,
+  access_code VARCHAR(36) DEFAULT NULL,
+  number INT(11) NOT NULL,
   name VARCHAR(255) NOT NULL,
   surname VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL UNIQUE,
@@ -145,8 +139,8 @@ CREATE TABLE partners (
   partner_type_id INT(11) NOT NULL,
   therapeutic TINYINT(1) DEFAULT 0,
   active TINYINT(1) DEFAULT 1,
-  user_created CHAR(36) DEFAULT NULL,
-  user_updated CHAR(36) DEFAULT NULL,
+  user_created VARCHAR(36) DEFAULT NULL,
+  user_updated VARCHAR(36) DEFAULT NULL,
   created_at datetime DEFAULT CURRENT_TIMESTAMP,
   updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   deleted_at datetime DEFAULT NULL,
@@ -159,15 +153,15 @@ CREATE TABLE partners (
 
 
 CREATE TABLE providers (
-provider_id CHAR(36) PRIMARY KEY,
+provider_id VARCHAR(36) PRIMARY KEY,
 name VARCHAR(255) NOT NULL,
 email VARCHAR(255) NOT NULL UNIQUE,
 phone VARCHAR(20) NOT NULL,
 address VARCHAR(255) NOT NULL,
 country VARCHAR(255) NOT NULL,
 type ENUM('mancomunados', 'terceros') NOT NULL,
-user_created CHAR(36) DEFAULT NULL,
-user_updated CHAR(36) DEFAULT NULL,
+user_created VARCHAR(36) DEFAULT NULL,
+user_updated VARCHAR(36) DEFAULT NULL,
 created_at datetime DEFAULT CURRENT_TIMESTAMP,
 updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
 deleted_at datetime DEFAULT NULL,
@@ -176,16 +170,16 @@ INDEX providers_name (name)
 
 
 CREATE TABLE products (
-product_id CHAR(36) PRIMARY KEY,
+product_id VARCHAR(36) PRIMARY KEY,
 name VARCHAR(255) NOT NULL,
 type ENUM('mancomunados', 'terceros') NOT NULL,
-category_id CHAR(36),
-subcategory_id CHAR(36),
+category_id VARCHAR(36),
+subcategory_id VARCHAR(36),
 description TEXT,
 image VARCHAR(255),
 price DECIMAL(10,2) NOT NULL,
-    user_created CHAR(36) DEFAULT NULL,
-    user_updated CHAR(36) DEFAULT NULL,
+    user_created VARCHAR(36) DEFAULT NULL,
+    user_updated VARCHAR(36) DEFAULT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,
@@ -202,8 +196,8 @@ name VARCHAR(255) NOT NULL,
 amount DECIMAL(10,2) NOT NULL,
 date_occurred DATE NOT NULL,
 notes TEXT,
-    user_created CHAR(36) DEFAULT NULL,
-    user_updated CHAR(36) DEFAULT NULL,
+    user_created VARCHAR(36) DEFAULT NULL,
+    user_updated VARCHAR(36) DEFAULT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL
@@ -216,8 +210,8 @@ name VARCHAR(255) NOT NULL,
 amount DECIMAL(10,2) NOT NULL,
 date_occurred DATE NOT NULL,
 notes TEXT,
-    user_created CHAR(36) DEFAULT NULL,
-    user_updated CHAR(36) DEFAULT NULL,
+    user_created VARCHAR(36) DEFAULT NULL,
+    user_updated VARCHAR(36) DEFAULT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL
@@ -226,14 +220,14 @@ notes TEXT,
 
 CREATE TABLE sales (
 sale_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-partner_id CHAR(36) NOT NULL,
+partner_id VARCHAR(36) NOT NULL,
 sale_price DECIMAL(10, 2),
    tax DECIMAL(5, 2),
    discount DECIMAL(10, 2),
    total_price DECIMAL(10, 2),
 date_occurred DATE NOT NULL,
-    user_created CHAR(36) DEFAULT NULL,
-    user_updated CHAR(36) DEFAULT NULL,
+    user_created VARCHAR(36) DEFAULT NULL,
+    user_updated VARCHAR(36) DEFAULT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,
@@ -245,7 +239,7 @@ FOREIGN KEY (partner_id) REFERENCES partners(partner_id)
 CREATE TABLE sale_details (
 sale_detail_id INT(11)  AUTO_INCREMENT PRIMARY KEY,
 sale_id INT(11) NOT NULL,
-product_id CHAR(36)  NOT NULL,
+product_id VARCHAR(36)  NOT NULL,
 quantity DECIMAL(10,2) NOT NULL,
 INDEX sale_details_product_id (product_id),
 INDEX sale_details_sale_id (sale_id),
@@ -257,11 +251,11 @@ FOREIGN KEY (product_id) REFERENCES products(product_id)
 
 CREATE TABLE purchases (
 purchase_id INT(11)  AUTO_INCREMENT PRIMARY KEY,
-provider_id CHAR(36)  NOT NULL,
+provider_id VARCHAR(36)  NOT NULL,
 total_amount DECIMAL(10,2) NOT NULL,
 date_occurred DATE NOT NULL,
-    user_created CHAR(36) DEFAULT NULL,
-    user_updated CHAR(36) DEFAULT NULL,
+    user_created VARCHAR(36) DEFAULT NULL,
+    user_updated VARCHAR(36) DEFAULT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,
@@ -273,7 +267,7 @@ FOREIGN KEY (provider_id) REFERENCES providers(provider_id)
 CREATE TABLE purchase_details (
 purchase_detail_id INT(11)  AUTO_INCREMENT PRIMARY KEY,
 purchase_id INT(11)  NOT NULL,
-product_id CHAR(36) NOT NULL,
+product_id VARCHAR(36) NOT NULL,
 quantity DECIMAL(10,2) NOT NULL,
     INDEX purchase_details_product_id (product_id),
     INDEX purchase_details_purchase_id (purchase_id),
@@ -285,12 +279,12 @@ FOREIGN KEY (product_id) REFERENCES products(product_id)
 
 CREATE TABLE harvests (
 harvest_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-product_id CHAR(36) NOT NULL,
+product_id VARCHAR(36) NOT NULL,
 quantity DECIMAL(10,2) NOT NULL,
 notes TEXT,
 date_occurred DATE NOT NULL,
-    user_created CHAR(36) DEFAULT NULL,
-    user_updated CHAR(36) DEFAULT NULL,
+    user_created VARCHAR(36) DEFAULT NULL,
+    user_updated VARCHAR(36) DEFAULT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,
@@ -325,8 +319,8 @@ CREATE TABLE payments (
     amount DECIMAL(10,2) NOT NULL,
     date_occurred DATE NOT NULL,
     notes TEXT,
-    user_created CHAR(36) DEFAULT NULL,
-    user_updated CHAR(36) DEFAULT NULL,
+    user_created VARCHAR(36) DEFAULT NULL,
+    user_updated VARCHAR(36) DEFAULT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,
@@ -342,8 +336,8 @@ CREATE TABLE receipts (
     amount DECIMAL(10,2) NOT NULL,
 date_occurred DATE NOT NULL,
     notes TEXT,
-    user_created CHAR(36) DEFAULT NULL,
-    user_updated CHAR(36) DEFAULT NULL,
+    user_created VARCHAR(36) DEFAULT NULL,
+    user_updated VARCHAR(36) DEFAULT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,
@@ -354,13 +348,13 @@ date_occurred DATE NOT NULL,
 
 CREATE TABLE debts (
     debt_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    partner_id CHAR(36) NOT NULL,
+    partner_id VARCHAR(36) NOT NULL,
     sale_id INT(11) NOT NULL,
     amount DECIMAL(10,2) NOT NULL,
     date_occurred DATE NOT NULL,
     paid TINYINT(1) DEFAULT 0,
-    user_created CHAR(36) DEFAULT NULL,
-    user_updated CHAR(36) DEFAULT NULL,
+    user_created VARCHAR(36) DEFAULT NULL,
+    user_updated VARCHAR(36) DEFAULT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,

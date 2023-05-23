@@ -141,8 +141,8 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
   }
 
   createPartnerEntity(form: UntypedFormGroup, user: string): IPartner {
-    const e = this.partnerMapper.createPartnerFromFormData(form, user);
-    return e;
+    const mode = 'create';
+    return this.partnerMapper.createPartnerFormData(form, mode, user);
   }
 
   get nameControl(): AbstractControl {

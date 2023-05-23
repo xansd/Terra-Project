@@ -34,4 +34,8 @@ export default {
     KEY: "/etc/ssl/private/_.appges.com_private_key.key",
     CERT: "/etc/ssl/certs/appges.com_ssl_certificate.cer",
   },
+  AWS_S3: {
+    S3_ACCESS_KEY_ID: process.env.S3_ACCESS_KEY_ID,
+    S3_SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY,
+  },
 };

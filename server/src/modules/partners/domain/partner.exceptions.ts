@@ -20,3 +20,10 @@ export class PartnerAlreadyExistsError extends Error {
     this.name = "UserAlreadyExistsError";
   }
 }
+
+export class Number20Limit extends Error {
+  constructor() {
+    super(`No se puede sobrepasar el n20`);
+    this.name = "Number20Limit";
+  }
+}
