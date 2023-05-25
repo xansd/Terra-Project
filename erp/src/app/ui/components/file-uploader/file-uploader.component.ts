@@ -7,6 +7,11 @@ import { FilesTypes, IFiles } from 'src/app/files/domain/files';
 import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
+import { FilesDTOMapper } from 'src/app/files/infrastructure/files.mapper';
+import {
+  InvalidFileExtensionError,
+  InvalidFileSizeError,
+} from 'src/app/files/domain/files.exceptions';
 
 @Component({
   selector: 'app-file-uploader',
@@ -19,6 +24,7 @@ export class FileUploaderComponent {
   preview: any = [];
   files: any = [];
   progress: number[] = [];
+  fileMapper = new FilesDTOMapper();
   constructor(
     private fileService: FileService,
     private filesUseCase: FilesUseCases,
@@ -39,7 +45,7 @@ export class FileUploaderComponent {
               this.preview.push(fileAsData);
               // Creamos un objeto Files y lo añadimos a this.files
               this.files.push(
-                this.fileService.createFileObject(file, FilesTypes.ALTA)
+                this.fileService.createFileObject(file, FilesTypes.ALTA, 'id')
               );
             }
           }
@@ -74,9 +80,7 @@ export class FileUploaderComponent {
   }
 
   uploadFile(i: number) {
-    const formData = new FormData();
-    formData.append('file', this.files[i].file);
-    this.logFormData(formData);
+    const formData = this.fileMapper.toFormData(this.files[i]);
     this.filesUseCase.upload(formData).subscribe({
       next: (event: HttpEvent<void>) => {
         if (event.type === HttpEventType.UploadProgress) {
@@ -84,17 +88,19 @@ export class FileUploaderComponent {
         }
       },
       error: (error: any) => {
-        console.error(error);
+        if (error instanceof InvalidFileExtensionError) {
+          this.errorHandler.handleDomainError({
+            message: 'Extensión no válida',
+          } as Error);
+        } else if (error instanceof InvalidFileSizeError) {
+          this.errorHandler.handleDomainError({
+            message: 'Tamaño no válido',
+          } as Error);
+        } else this.errorHandler.handleUnkonwError(error);
       },
     });
   }
-  logFormData(formData: FormData) {
-    const object: Record<string, any> = {};
-    formData.forEach((value, key) => {
-      object[key] = value;
-    });
-    console.log(object);
-  }
+
   deleteFiles(i?: number): void {
     if (i) this.files.splice(i, 1);
     else this.files = [];

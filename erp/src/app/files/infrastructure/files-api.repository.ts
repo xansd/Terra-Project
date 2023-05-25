@@ -11,6 +11,7 @@ const API_URI = SERVER.API_URI + '/files';
 
 @Injectable({ providedIn: 'root' })
 export class FilesAPIRepository implements IFilesAPIPort {
+  fileMapper = new FilesDTOMapper();
   progress = 0;
   private readonly filesDTOMapper: FilesDTOMapper;
 
@@ -27,7 +28,7 @@ export class FilesAPIRepository implements IFilesAPIPort {
 
   getFiles(entityId: string): Observable<IFiles[]> {
     return this.http
-      .get<IFilesDTO[]>(`${API_URI}/${entityId}`, {
+      .get<IFilesDTO[]>(`${API_URI}/all/${entityId}`, {
         withCredentials: true,
       })
       .pipe(
@@ -35,9 +36,10 @@ export class FilesAPIRepository implements IFilesAPIPort {
       );
   }
 
-  uploadFile(file: IFiles): Observable<HttpEvent<void>> {
+  uploadFile(formData: FormData): Observable<HttpEvent<void>> {
+    //const fileDTO = this.filesDTOMapper.toDTO(file);
     return this.http
-      .post<void>(`${API_URI}`, file, {
+      .post<void>(`${API_URI}`, formData, {
         observe: 'events',
         reportProgress: true,
       })
@@ -51,8 +53,14 @@ export class FilesAPIRepository implements IFilesAPIPort {
       );
   }
 
-  downloadEntityFiles(entityid: string): Observable<IFiles[]> {
-    throw new Error('Method not implemented.');
+  downloadEntityFiles(entityId: string): Observable<IFiles[]> {
+    return this.http
+      .get<IFilesDTO[]>(`${API_URI}/downloadFiles/${entityId}`, {
+        withCredentials: true,
+      })
+      .pipe(
+        map((files: IFilesDTO[]) => this.filesDTOMapper.toDomainList(files))
+      );
   }
 
   deleteFile(fileId: string): Observable<void> {

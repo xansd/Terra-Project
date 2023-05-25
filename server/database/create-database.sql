@@ -104,20 +104,15 @@ INSERT INTO file_type (name, description) VALUES ('RECIBO', '');
 CREATE TABLE files (
     file_id INT(11) NOT NULL AUTO_INCREMENT,
     file_name VARCHAR(255) NOT NULL,
-    partner_id  VARCHAR(36) DEFAULT NULL,
-    product_id  VARCHAR(36) DEFAULT NULL,
-    provider_id  VARCHAR(36) DEFAULT NULL,
+    reference_id VARCHAR(36) DEFAULT NULL,
     file_type_id INT(11) NOT NULL,
     document_url VARCHAR(255) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at datetime DEFAULT NULL,
+    deleted_at DATETIME DEFAULT NULL,
     isPublic TINYINT(1) DEFAULT 0,
     PRIMARY KEY (file_id),
-    FOREIGN KEY (file_type_id) REFERENCES file_type (file_type_id),
-    FOREIGN KEY (partner_id) REFERENCES partners (partner_id),
-    FOREIGN KEY (product_id) REFERENCES products (product_id),
-    FOREIGN KEY (provider_id) REFERENCES providers (provider_id)
+    FOREIGN KEY (file_type_id) REFERENCES file_type (file_type_id)
 );
 
 

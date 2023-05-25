@@ -16,9 +16,7 @@ export interface IFiles {
   type: FilesTypes;
   file?: File | Buffer;
   is_public?: number | boolean;
-  partner_id?: string;
-  product_id?: string;
-  provider_id?: string;
+  reference_id?: string;
   created_at?: string;
   updated_at?: string;
 }
@@ -30,9 +28,7 @@ export class Files implements IFiles {
   type: FilesTypes;
   file?: File | Buffer;
   is_public?: number | boolean;
-  partner_id?: string;
-  product_id?: string;
-  provider_id?: string;
+  reference_id?: string;
   created_at?: string;
   updated_at?: string;
 
@@ -43,9 +39,7 @@ export class Files implements IFiles {
     this.type = props.type;
     this.file = props.file;
     this.is_public = props.is_public;
-    this.partner_id = props.partner_id;
-    this.product_id = props.product_id;
-    this.provider_id = props.provider_id;
+    this.reference_id = props.reference_id;
     this.created_at = props.created_at;
     this.updated_at = props.updated_at;
   }

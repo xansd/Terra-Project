@@ -18,6 +18,10 @@ import CONFIG from '../../../../config/client.config';
 import { CustomErrorStateMatcher } from 'src/app/ui/shared/helpers/custom-error-state-macher';
 import { GetPartnerUseCase } from 'src/app/partners/application/get-partners.use-case';
 import { PartnerDTOMapper } from 'src/app/partners/infratructure/partner-dto.mapper';
+import {
+  AppStateService,
+  FormMode,
+} from 'src/app/ui/services/app-state.service';
 
 @Component({
   selector: 'app-create-partner',
@@ -61,10 +65,12 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
     private errorHandler: ErrorHandlerService,
     private formsHelperService: FormsHelperService,
     private createPartnerService: CreatePartnerUseCase,
-    private getPartnersService: GetPartnerUseCase
+    private getPartnersService: GetPartnerUseCase,
+    private appState: AppStateService
   ) {}
 
   ngOnInit(): void {
+    this.appState.state.formMode = FormMode.CREATE;
     this.getPartnersLastNumber();
     this.getPartnersType();
   }
@@ -72,6 +78,7 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
+    this.appState.state.formMode = FormMode.SLEEP;
   }
 
   close(result: boolean | IPartner): void {

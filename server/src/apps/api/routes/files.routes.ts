@@ -30,12 +30,20 @@ router.get(
   filesController.getById.bind(filesController)
 );
 
-// GET ALL
+// GET ALL FILES BY ENTITY_ID
 router.get(
-  "/",
+  "/all/:id",
   authorize([Role.ADMIN, Role.USER]),
   [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
   filesController.getAll.bind(filesController)
+);
+
+// DOWNLOAD ALL FILES BY ENTITY_ID
+router.get(
+  "/downloadFiles/:id",
+  // authorize([Role.ADMIN, Role.USER]),
+  [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
+  filesController.downloadAll.bind(filesController)
 );
 
 // UPLOAD
@@ -44,14 +52,6 @@ router.post(
   // authorize([Role.ADMIN, Role.USER]),
   fileUploader.getSingleUploader("file"),
   filesController.upload.bind(filesController)
-);
-
-// DOWNLOAD
-router.get(
-  "/downloadFiles/:id",
-  // authorize([Role.ADMIN, Role.USER]),
-  [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
-  filesController.downloadFiles.bind(filesController)
 );
 
 // DELETE

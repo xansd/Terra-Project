@@ -23,6 +23,10 @@ import { GetPartnerUseCase } from 'src/app/partners/application/get-partners.use
 import { DomainValidationError } from 'src/app/shared/domain/domain-validation.exception';
 import { PartnerDTOMapper } from 'src/app/partners/infratructure/partner-dto.mapper';
 import { DatetimeHelperService } from 'src/app/ui/shared/helpers/datetime.helper.service';
+import {
+  AppStateService,
+  FormMode,
+} from 'src/app/ui/services/app-state.service';
 
 @Component({
   selector: 'app-edit-partner',
@@ -65,16 +69,19 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
     private formsHelperService: FormsHelperService,
     private updatePartnerService: UpdatePartnerUseCase,
     private getPartnersService: GetPartnerUseCase,
-    private dateFormatter: DatetimeHelperService
+    private dateFormatter: DatetimeHelperService,
+    private appState: AppStateService
   ) {}
 
   ngOnInit(): void {
+    this.appState.state.formMode = FormMode.UPDATE;
     this.getPartner(this.uid);
   }
 
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
+    this.appState.state.formMode = FormMode.SLEEP;
   }
 
   populateForm(partner: IPartner): void {

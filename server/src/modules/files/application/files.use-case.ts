@@ -13,6 +13,10 @@ export interface IGetFiles {
   getFiles(entityId: string): Promise<IFiles[]>;
 }
 
+export interface IDownloadFiles {
+  downloadFiles(entityId: string): Promise<IFiles[]>;
+}
+
 export interface IUploadFile {
   uploadFile(file: IFiles): Promise<void>;
 }
@@ -43,7 +47,19 @@ export class FilesCaseUses
       Logger.error(`files-repository: getFiles: ${FileDoesNotExistError}`);
       throw new FileDoesNotExistError("El fichero/s no existe/n");
     }
+    return files;
+  }
 
+  async downloadFiles(entityId: string): Promise<IFiles[]> {
+    const fileUploader = new FileUploader();
+    const fileMapper = new FilesMapper();
+    const files = await this.filesRepository.getFiles(entityId);
+    if (!files) {
+      Logger.error(`files-repository: getFiles: ${FileDoesNotExistError}`);
+      throw new FileDoesNotExistError("El fichero/s no existe/n");
+    }
+
+    // Encapsulamos el fichero en cada objeto IFiles
     const updatedFiles: IFiles[] = [];
 
     for (const file of files) {

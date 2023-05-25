@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   UntypedFormBuilder,
@@ -17,13 +17,17 @@ import { FormsHelperService } from 'src/app/ui/shared/helpers/forms-helper.servi
 import { CreateUserUseCase } from 'src/app/users/application/create-user.use-case';
 import { Roles } from 'src/app/users/domain/roles';
 import CONFIG from '../../../../config/client.config';
+import {
+  AppStateService,
+  FormMode,
+} from 'src/app/ui/services/app-state.service';
 
 @Component({
   selector: 'app-create-user',
   templateUrl: './create-user.component.html',
   styleUrls: ['./create-user.component.scss'],
 })
-export class CreateUserComponent implements OnDestroy {
+export class CreateUserComponent implements OnDestroy, OnInit {
   config = CONFIG;
   createUserForm: UntypedFormGroup = this.formBuilder.group({
     email: [
@@ -43,12 +47,18 @@ export class CreateUserComponent implements OnDestroy {
     private notifier: NotificationAdapter,
     private createUserService: CreateUserUseCase,
     private errorHandler: ErrorHandlerService,
-    private formsHelperService: FormsHelperService
+    private formsHelperService: FormsHelperService,
+    private appState: AppStateService
   ) {}
+
+  ngOnInit(): void {
+    this.appState.state.formMode = FormMode.CREATE;
+  }
 
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
+    this.appState.state.formMode = FormMode.SLEEP;
   }
 
   close(result: boolean): void {

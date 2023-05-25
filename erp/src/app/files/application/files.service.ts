@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FilesTypes, IFiles } from '../domain/files';
+import { FilePolicy, FilesTypes, IFiles } from '../domain/files';
 import config from '../../config/client.config';
 
 @Injectable({
@@ -22,11 +22,20 @@ export class FileService {
     return false;
   }
 
-  createFileObject(file: File, type: FilesTypes) {
+  createFileObject(
+    file: File,
+    type: FilesTypes,
+    referenceId: string,
+    isPublic?: boolean,
+    policy?: FilePolicy
+  ) {
     const fileObject: IFiles = {
-      type: type,
       name: file.name,
+      type: type,
       file: file,
+      reference_id: referenceId,
+      is_public: isPublic ? isPublic : false,
+      policy: policy ? policy : FilePolicy.PRIVATE,
     };
     return fileObject;
   }

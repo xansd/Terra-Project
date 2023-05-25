@@ -11,9 +11,7 @@ export class FilesMapper implements IPersistenceMapper<IFiles, IFilesEntity> {
       type: persistence.file_type_id as unknown as FilesTypes,
       file: persistence.file,
       is_public: persistence.is_public,
-      partner_id: persistence.partner_id,
-      product_id: persistence.product_id,
-      provider_id: persistence.provider_id,
+      reference_id: persistence.reference_id,
       created_at: persistence.created_at,
       updated_at: persistence.updated_at,
     });
@@ -26,9 +24,7 @@ export class FilesMapper implements IPersistenceMapper<IFiles, IFilesEntity> {
       url,
       file,
       is_public,
-      partner_id,
-      product_id,
-      provider_id,
+      reference_id,
       created_at,
       updated_at,
     } = domain;
@@ -39,9 +35,7 @@ export class FilesMapper implements IPersistenceMapper<IFiles, IFilesEntity> {
       file_type_id: type as unknown as number,
       file: file,
       is_public: is_public,
-      provider_id: provider_id,
-      partner_id: partner_id,
-      product_id: product_id,
+      reference_id: reference_id,
       created_at: created_at,
       updated_at: updated_at,
     };

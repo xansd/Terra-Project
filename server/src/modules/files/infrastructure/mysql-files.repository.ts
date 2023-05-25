@@ -39,32 +39,18 @@ export class MysqlFilesRepository implements IFilesRepository {
 
   async uploadFile(file: IFiles): Promise<void> {
     const entityFile = this.filesMapper.toPersistence(file);
-    let referenceColumnName: string | null = null;
-    let referenceId: string | null = null;
 
-    // Determinar qué referencia se está introduciendo
-    if (file.partner_id) {
-      referenceColumnName = "partner_id";
-      referenceId = file.partner_id;
-    } else if (file.product_id) {
-      referenceColumnName = "product_id";
-      referenceId = file.product_id;
-    } else if (file.provider_id) {
-      referenceColumnName = "provider_id";
-      referenceId = file.provider_id;
-    }
-
-    if (!referenceColumnName || !referenceId) {
+    if (!file.reference_id) {
       throw new Error("No se proporcionó ninguna referencia válida");
     }
 
     const result = await MysqlDataBase.update(
-      `INSERT INTO files (file_name, file_type_id, document_url, ${referenceColumnName}) VALUES (?, ?, ?, ?)`,
+      `INSERT INTO files (file_name, file_type_id, document_url, reference_id) VALUES (?, ?, ?, ?)`,
       [
         entityFile.file_name,
         entityFile.file_type_id.toString(),
         entityFile.document_url!,
-        referenceId,
+        file.reference_id,
       ]
     );
 

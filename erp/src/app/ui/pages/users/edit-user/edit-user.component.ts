@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   UntypedFormBuilder,
@@ -11,7 +11,10 @@ import { BlockUserUseCase } from 'src/app/auth/application/use-cases/block-user.
 import { UpdatePasswordUseCase } from 'src/app/auth/application/use-cases/update-password.use-case';
 import { updateRoleUserUseCase } from 'src/app/auth/application/use-cases/update-rol.case-use';
 import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
-import { AppStateService } from 'src/app/ui/services/app-state.service';
+import {
+  AppStateService,
+  FormMode,
+} from 'src/app/ui/services/app-state.service';
 import { Roles } from 'src/app/users/domain/roles';
 import { IUser, User } from 'src/app/users/domain/user';
 
@@ -20,7 +23,7 @@ import { IUser, User } from 'src/app/users/domain/user';
   templateUrl: './edit-user.component.html',
   styleUrls: ['./edit-user.component.scss'],
 })
-export class EditUserComponent implements OnInit {
+export class EditUserComponent implements OnInit, OnDestroy {
   @Input() user!: IUser;
   editUser: UntypedFormGroup = this.formBuilder.group({
     rol: [null, Validators.required],
@@ -32,7 +35,7 @@ export class EditUserComponent implements OnInit {
   constructor(
     public modal: NgbActiveModal,
     private formBuilder: UntypedFormBuilder,
-    private service: AppStateService,
+    private appState: AppStateService,
     private notifier: NotificationAdapter,
     private activateUserService: ActivateUserUseCase,
     private restorePasswordUseCase: UpdatePasswordUseCase,
@@ -40,13 +43,18 @@ export class EditUserComponent implements OnInit {
     private updateRoleService: updateRoleUserUseCase
   ) {}
 
+  ngOnDestroy(): void {
+    this.appState.state.formMode = FormMode.SLEEP;
+  }
+
   ngOnInit(): void {
+    this.appState.state.formMode = FormMode.UPDATE;
     this.cloneUser();
     this.populateData();
   }
 
   cloneUser(): void {
-    this.originalUser = this.service.cloneObject(this.user);
+    this.originalUser = this.appState.cloneObject(this.user);
   }
 
   populateData(): void {

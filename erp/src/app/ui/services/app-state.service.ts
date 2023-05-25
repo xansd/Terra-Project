@@ -2,9 +2,17 @@ import { Injectable } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 
+export enum FormMode {
+  SLEEP = 'SLEEP',
+  CREATE = 'CREATE',
+  UPDATE = 'UPDATE',
+}
+
 export interface IAppState {
   activeRoute: string;
   lastRoute: string;
+  formMode: FormMode | string;
+  activeEntityID: string;
 }
 
 export interface IAppStateService {
@@ -20,6 +28,8 @@ export class AppStateService implements IAppStateService {
   state: IAppState = {
     activeRoute: '',
     lastRoute: '',
+    activeEntityID: '',
+    formMode: FormMode.SLEEP,
   };
   private state$ = new BehaviorSubject<IAppState>(this.state);
 

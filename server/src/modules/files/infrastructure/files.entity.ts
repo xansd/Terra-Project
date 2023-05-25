@@ -5,9 +5,7 @@ export interface IFilesEntity {
   file_type_id: number;
   file?: File | Buffer;
   is_public?: number | boolean;
-  provider_id?: string;
-  partner_id?: string;
-  product_id?: string;
+  reference_id?: string;
   created_at?: string;
   updated_at?: string;
 }

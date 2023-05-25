@@ -1,5 +1,9 @@
 import CONFIG from "../../../config/app-config";
 
+export enum FilePolicy {
+  PRIVATE = "private",
+  PUBLIC = "public",
+}
 export class FileService {
   static REQUIRED_FILE_TYPES = CONFIG.REQUIRED_FILE_TYPES;
   static MAX_FILE_SIZE = CONFIG.MAX_FILE_SIZE;
@@ -21,7 +25,8 @@ export class FileService {
   }
 
   static createFileName(originaFileName: string, policy: string) {
-    const folder = policy === "private" ? "erpAppBucket" : "publicAppBucket";
+    const folder =
+      policy === FilePolicy.PRIVATE ? "erpAppBucket" : "publicAppBucket";
 
     const filenameParts = originaFileName.split(".");
     const extension = filenameParts.pop();
