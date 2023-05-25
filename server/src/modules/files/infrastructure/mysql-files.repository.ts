@@ -14,7 +14,7 @@ export class MysqlFilesRepository implements IFilesRepository {
 
   async getFile(filesId: string): Promise<IFiles> {
     const rows = await MysqlDataBase.query(
-      `SELECT * FROM files WHERE file_id = ? and deleted_at is null`,
+      `SELECT * FROM files WHERE file_id = ? and deleted_at IS NULL`,
       [filesId]
     );
     if (isNil(rows[0])) {
@@ -25,7 +25,10 @@ export class MysqlFilesRepository implements IFilesRepository {
   }
   async getFiles(entityId: string): Promise<IFiles[]> {
     const rows = await MysqlDataBase.query(
-      `SELECT * FROM files where deleted_at is null`
+      `SELECT * FROM files WHERE deleted_at IS NULL
+      AND (partner_id = ? OR product_id = ? OR provider_id = ?)
+      `,
+      [entityId, entityId, entityId]
     );
     if (rows.length === 0) {
       Logger.error(`mysql : getAll : FileDoesNotExistError`);
@@ -60,7 +63,7 @@ export class MysqlFilesRepository implements IFilesRepository {
       [
         entityFile.file_name,
         entityFile.file_type_id.toString(),
-        entityFile.document_url,
+        entityFile.document_url!,
         referenceId,
       ]
     );

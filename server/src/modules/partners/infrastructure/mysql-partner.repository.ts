@@ -16,7 +16,7 @@ export class MySqlPartnerRepository implements IPartnerRepository {
 
   async getById(partnerId: string): Promise<IPartner> {
     const rows = await MysqlDataBase.query(
-      `SELECT * FROM partners WHERE partner_id = ? and deleted_at is null`,
+      `SELECT * FROM partners WHERE partner_id = ? and deleted_at IS NULL`,
       [partnerId]
     );
     if (isNil(rows[0])) {
@@ -28,7 +28,7 @@ export class MySqlPartnerRepository implements IPartnerRepository {
   }
   async getAll(): Promise<IPartner[]> {
     const rows = await MysqlDataBase.query(
-      `SELECT * FROM partners where deleted_at is null ORDER BY number ASC`
+      `SELECT * FROM partners where deleted_at IS NULL ORDER BY number ASC`
     );
     if (rows.length === 0) {
       Logger.error(`mysql : getAll : PartnersNotFoundError`);
@@ -191,7 +191,7 @@ export class MySqlPartnerRepository implements IPartnerRepository {
 
   async checkPartnerExistenceByEmail(email: string): Promise<boolean> {
     const partner = await MysqlDataBase.query(
-      `SELECT * FROM partners WHERE email = ? and deleted_at is null`,
+      `SELECT * FROM partners WHERE email = ? and deleted_at IS NULL`,
       [email]
     );
     return !!partner.length;

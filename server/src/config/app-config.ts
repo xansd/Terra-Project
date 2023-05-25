@@ -35,7 +35,32 @@ export default {
     CERT: "/etc/ssl/certs/appges.com_ssl_certificate.cer",
   },
   AWS_S3: {
+    CONFIGS3: {
+      credentials: {
+        accessKeyId: process.env.S3_ACCESS_KEY_ID!,
+        secretAccessKey: process.env.S3_SECRET_ACCESS_KEY!,
+      },
+      region: "eu-west-3",
+    },
     S3_ACCESS_KEY_ID: process.env.S3_ACCESS_KEY_ID,
     S3_SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY,
+    REGION: "eu-west-3",
+    BUCKET: "asoterrabucket",
   },
+  REQUIRED_FILE_TYPES: [
+    "jpg",
+    "jpeg",
+    "png",
+    "webp",
+    "odt",
+    "ods",
+    "doc",
+    "docx",
+    "xls",
+    "csv",
+    "pdf",
+    "txt",
+    "xlsx",
+  ],
+  MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
 };

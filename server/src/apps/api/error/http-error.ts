@@ -77,6 +77,15 @@ export function Forbidden(message: string): HttpError {
   };
 }
 
+export function _MulterError(message: string): HttpError {
+  Logger.error(`multer-error : error al subir el archivo`);
+  return {
+    status: "Multer error",
+    statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+    message,
+  };
+}
+
 export function InternalServerError(error: unknown): HttpError {
   Logger.error(`http-error : InternalServerError : ${error}`);
   const httpError: HttpError = {

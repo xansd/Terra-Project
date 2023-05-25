@@ -14,7 +14,8 @@ export interface IFiles {
   name: string;
   url?: string;
   type: FilesTypes;
-  file?: File;
+  file?: File | Uint8Array;
+  is_public?: number | boolean;
   partner_id?: string;
   product_id?: string;
   provider_id?: string;
@@ -27,7 +28,8 @@ export class Files implements IFiles {
   name: string;
   url?: string;
   type: FilesTypes;
-  file?: File;
+  file?: File | Uint8Array;
+  is_public?: number | boolean;
   partner_id?: string;
   product_id?: string;
   provider_id?: string;
@@ -40,6 +42,7 @@ export class Files implements IFiles {
     this.url = props.url;
     this.type = props.type;
     this.file = props.file;
+    this.is_public = props.is_public;
     this.partner_id = props.partner_id;
     this.product_id = props.product_id;
     this.provider_id = props.provider_id;

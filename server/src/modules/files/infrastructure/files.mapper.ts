@@ -10,6 +10,7 @@ export class FilesMapper implements IPersistenceMapper<IFiles, IFilesEntity> {
       url: persistence.document_url,
       type: persistence.file_type_id as unknown as FilesTypes,
       file: persistence.file,
+      is_public: persistence.is_public,
       partner_id: persistence.partner_id,
       product_id: persistence.product_id,
       provider_id: persistence.provider_id,
@@ -24,6 +25,7 @@ export class FilesMapper implements IPersistenceMapper<IFiles, IFilesEntity> {
       type,
       url,
       file,
+      is_public,
       partner_id,
       product_id,
       provider_id,
@@ -36,6 +38,7 @@ export class FilesMapper implements IPersistenceMapper<IFiles, IFilesEntity> {
       document_url: url,
       file_type_id: type as unknown as number,
       file: file,
+      is_public: is_public,
       provider_id: provider_id,
       partner_id: partner_id,
       product_id: product_id,
@@ -48,5 +51,23 @@ export class FilesMapper implements IPersistenceMapper<IFiles, IFilesEntity> {
   }
   toDomainList(persistenceList: IFilesEntity[]): IFiles[] {
     return persistenceList.map((entityFile) => this.toDomain(entityFile));
+  }
+
+  async createIFilesFromStream(
+    stream: Buffer,
+    fileObject: IFiles
+  ): Promise<IFiles> {
+    const file: IFiles = {
+      file_id: fileObject.file_id,
+      name: fileObject.name,
+      url: fileObject.url,
+      is_public: fileObject.is_public,
+      type: fileObject.type,
+      created_at: fileObject.created_at,
+      updated_at: fileObject.updated_at,
+      file: stream,
+    };
+
+    return file;
   }
 }

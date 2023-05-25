@@ -13,17 +13,22 @@ export class NoRefererenceError extends Error {
 }
 
 export class InvalidFileExtensionError extends Error {
-  constructor() {
-    super(
-      `Extensiones permitidas: jpg|jpeg|png|webp|odt|ods|doc|docx|xls|csv|pdf|txt|xlsx`
-    );
-    this.name = "DuplicatedFileError";
+  constructor(filename: string) {
+    super(`Extensión inválida para el fichero: ${filename} `);
+    this.name = "InvalidFileExtensionError";
   }
 }
 
 export class InvalidFileSizeError extends Error {
   constructor(filename: string) {
-    super(`No se permiten tamaños superiores a 5MB`);
-    this.name = "DuplicatedFileError";
+    super(`No se permiten tamaños superiores a 5MB: ${filename}`);
+    this.name = "InvalidFileSizeError";
+  }
+}
+
+export class DownloadError extends Error {
+  constructor(key: string) {
+    super(`Error al descargar el archivo ${key}`);
+    this.name = "DownloadError";
   }
 }

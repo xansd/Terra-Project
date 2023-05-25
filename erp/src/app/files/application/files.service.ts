@@ -16,7 +16,7 @@ export class FileService {
     return true;
   }
 
-  validateSize(file: File) {
+  validateFileSize(file: File) {
     if (this.MAX_FILE_SIZE === 0 || file.size <= this.MAX_FILE_SIZE)
       return true;
     return false;
@@ -29,6 +29,21 @@ export class FileService {
       file: file,
     };
     return fileObject;
+  }
+
+  readFile(file: File | undefined): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (file) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          resolve(reader.result);
+        };
+        reader.onerror = () => {
+          reject(reader.error);
+        };
+      }
+    });
   }
 
   /**

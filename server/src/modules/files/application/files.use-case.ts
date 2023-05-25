@@ -2,6 +2,8 @@ import Logger from "../../../apps/utils/logger";
 import { IFilesRepository } from "../domain/file.repository";
 import { IFiles } from "../domain/files";
 import { FileDoesNotExistError } from "../domain/files.exceptions";
+import FileUploader from "../infrastructure/aws-storage.repository";
+import { FilesMapper } from "../infrastructure/files.mapper";
 
 export interface IGetFile {
   getFile(fileId: string): Promise<IFiles>;
@@ -34,16 +36,35 @@ export class FilesCaseUses
   }
 
   async getFiles(entityId: string): Promise<IFiles[]> {
+    const fileUploader = new FileUploader();
+    const fileMapper = new FilesMapper();
     const files = await this.filesRepository.getFiles(entityId);
     if (!files) {
-      Logger.error(`files-repository : getFile : ${FileDoesNotExistError}`);
-      throw new FileDoesNotExistError("El fichero no existe");
+      Logger.error(`files-repository: getFiles: ${FileDoesNotExistError}`);
+      throw new FileDoesNotExistError("El fichero/s no existe/n");
     }
-    return files;
+
+    const updatedFiles: IFiles[] = [];
+
+    for (const file of files) {
+      const key = file.url;
+      const fileData = await fileUploader.downloadFile(key!);
+      const updatedFile = await fileMapper.createIFilesFromStream(
+        fileData,
+        file
+      );
+      updatedFiles.push(updatedFile);
+    }
+
+    return updatedFiles;
   }
 
   async uploadFile(file: IFiles): Promise<void> {
-    throw new Error("Method not implemented.");
+    const uploader = new FileUploader();
+    const url = uploader.getDocumentKey();
+    file.url = url;
+    const result = await this.filesRepository.uploadFile(file);
+    return result;
   }
 
   async deleteFile(fileId: string): Promise<void> {

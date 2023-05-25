@@ -17,7 +17,7 @@ export class MySqlUserRepository implements IUserRepository {
 
   async getById(id: string): Promise<IUser> {
     const rows = await MysqlDataBase.query(
-      `SELECT user_id, email, password, role_id, active, password_last_reset, user_created, user_updated, created_at, updated_at, deleted_at FROM users WHERE user_id = ? and deleted_at is null`,
+      `SELECT user_id, email, password, role_id, active, password_last_reset, user_created, user_updated, created_at, updated_at, deleted_at FROM users WHERE user_id = ? and deleted_at IS NULL`,
       [id]
     );
     if (isNil(rows[0])) {
@@ -31,7 +31,7 @@ export class MySqlUserRepository implements IUserRepository {
   async getAll(): Promise<IUser[]> {
     const rows = await MysqlDataBase.query(`SELECT 
     user_id, email, password, role_id, active, password_last_reset, user_created, user_updated, created_at, updated_at 
-    FROM users where deleted_at is null`);
+    FROM users where deleted_at IS NULL`);
     if (rows.length === 0) {
       Logger.error(`mysql : getAll : UsersNotFoundError`);
       throw new UsersNotFoundError();
@@ -110,7 +110,7 @@ export class MySqlUserRepository implements IUserRepository {
     const rows = await MysqlDataBase.query(
       `SELECT 
       user_id, email, password, role_id, active, password_last_reset
-      FROM users WHERE email = ? and deleted_at is null`,
+      FROM users WHERE email = ? and deleted_at IS NULL`,
       [email]
     );
     if (isNil(rows[0])) {
@@ -125,7 +125,7 @@ export class MySqlUserRepository implements IUserRepository {
     const user = await MysqlDataBase.query(
       `SELECT
       user_id, email, password, role_id, active
-      FROM users WHERE email = ? and deleted_at is null`,
+      FROM users WHERE email = ? and deleted_at IS NULL`,
       [email]
     );
     return !!user.length;

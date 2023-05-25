@@ -112,6 +112,7 @@ CREATE TABLE files (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,
+    isPublic TINYINT(1) DEFAULT 0,
     PRIMARY KEY (file_id),
     FOREIGN KEY (file_type_id) REFERENCES file_type (file_type_id),
     FOREIGN KEY (partner_id) REFERENCES partners (partner_id),

@@ -20,6 +20,8 @@ import { CheckPasswordComponent } from './check-password/check-password.componen
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../shared/material.module';
 import { FileUploaderComponent } from './file-uploader/file-uploader.component';
+import { FileService } from 'src/app/files/application/files.service';
+import { FilesAPIRepository } from 'src/app/files/infrastructure/files-api.repository';
 
 @NgModule({
   declarations: [
@@ -68,6 +70,8 @@ import { FileUploaderComponent } from './file-uploader/file-uploader.component';
         visibility: 'hover',
       },
     },
+    { provide: 'filesAPI', useClass: FilesAPIRepository },
+    { provide: 'fileService', useClass: FileService },
   ],
 })
 export class ComponentsModule {}

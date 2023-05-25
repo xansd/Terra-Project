@@ -1,5 +1,5 @@
 import { Observable, map, tap } from 'rxjs';
-import { HttpClient, HttpEvent } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import SERVER from '../../config/server.config';
 import { IFilesAPIPort } from '../domain/files-api.port';
@@ -10,7 +10,8 @@ import { FilesDTOMapper } from './files.mapper';
 const API_URI = SERVER.API_URI + '/files';
 
 @Injectable({ providedIn: 'root' })
-export class PartnerAPIRepository implements IFilesAPIPort {
+export class FilesAPIRepository implements IFilesAPIPort {
+  progress = 0;
   private readonly filesDTOMapper: FilesDTOMapper;
 
   constructor(private http: HttpClient) {
@@ -35,11 +36,23 @@ export class PartnerAPIRepository implements IFilesAPIPort {
   }
 
   uploadFile(file: IFiles): Observable<HttpEvent<void>> {
-    return this.http.post<void>(`${API_URI}`, file, {
-      withCredentials: true,
-      observe: 'events',
-      reportProgress: true,
-    });
+    return this.http
+      .post<void>(`${API_URI}`, file, {
+        observe: 'events',
+        reportProgress: true,
+      })
+      .pipe(
+        tap((event: HttpEvent<void>) => {
+          if (event.type === HttpEventType.UploadProgress) {
+            // Calcula el progreso en porcentaje
+            this.progress = Math.round((event.loaded / event.total!) * 100);
+          }
+        })
+      );
+  }
+
+  downloadEntityFiles(entityid: string): Observable<IFiles[]> {
+    throw new Error('Method not implemented.');
   }
 
   deleteFile(fileId: string): Observable<void> {

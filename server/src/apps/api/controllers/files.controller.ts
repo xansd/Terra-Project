@@ -5,8 +5,15 @@ import {
   InvalidFileExtensionError,
   NoRefererenceError,
 } from "../../../modules/files/domain/files.exceptions";
-import { NotFound, InternalServerError, BadRequest } from "../error/http-error";
+import {
+  NotFound,
+  InternalServerError,
+  BadRequest,
+  _MulterError,
+} from "../error/http-error";
 import { MulterError } from "multer";
+import AWS from "aws-sdk";
+import SETUP from "../../../config/app-config";
 
 export class FilesController {
   constructor(private filesUseCases: FilesCaseUses) {}
@@ -48,17 +55,26 @@ export class FilesController {
         response.send(BadRequest(error.message));
       } else if (error instanceof InvalidFileExtensionError) {
         response.send(BadRequest(error.message));
-      } else if (
-        error instanceof MulterError &&
-        error.code === "LIMIT_FILE_SIZE"
-      ) {
-        response.send(
-          BadRequest("El archivo excede el tamaño máximo permitido (5MB)")
-        );
+      } else if (error instanceof MulterError) {
+        response.send(_MulterError("Error al subir el archivo"));
       } else {
         response.send(InternalServerError(error));
       }
     }
+  }
+
+  async downloadFiles(request: Request, response: Response): Promise<void> {
+    const key =
+      "publicAppBucket/flag_of_the_peoples_republic_of_chinasvg_1684968104699.png";
+    AWS.config.update(SETUP.AWS_S3.CONFIGS3);
+    let s3 = new AWS.S3();
+    let options = {
+      Bucket: SETUP.AWS_S3.BUCKET,
+      Key: key,
+    };
+    response.attachment(key);
+    var fileStream = s3.getObject(options).createReadStream();
+    fileStream.pipe(response);
   }
 
   async delete(request: Request, response: Response): Promise<void> {

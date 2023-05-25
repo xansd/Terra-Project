@@ -3,7 +3,8 @@ export interface IFilesDTO {
   name: string;
   url?: string;
   type: string;
-  file?: File;
+  file?: File | Uint8Array;
+  is_public?: number | boolean;
   partner_id?: string;
   product_id?: string;
   provider_id?: string;

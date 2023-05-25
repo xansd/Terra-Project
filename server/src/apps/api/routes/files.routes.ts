@@ -6,7 +6,7 @@ import { MysqlFilesRepository } from "../../../modules/files/infrastructure/mysq
 import { FilesCaseUses } from "../../../modules/files/application/files.use-case";
 import { Role } from "../../../modules/users/domain";
 import { FilesController } from "../controllers/files.controller";
-import upload from "../../../modules/files/infrastructure/aws-storage.repository";
+import FileUploader from "../../../modules/files/infrastructure/aws-storage.repository";
 
 const router = Router();
 
@@ -18,6 +18,9 @@ const filesUseCase = new FilesCaseUses(filesRepository);
 
 // Controlador
 const filesController = new FilesController(filesUseCase);
+
+// Uploader
+const fileUploader = new FileUploader();
 
 // GET BY ID
 router.get(
@@ -38,9 +41,17 @@ router.get(
 // UPLOAD
 router.post(
   "/",
-  authorize([Role.ADMIN, Role.USER]),
-  upload.single("file"),
+  // authorize([Role.ADMIN, Role.USER]),
+  fileUploader.getSingleUploader("file"),
   filesController.upload.bind(filesController)
+);
+
+// DOWNLOAD
+router.get(
+  "/downloadFiles/:id",
+  // authorize([Role.ADMIN, Role.USER]),
+  [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
+  filesController.downloadFiles.bind(filesController)
 );
 
 // DELETE

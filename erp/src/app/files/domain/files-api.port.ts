@@ -7,4 +7,5 @@ export interface IFilesAPIPort {
   getFiles(entityId: string): Observable<IFiles[]>;
   uploadFile(file: IFiles): Observable<HttpEvent<void>>;
   deleteFile(fileId: string): Observable<void>;
+  downloadEntityFiles(entityid: string): Observable<IFiles[]>;
 }
