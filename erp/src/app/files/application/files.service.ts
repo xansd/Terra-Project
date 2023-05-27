@@ -6,6 +6,9 @@ import config from '../../config/client.config';
   providedIn: 'root',
 })
 export class FileService {
+  MIME_TYPES = config.MIME_TYPES;
+  private mimeTypes: { [key: string]: string } = this.MIME_TYPES;
+
   REQUIRED_FILE_TYPES = config.REQUIRED_FILE_TYPES;
   MAX_FILE_SIZE = config.MAX_FILE_SIZE;
   constructor() {}
@@ -26,7 +29,6 @@ export class FileService {
     file: File,
     type: FilesTypes,
     referenceId: string,
-    isPublic?: boolean,
     policy?: FilePolicy
   ) {
     const fileObject: IFiles = {
@@ -34,7 +36,6 @@ export class FileService {
       type: type,
       file: file,
       reference_id: referenceId,
-      is_public: isPublic ? isPublic : false,
       policy: policy ? policy : FilePolicy.PRIVATE,
     };
     return fileObject;
@@ -71,5 +72,24 @@ export class FileService {
     const blob = new Blob([int8Array], { type: fileType });
 
     return new File([blob], fileName, { type: fileType });
+  }
+
+  bufferToFile(buffer: Uint8Array, fileName: string): File {
+    const byteArray = new Uint8Array(buffer);
+    const mimeType = this.getMimeTypeFromExtension(fileName);
+    const file = new File([byteArray], fileName, { type: mimeType });
+    return file;
+  }
+
+  getMimeTypeFromExtension(filename: string): string {
+    const extension = filename.split('.').pop()?.toLowerCase();
+    if (extension && this.mimeTypes.hasOwnProperty(extension)) {
+      return this.mimeTypes[extension];
+    }
+    return '';
+  }
+
+  isImage(file: File): boolean {
+    return file.type.startsWith('image/');
   }
 }

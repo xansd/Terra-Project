@@ -8,6 +8,13 @@ export class PartnerNotActive extends Error {
 export class PartnersNotFoundError extends Error {
   constructor() {
     super(`No hay socios registrados`);
-    this.name = 'UsersNotFoundError';
+    this.name = 'PartnersNotFoundError';
+  }
+}
+
+export class PartnerIDNotFoundError extends Error {
+  constructor() {
+    super(`No se ha encontrado el identificador del socio`);
+    this.name = 'PartnerssIDNotFoundError';
   }
 }

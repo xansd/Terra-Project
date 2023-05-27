@@ -2,7 +2,7 @@ import { isNil } from "../../../../shared/type-checkers";
 import Logger from "../../../apps/utils/logger";
 import { MysqlDataBase } from "../../shared/infraestructure/mysql/mysql";
 import { IFilesRepository } from "../domain/file.repository";
-import { IFiles } from "../domain/files";
+import { IFiles, IFilesType } from "../domain/files";
 import {
   FileDoesNotExistError,
   NoRefererenceError,
@@ -19,22 +19,27 @@ export class MysqlFilesRepository implements IFilesRepository {
     );
     if (isNil(rows[0])) {
       Logger.error(`mysql : getById : FileDoesNotExistError`);
-      throw new FileDoesNotExistError("El fichero no existe");
+      throw new FileDoesNotExistError();
     }
     return this.filesMapper.toDomain(rows[0]);
   }
+
   async getFiles(entityId: string): Promise<IFiles[]> {
     const rows = await MysqlDataBase.query(
-      `SELECT * FROM files WHERE deleted_at IS NULL
-      AND (partner_id = ? OR product_id = ? OR provider_id = ?)
+      `SELECT * FROM files WHERE deleted_at IS NULL AND reference_id = ?
       `,
-      [entityId, entityId, entityId]
+      [entityId]
     );
     if (rows.length === 0) {
       Logger.error(`mysql : getAll : FileDoesNotExistError`);
-      throw new FileDoesNotExistError("El fichero no existe");
+      throw new FileDoesNotExistError();
     }
     return this.filesMapper.toDomainList(rows);
+  }
+
+  async getTypes(): Promise<IFilesType[]> {
+    const rows = await MysqlDataBase.query(`SELECT * FROM file_type`);
+    return rows as unknown as IFilesType[];
   }
 
   async uploadFile(file: IFiles): Promise<void> {
@@ -45,12 +50,13 @@ export class MysqlFilesRepository implements IFilesRepository {
     }
 
     const result = await MysqlDataBase.update(
-      `INSERT INTO files (file_name, file_type_id, document_url, reference_id) VALUES (?, ?, ?, ?)`,
+      `INSERT INTO files (file_name, file_type_id, document_url, reference_id, policy) VALUES (?, ?, ?, ?, ?)`,
       [
         entityFile.file_name,
         entityFile.file_type_id.toString(),
         entityFile.document_url!,
-        file.reference_id,
+        entityFile.reference_id!,
+        entityFile.policy!,
       ]
     );
 
@@ -67,7 +73,7 @@ export class MysqlFilesRepository implements IFilesRepository {
     );
     if (result.affectedRows === 0) {
       Logger.error(`mysql : deleteFile : FileDoesNotExistError`);
-      throw new FileDoesNotExistError("El fichero no existe");
+      throw new FileDoesNotExistError();
     }
     return result;
   }

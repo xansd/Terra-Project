@@ -22,6 +22,7 @@ import { MaterialModule } from '../shared/material.module';
 import { FileUploaderComponent } from './file-uploader/file-uploader.component';
 import { FileService } from 'src/app/files/application/files.service';
 import { FilesAPIRepository } from 'src/app/files/infrastructure/files-api.repository';
+import { FileDownloaderComponent } from './file-downloader/file-downloader.component';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,7 @@ import { FilesAPIRepository } from 'src/app/files/infrastructure/files-api.repos
     SidebarMobileBackdropComponent,
     CheckPasswordComponent,
     FileUploaderComponent,
+    FileDownloaderComponent,
   ],
   imports: [
     CommonModule,
@@ -62,6 +64,7 @@ import { FilesAPIRepository } from 'src/app/files/infrastructure/files-api.repos
     SidebarComponent,
     SidebarMobileBackdropComponent,
     FileUploaderComponent,
+    FileDownloaderComponent,
   ],
   providers: [
     {

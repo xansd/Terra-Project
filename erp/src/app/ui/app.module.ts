@@ -22,6 +22,7 @@ import { NotificationAdapter } from '../shared/infraestructure/notifier.adapter'
 import { ErrorCatchingInterceptor } from './interceptors/error.interceptor';
 import { UserIORepository } from '../users/infrastructure/user-io.repository';
 import { SharedModule } from './shared/shared.module';
+import { LoadingBarHttpClientModule } from '@ngx-loading-bar/http-client';
 
 // Notifier configuration
 const notifierDefaultOptions: NotifierOptions = {
@@ -81,6 +82,7 @@ const notifierDefaultOptions: NotifierOptions = {
     NotifierModule.withConfig(notifierDefaultOptions),
     NgbModule,
     SharedModule,
+    LoadingBarHttpClientModule,
   ],
   exports: [],
   providers: [

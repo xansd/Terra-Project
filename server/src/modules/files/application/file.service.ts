@@ -24,7 +24,7 @@ export class FileService {
     return false;
   }
 
-  static createFileName(originaFileName: string, policy: string) {
+  static createFileName(originaFileName: string, policy: any) {
     const folder =
       policy === FilePolicy.PRIVATE ? "erpAppBucket" : "publicAppBucket";
 

@@ -1,0 +1,120 @@
+<card class="mb-4">
+  <card-header
+    class="d-flex align-items-center bg-inverse bg-opacity-10 fw-400"
+  >
+    <i class="bi bi-download text-theme"></i> &nbsp; DOCUMENTACIÓN
+  </card-header>
+  <form [formGroup]="downloaderForm" enctype="multipart/form-data">
+    <card-body class="pb-2">
+      <ng-container *ngIf="isLoading; else fileTable">
+        <div class="d-flex justify-content-center align-items-center py-4">
+          <div class="spinner-border text-success"></div>
+        </div>
+      </ng-container>
+      <ng-template #fileTable>
+        <div class="table-container table-responsive">
+          <table class="table table-card mb-0 fs-13px">
+            <thead>
+              <tr class="fs-12px">
+                <th class="pt-2 pb-2 w-25 text-center">PREVIA</th>
+                <th class="pt-2 pb-2 w-25">NOMBRE</th>
+                <th class="pt-2 pb-2 w-25 text-center">TIPO</th>
+                <th class="pt-2 pb-2 w-25 text-center">ACCION</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="files.length === 0">
+              <tr class="empty-row">
+                <td colspan="6" class="text-center p-3">
+                  <div class="text-inverse text-opacity-30 mb-2">
+                    <i class="fa fa-file-archive fa-3x"></i>
+                  </div>
+                  Sin ficheros
+                </td>
+              </tr>
+            </tbody>
+            <tbody *ngIf="files.length > 0" class="files">
+              <tr
+                class="template-upload in"
+                *ngFor="let file of files; let i = index"
+              >
+                <td class="preview-container">
+                  <span
+                    class="preview d-flex justify-content-center align-items-center"
+                    style="height: 50px"
+                  >
+                    <ng-container *ngIf="isImage(file)">
+                      <img
+                        style="height: 50px"
+                        [src]="preview[i]"
+                        [title]="file.name"
+                        [alt]="file.name"
+                      />
+                    </ng-container>
+                    <ng-container *ngIf="!isImage(file)">
+                      <p class="file-name">Vista previa no disponible</p>
+                    </ng-container>
+                  </span>
+                </td>
+                <td class="name-container text-left">
+                  <p class="name mb-1 text-left">{{ file.name }}</p>
+                </td>
+                <td class="type-container text-left">
+                  <!-- <select
+                    id="documentType"
+                    formControlName="documentType"
+                    #selectedDocumentType
+                    class="form-select"
+                    [disabled]="true"
+                    (change)="updateType(selectedDocumentType.value, i)"
+                  >
+                    <option
+                      *ngFor="let type of documentTypes"
+                      [value]="type.file_type_id"
+                    >
+                      {{ type.name | uppercase }}
+                    </option>
+                  </select> -->
+                  <p class="text-center">{{ file.type }}</p>
+                </td>
+                <td nowrap class="action-container">
+                  <!-- <button
+                    [disabled]="progress[i] === 100"
+                    (click)="uploadFile(i, modalActions.SLEEP)"
+                    class="btn btn-outline-theme btn-sm d-block w-100 start"
+                  >
+                    <span>Subir</span>
+                  </button> -->
+                  <div class="btn-group" role="group">
+                    <button
+                      title="Abrir"
+                      (click)="openFile(i)"
+                      class="btn btn-outline-success btn-sm d-block cancel mt-2"
+                    >
+                      <span> <i class="bi bi-eye-fill"></i> </span>
+                    </button>
+                    <button
+                      title="descargar"
+                      (click)="saveFile(i)"
+                      class="btn btn-outline-info btn-sm d-block cancel mt-2"
+                    >
+                      <span>
+                        <i class="bi bi-file-earmark-arrow-down-fill"></i>
+                      </span>
+                    </button>
+                    <button
+                      title="Eliminar"
+                      (click)="deleteFiles(i)"
+                      class="btn btn-outline-warning btn-sm d-block cancel mt-2"
+                    >
+                      <span> <i class="bi bi-x-circle-fill"></i> </span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </ng-template>
+    </card-body>
+  </form>
+</card>

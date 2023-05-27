@@ -2,10 +2,10 @@
   <div class="row justify-content-center">
     <div class="col-xl-12">
       <div class="mb-5">
-        <card
-          ><card-header
+        <card>
+          <card-header
             class="d-block d-flex align-items-center justify-content-center bg-inverse bg-opacity-10 fw-600"
-            >LISTADO DE USUARIOS</card-header
+            >LISTADO DE SOCIOS</card-header
           >
           <card-body class="card-body">
             <div class="controls-table">
@@ -218,7 +218,7 @@
                         (click)="openEditPartnerDialog(row.partner_id)"
                         type="button"
                         class="btn btn-primary"
-                        title="Gestión de usuario"
+                        title="Editar socio"
                       >
                         <i class="bi bi-pencil-square"> </i>
                       </button>
@@ -227,7 +227,7 @@
                         (click)="openEditPartnerDialog(row.partner_id)"
                         type="button"
                         class="btn btn-danger"
-                        title="Gestión de usuario"
+                        title="Editar socio"
                       >
                         <i class="bi bi-person-x"> </i>
                       </button>
@@ -263,8 +263,8 @@
           <div class="mat-paginatory">
             <mat-paginator
               [length]="100"
-              [pageSize]="10"
-              [pageSizeOptions]="[5, 10, 15, 20, 25, 50, 100]"
+              [pageSize]="8"
+              [pageSizeOptions]="[5, 8, 10, 15, 20, 25, 50, 100]"
             ></mat-paginator>
           </div>
         </card>

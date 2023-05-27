@@ -3,6 +3,7 @@ import { IPartner, Partner } from '../domain/partner';
 import { IPartnerDTO } from './partner.dto';
 import { Email } from 'src/app/shared/domain/value-objects/email.value-object';
 import { UntypedFormGroup } from '@angular/forms';
+import { FormMode } from 'src/app/ui/services/app-state.service';
 
 export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
   constructor() {}
@@ -101,7 +102,7 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
 
   createPartnerFormData(
     form: UntypedFormGroup,
-    mode: string,
+    mode: FormMode,
     user: string,
     partnerId?: string
   ): IPartner {
@@ -119,14 +120,14 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       hash_month: formValues.hash,
       extractions_month: formValues.extractions,
       others_month: formValues.others,
-      partner_type_id: formValues.type.partner_type_id,
+      partner_type_id: formValues.type,
       active: formValues.active,
       therapeutic: formValues.therapeutic,
     };
 
-    if (mode === 'create') {
+    if (mode === FormMode.CREATE) {
       partnerData.user_created = user;
-    } else if (mode === 'edit') {
+    } else if (FormMode.UPDATE) {
       partnerData.user_updated = user;
     }
 

@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { AppStateService, FormMode } from '../../services/app-state.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class FormsHelperService {
+  constructor(private appState: AppStateService) {}
+
   getInvalidFields(form: FormGroup): any {
     const invalidFields = [];
     for (const fieldName in form.controls) {
@@ -25,5 +28,18 @@ export class FormsHelperService {
 
       return `Campos inválidos: ${JSON.stringify(invalidFields)}`;
     }
+  }
+
+  initFormCreateMode() {
+    this.appState.state.formMode = FormMode.CREATE;
+  }
+
+  initFormUpdateMode() {
+    this.appState.state.formMode = FormMode.UPDATE;
+  }
+
+  clearFormMeta() {
+    this.appState.state.formMode = FormMode.SLEEP;
+    this.appState.state.activeEntityID = '';
   }
 }

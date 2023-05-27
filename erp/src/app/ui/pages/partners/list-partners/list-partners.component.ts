@@ -15,6 +15,7 @@ import { NotificationAdapter } from '../../../../shared/infraestructure/notifier
 import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
 import { ConfirmDialogComponent } from 'src/app/ui/shared/components/confirm-dialog/confirm-dialog.component';
 import { DatetimeHelperService } from 'src/app/ui/shared/helpers/datetime.helper.service';
+import { AppStateService } from 'src/app/ui/services/app-state.service';
 
 const modalOptions: NgbModalOptions = {
   backdrop: 'static',
@@ -79,7 +80,8 @@ export class ListPartnersComponent {
     private deleteService: DeletePartnerUseCase,
     private notifier: NotificationAdapter,
     private errorHandler: ErrorHandlerService,
-    private dateFormatter: DatetimeHelperService
+    private dateFormatter: DatetimeHelperService,
+    private appState: AppStateService
   ) {
     this.dataSource = new MatTableDataSource(this.partnersList);
     this.dataSource.paginator = this.paginator;
@@ -169,6 +171,7 @@ export class ListPartnersComponent {
   }
 
   openEditPartnerDialog(uid: string) {
+    this.appState.state.activeEntityID = uid;
     const modalRef = this.modalService.open(EditPartnerComponent, modalOptions);
     modalRef.componentInstance.uid = uid;
     modalRef.result

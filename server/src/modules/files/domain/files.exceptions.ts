@@ -1,6 +1,6 @@
 export class FileDoesNotExistError extends Error {
-  constructor(filename: string) {
-    super(`File ${filename} does not exist`);
+  constructor() {
+    super(`El fichero no existe`);
     this.name = "FileDoesNotExistError";
   }
 }

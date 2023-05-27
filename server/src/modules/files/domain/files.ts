@@ -9,16 +9,27 @@ export enum FilesTypes {
   RECIBO = "RECIBO",
 }
 
+export interface IFilesType {
+  file_type_id: number;
+  name: string;
+  description: string;
+}
+
 export interface IFiles {
   file_id?: FilesId;
   name: string;
   url?: string;
   type: FilesTypes;
   file?: File | Buffer;
-  is_public?: number | boolean;
+  policy?: FilePolicy;
   reference_id?: string;
   created_at?: string;
   updated_at?: string;
+}
+
+export enum FilePolicy {
+  PRIVATE = "private",
+  PUBLIC = "public",
 }
 
 export class Files implements IFiles {
@@ -27,7 +38,7 @@ export class Files implements IFiles {
   url?: string;
   type: FilesTypes;
   file?: File | Buffer;
-  is_public?: number | boolean;
+  policy?: FilePolicy;
   reference_id?: string;
   created_at?: string;
   updated_at?: string;
@@ -38,7 +49,7 @@ export class Files implements IFiles {
     this.url = props.url;
     this.type = props.type;
     this.file = props.file;
-    this.is_public = props.is_public;
+    this.policy = props.policy;
     this.reference_id = props.reference_id;
     this.created_at = props.created_at;
     this.updated_at = props.updated_at;

@@ -24,7 +24,7 @@ class FileUploader {
       s3: this.s3,
       bucket: SETUP.AWS_S3.BUCKET,
       metadata: (req: Request, file, cb) => {
-        cb(null, { fieldName: file.fieldname });
+        cb(null, { fieldName: file.fieldname, policy: req.body.policy });
       },
       key: (req: Request, file, cb) => {
         const uniqueFileName = FileService.createFileName(
@@ -53,7 +53,7 @@ class FileUploader {
       try {
         const file = req.file;
         if (!file) {
-          throw new FileDoesNotExistError("file not found");
+          throw new FileDoesNotExistError();
         }
         FileUploader.multerFile = file;
         const isExtensionValid = FileService.validateFileExtension(

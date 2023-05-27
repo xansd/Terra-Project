@@ -1,6 +1,6 @@
 import Logger from "../../../apps/utils/logger";
 import { IFilesRepository } from "../domain/file.repository";
-import { IFiles } from "../domain/files";
+import { IFiles, IFilesType } from "../domain/files";
 import { FileDoesNotExistError } from "../domain/files.exceptions";
 import FileUploader from "../infrastructure/aws-storage.repository";
 import { FilesMapper } from "../infrastructure/files.mapper";
@@ -34,18 +34,21 @@ export class FilesCaseUses
     const file = await this.filesRepository.getFile(fileId);
     if (!file) {
       Logger.error(`files-repository : getFile : ${FileDoesNotExistError}`);
-      throw new FileDoesNotExistError("El fichero no existe");
+      throw new FileDoesNotExistError();
     }
     return file;
   }
 
+  async getTypes(): Promise<IFilesType[]> {
+    const types = await this.filesRepository.getTypes();
+    return types;
+  }
+
   async getFiles(entityId: string): Promise<IFiles[]> {
-    const fileUploader = new FileUploader();
-    const fileMapper = new FilesMapper();
     const files = await this.filesRepository.getFiles(entityId);
     if (!files) {
       Logger.error(`files-repository: getFiles: ${FileDoesNotExistError}`);
-      throw new FileDoesNotExistError("El fichero/s no existe/n");
+      throw new FileDoesNotExistError();
     }
     return files;
   }
@@ -56,7 +59,7 @@ export class FilesCaseUses
     const files = await this.filesRepository.getFiles(entityId);
     if (!files) {
       Logger.error(`files-repository: getFiles: ${FileDoesNotExistError}`);
-      throw new FileDoesNotExistError("El fichero/s no existe/n");
+      throw new FileDoesNotExistError();
     }
 
     // Encapsulamos el fichero en cada objeto IFiles
@@ -73,6 +76,21 @@ export class FilesCaseUses
     }
 
     return updatedFiles;
+  }
+
+  async downloadFile(fileId: string): Promise<IFiles> {
+    const fileUploader = new FileUploader();
+    const fileMapper = new FilesMapper();
+    const file = await this.filesRepository.getFile(fileId);
+    if (!file) {
+      Logger.error(`files-repository: getFiles: ${FileDoesNotExistError}`);
+      throw new FileDoesNotExistError();
+    }
+    const key = file.url;
+    const fileData = await fileUploader.downloadFile(key!);
+    const updatedFile = await fileMapper.createIFilesFromStream(fileData, file);
+
+    return updatedFile;
   }
 
   async uploadFile(file: IFiles): Promise<void> {

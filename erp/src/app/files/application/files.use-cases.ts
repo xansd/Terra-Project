@@ -1,5 +1,5 @@
 import { Observable, tap } from 'rxjs';
-import { IFiles } from '../domain/files';
+import { IFiles, IFilesType } from '../domain/files';
 import { Inject, Injectable } from '@angular/core';
 import { IFilesAPIPort } from '../domain/files-api.port';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
@@ -11,6 +11,10 @@ export interface IGetFile {
 
 export interface IGetFiles {
   getFiles(entityId: string): Observable<IFiles[]>;
+}
+
+export interface IGetTypes {
+  getTypes(): Observable<IFilesType[]>;
 }
 
 export interface IUploadFile {
@@ -44,6 +48,10 @@ export class FilesUseCases
 
   getFiles(entityId: string): Observable<IFiles[]> {
     return this.filesAPI.getFiles(entityId);
+  }
+
+  getTypes(): Observable<IFilesType[]> {
+    return this.filesAPI.getTypes();
   }
 
   upload(formData: FormData): Observable<HttpEvent<void>> {

@@ -1,12 +1,14 @@
-<card class="mb-4">
+<card class="mb-4" [ngClass]="{ 'hide-component': !isUploaderEnabled }">
   <card-header
     class="d-flex align-items-center bg-inverse bg-opacity-10 fw-400"
   >
-    DOCUMENTACIÓN
+    <i class="bi bi-upload text-theme"></i> &nbsp; DOCUMENTACIÓN
   </card-header>
-  <form method="POST" enctype="multipart/form-data">
+  <form [formGroup]="uploaderForm" enctype="multipart/form-data">
     <card-body class="pb-2">
-      <div class="d-block d-lg-flex align-items-center">
+      <div
+        class="d-block d-lg-flex align-items-center uploader-actions-container"
+      >
         <input
           #inputFile
           multiple
@@ -17,13 +19,13 @@
           (change)="onFileSelect($event)"
           #fileSelect
         />
-        <span
+        <button
           (click)="fileSelect.click()"
           class="btn btn-outline-theme fileinput-button me-2 mb-1"
         >
           <i class="fa fa-fw fa-plus"></i>
           <span>Añadir...</span>
-        </span>
+        </button>
         <button
           (click)="uploadFiles()"
           type="submit"
@@ -32,111 +34,116 @@
           <i class="fa fa-fw fa-upload"></i>
           <span>Subir</span>
         </button>
-        <!-- <button type="reset" class="btn btn-outline-default me-2 mb-1 cancel">
-          <i class="fa fa-fw fa-ban"></i>
-          <span>Cancelar</span>
-        </button> -->
         <button
           (click)="deleteFiles()"
           type="button"
           class="btn btn-outline-default me-2 mb-1 delete"
         >
           <i class="fa fa-fw fa-trash"></i>
-          <span>Eliminar</span>
+          <span>Eliminar todo</span>
         </button>
-        <div class="form-check ms-2 mb-1">
-          <input
-            type="checkbox"
-            id="toggle-delete"
-            class="form-check-input toggle"
-          />
-          <label for="toggle-delete" class="form-check-label"
-            >Selección de ficheros</label
-          >
-        </div>
+        <!--PENDIENTE SELECT TIPO-->
       </div>
-    </card-body>
-    <div class="table-container table-responsive">
-      <table class="table table-card mb-0 fs-13px">
-        <thead>
-          <tr class="fs-12px">
-            <th class="pt-2 pb-2 w-20 text-center">PREVIA</th>
-            <th class="pt-2 pb-2 w-25">NOMBRE</th>
-            <th class="pt-2 pb-2 w-10 text-center">TAMAÑO</th>
-            <th class="pt-2 pb-2 w-25 text-center">PROGRESO</th>
-            <th class="pt-2 pb-2 w-20 text-center">ACCION</th>
-          </tr>
-        </thead>
-        <tbody *ngIf="files.length === 0">
-          <tr class="empty-row">
-            <td colspan="4" class="text-center p-3">
-              <div class="text-inverse text-opacity-30 mb-2">
-                <i class="fa fa-file-archive fa-3x"></i>
-              </div>
-              Sin ficheros
-            </td>
-          </tr>
-        </tbody>
-        <tbody *ngIf="files.length > 0" class="files">
-          <tr
-            class="template-upload in"
-            *ngFor="let file of files; let i = index"
-          >
-            <td class="preview-container">
-              <span
-                class="preview d-flex justify-content-center flex-align-center"
-                style="height: 80px"
-              >
-                <img
-                  *ngIf="preview[i]; else defaultImage"
-                  [src]="preview[i]"
-                  [title]="file.name"
-                  [alt]="file.name"
-                />
-                <ng-template #defaultImage>
-                  <img [src]="defaultImage" alt="Imagen por defecto" />
-                </ng-template>
-              </span>
-            </td>
-            <td class="name-container text-left">
-              <p class="name mb-1 text-left">{{ file.name }}</p>
-            </td>
-            <td class="size-container text-center">
-              <p class="text-center">{{ file.file.size }} KB</p>
-            </td>
-            <td class="progress-container">
-              <div
-                class="progress progress-sm mb-0 h-10px progress-striped active"
-              >
+      <div class="table-container table-responsive">
+        <table class="table table-card mb-0 fs-13px">
+          <thead>
+            <tr class="fs-12px">
+              <th class="pt-2 pb-2 w-20 text-center">PREVIA</th>
+              <th class="pt-2 pb-2 w-20">NOMBRE</th>
+              <th class="pt-2 pb-2 w-10">TIPO</th>
+              <th class="pt-2 pb-2 w-10 text-center">TAMAÑO</th>
+              <th class="pt-2 pb-2 w-20 text-center">PROGRESO</th>
+              <th class="pt-2 pb-2 w-20 text-center">ACCION</th>
+            </tr>
+          </thead>
+          <tbody *ngIf="files.length === 0">
+            <tr class="empty-row">
+              <td colspan="6" class="text-center p-3">
+                <div class="text-inverse text-opacity-30 mb-2">
+                  <i class="fa fa-file-archive fa-3x"></i>
+                </div>
+                Sin ficheros
+              </td>
+            </tr>
+          </tbody>
+          <tbody *ngIf="files.length > 0" class="files">
+            <tr
+              class="template-upload in"
+              *ngFor="let file of files; let i = index"
+            >
+              <td class="preview-container">
+                <span
+                  class="preview d-flex justify-content-center flex-align-center"
+                  style="height: 50px"
+                >
+                  <img
+                    *ngIf="preview[i]; else defaultImage"
+                    [src]="preview[i]"
+                    [title]="file.name"
+                    [alt]="file.name"
+                  />
+                  <ng-template #defaultImage>
+                    <img [src]="defaultImage" alt="Imagen por defecto" />
+                  </ng-template>
+                </span>
+              </td>
+              <td class="name-container text-left">
+                <p class="name mb-1 text-left">{{ file.name }}</p>
+              </td>
+              <td class="type-container text-left">
+                <select
+                  id="documentType"
+                  formControlName="documentType"
+                  #selectedDocumentType
+                  class="form-select"
+                  (change)="updateType(selectedDocumentType.value, i)"
+                >
+                  <option
+                    *ngFor="let type of documentTypes"
+                    [value]="type.file_type_id"
+                  >
+                    {{ type.name | uppercase }}
+                  </option>
+                </select>
+              </td>
+              <td class="size-container text-center">
+                <p class="text-center">{{ file.file.size }} KB</p>
+              </td>
+              <td class="progress-container align-items-center">
                 <div
-                  class="progress-bar bg-theme"
-                  [style.width.%]="progress[i]"
-                ></div>
-                <div
-                  class="progress-bar bg-theme"
-                  [style.width.%]="progress[i]"
-                ></div>
-              </div>
-            </td>
-            <td nowrap class="action-container">
-              <button
-                (click)="uploadFile(i)"
+                  class="progress progress-sm mb-0 h-10px progress-striped active"
+                >
+                  <div
+                    class="progress-bar bg-theme"
+                    [style.width.%]="progress[i]"
+                  ></div>
+                  <div
+                    class="progress-bar bg-theme"
+                    [style.width.%]="progress[i]"
+                  ></div>
+                </div>
+              </td>
+              <td nowrap class="action-container">
+                <!-- <button
+                [disabled]="progress[i] === 100"
+                (click)="uploadFile(i, modalActions.SLEEP)"
                 class="btn btn-outline-theme btn-sm d-block w-100 start"
-                disabled=""
               >
                 <span>Subir</span>
-              </button>
+              </button> -->
 
-              <button
-                (click)="deleteFiles(i)"
-                class="btn btn-outline-default btn-sm d-block w-100 cancel mt-2"
-              >
-                <span>Cancelar</span>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+                <button
+                  [disabled]="progress[i] === 100"
+                  (click)="deleteFiles(i)"
+                  class="btn btn-outline-default btn-sm d-block w-100 cancel mt-2"
+                >
+                  <span>Eliminar</span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </card-body>
   </form>
 </card>

@@ -2,3 +2,26 @@ card {
     margin-bottom: 0 !important;
     z-index      : 1 !important;
 }
+
+.hide-component {
+    opacity       : 0.5;
+    /* Cambia este valor según tu preferencia */
+    pointer-events: none;
+    /* Evita que se puedan realizar interacciones con el componente oscurecido */
+}
+
+
+
+
+.name-container {
+    max-width: 200px !important;
+}
+
+.type-container {
+    max-width: 100px !important;
+}
+
+
+.progress-container {
+    padding-right: 25px;
+}

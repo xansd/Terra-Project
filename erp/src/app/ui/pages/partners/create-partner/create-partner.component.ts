@@ -22,6 +22,8 @@ import {
   AppStateService,
   FormMode,
 } from 'src/app/ui/services/app-state.service';
+import { PartnerIDNotFoundError } from 'src/app/partners/domain/partner.exceptions';
+import { ModalActions } from 'src/app/ui/shared/enums/modalActions.enum';
 
 @Component({
   selector: 'app-create-partner',
@@ -29,11 +31,15 @@ import {
   styleUrls: ['./create-partner.component.scss'],
 })
 export class CreatePartnerComponent implements OnDestroy, OnInit {
+  modalActions = ModalActions;
   config = CONFIG;
   active = true;
   types: IPartnersType[] = [];
   lastNumber: number = 20;
   partnerMapper = new PartnerDTOMapper();
+  isUploaderEnabled = false;
+  modalRef!: NgbActiveModal;
+  newPartnerCreated!: IPartner;
 
   createPartnerForm: UntypedFormGroup = this.formBuilder.group({
     type: [1, [Validators.required]],
@@ -70,7 +76,8 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.appState.state.formMode = FormMode.CREATE;
+    this.modalRef = this.modal;
+    this.formsHelperService.initFormCreateMode();
     this.getPartnersLastNumber();
     this.getPartnersType();
   }
@@ -78,12 +85,14 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
-    this.appState.state.formMode = FormMode.SLEEP;
+    this.formsHelperService.clearFormMeta();
   }
 
-  close(result: boolean | IPartner): void {
-    if (!result) {
-      this.modal.close(false);
+  close(action: ModalActions): void {
+    if (action === this.modalActions.CANCEL) {
+      this.newPartnerCreated
+        ? this.modalRef.close(this.newPartnerCreated)
+        : this.modalRef.close(false);
       return;
     }
     if (!this.createPartnerForm.valid) {
@@ -92,7 +101,7 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
       );
       this.notifier.showNotification('warning', invalidFields);
       throw new FieldValidationError(invalidFields);
-    } else this.createPartner();
+    } else this.createPartner(action);
   }
 
   getPartnersType(): void {
@@ -121,13 +130,15 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
       });
   }
 
-  createPartner(): void {
+  createPartner(action: ModalActions): void {
     let partner!: IPartner;
     try {
       const user = this.createPartnerService.getCreator();
       partner = this.createPartnerEntity(this.createPartnerForm, user);
     } catch (error: any) {
       if (error instanceof DomainValidationError) {
+        this.errorHandler.handleDomainError(error);
+      } else if (error instanceof PartnerIDNotFoundError) {
         this.errorHandler.handleDomainError(error);
       } else this.errorHandler.handleUnkonwError(error);
     }
@@ -138,7 +149,14 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
         next: (res: any) => {
           if (res) {
             this.notifier.showNotification('success', 'Socio creado');
-            this.modal.close(res);
+            if (action === this.modalActions.NEXT) {
+              this.newPartnerCreated = res;
+              this.appState.state.activeEntityID =
+                this.newPartnerCreated.partner_id!;
+              this.isUploaderEnabled = true;
+            } else if (action === this.modalActions.SAVE) {
+              this.modalRef.close(res);
+            }
           }
         },
       });
@@ -148,7 +166,7 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
   }
 
   createPartnerEntity(form: UntypedFormGroup, user: string): IPartner {
-    const mode = 'create';
+    const mode: FormMode = FormMode.CREATE;
     return this.partnerMapper.createPartnerFormData(form, mode, user);
   }
 

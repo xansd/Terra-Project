@@ -1,12 +1,18 @@
 export type FilesId = string;
 
 export enum FilesTypes {
-  COVER = 'COVER',
-  IMAGE = 'IMAGE',
-  DNI = 'DNI',
-  ALTA = 'ALTA',
-  CUOTA = 'CUOTA',
-  RECIBO = 'RECIBO',
+  DNI = 1,
+  IMAGE = 2,
+  COVER = 3,
+  ALTA = 4,
+  CUOTA = 5,
+  RECIBO = 6,
+}
+
+export interface IFilesType {
+  file_type_id: number;
+  name: string;
+  description: string;
 }
 
 export enum FilePolicy {
@@ -19,8 +25,7 @@ export interface IFiles {
   name: string;
   url?: string;
   type: FilesTypes;
-  file?: File | Uint8Array | Blob;
-  is_public?: number | boolean;
+  file?: File | Uint8Array | Blob | any;
   policy?: FilePolicy;
   reference_id?: string;
   created_at?: string;
@@ -33,7 +38,6 @@ export class Files implements IFiles {
   url?: string;
   type: FilesTypes;
   file?: File | Uint8Array | Blob;
-  is_public?: number | boolean;
   policy?: FilePolicy;
   reference_id?: string;
   created_at?: string;
@@ -45,7 +49,6 @@ export class Files implements IFiles {
     this.url = props.url;
     this.type = props.type;
     this.file = props.file;
-    this.is_public = props.is_public;
     this.reference_id = props.reference_id;
     this.created_at = props.created_at;
     this.updated_at = props.updated_at;

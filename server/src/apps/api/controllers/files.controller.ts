@@ -32,6 +32,15 @@ export class FilesController {
     }
   }
 
+  async getTypes(request: Request, response: Response): Promise<void> {
+    try {
+      const types = await this.filesUseCases.getTypes();
+      response.json(types);
+    } catch (error: any) {
+      response.send(InternalServerError(error));
+    }
+  }
+
   async getAll(request: Request, response: Response): Promise<void> {
     try {
       const { id } = request.params;
@@ -51,6 +60,20 @@ export class FilesController {
       const { id } = request.params;
       const files = await this.filesUseCases.downloadFiles(id);
       response.json(files);
+    } catch (error: any) {
+      if (error instanceof FileDoesNotExistError) {
+        response.send(NotFound(error.message));
+      } else {
+        response.send(InternalServerError(error));
+      }
+    }
+  }
+
+  async downloadFile(request: Request, response: Response): Promise<void> {
+    try {
+      const { id } = request.params;
+      const file = await this.filesUseCases.downloadFile(id);
+      response.json(file);
     } catch (error: any) {
       if (error instanceof FileDoesNotExistError) {
         response.send(NotFound(error.message));

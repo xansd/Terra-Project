@@ -38,10 +38,25 @@ router.get(
   filesController.getAll.bind(filesController)
 );
 
+// GET DOCUMENT TYPES
+router.get(
+  "/details/types",
+  authorize([Role.ADMIN, Role.USER]),
+  filesController.getTypes.bind(filesController)
+);
+
 // DOWNLOAD ALL FILES BY ENTITY_ID
 router.get(
   "/downloadFiles/:id",
-  // authorize([Role.ADMIN, Role.USER]),
+  authorize([Role.ADMIN, Role.USER]),
+  [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
+  filesController.downloadAll.bind(filesController)
+);
+
+// DOWNLOAD FILE
+router.get(
+  "/downloadFile/:id",
+  authorize([Role.ADMIN, Role.USER]),
   [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
   filesController.downloadAll.bind(filesController)
 );

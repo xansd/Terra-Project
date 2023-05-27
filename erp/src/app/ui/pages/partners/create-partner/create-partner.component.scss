@@ -20,6 +20,14 @@
 form {
     padding: 15px;
 
+    .save-btn-container {
+        margin-top: 50px;
+
+        button {
+            margin-left: 15px;
+        }
+    }
+
     .row {
         margin-bottom: 20px !important;
     }
@@ -131,4 +139,12 @@ form {
 
 ::ng-deep .dropdown-menu.show {
     z-index: 1090 !important;
+}
+
+
+.hide-component {
+    opacity       : 0.5;
+    /* Cambia este valor según tu preferencia */
+    pointer-events: none;
+    /* Evita que se puedan realizar interacciones con el componente oscurecido */
 }

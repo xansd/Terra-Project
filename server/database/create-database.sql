@@ -92,7 +92,7 @@ CREATE TABLE file_type (
     description TEXT
 );
 
-INSERT INTO file_type (name, description) VALUES ('DNI', '');
+INSERT INTO file_type (name, description) VALUES ('DNI', ''); 
 INSERT INTO file_type (name, description) VALUES ('IMAGE', '');
 INSERT INTO file_type (name, description) VALUES ('COVER', '');
 INSERT INTO file_type (name, description) VALUES ('ALTA', '');
@@ -107,10 +107,10 @@ CREATE TABLE files (
     reference_id VARCHAR(36) DEFAULT NULL,
     file_type_id INT(11) NOT NULL,
     document_url VARCHAR(255) NOT NULL,
+    policy VARCHAR(25) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at DATETIME DEFAULT NULL,
-    isPublic TINYINT(1) DEFAULT 0,
     PRIMARY KEY (file_id),
     FOREIGN KEY (file_type_id) REFERENCES file_type (file_type_id)
 );

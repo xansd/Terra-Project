@@ -34,7 +34,8 @@ import {
   styleUrls: ['./edit-partner.component.scss'],
 })
 export class EditPartnerComponent implements OnInit, OnDestroy {
-  @Input('uid') uid!: string | '';
+  isLoading: boolean = true;
+  @Input('uid') uid!: string;
   types: IPartnersType[] = [];
   matcher = new CustomErrorStateMatcher();
   private destroy$ = new Subject();
@@ -74,14 +75,14 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.appState.state.formMode = FormMode.UPDATE;
+    this, this.formsHelperService.initFormUpdateMode();
     this.getPartner(this.uid);
   }
 
   ngOnDestroy(): void {
     this.destroy$.next(true);
     this.destroy$.complete();
-    this.appState.state.formMode = FormMode.SLEEP;
+    this.formsHelperService.clearFormMeta();
   }
 
   populateForm(partner: IPartner): void {
@@ -139,6 +140,7 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
         next: (types: IPartnersType[]) => {
           this.types = types;
           this.populateForm(partner);
+          this.isLoading = false;
         },
       });
   }
@@ -181,7 +183,7 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
     user: string,
     partnerId: string
   ): IPartner {
-    const mode = 'edit';
+    const mode: FormMode = FormMode.UPDATE;
     return this.partnerMapper.createPartnerFormData(
       form,
       mode,

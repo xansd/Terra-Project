@@ -3,7 +3,7 @@ import { HttpClient, HttpEvent, HttpEventType } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import SERVER from '../../config/server.config';
 import { IFilesAPIPort } from '../domain/files-api.port';
-import { IFiles } from '../domain/files';
+import { IFiles, IFilesType } from '../domain/files';
 import { IFilesDTO } from './files.dto';
 import { FilesDTOMapper } from './files.mapper';
 
@@ -18,6 +18,7 @@ export class FilesAPIRepository implements IFilesAPIPort {
   constructor(private http: HttpClient) {
     this.filesDTOMapper = new FilesDTOMapper();
   }
+
   getFile(filesId: string): Observable<IFiles> {
     return this.http
       .get<IFilesDTO>(`${API_URI}/${filesId}`, {
@@ -34,6 +35,12 @@ export class FilesAPIRepository implements IFilesAPIPort {
       .pipe(
         map((files: IFilesDTO[]) => this.filesDTOMapper.toDomainList(files))
       );
+  }
+
+  getTypes(): Observable<IFilesType[]> {
+    return this.http.get<IFilesType[]>(`${API_URI}/details/types`, {
+      withCredentials: true,
+    });
   }
 
   uploadFile(formData: FormData): Observable<HttpEvent<void>> {

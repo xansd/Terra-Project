@@ -25,4 +25,35 @@ export default {
   ],
   MAX_FILE_SIZE: 10 * 1024 * 1024,
   DEFAULT_IMAGE: '/assets/images/loading.gif',
+  MIME_TYPES: {
+    // Texto
+    txt: 'text/plain',
+    csv: 'text/csv',
+    html: 'text/html',
+    css: 'text/css',
+    js: 'text/javascript',
+    json: 'application/json',
+    xml: 'application/xml',
+
+    // Imágenes
+    jpg: 'image/jpeg',
+    jpeg: 'image/jpeg',
+    png: 'image/png',
+    gif: 'image/gif',
+    bmp: 'image/bmp',
+    webp: 'image/webp',
+    svg: 'image/svg+xml',
+
+    // Aplicaciones de ofimática
+    doc: 'application/msword',
+    docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    xls: 'application/vnd.ms-excel',
+    xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    ppt: 'application/vnd.ms-powerpoint',
+    pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    odp: 'application/vnd.oasis.opendocument.presentation',
+    ods: 'application/vnd.oasis.opendocument.spreadsheet',
+    odt: 'application/vnd.oasis.opendocument.text',
+    pdf: 'application/pdf',
+  },
 };
