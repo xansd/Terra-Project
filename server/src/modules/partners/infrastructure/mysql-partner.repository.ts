@@ -1,6 +1,7 @@
 import { isNil } from "../../../../shared/type-checkers";
 import Logger from "../../../apps/utils/logger";
 import { MysqlDataBase } from "../../shared/infraestructure/mysql/mysql";
+import { IPartnerSubsetDTO } from "../application/partner.dto";
 import { IPartner, IPartnersType } from "../domain/partner";
 import {
   Number20Limit,
@@ -26,6 +27,7 @@ export class MySqlPartnerRepository implements IPartnerRepository {
 
     return this.partnerPersistenceMapper.toDomain(rows[0]) as IPartner;
   }
+
   async getAll(): Promise<IPartner[]> {
     const rows = await MysqlDataBase.query(
       `SELECT * FROM partners where deleted_at IS NULL ORDER BY number ASC`
@@ -35,6 +37,19 @@ export class MySqlPartnerRepository implements IPartnerRepository {
       throw new PartnersNotFoundError();
     }
     return this.partnerPersistenceMapper.toDomainList(rows) as IPartner[];
+  }
+
+  async getAllFiltered(): Promise<IPartnerSubsetDTO[]> {
+    const rows = await MysqlDataBase.query(
+      `SELECT partner_id, access_code, number, name, surname FROM partners where deleted_at IS NULL ORDER BY number ASC`
+    );
+    if (rows.length === 0) {
+      Logger.error(`mysql : getAll : PartnersNotFoundError`);
+      throw new PartnersNotFoundError();
+    }
+    return this.partnerPersistenceMapper.toDtoFilteredList(
+      rows
+    ) as unknown as IPartnerSubsetDTO[];
   }
 
   async getTypes(): Promise<IPartnersType[]> {
@@ -108,24 +123,6 @@ export class MySqlPartnerRepository implements IPartnerRepository {
   async update(partner: IPartner): Promise<IPartner> {
     const partnerPersistence =
       this.partnerPersistenceMapper.toPersistence(partner);
-    console.log(
-      partnerPersistence.name,
-      partnerPersistence.surname,
-      partnerPersistence.email,
-      partnerPersistence.phone,
-      partnerPersistence.address,
-      partnerPersistence.dni!,
-      partnerPersistence.birth_date,
-      partnerPersistence.cannabis_month.toString(),
-      partnerPersistence.hash_month.toString(),
-      partnerPersistence.extractions_month.toString(),
-      partnerPersistence.others_month.toString(),
-      partnerPersistence.partner_type_id.toString(),
-      partnerPersistence.active.toString(),
-      partnerPersistence.therapeutic.toString(),
-      partnerPersistence.user_updated!,
-      partnerPersistence.partner_id
-    );
     const result = await MysqlDataBase.update(
       `UPDATE partners SET name = ?, surname = ?, email = ?, phone = ?, address = ?, dni = ?, birth_date = ?,
        cannabis_month = ?, hash_month = ?, extractions_month = ?, others_month = ?, partner_type_id = ?, active = ?, therapeutic = ?, user_updated = ?

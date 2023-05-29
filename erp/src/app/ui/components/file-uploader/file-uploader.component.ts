@@ -12,7 +12,7 @@ import { FileService } from 'src/app/files/application/files.service';
 import { FilesUseCases } from 'src/app/files/application/files.use-cases';
 
 import config from '../../../config/client.config';
-import { FilePolicy, IFilesType } from 'src/app/files/domain/files';
+import { FilePolicy, IFiles, IFilesType } from 'src/app/files/domain/files';
 import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
@@ -32,6 +32,7 @@ import {
 } from '@angular/forms';
 import { Subject, take, takeUntil } from 'rxjs';
 import { PageRoutes } from '../../pages/pages-info.config';
+import { ActiveEntityService } from '../../services/active-entity-service.service';
 
 @Component({
   selector: 'app-file-uploader',
@@ -39,10 +40,12 @@ import { PageRoutes } from '../../pages/pages-info.config';
   styleUrls: ['./file-uploader.component.scss'],
 })
 export class FileUploaderComponent implements OnInit, OnDestroy {
+  isLoading: boolean = true;
   @Input('isUploaderEnabled') isUploaderEnabled!: boolean;
   @Input('modalRef') modalRef!: NgbActiveModal;
   @Output() closeModal: EventEmitter<ModalActions> =
     new EventEmitter<ModalActions>();
+  @Output() switch: EventEmitter<boolean> = new EventEmitter<boolean>();
   @ViewChild('inputFile') inputFileRef!: ElementRef<HTMLInputElement>;
   REQUIRED_FILE_TYPES = config.REQUIRED_FILE_TYPES;
   defaultImage = config.DEFAULT_IMAGE;
@@ -52,6 +55,8 @@ export class FileUploaderComponent implements OnInit, OnDestroy {
   fileMapper = new FilesDTOMapper();
   modalActions = ModalActions;
   documentTypes: IFilesType[] = [];
+  formMode!: string;
+  formModes = FormMode;
 
   uploaderForm: UntypedFormGroup = this.formBuilder.group({
     documentType: [1, [Validators.required]],
@@ -64,12 +69,14 @@ export class FileUploaderComponent implements OnInit, OnDestroy {
     private filesUseCase: FilesUseCases,
     private notifier: NotificationAdapter,
     private appState: AppStateService,
+    private activeEntityService: ActiveEntityService,
     private errorHandler: ErrorHandlerService,
     private formBuilder: UntypedFormBuilder
   ) {}
 
   ngOnInit(): void {
-    this.getFormMode() === FormMode.UPDATE
+    this.formMode = this.getFormMode();
+    this.formMode === FormMode.UPDATE
       ? (this.isUploaderEnabled = true)
       : (this.isUploaderEnabled = false);
     this.getDocumentsType();
@@ -96,9 +103,13 @@ export class FileUploaderComponent implements OnInit, OnDestroy {
     return this.appState.state.formMode;
   }
 
+  isImage(file: IFiles) {
+    return this.fileService.isImage(file.file);
+  }
+
   async onFileSelect(event: Event): Promise<void> {
     try {
-      const entityId = this.appState.state.activeEntityID;
+      const entityId = this.activeEntityService.getActiveEntityId();
       const target = event.target as HTMLInputElement;
       if (target.files) {
         const fileList = Array.from(target.files);
@@ -113,7 +124,7 @@ export class FileUploaderComponent implements OnInit, OnDestroy {
                 this.fileService.createFileObject(
                   file,
                   this.uploaderForm.controls['documentType'].value,
-                  entityId,
+                  entityId!,
                   this.getPolicy()
                 )
               );
@@ -185,6 +196,10 @@ export class FileUploaderComponent implements OnInit, OnDestroy {
 
   closeParentModal(action: ModalActions) {
     this.closeModal.emit(action);
+  }
+
+  switchEvent() {
+    this.switch.emit(true);
   }
 
   updateType(type: string, index: number): void {

@@ -25,3 +25,11 @@ export interface IPartnerDTO {
   updated_at?: string | null;
   deleted_at?: string | null;
 }
+
+export interface IPartnerSubsetDTO {
+  partner_id: string;
+  number: string;
+  access_code?: string | null;
+  name: string;
+  surname: string;
+}

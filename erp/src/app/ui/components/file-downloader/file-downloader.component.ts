@@ -1,4 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -7,8 +13,10 @@ import {
 import { Subject, take, takeUntil } from 'rxjs';
 import { FilesUseCases } from 'src/app/files/application/files.use-cases';
 import { IFiles, IFilesType } from 'src/app/files/domain/files';
-import { AppStateService } from '../../services/app-state.service';
+import { AppStateService, FormMode } from '../../services/app-state.service';
 import { FileService } from 'src/app/files/application/files.service';
+import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
+import { ActiveEntityService } from '../../services/active-entity-service.service';
 
 @Component({
   selector: 'app-file-downloader',
@@ -16,6 +24,7 @@ import { FileService } from 'src/app/files/application/files.service';
   styleUrls: ['./file-downloader.component.scss'],
 })
 export class FileDownloaderComponent implements OnInit, OnDestroy {
+  @Output() switch: EventEmitter<boolean> = new EventEmitter<boolean>();
   isLoading: boolean = true;
   selectDisabled = true;
   entityId!: string;
@@ -26,16 +35,21 @@ export class FileDownloaderComponent implements OnInit, OnDestroy {
     documentType: [1, [Validators.required]],
   });
   private destroy$ = new Subject();
+  currentRoute!: string;
+  formMode = this.appState.state.formMode;
+  formModes = FormMode;
 
   constructor(
     private formBuilder: UntypedFormBuilder,
     private filesUseCase: FilesUseCases,
     private appState: AppStateService,
-    private fileService: FileService
+    private activeEntityService: ActiveEntityService,
+    private fileService: FileService,
+    private notifier: NotificationAdapter
   ) {}
 
   ngOnInit(): void {
-    this.entityId = this.getentityId();
+    this.entityId = this.getEntityId();
     this.getDocumentsType();
   }
 
@@ -44,8 +58,8 @@ export class FileDownloaderComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  getentityId(): string {
-    return this.appState.state.activeEntityID;
+  getEntityId(): string {
+    return this.activeEntityService.getActiveEntityId()!;
   }
 
   getDocumentsType(): void {
@@ -90,7 +104,14 @@ export class FileDownloaderComponent implements OnInit, OnDestroy {
 
           this.isLoading = false;
         },
+        error: () => {
+          this.isLoading = false;
+        },
       });
+  }
+
+  switchEvent() {
+    this.switch.emit(false);
   }
 
   updateType(type: string, index: number): void {
@@ -130,12 +151,26 @@ export class FileDownloaderComponent implements OnInit, OnDestroy {
   }
 
   deleteFiles(i?: number): void {
-    if (i) {
-      this.preview.splice(i, 1);
-      this.files.splice(i, 1);
-    } else {
-      this.preview = [];
-      this.files = [];
-    }
+    const name = this.files[i!].name;
+    this.filesUseCase.deleteFile(this.files[i!].file_id).subscribe({
+      next: (res: any) => {
+        if (res.affectedRows > 0) {
+          if (i !== undefined) {
+            this.preview.splice(i, 1);
+            this.files.splice(i, 1);
+          } else {
+            this.preview = [];
+            this.files = [];
+          }
+        }
+        this.notifier.showNotification('success', `Fichero ${name} eliminado`);
+      },
+      error: (err) => {
+        this.notifier.showNotification(
+          'error',
+          `El fichero ${name} no ha podido ser eliminado`
+        );
+      },
+    });
   }
 }

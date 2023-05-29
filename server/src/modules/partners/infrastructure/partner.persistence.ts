@@ -23,3 +23,11 @@ export interface IPartnerPersistence {
   updated_at?: string | null;
   deleted_at?: string | null;
 }
+
+export interface IPartnerPersistenceSubset {
+  partner_id: string;
+  number: number;
+  access_code?: string | null;
+  name: string;
+  surname: string;
+}

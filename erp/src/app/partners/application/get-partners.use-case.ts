@@ -21,6 +21,9 @@ export class GetPartnerUseCase
   getAllPartners(): Observable<IPartner[]> {
     return this.partnersAPI.getAllPartners();
   }
+  getAllPartnersFiltered(): Observable<Partial<IPartner[]>> {
+    return this.partnersAPI.getAllPartnersFiltered();
+  }
   getPartner(id: string): Observable<IPartner> {
     return this.partnersAPI.getPartner(id);
   }

@@ -64,7 +64,7 @@ router.get(
 // UPLOAD
 router.post(
   "/",
-  // authorize([Role.ADMIN, Role.USER]),
+  authorize([Role.ADMIN, Role.USER]),
   fileUploader.getSingleUploader("file"),
   filesController.upload.bind(filesController)
 );
@@ -73,10 +73,7 @@ router.post(
 router.delete(
   "/:id",
   authorize([Role.ADMIN, Role.USER]),
-  [
-    check("fileId", "El id es obligatorio").not().isEmpty(),
-    catchValidationErrors,
-  ],
+  [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
   filesController.delete.bind(filesController)
 );
 

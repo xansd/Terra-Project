@@ -215,7 +215,7 @@
                       data-toggle="buttons"
                     >
                       <button
-                        (click)="openEditPartnerDialog(row.partner_id)"
+                        (click)="openEditPartnerDialog(row, row.partner_id)"
                         type="button"
                         class="btn btn-primary"
                         title="Editar socio"
@@ -224,10 +224,10 @@
                       </button>
 
                       <button
-                        (click)="openEditPartnerDialog(row.partner_id)"
+                        (click)="openConfirmDialog(row.partner_id)"
                         type="button"
                         class="btn btn-danger"
-                        title="Editar socio"
+                        title="Eliminar socio"
                       >
                         <i class="bi bi-person-x"> </i>
                       </button>

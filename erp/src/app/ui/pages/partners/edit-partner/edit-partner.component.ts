@@ -21,12 +21,13 @@ import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.ada
 import { UpdatePartnerUseCase } from 'src/app/partners/application/update-partner.use.case';
 import { GetPartnerUseCase } from 'src/app/partners/application/get-partners.use-case';
 import { DomainValidationError } from 'src/app/shared/domain/domain-validation.exception';
-import { PartnerDTOMapper } from 'src/app/partners/infratructure/partner-dto.mapper';
+import { PartnerDTOMapper } from 'src/app/partners/infrastructure/partner-dto.mapper';
 import { DatetimeHelperService } from 'src/app/ui/shared/helpers/datetime.helper.service';
 import {
   AppStateService,
   FormMode,
 } from 'src/app/ui/services/app-state.service';
+import { ModalActions } from 'src/app/ui/shared/enums/modalActions.enum';
 
 @Component({
   selector: 'app-edit-partner',
@@ -34,6 +35,9 @@ import {
   styleUrls: ['./edit-partner.component.scss'],
 })
 export class EditPartnerComponent implements OnInit, OnDestroy {
+  partnerEdited!: IPartner;
+  modalActions = ModalActions;
+  switchEventActive = true;
   isLoading: boolean = true;
   @Input('uid') uid!: string;
   types: IPartnersType[] = [];
@@ -70,8 +74,7 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
     private formsHelperService: FormsHelperService,
     private updatePartnerService: UpdatePartnerUseCase,
     private getPartnersService: GetPartnerUseCase,
-    private dateFormatter: DatetimeHelperService,
-    private appState: AppStateService
+    private dateFormatter: DatetimeHelperService
   ) {}
 
   ngOnInit(): void {
@@ -108,9 +111,11 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
     });
   }
 
-  close(result: boolean | IPartner): void {
-    if (!result) {
-      this.modal.close(false);
+  close(action: ModalActions): void {
+    if (action === this.modalActions.CANCEL) {
+      this.partnerEdited
+        ? this.modal.close(this.partnerEdited)
+        : this.modal.close(false);
       return;
     }
     if (!this.editPartnerForm.valid) {
@@ -119,7 +124,7 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
       );
       this.notifier.showNotification('warning', invalidFields);
       throw new FieldValidationError(invalidFields);
-    } else this.updatePartner();
+    } else this.updatePartner(action);
   }
 
   getPartner(id: string): void {
@@ -145,7 +150,7 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
       });
   }
 
-  updatePartner(): void {
+  updatePartner(action: ModalActions): void {
     let partner!: IPartner;
     try {
       const user = this.updatePartnerService.getUpdater();
@@ -165,11 +170,15 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res: any) => {
+          this.notifier.showNotification('success', 'Socio editado');
+          partner.created_at = this.partner.created_at;
+          partner.number = this.partner.number;
           if (res.affectedRows > 0) {
-            this.notifier.showNotification('success', 'Socio editado');
-            partner.created_at = this.partner.created_at;
-            partner.number = this.partner.number;
-            this.modal.close(partner);
+            if (action === this.modalActions.NEXT) {
+              this.partnerEdited = partner;
+            } else if (action === this.modalActions.SAVE) {
+              this.modal.close(partner);
+            }
           }
         },
       });
@@ -195,6 +204,10 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
   formatDate(date: string) {
     const t = this.dateFormatter.getFormattedDate(date);
     return this.dateFormatter.getFormattedDate(date);
+  }
+
+  switchEvent(status: boolean) {
+    this.switchEventActive = status;
   }
 
   get nameControl(): AbstractControl {

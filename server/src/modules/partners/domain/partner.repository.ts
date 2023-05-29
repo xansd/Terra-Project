@@ -1,8 +1,10 @@
+import { IPartnerSubsetDTO } from "../application/partner.dto";
 import { IPartner, IPartnersType } from "./partner";
 
 export interface IPartnerRepository {
   getById(partnerId: string): Promise<IPartner>;
   getAll(): Promise<IPartner[]>;
+  getAllFiltered(): Promise<IPartnerSubsetDTO[]>;
   getTypes(): Promise<IPartnersType[]>;
   getPartnerLastNumber(): Promise<number>;
   create(partner: IPartner): Promise<IPartner>;

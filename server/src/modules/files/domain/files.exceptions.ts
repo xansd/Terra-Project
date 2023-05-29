@@ -1,6 +1,6 @@
 export class FileDoesNotExistError extends Error {
   constructor() {
-    super(`El fichero no existe`);
+    super(`No hay ficheros`);
     this.name = "FileDoesNotExistError";
   }
 }
@@ -30,5 +30,26 @@ export class DownloadError extends Error {
   constructor(key: string) {
     super(`Error al descargar el archivo ${key}`);
     this.name = "DownloadError";
+  }
+}
+
+export class UploadError extends Error {
+  constructor(key: string) {
+    super(`Error al subir el archivo ${key}`);
+    this.name = "UploadError";
+  }
+}
+
+export class InvalidFileBodyError extends Error {
+  constructor() {
+    super(`Invalid file body`);
+    this.name = "InvalidFileBodyError";
+  }
+}
+
+export class DeletingFileError extends Error {
+  constructor() {
+    super(`Error al borrar archivo`);
+    this.name = "DeletingFileError";
   }
 }

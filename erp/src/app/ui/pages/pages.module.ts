@@ -32,7 +32,7 @@ import { ListPartnersComponent } from './partners/list-partners/list-partners.co
 import { CreatePartnerComponent } from './partners/create-partner/create-partner.component';
 import { EditPartnerComponent } from './partners/edit-partner/edit-partner.component';
 import { DetailsPartnerComponent } from './partners/details-partner/details-partner.component';
-import { PartnerAPIRepository } from 'src/app/partners/infratructure/partner-api.repository';
+import { PartnerAPIRepository } from 'src/app/partners/infrastructure/partner-api.repository';
 
 @NgModule({
   declarations: [

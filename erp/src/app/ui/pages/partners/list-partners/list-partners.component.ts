@@ -7,7 +7,7 @@ import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, takeUntil } from 'rxjs';
 import { GetPartnerUseCase } from 'src/app/partners/application/get-partners.use-case';
 import { IPartner } from 'src/app/partners/domain/partner';
-import { PartnerDTOMapper } from 'src/app/partners/infratructure/partner-dto.mapper';
+import { PartnerDTOMapper } from 'src/app/partners/infrastructure/partner-dto.mapper';
 import { CreatePartnerComponent } from '../create-partner/create-partner.component';
 import { EditPartnerComponent } from '../edit-partner/edit-partner.component';
 import { DeletePartnerUseCase } from 'src/app/partners/application/delete-user.case-use';
@@ -16,6 +16,7 @@ import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
 import { ConfirmDialogComponent } from 'src/app/ui/shared/components/confirm-dialog/confirm-dialog.component';
 import { DatetimeHelperService } from 'src/app/ui/shared/helpers/datetime.helper.service';
 import { AppStateService } from 'src/app/ui/services/app-state.service';
+import { ActiveEntityService } from 'src/app/ui/services/active-entity-service.service';
 
 const modalOptions: NgbModalOptions = {
   backdrop: 'static',
@@ -81,7 +82,7 @@ export class ListPartnersComponent {
     private notifier: NotificationAdapter,
     private errorHandler: ErrorHandlerService,
     private dateFormatter: DatetimeHelperService,
-    private appState: AppStateService
+    private activeEntityService: ActiveEntityService
   ) {
     this.dataSource = new MatTableDataSource(this.partnersList);
     this.dataSource.paginator = this.paginator;
@@ -93,6 +94,7 @@ export class ListPartnersComponent {
   }
 
   ngOnDestroy(): void {
+    this.activeEntityService.clearActiveEntity();
     this.destroy$.next(true);
     this.destroy$.complete();
   }
@@ -161,8 +163,7 @@ export class ListPartnersComponent {
       .then((result) => {
         if (result) {
           this.addToTable(result);
-        } else {
-          console.log('Modal closed');
+          this.activeEntityService.clearActiveEntity();
         }
       })
       .catch((error) => {
@@ -170,14 +171,15 @@ export class ListPartnersComponent {
       });
   }
 
-  openEditPartnerDialog(uid: string) {
-    this.appState.state.activeEntityID = uid;
+  openEditPartnerDialog(partner: IPartner, uid: string) {
+    this.activeEntityService.setActiveEntity(partner, uid);
     const modalRef = this.modalService.open(EditPartnerComponent, modalOptions);
     modalRef.componentInstance.uid = uid;
     modalRef.result
       .then((result) => {
         if (result) {
           this.updateTable(result);
+          this.activeEntityService.clearActiveEntity();
         }
       })
       .catch((error) => {

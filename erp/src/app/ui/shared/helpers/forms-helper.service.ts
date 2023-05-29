@@ -40,6 +40,5 @@ export class FormsHelperService {
 
   clearFormMeta() {
     this.appState.state.formMode = FormMode.SLEEP;
-    this.appState.state.activeEntityID = '';
   }
 }

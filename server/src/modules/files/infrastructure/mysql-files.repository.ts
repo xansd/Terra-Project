@@ -30,10 +30,10 @@ export class MysqlFilesRepository implements IFilesRepository {
       `,
       [entityId]
     );
-    if (rows.length === 0) {
-      Logger.error(`mysql : getAll : FileDoesNotExistError`);
-      throw new FileDoesNotExistError();
-    }
+    // if (rows.length === 0) {
+    //   Logger.error(`mysql : getAll : FileDoesNotExistError`);
+    //   throw new FileDoesNotExistError();
+    // }
     return this.filesMapper.toDomainList(rows);
   }
 

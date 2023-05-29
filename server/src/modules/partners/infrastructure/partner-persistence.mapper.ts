@@ -2,7 +2,10 @@ import { Email } from "../../shared/domain/value-objects/email.value-object";
 import { IPersistenceMapper } from "../../shared/infraestructure/persistence-mapper.interface";
 import { IPartner, Partner } from "../domain/partner";
 import { PartnerID } from "../domain/value-objects/partner-id.value.object";
-import { IPartnerPersistence } from "./partner.persistence";
+import {
+  IPartnerPersistence,
+  IPartnerPersistenceSubset,
+} from "./partner.persistence";
 
 export class PartnerPersistenceMapper
   implements IPersistenceMapper<IPartner, IPartnerPersistence>
@@ -88,6 +91,20 @@ export class PartnerPersistenceMapper
   // Convierte una lista de dominio a una lista de DTO
   toPersistenceList(domainList: IPartner[]): IPartnerPersistence[] {
     return domainList.map((partner) => this.toPersistence(partner));
+  }
+
+  toDtoFilteredList(
+    persistenceList: IPartnerPersistenceSubset[]
+  ): IPartnerPersistenceSubset[] {
+    return persistenceList.map((partner) => {
+      return {
+        partner_id: partner.partner_id,
+        number: partner.number,
+        access_code: partner.access_code,
+        name: partner.name,
+        surname: partner.surname,
+      };
+    });
   }
 
   // Convierte una lista de DTO a una lista de dominio

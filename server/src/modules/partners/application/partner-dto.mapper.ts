@@ -2,7 +2,7 @@ import { IDTOMapper } from "../../shared/application/dto-mapper.interface";
 import { Email } from "../../shared/domain/value-objects/email.value-object";
 import { IPartner, Partner } from "../domain/partner";
 import { PartnerID } from "../domain/value-objects/partner-id.value.object";
-import { IPartnerDTO } from "./partner.dto";
+import { IPartnerDTO, IPartnerSubsetDTO } from "./partner.dto";
 
 export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
   constructor() {}
@@ -85,9 +85,33 @@ export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
     };
   }
 
+  // Convierte un dominio a un DTO
+  toDTOFiltered(domain: IPartner): Partial<IPartnerDTO> {
+    return {
+      partner_id: domain.partner_id.value,
+      access_code: undefined,
+      number: domain.number,
+      name: domain.name,
+      surname: domain.surname,
+    };
+  }
+
   // Convierte una lista de dominio a una lista de DTO
   toDTOList(domainList: IPartner[]): IPartnerDTO[] {
     return domainList.map((partner) => this.toDTO(partner));
+  }
+
+  // Convierte una lista de dominio a una lista de DTO
+  toDTOFilteredList(domainList: IPartner[]): IPartnerSubsetDTO[] {
+    return domainList.map((partner) => {
+      return {
+        partner_id: partner.partner_id.value,
+        number: partner.number,
+        access_code: partner.access_code,
+        name: partner.name,
+        surname: partner.surname,
+      };
+    });
   }
 
   // Convierte una lista de DTO a una lista de dominio

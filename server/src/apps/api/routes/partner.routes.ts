@@ -49,6 +49,13 @@ router.get(
   partnerController.getAll.bind(partnerController)
 );
 
+// GET ALL ID, NUM, ACCESS, SURNAME, NAME
+router.get(
+  "/all/filtered",
+  authorize([Role.ADMIN, Role.USER]),
+  partnerController.getAllFiltered.bind(partnerController)
+);
+
 // GET TYPES
 router.get(
   "/details/types",

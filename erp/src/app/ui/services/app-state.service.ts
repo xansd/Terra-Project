@@ -12,7 +12,6 @@ export interface IAppState {
   activeRoute: string;
   lastRoute: string;
   formMode: FormMode | string;
-  activeEntityID: string;
 }
 
 export interface IAppStateService {
@@ -28,7 +27,6 @@ export class AppStateService implements IAppStateService {
   state: IAppState = {
     activeRoute: '',
     lastRoute: '',
-    activeEntityID: '',
     formMode: FormMode.SLEEP,
   };
   private state$ = new BehaviorSubject<IAppState>(this.state);
@@ -49,12 +47,8 @@ export class AppStateService implements IAppStateService {
   }
 
   addToState(prop: keyof IAppState, value: IAppState[keyof IAppState]): void {
-    this.state[prop] = value;
+    this.state[prop] = value as string;
     this.state$.next(this.state);
-  }
-
-  cloneArrayOfObjects<T>(data: T[]): T[] {
-    return data.map((obj) => Object.assign({}, obj));
   }
 
   cloneObject<T>(obj: T): T {

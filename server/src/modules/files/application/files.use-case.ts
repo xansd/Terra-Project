@@ -25,6 +25,10 @@ export interface IDeleteFile {
   deleteFile(fileId: string): Promise<void>;
 }
 
+export interface IDeleteFile {
+  deleteFiles(entityId: string): Promise<void>;
+}
+
 export class FilesCaseUses
   implements IGetFile, IGetFiles, IUploadFile, IDeleteFile
 {
@@ -102,7 +106,34 @@ export class FilesCaseUses
   }
 
   async deleteFile(fileId: string): Promise<void> {
+    const fileUploader = new FileUploader();
+    const file = await this.filesRepository.getFile(fileId);
+    if (!file) {
+      Logger.error(`files-repository: getFiles: ${FileDoesNotExistError}`);
+      throw new FileDoesNotExistError();
+    }
+    const key = file.url;
+    await fileUploader.deleteFile(key!);
     const result = await this.filesRepository.deleteFile(fileId);
     return result;
+  }
+
+  async deleteFiles(entityId: string): Promise<void> {
+    let result;
+    const fileUploader = new FileUploader();
+    const files = await this.filesRepository.getFiles(entityId);
+    // if (!files) {
+    //   Logger.error(`files-repository: getFiles: ${FileDoesNotExistError}`);
+    //   throw new FileDoesNotExistError();
+    // }
+    if (files.length > 0) {
+      for (const file of files) {
+        const key = file.url;
+        await fileUploader.deleteFile(key!);
+        result = await this.filesRepository.deleteFile(file.file_id!);
+      }
+
+      return result;
+    }
   }
 }

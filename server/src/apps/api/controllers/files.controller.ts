@@ -1,7 +1,9 @@
 import { FilesCaseUses } from "../../../modules/files/application/files.use-case";
 import { Request, Response } from "express";
 import {
+  DownloadError,
   FileDoesNotExistError,
+  InvalidFileBodyError,
   InvalidFileExtensionError,
   NoRefererenceError,
 } from "../../../modules/files/domain/files.exceptions";
@@ -12,8 +14,6 @@ import {
   _MulterError,
 } from "../error/http-error";
 import { MulterError } from "multer";
-import AWS from "aws-sdk";
-import SETUP from "../../../config/app-config";
 
 export class FilesController {
   constructor(private filesUseCases: FilesCaseUses) {}
@@ -60,9 +60,13 @@ export class FilesController {
       const { id } = request.params;
       const files = await this.filesUseCases.downloadFiles(id);
       response.json(files);
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof FileDoesNotExistError) {
         response.send(NotFound(error.message));
+      } else if (error instanceof DownloadError) {
+        response.send(BadRequest(error.message));
+      } else if (error instanceof InvalidFileBodyError) {
+        response.send(BadRequest(error.message));
       } else {
         response.send(InternalServerError(error));
       }
@@ -74,9 +78,13 @@ export class FilesController {
       const { id } = request.params;
       const file = await this.filesUseCases.downloadFile(id);
       response.json(file);
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof FileDoesNotExistError) {
         response.send(NotFound(error.message));
+      } else if (error instanceof DownloadError) {
+        response.send(BadRequest(error.message));
+      } else if (error instanceof InvalidFileBodyError) {
+        response.send(BadRequest(error.message));
       } else {
         response.send(InternalServerError(error));
       }
@@ -92,6 +100,8 @@ export class FilesController {
         response.send(BadRequest(error.message));
       } else if (error instanceof InvalidFileExtensionError) {
         response.send(BadRequest(error.message));
+      } else if (error instanceof MulterError) {
+        response.send(_MulterError("Error al subir el archivo"));
       } else if (error instanceof MulterError) {
         response.send(_MulterError("Error al subir el archivo"));
       } else {

@@ -1,48 +1,59 @@
 <card class="mb-4" [ngClass]="{ 'hide-component': !isUploaderEnabled }">
-  <card-header
-    class="d-flex align-items-center bg-inverse bg-opacity-10 fw-400"
-  >
-    <i class="bi bi-upload text-theme"></i> &nbsp; DOCUMENTACIÓN
+  <card-header class="card-header bg-inverse bg-opacity-10 fw-400">
+    <div class="title">
+      <i class="bi bi-upload"></i> &nbsp; SUBIR DOCUMENTACIÓN
+    </div>
+    <!-- Solo se muestra el switch en modo edición -->
+    <div class="switch" *ngIf="formMode === formModes.UPDATE">
+      <button
+        class="btn btn-secondary"
+        title="Descargas"
+        (click)="switchEvent()"
+      >
+        <i class="bi bi-download"></i>
+      </button>
+    </div>
   </card-header>
   <form [formGroup]="uploaderForm" enctype="multipart/form-data">
     <card-body class="pb-2">
       <div
-        class="d-block d-lg-flex align-items-center uploader-actions-container"
+        class="d-flex d-lg-flex align-items-center uploader-actions-container"
       >
-        <input
-          #inputFile
-          multiple
-          formControlName="files"
-          type="file"
-          style="display: none"
-          [accept]="REQUIRED_FILE_TYPES"
-          (change)="onFileSelect($event)"
-          #fileSelect
-        />
-        <button
-          (click)="fileSelect.click()"
-          class="btn btn-outline-theme fileinput-button me-2 mb-1"
-        >
-          <i class="fa fa-fw fa-plus"></i>
-          <span>Añadir...</span>
-        </button>
-        <button
-          (click)="uploadFiles()"
-          type="submit"
-          class="btn btn-outline-default me-2 mb-1 start"
-        >
-          <i class="fa fa-fw fa-upload"></i>
-          <span>Subir</span>
-        </button>
-        <button
-          (click)="deleteFiles()"
-          type="button"
-          class="btn btn-outline-default me-2 mb-1 delete"
-        >
-          <i class="fa fa-fw fa-trash"></i>
-          <span>Eliminar todo</span>
-        </button>
-        <!--PENDIENTE SELECT TIPO-->
+        <div class="btn-container">
+          <input
+            #inputFile
+            multiple
+            formControlName="files"
+            type="file"
+            style="display: none"
+            [accept]="REQUIRED_FILE_TYPES"
+            (change)="onFileSelect($event)"
+            #fileSelect
+          />
+          <button
+            (click)="fileSelect.click()"
+            class="btn btn-outline-theme fileinput-button me-2 mb-1"
+          >
+            <i class="fa fa-fw fa-plus"></i>
+            <span>Añadir...</span>
+          </button>
+          <button
+            (click)="uploadFiles()"
+            type="submit"
+            class="btn btn-primary me-2 mb-1 start"
+          >
+            <i class="fa fa-fw fa-upload"></i>
+            <span>Subir</span>
+          </button>
+          <button
+            (click)="deleteFiles()"
+            type="button"
+            class="btn btn-outline-warning me-2 mb-1 delete"
+          >
+            <i class="fa fa-fw fa-trash"></i>
+            <span>Limpiar todo</span>
+          </button>
+        </div>
       </div>
       <div class="table-container table-responsive">
         <table class="table table-card mb-0 fs-13px">
@@ -76,15 +87,22 @@
                   class="preview d-flex justify-content-center flex-align-center"
                   style="height: 50px"
                 >
-                  <img
-                    *ngIf="preview[i]; else defaultImage"
-                    [src]="preview[i]"
-                    [title]="file.name"
-                    [alt]="file.name"
-                  />
-                  <ng-template #defaultImage>
-                    <img [src]="defaultImage" alt="Imagen por defecto" />
-                  </ng-template>
+                  <ng-container *ngIf="isImage(file)">
+                    <img
+                      style="height: 50px"
+                      [src]="preview[i]"
+                      [title]="file.name"
+                      [alt]="file.name"
+                    />
+                  </ng-container>
+                  <ng-container *ngIf="!isImage(file)">
+                    <p class="file-preview text-warning">
+                      <span>
+                        <i class="bi bi-x-circle"></i> Vista previa no
+                        disponible</span
+                      >
+                    </p>
+                  </ng-container>
                 </span>
               </td>
               <td class="name-container text-left">

@@ -22,6 +22,15 @@
 form {
     padding: 15px;
 
+    .save-btn-container {
+        margin-top: 50px;
+
+        button {
+            margin-left: 15px;
+        }
+    }
+
+
     .row {
         margin-bottom: 20px !important;
     }

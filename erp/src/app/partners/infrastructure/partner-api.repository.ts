@@ -45,6 +45,12 @@ export class PartnerAPIRepository implements IPartnerAPIPort {
       );
   }
 
+  getAllPartnersFiltered(): Observable<Partial<IPartner[]>> {
+    return this.http.get<Partial<IPartner[]>>(`${API_URI}/all/filtered`, {
+      withCredentials: true,
+    });
+  }
+
   getPartnersType(): Observable<IPartnersType[]> {
     return this.http.get<IPartnersType[]>(`${API_URI}/details/types`, {
       withCredentials: true,

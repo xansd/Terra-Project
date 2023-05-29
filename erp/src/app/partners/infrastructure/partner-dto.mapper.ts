@@ -120,7 +120,10 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       hash_month: formValues.hash,
       extractions_month: formValues.extractions,
       others_month: formValues.others,
-      partner_type_id: formValues.type,
+      partner_type_id:
+        mode === FormMode.CREATE
+          ? formValues.type
+          : formValues.type.partner_type_id,
       active: formValues.active,
       therapeutic: formValues.therapeutic,
     };

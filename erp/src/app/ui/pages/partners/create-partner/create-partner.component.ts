@@ -17,13 +17,14 @@ import { FormsHelperService } from 'src/app/ui/shared/helpers/forms-helper.servi
 import CONFIG from '../../../../config/client.config';
 import { CustomErrorStateMatcher } from 'src/app/ui/shared/helpers/custom-error-state-macher';
 import { GetPartnerUseCase } from 'src/app/partners/application/get-partners.use-case';
-import { PartnerDTOMapper } from 'src/app/partners/infratructure/partner-dto.mapper';
+import { PartnerDTOMapper } from 'src/app/partners/infrastructure/partner-dto.mapper';
 import {
   AppStateService,
   FormMode,
 } from 'src/app/ui/services/app-state.service';
 import { PartnerIDNotFoundError } from 'src/app/partners/domain/partner.exceptions';
 import { ModalActions } from 'src/app/ui/shared/enums/modalActions.enum';
+import { ActiveEntityService } from 'src/app/ui/services/active-entity-service.service';
 
 @Component({
   selector: 'app-create-partner',
@@ -72,7 +73,7 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
     private formsHelperService: FormsHelperService,
     private createPartnerService: CreatePartnerUseCase,
     private getPartnersService: GetPartnerUseCase,
-    private appState: AppStateService
+    private activeEntityService: ActiveEntityService
   ) {}
 
   ngOnInit(): void {
@@ -151,8 +152,10 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
             this.notifier.showNotification('success', 'Socio creado');
             if (action === this.modalActions.NEXT) {
               this.newPartnerCreated = res;
-              this.appState.state.activeEntityID =
-                this.newPartnerCreated.partner_id!;
+              this.activeEntityService.setActiveEntity(
+                this.newPartnerCreated,
+                this.newPartnerCreated.partner_id!
+              );
               this.isUploaderEnabled = true;
             } else if (action === this.modalActions.SAVE) {
               this.modalRef.close(res);

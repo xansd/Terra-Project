@@ -23,6 +23,8 @@ import { FileUploaderComponent } from './file-uploader/file-uploader.component';
 import { FileService } from 'src/app/files/application/files.service';
 import { FilesAPIRepository } from 'src/app/files/infrastructure/files-api.repository';
 import { FileDownloaderComponent } from './file-downloader/file-downloader.component';
+import { SearcherComponent } from './searcher/searcher.component';
+import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -41,6 +43,7 @@ import { FileDownloaderComponent } from './file-downloader/file-downloader.compo
     CheckPasswordComponent,
     FileUploaderComponent,
     FileDownloaderComponent,
+    SearcherComponent,
   ],
   imports: [
     CommonModule,
@@ -49,6 +52,7 @@ import { FileDownloaderComponent } from './file-downloader/file-downloader.compo
     FormsModule,
     ReactiveFormsModule,
     MaterialModule,
+    NgbTypeaheadModule,
   ],
   exports: [
     CardComponent,
@@ -65,6 +69,7 @@ import { FileDownloaderComponent } from './file-downloader/file-downloader.compo
     SidebarMobileBackdropComponent,
     FileUploaderComponent,
     FileDownloaderComponent,
+    SearcherComponent,
   ],
   providers: [
     {

@@ -3,6 +3,7 @@ import { IPartner, IPartnersType } from "../../domain/partner";
 import { PartnerDoesNotExistError } from "../../domain/partner.exceptions";
 import { PartnersNotFoundError } from "../../domain/partner.exceptions";
 import { IPartnerRepository } from "../../domain/partner.repository";
+import { IPartnerSubsetDTO } from "../partner.dto";
 
 export interface IGetPartner {
   getPartner(id: string): Promise<IPartner>;
@@ -32,6 +33,19 @@ export class GetPartnerUseCase implements IGetPartner, IGetAllPartners {
       const partnersNotFound = new PartnersNotFoundError();
       Logger.error(
         `partner-repository : getAllPartners : ${PartnersNotFoundError}`
+      );
+      throw partnersNotFound;
+    }
+
+    return partners;
+  }
+
+  async getAllPartnersFiltered(): Promise<IPartnerSubsetDTO[]> {
+    const partners = await this.partnerRepository.getAllFiltered();
+    if (partners.length === 0) {
+      const partnersNotFound = new PartnersNotFoundError();
+      Logger.error(
+        `partner-repository : getAllPartnersFiltered : ${PartnersNotFoundError}`
       );
       throw partnersNotFound;
     }

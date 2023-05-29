@@ -6,15 +6,69 @@
     -webkit-box-pack : center;
     -ms-flex-pack    : center;
     justify-content  : center;
-    -webkit-box-align: start;
-    -ms-flex-align   : start;
-    align-items      : flex-start;
+    -webkit-box-align: center;
+    -ms-flex-align   : center;
+    align-items      : center;
+    margin-top       : -10px;
 
     button {
-        max-width: 60px !important;
+        max-width : 50px !important;
+        height    : 30px;
+        padding   : 0;
+        margin    : 0;
+        text-align: center !important;
+
+        &:nth-child(1) {
+            border-radius: 5px 0 0 5px !important;
+            margin-right : .5px;
+        }
+
+        &:nth-child(3) {
+            border-radius: 0 5px 5px 0 !important;
+            margin-left  : .5px;
+        }
 
         i {
             font-size: 18px;
+        }
+    }
+
+}
+
+::ng-deep .file-downloader-container {
+    margin-bottom: 0 !important;
+
+}
+
+.file-preview {
+    font-weight: 600;
+
+}
+
+table td {
+    vertical-align: middle !important;
+}
+
+.card-header {
+    display          : -webkit-box !important;
+    display          : -ms-flexbox !important;
+    display          : flex !important;
+    -webkit-box-pack : justify;
+    -ms-flex-pack    : justify;
+    justify-content  : space-between;
+    -webkit-box-align: center;
+    -ms-flex-align   : center;
+    align-items      : center;
+
+    .title {
+        width: 300px;
+    }
+
+    .switch {
+        i {
+            font-weight        : bold !important;
+            color              : #3cd2a5 !important;
+            -webkit-text-stroke: 1px;
         }
     }
 }

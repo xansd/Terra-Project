@@ -12,6 +12,14 @@ CREATE TABLE subcategories (
   FOREIGN KEY (category_id) REFERENCES categories(id)
 );
 
+CREATE TABLE product_subcategory (
+  product_id VARCHAR(36),
+  subcategory_id VARCHAR(36),
+  PRIMARY KEY (product_id, subcategory_id),
+  FOREIGN KEY (product_id) REFERENCES products(product_id),
+  FOREIGN KEY (subcategory_id) REFERENCES subcategories(subcategory_id)
+);
+
 CREATE TABLE roles (
 role_id INT(11) AUTO_INCREMENT PRIMARY KEY,
 name VARCHAR(255) NOT NULL,
@@ -122,7 +130,7 @@ CREATE TABLE partners (
   number INT(11) NOT NULL,
   name VARCHAR(255) NOT NULL,
   surname VARCHAR(255) NOT NULL,
-  email VARCHAR(255) NOT NULL UNIQUE,
+  email VARCHAR(255) NOT NULL,
   phone VARCHAR(20) NOT NULL,
   address VARCHAR(255) NOT NULL,
   dni VARCHAR(25) NOT NULL,
@@ -166,22 +174,20 @@ INDEX providers_name (name)
 
 
 CREATE TABLE products (
-product_id VARCHAR(36) PRIMARY KEY,
-name VARCHAR(255) NOT NULL,
-type ENUM('mancomunados', 'terceros') NOT NULL,
-category_id VARCHAR(36),
-subcategory_id VARCHAR(36),
-description TEXT,
-image VARCHAR(255),
-price DECIMAL(10,2) NOT NULL,
-    user_created VARCHAR(36) DEFAULT NULL,
-    user_updated VARCHAR(36) DEFAULT NULL,
-    created_at datetime DEFAULT CURRENT_TIMESTAMP,
-    updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at datetime DEFAULT NULL,
-    INDEX products_name (name),
-FOREIGN KEY (category_id) REFERENCES categories(id),
-FOREIGN KEY (subcategory_id) REFERENCES subcategories(id)
+  product_id VARCHAR(36) PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  type ENUM('mancomunados', 'terceros') NOT NULL,
+  category_id VARCHAR(36),
+  description TEXT,
+  image VARCHAR(255),
+  price DECIMAL(10,2) NOT NULL,
+  user_created VARCHAR(36) DEFAULT NULL,
+  user_updated VARCHAR(36) DEFAULT NULL,
+  created_at datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at datetime DEFAULT NULL,
+  INDEX products_name (name),
+  FOREIGN KEY (category_id) REFERENCES categories(category_id)
 );
 
 

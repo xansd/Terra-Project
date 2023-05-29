@@ -1,8 +1,18 @@
-<card class="mb-4">
-  <card-header
-    class="d-flex align-items-center bg-inverse bg-opacity-10 fw-400"
-  >
-    <i class="bi bi-download text-theme"></i> &nbsp; DOCUMENTACIÓN
+<card class="mb-4 file-downloader-container">
+  <card-header class="card-header bg-inverse bg-opacity-10 fw-400">
+    <div class="title">
+      <i class="bi bi-download"></i> &nbsp; VER DOCUMENTACIÓN
+    </div>
+    <!-- Solo se muestra el switch en modo edición -->
+    <div class="switch" *ngIf="formMode === formModes.UPDATE">
+      <button
+        (click)="switchEvent()"
+        class="btn btn-secondary"
+        title="Subir ficheros"
+      >
+        <i class="bi bi-upload"></i>
+      </button>
+    </div>
   </card-header>
   <form [formGroup]="downloaderForm" enctype="multipart/form-data">
     <card-body class="pb-2">
@@ -51,7 +61,12 @@
                       />
                     </ng-container>
                     <ng-container *ngIf="!isImage(file)">
-                      <p class="file-name">Vista previa no disponible</p>
+                      <p class="file-preview text-warning">
+                        <span>
+                          <i class="bi bi-x-circle"></i> Vista previa no
+                          disponible</span
+                        >
+                      </p>
                     </ng-container>
                   </span>
                 </td>
@@ -88,14 +103,14 @@
                     <button
                       title="Abrir"
                       (click)="openFile(i)"
-                      class="btn btn-outline-success btn-sm d-block cancel mt-2"
+                      class="btn btn-success btn-sm d-block cancel mt-2"
                     >
                       <span> <i class="bi bi-eye-fill"></i> </span>
                     </button>
                     <button
                       title="descargar"
                       (click)="saveFile(i)"
-                      class="btn btn-outline-info btn-sm d-block cancel mt-2"
+                      class="btn btn-primary btn-sm d-block cancel mt-2"
                     >
                       <span>
                         <i class="bi bi-file-earmark-arrow-down-fill"></i>
@@ -104,7 +119,7 @@
                     <button
                       title="Eliminar"
                       (click)="deleteFiles(i)"
-                      class="btn btn-outline-warning btn-sm d-block cancel mt-2"
+                      class="btn btn-danger btn-sm d-block cancel mt-2"
                     >
                       <span> <i class="bi bi-x-circle-fill"></i> </span>
                     </button>

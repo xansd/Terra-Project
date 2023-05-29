@@ -1,14 +1,24 @@
 import SETUP from "../../../config/app-config";
-import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
+import {
+  S3Client,
+  GetObjectCommand,
+  DeleteObjectCommand,
+} from "@aws-sdk/client-s3";
 import multer from "multer";
 import multerS3 from "multer-s3";
 import { NextFunction, Request, Response } from "express";
-import { InvalidFileExtensionError } from "../domain/files.exceptions";
+import {
+  DeletingFileError,
+  DownloadError,
+  InvalidFileBodyError,
+  InvalidFileExtensionError,
+} from "../domain/files.exceptions";
 import { FileService } from "../application/file.service";
 import { InvalidFileSizeError } from "../domain/files.exceptions";
 import { BadRequest, NotFound } from "../../../apps/api/error/http-error";
 import { FileDoesNotExistError } from "../domain/files.exceptions";
-import AWS from "aws-sdk";
+import { Readable } from "nodemailer/lib/xoauth2";
+import Logger from "../../../apps/utils/logger";
 
 class FileUploader {
   private s3: S3Client;
@@ -93,22 +103,46 @@ class FileUploader {
   }
 
   async downloadFile(key: string): Promise<Buffer> {
-    AWS.config.update(SETUP.AWS_S3.CONFIGS3);
-    const s3 = new AWS.S3();
-    const options = {
+    const getObjectParams = {
       Bucket: SETUP.AWS_S3.BUCKET,
       Key: key,
     };
 
-    const chunks: Buffer[] = [];
-    const fileStream = s3.getObject(options).createReadStream();
+    try {
+      const { Body } = await this.s3.send(
+        new GetObjectCommand(getObjectParams)
+      );
 
-    for await (const chunk of fileStream) {
-      chunks.push(chunk);
+      if (Body instanceof Readable) {
+        const chunks: Uint8Array[] = [];
+        for await (const chunk of Body) {
+          chunks.push(chunk);
+        }
+        const fileData: Buffer = Buffer.concat(chunks);
+        return fileData;
+      } else {
+        Logger.error(`downloadFile : InvalidFileBodyError : ${key}`);
+        throw new InvalidFileBodyError();
+      }
+    } catch (error) {
+      // Handle the error if it occurs
+      Logger.error(`downloadFile : DownloadError : ${key}`);
+      throw new DownloadError(key);
     }
+  }
 
-    const fileData: Buffer = Buffer.concat(chunks);
-    return fileData;
+  async deleteFile(key: string): Promise<void> {
+    const deleteParams = {
+      Bucket: SETUP.AWS_S3.BUCKET,
+      Key: key,
+    };
+
+    try {
+      await this.s3.send(new DeleteObjectCommand(deleteParams));
+    } catch (error) {
+      Logger.error(`deleteFile : DeletingFileError : ${key}`);
+      throw new DeletingFileError();
+    }
   }
 }
 

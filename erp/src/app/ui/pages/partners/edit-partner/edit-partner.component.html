@@ -37,7 +37,7 @@
                   class="form-select float-start"
                 >
                   <option *ngFor="let type of types" [ngValue]="type">
-                    {{ type.name }}
+                    {{ type.name | uppercase }}
                   </option>
                 </select>
               </div>
@@ -376,6 +376,24 @@
               </div>
             </div>
           </div>
+          <div
+            class="save-btn-container d-block d-flex justify-content-end w-100 fw-400"
+          >
+            <button
+              type="button"
+              class="btn btn-outline-theme"
+              (click)="close(modalActions.NEXT)"
+            >
+              Guardar
+            </button>
+            <button
+              type="button"
+              class="btn btn-outline-theme"
+              (click)="close(modalActions.SAVE)"
+            >
+              Guardar y cerrar
+            </button>
+          </div>
         </form></ng-template
       >
     </div>
@@ -383,17 +401,29 @@
   <!-- FORMULARIO CREACION SOCIO -->
 
   <!-- FORMULARIO DOCUMENTACION -->
-  <app-file-uploader *ngIf="false"></app-file-uploader>
-  <app-file-downloader></app-file-downloader>
-  <!-- FORMULARIO DOCUMENTACION -->
+  <div class="file-mng">
+    <app-file-uploader
+      (switch)="switchEvent($event)"
+      *ngIf="!switchEventActive"
+    ></app-file-uploader>
+    <app-file-downloader
+      (switch)="switchEvent($event)"
+      *ngIf="switchEventActive"
+    ></app-file-downloader>
+    <!-- FORMULARIO DOCUMENTACION -->
+  </div>
 </div>
 <div
   class="modal-footer d-block d-flex align-items-center bg-inverse bg-opacity-10 fw-400"
 >
-  <button type="button" class="btn btn-warning" (click)="close(false)">
-    Cancelar
+  <button
+    type="button"
+    class="btn btn-warning"
+    (click)="close(modalActions.CANCEL)"
+  >
+    Cerrar
   </button>
-  <button type="button" class="btn btn-outline-theme" (click)="close(true)">
+  <!-- <button type="button" class="btn btn-outline-theme" (click)="close(true)">
     Confirmar
-  </button>
+  </button> -->
 </div>

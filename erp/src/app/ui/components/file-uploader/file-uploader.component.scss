@@ -11,7 +11,15 @@ card {
 }
 
 
-
+.uploader-actions-container {
+    display         : -webkit-box;
+    display         : -ms-flexbox;
+    display         : flex;
+    width           : 100%;
+    -webkit-box-pack: start;
+    -ms-flex-pack   : start;
+    justify-content : flex-start;
+}
 
 .name-container {
     max-width: 200px !important;
@@ -24,4 +32,29 @@ card {
 
 .progress-container {
     padding-right: 25px;
+}
+
+
+.card-header {
+    display          : -webkit-box !important;
+    display          : -ms-flexbox !important;
+    display          : flex !important;
+    -webkit-box-pack : justify;
+    -ms-flex-pack    : justify;
+    justify-content  : space-between;
+    -webkit-box-align: center;
+    -ms-flex-align   : center;
+    align-items      : center;
+
+    .title {
+        width: 300px;
+    }
+
+    .switch {
+        i {
+            font-weight        : bold !important;
+            color              : #3cd2a5 !important;
+            -webkit-text-stroke: 1px;
+        }
+    }
 }

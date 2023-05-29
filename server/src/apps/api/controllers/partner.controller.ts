@@ -19,6 +19,8 @@ import {
   PartnersNotFoundError,
 } from "../../../modules/partners/domain/partner.exceptions";
 import { UserAlreadyExistsError } from "../../../modules/users/domain";
+import { MysqlFilesRepository } from "../../../modules/files/infrastructure/mysql-files.repository";
+import { FilesCaseUses } from "../../../modules/files/application/files.use-case";
 
 export class PartnerController {
   partnerMapper = new PartnerMapper();
@@ -51,6 +53,21 @@ export class PartnerController {
       const partners = await this.getPartnersUseCase.getAllPartners();
       const partnersDTOs = this.partnerMapper.toDTOList(partners);
       response.json(partnersDTOs);
+    } catch (error: any) {
+      if (error instanceof DomainValidationError) {
+        response.send(BadRequest(error.message));
+      } else if (error instanceof PartnersNotFoundError) {
+        response.send(NotFound(error.message));
+      } else {
+        response.send(InternalServerError(error));
+      }
+    }
+  }
+
+  async getAllFiltered(request: Request, response: Response): Promise<void> {
+    try {
+      const partners = await this.getPartnersUseCase.getAllPartnersFiltered();
+      response.json(partners);
     } catch (error: any) {
       if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));
@@ -123,8 +140,11 @@ export class PartnerController {
 
   async delete(request: Request, response: Response): Promise<void> {
     const { id } = request.params;
+    const filesRepository = new MysqlFilesRepository();
+    const filesUseCase = new FilesCaseUses(filesRepository);
 
     try {
+      filesUseCase.deleteFiles(id);
       const result = await this.deletePartnerUseCase.deletePartner(id);
       response.send(result);
     } catch (error) {

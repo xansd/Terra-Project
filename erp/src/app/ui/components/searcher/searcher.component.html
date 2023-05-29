@@ -1,0 +1,35 @@
+<div class="input-group mb-4">
+  <div class="flex-fill position-relative">
+    <div class="input-group">
+      <input
+        [(ngModel)]="searchTerm"
+        type="text"
+        placeholder="Buscar"
+        class="form-control px-35px"
+        [matAutocomplete]="auto"
+      />
+      <div
+        class="input-group-text position-absolute top-0 bottom-0 bg-none border-0 start-0"
+        style="z-index: 1020"
+      >
+        <i class="fa fa-search opacity-5"></i>
+      </div>
+      <mat-autocomplete
+        #auto="matAutocomplete"
+        (optionSelected)="selectOption($event.option.value)"
+      >
+        <mat-option *ngFor="let option of filteredOptions" [value]="option">
+          {{ formatter(option) }}
+        </mat-option>
+      </mat-autocomplete>
+    </div>
+  </div>
+</div>
+
+<div>
+  <select [(ngModel)]="selectedSearchType">
+    <option *ngFor="let type of _searchTypes" [value]="type">
+      {{ type }}
+    </option>
+  </select>
+</div>
