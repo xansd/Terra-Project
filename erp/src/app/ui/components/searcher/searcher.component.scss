@@ -1,6 +1,43 @@
-@import '~@angular/material/autocomplete/autocomplete';
+::ng-deep .mat-mdc-autocomplete-panel {
+    background-color: rgba(255, 255, 255, 1);
+    color           : #333;
+}
 
+::ng-deep .mat-mdc-option:hover {
+    background-color: rgba(0, 0, 0, .2);
+}
 
-mat-select {
-    max-width: 200px;
+.select-container {
+    position: relative;
+    height  : 100%;
+    width   : 120px;
+
+    select {
+        border-radius   : 0 5px 5px 0;
+        background-color: azure;
+        color           : #333;
+        font-weight     : 500;
+        letter-spacing  : 1px;
+        border          : 2px solid #CCC;
+        cursor          : pointer;
+    }
+
+    option {
+        color : #333;
+        cursor: pointer;
+    }
+}
+
+.select-arrow {
+    position         : absolute;
+    right            : 10px;
+    top              : 51%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform    : translateY(-50%);
+    transform        : translateY(-50%);
+    pointer-events   : none;
+    color            : #333;
+    font-size        : 20px;
+    font-weight      : 500;
+
 }

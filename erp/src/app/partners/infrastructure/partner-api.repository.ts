@@ -86,4 +86,10 @@ export class PartnerAPIRepository implements IPartnerAPIPort {
       withCredentials: true,
     });
   }
+
+  partnerLeaves(partnerId: string): Observable<void> {
+    return this.http.put<void>(`${API_URI}/leaves/${partnerId}`, {
+      withCredentials: true,
+    });
+  }
 }

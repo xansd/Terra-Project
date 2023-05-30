@@ -1,12 +1,15 @@
-<div class="input-group mb-4">
+<form [formGroup]="searchForm" class="input-group mb-4">
   <div class="flex-fill position-relative">
     <div class="input-group">
       <input
-        [(ngModel)]="searchTerm"
         type="text"
+        onclick="this.select();"
         placeholder="Buscar"
         class="form-control px-35px"
         [matAutocomplete]="auto"
+        autocomplete="off"
+        formControlName="searchControl"
+        matInput
       />
       <div
         class="input-group-text position-absolute top-0 bottom-0 bg-none border-0 start-0"
@@ -16,20 +19,31 @@
       </div>
       <mat-autocomplete
         #auto="matAutocomplete"
+        autoActiveFirstOption
         (optionSelected)="selectOption($event.option.value)"
       >
-        <mat-option *ngFor="let option of filteredOptions" [value]="option">
+        <mat-option
+          *ngFor="let option of filteredOptions | async"
+          [value]="formatter(option)"
+          (click)="selectOption(option[this.selectedSearchType])"
+        >
           {{ formatter(option) }}
         </mat-option>
       </mat-autocomplete>
+      <div class="select-container">
+        <select
+          class="form-control"
+          formControlName="typeControl"
+          (ngModelChange)="updateSelectedSearchType($event)"
+        >
+          <option *ngFor="let type of searchTypes" [value]="type.value">
+            {{ type.label }}
+          </option>
+        </select>
+        <span class="select-arrow">
+          <i class="bi bi-filter"></i>
+        </span>
+      </div>
     </div>
   </div>
-</div>
-
-<div>
-  <select [(ngModel)]="selectedSearchType">
-    <option *ngFor="let type of _searchTypes" [value]="type">
-      {{ type }}
-    </option>
-  </select>
-</div>
+</form>

@@ -1,5 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
@@ -15,7 +15,6 @@ import { NotificationAdapter } from '../../../../shared/infraestructure/notifier
 import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
 import { ConfirmDialogComponent } from 'src/app/ui/shared/components/confirm-dialog/confirm-dialog.component';
 import { DatetimeHelperService } from 'src/app/ui/shared/helpers/datetime.helper.service';
-import { AppStateService } from 'src/app/ui/services/app-state.service';
 import { ActiveEntityService } from 'src/app/ui/services/active-entity-service.service';
 
 const modalOptions: NgbModalOptions = {
@@ -29,7 +28,7 @@ const modalOptions: NgbModalOptions = {
   templateUrl: './list-partners.component.html',
   styleUrls: ['./list-partners.component.scss'],
 })
-export class ListPartnersComponent {
+export class ListPartnersComponent implements OnDestroy {
   partnerDTOMapper = new PartnerDTOMapper();
   partnersList: IPartner[] = [];
   dataSource!: MatTableDataSource<IPartner>;
@@ -142,7 +141,8 @@ export class ListPartnersComponent {
    */
   openConfirmDialog(id: string): void {
     const modalRef = this.modalService.open(ConfirmDialogComponent);
-    modalRef.componentInstance.message = 'El socio será eliminado';
+    modalRef.componentInstance.message =
+      'El socio será eliminado junto con todos sus documentos.';
     modalRef.result
       .then((result) => {
         if (result) {

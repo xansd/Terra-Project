@@ -103,6 +103,7 @@ export class PartnerPersistenceMapper
         access_code: partner.access_code,
         name: partner.name,
         surname: partner.surname,
+        dni: partner.dni,
       };
     });
   }

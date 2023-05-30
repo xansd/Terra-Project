@@ -1,5 +1,6 @@
 @import '../../../tables.scss';
 
+
 .partners-container {
     -webkit-box-sizing: border-box;
     box-sizing        : border-box;
@@ -138,4 +139,17 @@
 
 :host ::ng-deep .mat-column-actions {
     min-width: 120px;
+}
+
+
+:host ::ng-deep mat-header-cell {
+    background-color: inherit !important;
+}
+
+:host ::ng-deep mat-cell {
+    background-color: transparent !important;
+}
+
+:host ::mat-table {
+    background-color: transparent !important;
 }

@@ -5,34 +5,41 @@ import {
   EventEmitter,
   OnInit,
   SimpleChanges,
+  OnDestroy,
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { ActiveEntityService } from '../../services/active-entity-service.service';
 import { IPartner } from 'src/app/partners/domain/partner';
 import { GetPartnerUseCase } from 'src/app/partners/application/get-partners.use-case';
-import { Observable, of } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { Observable, Subject, of } from 'rxjs';
+import { map, startWith, takeUntil } from 'rxjs/operators';
+import { PartnersSearchTypes } from './search.config';
 
 @Component({
   selector: 'app-searcher',
   templateUrl: './searcher.component.html',
   styleUrls: ['./searcher.component.scss'],
 })
-export class SearcherComponent implements OnInit {
+export class SearcherComponent implements OnInit, OnDestroy {
   @Input() options: any[] = [];
-  @Input() searchTypes: string[] = [];
+  @Input() searchTypes: { label: string; value: PartnersSearchTypes }[] = [];
   @Output() optionSelected = new EventEmitter<any>();
 
+  private destroy$ = new Subject();
   partner!: IPartner;
   id!: string;
-  _searchTypes = ['name'];
+
+  searchForm: FormGroup = this.formBuilder.group({
+    searchControl: [''],
+    typeControl: ['number'],
+  });
 
   searchTerm = new FormControl();
-  filteredOptions: any[] = [];
-  selectedSearchType: string = 'name';
+  filteredOptions!: Observable<any[] | Iterable<any> | undefined>;
+  selectedSearchType: string = 'number';
 
   constructor(
+    private formBuilder: FormBuilder,
     private activeEntityService: ActiveEntityService,
     private partnerService: GetPartnerUseCase
   ) {}
@@ -40,23 +47,18 @@ export class SearcherComponent implements OnInit {
   ngOnInit(): void {
     this.isEntitySaved();
     if (this.id) this.getPartner(this.id);
+  }
 
-    this.searchTerm.valueChanges
-      .pipe(
-        debounceTime(200),
-        distinctUntilChanged(),
-        switchMap((value) => this.filterOptions(value))
-      )
-      .subscribe((filteredOptions) => {
-        this.filteredOptions = filteredOptions;
-      });
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['options']) {
       const currentOptions = changes['options'].currentValue;
       if (currentOptions && currentOptions.length > 0) {
-        this.filteredOptions = currentOptions;
+        this.populateAutocomplete(currentOptions);
       }
     }
   }
@@ -68,31 +70,81 @@ export class SearcherComponent implements OnInit {
   }
 
   getPartner(id: string) {
-    this.partnerService.getPartner(id).subscribe({
-      next: (partner: IPartner) => {
-        this.partner = partner;
-      },
+    this.partnerService
+      .getPartner(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (partner: IPartner) => {
+          this.partner = partner;
+        },
+      });
+  }
+
+  /*********************************** AUTOCOMPLETE *************************************/
+
+  populateAutocomplete(data: any) {
+    this.filteredOptions = this.searchForm.controls[
+      'searchControl'
+    ].valueChanges.pipe(
+      startWith(''),
+      map((value) => (typeof value === 'string' ? value : value.entrada)),
+      map((entrada) => (entrada ? this.filter(entrada) : this.options.slice()))
+    );
+  }
+
+  private filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+    return this.options.filter((option) => {
+      const optionValue = option[this.selectedSearchType];
+      if (typeof optionValue === 'string') {
+        return optionValue.toLowerCase().includes(filterValue);
+      } else if (typeof optionValue === 'number') {
+        return optionValue.toString().includes(filterValue);
+      }
+      return false;
     });
   }
 
-  filterOptions(value: string): Observable<any[]> {
-    if (value) {
-      const filterValue = value.toLowerCase();
-      return of(
-        this.options.filter((option) =>
-          option[this.selectedSearchType].toLowerCase().includes(filterValue)
-        )
-      );
-    } else {
-      return of(this.options);
-    }
+  filterOptions(): void {
+    const searchControlValue = this.searchForm
+      .get('searchControl')
+      ?.value.toLowerCase();
+    this.filteredOptions = of(
+      this.options.filter((option: any) => {
+        if (typeof option[this.selectedSearchType] === 'string') {
+          return option[this.selectedSearchType]
+            .toLowerCase()
+            .includes(searchControlValue);
+        } else if (typeof option[this.selectedSearchType] === 'number') {
+          return option[this.selectedSearchType]
+            .toString()
+            .includes(searchControlValue);
+        }
+        return false;
+      })
+    );
   }
 
   formatter(option: any): string {
-    return option[this.selectedSearchType];
+    const f = option[this.selectedSearchType];
+    return f;
   }
 
-  selectOption(event: MatAutocompleteSelectedEvent): void {
-    this.optionSelected.emit(event.option.value);
+  selectOption(selectedValue: any): void {
+    this.searchForm.get('searchControl')?.setValue(selectedValue);
+    const selectedOption = this.options.find(
+      (option) => option[this.selectedSearchType] === selectedValue
+    );
+    if (selectedOption) {
+      this.optionSelected.emit(selectedOption);
+    }
   }
+
+  updateSelectedSearchType(value: string): void {
+    this.selectedSearchType = value;
+    this.searchForm.get('searchControl')?.setValue('');
+    this.populateAutocomplete(this.options);
+  }
+
+  /*********************************** AUTOCOMPLETE *************************************/
 }

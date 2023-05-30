@@ -108,4 +108,12 @@ router.put(
   partnerController.makeInactive.bind(partnerController)
 );
 
+// LEAVES
+router.put(
+  "/leaves/:id",
+  authorize([Role.ADMIN, Role.USER]),
+  [check("id", "El id es obligatorio").not().isEmpty()],
+  partnerController.partnerLeaves.bind(partnerController)
+);
+
 export { router };

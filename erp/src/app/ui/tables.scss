@@ -1,38 +1,37 @@
-.mat-paginator {
-    margin: -20px 0 10px 0;
-}
+// .mat-paginator {
+//     margin: -20px 0 10px 0;
+// }
 
 
-::ng-deep .cdk-overlay-container {
-    position      : fixed !important;
-    z-index       : 1000 !important;
-    pointer-events: none !important;
-    top           : 0 !important;
-    left          : 0 !important;
-    height        : 100% !important;
-    width         : 100% !important;
+// ::ng-deep .cdk-overlay-container {
+//     position      : fixed !important;
+//     z-index       : 1000 !important;
+//     pointer-events: none !important;
+//     top           : 0 !important;
+//     left          : 0 !important;
+//     height        : 100% !important;
+//     width         : 100% !important;
 
-}
+// }
 
-::ng-deep .cdk-overlay-pane {
-    position          : absolute !important;
-    pointer-events    : auto !important;
-    -webkit-box-sizing: border-box !important;
-    box-sizing        : border-box !important;
-    z-index           : 1000 !important;
-    display           : -webkit-box !important;
-    display           : -ms-flexbox !important;
-    display           : flex !important;
-    max-width         : 100% !important;
-    max-height        : 100% !important;
-}
+// ::ng-deep .cdk-overlay-pane {
+//     position          : absolute !important;
+//     pointer-events    : auto !important;
+//     -webkit-box-sizing: border-box !important;
+//     box-sizing        : border-box !important;
+//     z-index           : 1000 !important;
+//     display           : -webkit-box !important;
+//     display           : -ms-flexbox !important;
+//     display           : flex !important;
+//     max-width         : 100% !important;
+//     max-height        : 100% !important;
+// }
 
 ::ng-deep .mdc-menu-surface.mat-mdc-select-panel {
     max-height      : 120px !important;
     background-color: rgba(0, 0, 0, .4);
     color           : #3cd2a5;
 }
-
 
 
 

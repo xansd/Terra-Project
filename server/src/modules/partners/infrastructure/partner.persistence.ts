@@ -30,4 +30,5 @@ export interface IPartnerPersistenceSubset {
   access_code?: string | null;
   name: string;
   surname: string;
+  dni: string;
 }

@@ -110,6 +110,7 @@ export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
         access_code: partner.access_code,
         name: partner.name,
         surname: partner.surname,
+        dni: partner.dni!,
       };
     });
   }

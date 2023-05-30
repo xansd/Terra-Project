@@ -30,7 +30,7 @@ export class MySqlPartnerRepository implements IPartnerRepository {
 
   async getAll(): Promise<IPartner[]> {
     const rows = await MysqlDataBase.query(
-      `SELECT * FROM partners where deleted_at IS NULL ORDER BY number ASC`
+      `SELECT * FROM partners where deleted_at IS NULL AND leaves IS NULL ORDER BY number ASC`
     );
     if (rows.length === 0) {
       Logger.error(`mysql : getAll : PartnersNotFoundError`);
@@ -41,7 +41,7 @@ export class MySqlPartnerRepository implements IPartnerRepository {
 
   async getAllFiltered(): Promise<IPartnerSubsetDTO[]> {
     const rows = await MysqlDataBase.query(
-      `SELECT partner_id, access_code, number, name, surname FROM partners where deleted_at IS NULL ORDER BY number ASC`
+      `SELECT partner_id, access_code, number, name, surname, dni FROM partners where deleted_at IS NULL  AND leaves IS NULL  ORDER BY number ASC`
     );
     if (rows.length === 0) {
       Logger.error(`mysql : getAll : PartnersNotFoundError`);
@@ -186,6 +186,18 @@ export class MySqlPartnerRepository implements IPartnerRepository {
     return result;
   }
 
+  async partnerLeaves(partnerId: string): Promise<void> {
+    const result = await MysqlDataBase.update(
+      "UPDATE partners SET leaves = NOW(), active = ?  WHERE partner_id = ?",
+      ["0", partnerId]
+    );
+    if (result.affectedRows === 0) {
+      Logger.error(`mysql : partnerLeaves : PartnerDoesNotExistError`);
+      throw new PartnerDoesNotExistError();
+    }
+    return result;
+  }
+
   async checkPartnerExistenceByEmail(email: string): Promise<boolean> {
     const partner = await MysqlDataBase.query(
       `SELECT * FROM partners WHERE email = ? and deleted_at IS NULL`,
@@ -193,17 +205,4 @@ export class MySqlPartnerRepository implements IPartnerRepository {
     );
     return !!partner.length;
   }
-
-  // async uploadPartnerDocument(partnerId: string, file: File): Promise<void> {
-  //   throw new Error("Method not implemented.");
-  // }
-  // async getPartnerDocument(partnerId: string): Promise<any> {
-  //   throw new Error("Method not implemented.");
-  // }
-  // async getAllPartnerDocuments(partnerId: string): Promise<any> {
-  //   throw new Error("Method not implemented.");
-  // }
-  // async deletePartnerDocument(documentId: string): Promise<void> {
-  //   throw new Error("Method not implemented.");
-  // }
 }

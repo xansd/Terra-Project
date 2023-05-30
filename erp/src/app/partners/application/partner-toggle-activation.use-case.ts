@@ -10,11 +10,18 @@ export interface IBlockPartnerUseCase {
   blockPartner(id: string): Observable<void>;
 }
 
+export interface IPartnerLeavesUseCase {
+  partnerLeaves(id: string): Observable<void>;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class TogglePartnerActivationUseCase
-  implements IActivatePartnerUseCase, IBlockPartnerUseCase
+  implements
+    IActivatePartnerUseCase,
+    IBlockPartnerUseCase,
+    IPartnerLeavesUseCase
 {
   constructor(
     @Inject('partnersAPI') private readonly partnersAPI: IPartnerAPIPort
@@ -26,5 +33,9 @@ export class TogglePartnerActivationUseCase
 
   blockPartner(id: string): Observable<void> {
     return this.partnersAPI.makeInactive(id);
+  }
+
+  partnerLeaves(id: string): Observable<void> {
+    return this.partnersAPI.partnerLeaves(id);
   }
 }

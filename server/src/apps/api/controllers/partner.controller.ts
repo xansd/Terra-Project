@@ -189,4 +189,20 @@ export class PartnerController {
       }
     }
   }
+
+  async partnerLeaves(request: Request, response: Response): Promise<void> {
+    const { id } = request.params;
+    try {
+      const result = await this.toggleActivePartnerUserCase.partnerLeaves(id);
+      response.send(result);
+    } catch (error) {
+      if (error instanceof DomainValidationError) {
+        response.send(BadRequest(error.message));
+      } else if (error instanceof PartnerDoesNotExistError) {
+        response.send(NotFound(error.message));
+      } else {
+        response.send(InternalServerError(error));
+      }
+    }
+  }
 }

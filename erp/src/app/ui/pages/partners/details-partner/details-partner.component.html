@@ -1,1 +1,38 @@
-<app-searcher [options]="options"></app-searcher>
+<div class="container-fluid">
+  <app-searcher
+    [options]="options"
+    [searchTypes]="searchTypes"
+    (optionSelected)="handleOptionSelected($event)"
+  ></app-searcher>
+  <ng-container *ngIf="isLoading; else partnerSelection">
+    <div class="d-flex justify-content-center align-items-center py-4 spinner">
+      <div class="spinner-grow text-success"></div>
+    </div>
+    <p class="text-center">Esperando socio...</p>
+  </ng-container>
+  <ng-template #partnerSelection>
+    <div class="row">
+      <div class="col-lg-10">
+        <!-- Contenido de la columna de datos -->
+        <h2>Contenido</h2>
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id
+          ligula non ligula vehicula vestibulum. Quisque volutpat nunc et
+          posuere gravida.
+        </p>
+      </div>
+      <div class="col-lg-2">
+        <div class="button-container">
+          <button class="btn btn-info" (click)="openEditPartnerDialog()">
+            Editar
+          </button>
+          <button class="btn btn-default">Abonar cutoa</button>
+          <button class="btn btn-danger" (click)="openConfirmDialog()">
+            Baja socio
+          </button>
+          <button class="btn btn-success">Dispensar</button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+</div>

@@ -12,4 +12,5 @@ export interface IPartnerAPIPort {
   deletePartner(partnerId: string): Observable<void>;
   makeActive(partnerId: string): Observable<void>;
   makeInactive(partnerId: string): Observable<void>;
+  partnerLeaves(partnerId: string): Observable<void>;
 }

@@ -4,6 +4,7 @@ import { PartnerMapper } from "../partner-dto.mapper";
 export interface IToggleActivePartnerUseCase {
   makeActive(id: string): Promise<void>;
   makeInactive(id: string): Promise<void>;
+  partnerLeaves(id: string): Promise<void>;
 }
 
 export class ToggleActivePartnerUseCase implements IToggleActivePartnerUseCase {
@@ -17,6 +18,11 @@ export class ToggleActivePartnerUseCase implements IToggleActivePartnerUseCase {
 
   async makeInactive(id: string): Promise<void> {
     const result = await this.partnerRepository.makeInactive(id);
+    return result;
+  }
+
+  async partnerLeaves(id: string): Promise<void> {
+    const result = await this.partnerRepository.partnerLeaves(id);
     return result;
   }
 }
