@@ -8,6 +8,7 @@ import http from "http";
 import { router as userRoutes } from "./routes/user.routes";
 import { router as partnerRoutes } from "./routes/partner.routes";
 import { router as filesRoutes } from "./routes/files.routes";
+import { router as feesRoutes } from "./routes/fees.routes";
 // Config
 import setup from "../../config/app-config";
 import Logger from "../utils/logger";
@@ -69,6 +70,7 @@ export class AppServer {
     this.app.use("/api/users", userRoutes);
     this.app.use("/api/partners", partnerRoutes);
     this.app.use("/api/files", filesRoutes);
+    this.app.use("/api/fees", feesRoutes);
 
     this.app.use(notFoundHandler);
     this.app.use(unautorizedHandler);

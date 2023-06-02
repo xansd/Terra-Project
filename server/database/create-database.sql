@@ -9,7 +9,9 @@ CREATE TABLE subcategories (
   name VARCHAR(255) NOT NULL,
   category_id VARCHAR(36) NOT NULL,
   INDEX subcategories_name (name),
-  FOREIGN KEY (category_id) REFERENCES categories(id)
+  FOREIGN KEY (category_id) REFERENCES categories(category_id),
+  FOREIGN KEY (product_id) REFERENCES products(product_id),
+  FOREIGN KEY (subcategory_id) REFERENCES subcategories(subcategory_id)
 );
 
 CREATE TABLE product_subcategory (
@@ -44,7 +46,9 @@ password_last_reset DATETIME DEFAULT NULL,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,
     INDEX users_email (email),
-FOREIGN KEY (role_id) REFERENCES roles(role_id)
+FOREIGN KEY (role_id) REFERENCES roles(role_id),
+  FOREIGN KEY (user_created) REFERENCES users(user_id),
+  FOREIGN KEY (user_updated) REFERENCES users(user_id)
 );
 
 CREATE TABLE `password_history` (
@@ -70,29 +74,7 @@ INSERT INTO partner_type (name) VALUES ('Colaborador');
 INSERT INTO partner_type (name) VALUES ('Honorario');
 INSERT INTO partner_type (name) VALUES ('Fundador');
 
-CREATE TABLE fees_type (
-    fees_type_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    type ENUM('fees', 'inscription') NOT NULL,
-    amount decimal(10,2) DEFAULT 0
-);
 
-INSERT INTO fees_type (name, description, type, amount) VALUES ('CUOTA_20', 'Cuota anual de 20€', 'fees', 20);
-INSERT INTO fees_type (name, description, type,amount) VALUES ('CUOTA_EXENTA', 'Cuota anual exenta', 'fees', 0);
-INSERT INTO fees_type (name, description, type,amount) VALUES ('INSCRIPCION_EXENTA','inscripción exenta', 'inscription', 0);
-INSERT INTO fees_type (name, description, type,amount) VALUES ('INSCRIPCION_20','inscripción de 20€', 'inscription', 20);
-INSERT INTO fees_type (name, description, type,amount) VALUES ('INSCRIPCION_10','inscripción de 10€', 'inscription', 10);
-
-CREATE TABLE fees(
-    fees_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    partner_id  VARCHAR(36) NOT NULL,
-    fees_type_id INT(11) NOT NULL,
-    expiration datetime NOT NULL,
-    paid TINYINT(1) DEFAULT 0,
-    FOREING KEY (fees_type_id) REFERENCES fees_type(fees_type_id),
-    FOREIGN KEY (partner_id) REFERENCES partners (partner_id)       
-);
 
 CREATE TABLE file_type (
     file_type_id INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -143,17 +125,61 @@ CREATE TABLE partners (
   partner_type_id INT(11) NOT NULL,
   therapeutic TINYINT(1) DEFAULT 0,
   active TINYINT(1) DEFAULT 1,
+  fee INT(11) NOT NULL,
+  inscription INT(11) NOT NULL,
   user_created VARCHAR(36) DEFAULT NULL,
   user_updated VARCHAR(36) DEFAULT NULL,
   created_at datetime DEFAULT CURRENT_TIMESTAMP,
   updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   deleted_at datetime DEFAULT NULL,
   FOREIGN KEY (partner_type_id) REFERENCES partner_type(partner_type_id),
+  FOREIGN KEY (fee) REFERENCES fees_type(fees_type_id),
+  FOREIGN KEY (inscription) REFERENCES fees_type(fees_type_id),
+  FOREIGN KEY (user_created) REFERENCES users(user_id),
+  FOREIGN KEY (user_updated) REFERENCES users(user_id),
   INDEX partners_name (name),
   INDEX surname_name (surname),
   INDEX partners_acces_code (access_code),
   INDEX partners_number (number)
 ) AUTO_INCREMENT=20;
+
+CREATE TABLE fees_type (
+    fees_type_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    type ENUM('fees', 'inscription') NOT NULL,
+    amount decimal(10,2) DEFAULT 0
+);
+
+INSERT INTO fees_type (name, description, type, amount) VALUES ('CUOTA_20', 'Cuota anual de 20€', 'fees', 20);
+INSERT INTO fees_type (name, description, type,amount) VALUES ('CUOTA_EXENTA', 'Cuota anual exenta', 'fees', 0);
+INSERT INTO fees_type (name, description, type,amount) VALUES ('INSCRIPCION_EXENTA','inscripción exenta', 'inscription', 0);
+INSERT INTO fees_type (name, description, type,amount) VALUES ('INSCRIPCION_20','inscripción de 20€', 'inscription', 20);
+INSERT INTO fees_type (name, description, type,amount) VALUES ('INSCRIPCION_10','inscripción de 10€', 'inscription', 10);
+
+CREATE TABLE fees(
+    fee_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    partner_id  VARCHAR(36) NOT NULL,
+    fees_type_id INT(11) NOT NULL,
+    expiration datetime DEFAULT NULL,
+    paid datetime DEFAULT NULL,
+    created_at datetime DEFAULT CURRENT_TIMESTAMP,
+    updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at datetime DEFAULT NULL,
+    FOREIGN KEY (fees_type_id) REFERENCES fees_type(fees_type_id),
+    FOREIGN KEY (partner_id) REFERENCES partners (partner_id)       
+);
+
+    CREATE TABLE sanctions (
+  sanction_id INT(11) PRIMARY KEY AUTO_INCREMENT,
+  partner_id VARCHAR(36) NOT NULL,
+  severity TINYINT(1)  NOT NULL,
+  sanction_date DATE NOT NULL,
+  description TEXT,  
+  user_created VARCHAR(36) DEFAULT NULL,
+  FOREIGN KEY (user_created) REFERENCES users(user_id),
+  FOREIGN KEY (partner_id) REFERENCES partners(partner_id)
+);
 
 
 CREATE TABLE providers (
@@ -169,6 +195,8 @@ user_updated VARCHAR(36) DEFAULT NULL,
 created_at datetime DEFAULT CURRENT_TIMESTAMP,
 updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
 deleted_at datetime DEFAULT NULL,
+  FOREIGN KEY (user_created) REFERENCES users(user_id),
+  FOREIGN KEY (user_updated) REFERENCES users(user_id),
 INDEX providers_name (name)
 );
 
@@ -187,6 +215,8 @@ CREATE TABLE products (
   updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   deleted_at datetime DEFAULT NULL,
   INDEX products_name (name),
+  FOREIGN KEY (user_created) REFERENCES users(user_id),
+  FOREIGN KEY (user_updated) REFERENCES users(user_id),
   FOREIGN KEY (category_id) REFERENCES categories(category_id)
 );
 
@@ -202,7 +232,10 @@ notes TEXT,
     user_updated VARCHAR(36) DEFAULT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at datetime DEFAULT NULL
+    deleted_at datetime DEFAULT NULL,
+
+  FOREIGN KEY (user_created) REFERENCES users(user_id),
+  FOREIGN KEY (user_updated) REFERENCES users(user_id)
 );
 
 
@@ -216,7 +249,10 @@ notes TEXT,
     user_updated VARCHAR(36) DEFAULT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at datetime DEFAULT NULL
+    deleted_at datetime DEFAULT NULL,
+
+  FOREIGN KEY (user_created) REFERENCES users(user_id),
+  FOREIGN KEY (user_updated) REFERENCES users(user_id)
 );
 
 
@@ -234,7 +270,9 @@ date_occurred DATE NOT NULL,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,
     INDEX sales_partner_id (partner_id),
-FOREIGN KEY (partner_id) REFERENCES partners(partner_id)
+FOREIGN KEY (partner_id) REFERENCES partners(partner_id),
+  FOREIGN KEY (user_created) REFERENCES users(user_id),
+  FOREIGN KEY (user_updated) REFERENCES users(user_id)
 );
 
 
@@ -262,7 +300,9 @@ date_occurred DATE NOT NULL,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,
     INDEX purchases_provider_id (provider_id),
-FOREIGN KEY (provider_id) REFERENCES providers(provider_id)
+FOREIGN KEY (provider_id) REFERENCES providers(provider_id),
+  FOREIGN KEY (user_created) REFERENCES users(user_id),
+  FOREIGN KEY (user_updated) REFERENCES users(user_id)
 );
 
 
@@ -291,7 +331,9 @@ date_occurred DATE NOT NULL,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,
     INDEX harvests_product_id (product_id),
-FOREIGN KEY (product_id) REFERENCES products(product_id)
+FOREIGN KEY (product_id) REFERENCES products(product_id),
+  FOREIGN KEY (user_created) REFERENCES users(user_id),
+  FOREIGN KEY (user_updated) REFERENCES users(user_id)
 );
 
 
@@ -327,7 +369,9 @@ CREATE TABLE payments (
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,
     FOREIGN KEY (expense_id) REFERENCES expenses(expense_id),
-    FOREIGN KEY (purchase_id) REFERENCES purchases(purchase_id)
+    FOREIGN KEY (purchase_id) REFERENCES purchases(purchase_id),
+   FOREIGN KEY (user_created) REFERENCES users(user_id),
+  FOREIGN KEY (user_updated) REFERENCES users(user_id)
 );
 
 
@@ -344,7 +388,9 @@ date_occurred DATE NOT NULL,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,
     FOREIGN KEY (income_id) REFERENCES incomes(income_id),
-    FOREIGN KEY (sale_id) REFERENCES sales(sale_id)
+    FOREIGN KEY (sale_id) REFERENCES sales(sale_id),
+  FOREIGN KEY (user_created) REFERENCES users(user_id),
+  FOREIGN KEY (user_updated) REFERENCES users(user_id)
 );
 
 
@@ -361,7 +407,9 @@ CREATE TABLE debts (
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,
     FOREIGN KEY (partner_id) REFERENCES partners(partner_id),
-    FOREIGN KEY (sale_id) REFERENCES sales(sale_id)
+    FOREIGN KEY (sale_id) REFERENCES sales(sale_id),
+  FOREIGN KEY (user_created) REFERENCES users(user_id),
+  FOREIGN KEY (user_updated) REFERENCES users(user_id),
 );
 
 

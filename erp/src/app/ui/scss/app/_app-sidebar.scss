@@ -1,159 +1,216 @@
+@-webkit-keyframes appSidebarSubMenuSlideInRight {
+	to {
+		-webkit-transform: translate3d(0, 0, 0);
+		transform        : translate3d(0, 0, 0);
+	}
+}
+
 @keyframes appSidebarSubMenuSlideInRight {
-	to { transform: translate3d(0, 0, 0); }
+	to {
+		-webkit-transform: translate3d(0, 0, 0);
+		transform        : translate3d(0, 0, 0);
+	}
 }
 
 .app-sidebar {
-	width: $app-sidebar-width;
-	bottom: 0;
+	width   : $app-sidebar-width;
+	bottom  : 0;
 	position: fixed;
-	top: $app-header-height;
-	z-index: $app-sidebar-zindex;
-	
+	top     : $app-header-height;
+	z-index : $app-sidebar-zindex;
+
 	@if $enable-rtl {
 		right: 0;
-	} @else {
+	}
+
+	@else {
 		left: 0;
 	}
-	
-	@include media-breakpoint-down(md) {
-		top: 0;
-		z-index: $app-sidebar-mobile-zindex;
+
+	// MODIFICADO
+	@include media-breakpoint-down(lg) {
+		top       : 0;
+		z-index   : $app-sidebar-mobile-zindex;
 		background: var(--#{$prefix}app-sidebar-mobile-bg);
-		
+
 		@if $enable-rtl {
 			right: -$app-sidebar-width;
-		} @else {
+		}
+
+		@else {
 			left: -$app-sidebar-width;
 		}
 	}
-	
+
 	& .slimScrollDiv {
 		width: 100% !important;
-		
+
 		& .slimScrollBar,
 		& .slimScrollRail {
 			display: none !important;
 		}
 	}
-	
+
 	& .app-sidebar-content {
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		
+		height               : 100%;
+		display              : -webkit-box;
+		display              : -ms-flexbox;
+		display              : flex;
+		-webkit-box-orient   : vertical;
+		-webkit-box-direction: normal;
+		-ms-flex-direction   : column;
+		flex-direction       : column;
+
 		& .menu {
 			position: relative;
-			
+
 			& .menu-header {
-				padding: $spacer $spacer $spacer * 0.5;
-				font-size: $font-size-base * .75;
+				padding    : $spacer $spacer $spacer * 0.5;
+				font-size  : $font-size-base * .75;
 				font-weight: $font-weight-bold;
-				color: var(--#{$prefix}app-sidebar-menu-header-color);
+				color      : var(--#{$prefix}app-sidebar-menu-header-color);
 			}
+
 			& .menu-item {
 				& .menu-link {
-					text-decoration: none;
-					position: relative;
-					padding: $spacer * 0.3 $spacer;
-					color: var(--#{$prefix}app-sidebar-menu-link-color);
-					display: flex;
-					align-items: center;
-					justify-content: flex-end;
-					transition: all .2s ease-in-out;
-					
+					text-decoration   : none;
+					position          : relative;
+					padding           : $spacer * 0.3 $spacer;
+					color             : var(--#{$prefix}app-sidebar-menu-link-color);
+					display           : -webkit-box;
+					display           : -ms-flexbox;
+					display           : flex;
+					-webkit-box-align : center;
+					-ms-flex-align    : center;
+					align-items       : center;
+					-webkit-box-pack  : end;
+					-ms-flex-pack     : end;
+					justify-content   : flex-end;
+					-webkit-transition: all .2s ease-in-out;
+					-o-transition     : all .2s ease-in-out;
+					transition        : all .2s ease-in-out;
+
 					& .menu-icon {
-						width: rem(30px);
-						height: rem(30px);
-						font-size: $font-size-base * 1.2;
-						margin: rem(-4px) 0;
-						position: relative;
-						display: flex;
-						align-items: center;
-						justify-content: center;
-						
+						width            : rem(30px);
+						height           : rem(30px);
+						font-size        : $font-size-base * 1.2;
+						margin           : rem(-4px) 0;
+						position         : relative;
+						display          : -webkit-box;
+						display          : -ms-flexbox;
+						display          : flex;
+						-webkit-box-align: center;
+						-ms-flex-align   : center;
+						align-items      : center;
+						-webkit-box-pack : center;
+						-ms-flex-pack    : center;
+						justify-content  : center;
+
 						@if $enable-rtl {
 							margin-left: $spacer* .75;
-						} @else {
+						}
+
+						@else {
 							margin-right: $spacer * .75;
 						}
 					}
+
 					& .menu-caret {
 						margin: rem(-5px) 0;
 					}
+
 					& .menu-text {
-						flex: 1;
+						-webkit-box-flex: 1;
+						-ms-flex        : 1;
+						flex            : 1;
 					}
+
 					&:hover,
 					&:focus {
 						color: var(--#{$prefix}app-sidebar-menu-link-hover-color);
 					}
 				}
+
 				& .menu-submenu {
 					background: none;
-					display: none;
-					padding: 0 0 $spacer;
-					
+					display   : none;
+					padding   : 0 0 $spacer;
+
 					& .menu-item {
 						position: relative;
-						
+
 						@if $enable-rtl {
 							padding-right: rem(42px);
-						} @else {
+						}
+
+						@else {
 							padding-left: rem(42px);
 						}
 					}
 				}
+
 				&.active {
-					&:not(.has-sub) > .menu-link {
-					 	color: var(--#{$prefix}app-sidebar-menu-link-active-color);
+					&:not(.has-sub)>.menu-link {
+						color: var(--#{$prefix}app-sidebar-menu-link-active-color);
 					}
-					& > .menu-link {
+
+					&>.menu-link {
 						& .menu-icon {
 							color: $app-sidebar-menu-link-icon-active-color;
 						}
 					}
+
 					&.has-sub {
-						& > .menu-submenu {
+						&>.menu-submenu {
 							display: block;
 						}
 					}
 				}
+
 				&.expand {
-					& > .menu-submenu {
+					&>.menu-submenu {
 						display: block;
-						
-						& > .menu-item {
-							animation: appSidebarSubMenuSlideInRight 0.3s both cubic-bezier(0.7, 0, 0.3, 1);
-							
+
+						&>.menu-item {
+							-webkit-animation: appSidebarSubMenuSlideInRight 0.3s both cubic-bezier(0.7, 0, 0.3, 1);
+							animation        : appSidebarSubMenuSlideInRight 0.3s both cubic-bezier(0.7, 0, 0.3, 1);
+
 							@if $enable-rtl {
-								transform: translate3d(100%, 0, 0);
-							} @else {
-								transform: translate3d(-100%, 0, 0);
+								-webkit-transform: translate3d(100%, 0, 0);
+								transform        : translate3d(100%, 0, 0);
+							}
+
+							@else {
+								-webkit-transform: translate3d(-100%, 0, 0);
+								transform        : translate3d(-100%, 0, 0);
 							}
 						}
 					}
 				}
 			}
-			
+
 			@for $i from 2 through 50 {
-				$time: 15 + (15 * $i);
+				$time : 15 + (15 * $i);
 				$delay: $time * 1ms;
-			
-				& .collapse.expand > .menu-item,
-				& .menu-item > .menu-submenu > .menu-item {
+
+				& .collapse.expand>.menu-item,
+				& .menu-item>.menu-submenu>.menu-item {
 					&:nth-child(#{$i}) {
-						animation-delay: $delay;
+						-webkit-animation-delay: $delay;
+						animation-delay        : $delay;
 					}
 				}
 			}
 		}
 	}
+
 	& .app-sidebar-mobile-backdrop {
 		display: none;
 	}
+
 	&.uppercase-mode {
 		text-transform: uppercase;
-		
+
 		& .app-sidebar-content {
 			& .menu {
 				& .menu-item {
@@ -161,7 +218,7 @@
 						font-size: $font-size-base * 0.95;
 					}
 				}
-			}		
+			}
 		}
 	}
 }

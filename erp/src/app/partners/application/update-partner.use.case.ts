@@ -15,11 +15,16 @@ export class UpdatePartnerUseCase implements IUpdatePartnerUseCase {
     @Inject('partnersAPI') private readonly partnersAPI: IPartnerAPIPort,
     @Inject('authToken') private authTokenService: IAuthToken
   ) {}
+
   updatePartner(partner: IPartner): Observable<void> {
     return this.partnersAPI.updatePartner(partner);
   }
 
   getUpdater(): string {
     return this.authTokenService.getUserID();
+  }
+
+  updateAccessCode(code: string, partnerId: string): Observable<void> {
+    return this.partnersAPI.updateAccessCode(code, partnerId);
   }
 }

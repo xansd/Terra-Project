@@ -53,7 +53,7 @@ const routes: Routes = [
         children: [
           {
             path: '',
-            redirectTo: 'listado',
+            redirectTo: 'detalles',
             pathMatch: 'full',
           },
           {

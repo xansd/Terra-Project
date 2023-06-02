@@ -25,6 +25,7 @@ import { FilesAPIRepository } from 'src/app/files/infrastructure/files-api.repos
 import { FileDownloaderComponent } from './file-downloader/file-downloader.component';
 import { SearcherComponent } from './searcher/searcher.component';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
+import { UpdateAccessCodeComponent } from './update-access-code/update-access-code.component';
 
 @NgModule({
   declarations: [
@@ -44,6 +45,7 @@ import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
     FileUploaderComponent,
     FileDownloaderComponent,
     SearcherComponent,
+    UpdateAccessCodeComponent,
   ],
   imports: [
     CommonModule,

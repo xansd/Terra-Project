@@ -1,6 +1,15 @@
+import { FeesVariants } from "../../fees/domain/fees";
 import { Email } from "../../shared/domain/value-objects/email.value-object";
 import { PartnersType } from "./partner-types.enum";
 import { PartnerID } from "./value-objects/partner-id.value.object";
+
+export interface ISanctions {
+  sanction_id: number;
+  partner_id: string;
+  severity: number;
+  sanction_date: string;
+  description: string;
+}
 
 export interface IPartner {
   partner_id: PartnerID;
@@ -21,6 +30,9 @@ export interface IPartner {
   partner_type_id: PartnersType;
   active: boolean | number;
   therapeutic: boolean | number;
+  fee?: FeesVariants;
+  inscription?: FeesVariants;
+  sanctions: ISanctions[];
   user_created?: string | null;
   user_updated?: string | null;
   created_at?: string | null;
@@ -52,13 +64,16 @@ export class Partner implements IPartner {
   partner_type_id: PartnersType;
   active: boolean | number;
   therapeutic: boolean | number;
+  fee?: FeesVariants;
+  inscription?: FeesVariants;
+  sanctions: ISanctions[];
   user_created?: string | null;
   user_updated?: string | null;
   created_at?: string | null;
   updated_at?: string | null;
   deleted_at?: string | null;
 
-  constructor(props: IPartner) {
+  private constructor(props: IPartner) {
     this.partner_id = props.partner_id ? props.partner_id : PartnerID.create();
     this.access_code = props.access_code;
     this.number = props.number;
@@ -76,6 +91,9 @@ export class Partner implements IPartner {
     this.others_month = props.others_month;
     this.partner_type_id = props.partner_type_id;
     this.active = props.active;
+    this.fee = props.fee;
+    this.inscription = props.inscription;
+    this.sanctions = props.sanctions;
     this.therapeutic = props.therapeutic;
     this.user_created = props.user_created;
     this.user_updated = props.user_updated;

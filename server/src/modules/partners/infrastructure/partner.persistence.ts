@@ -1,3 +1,6 @@
+import { FeesVariants } from "../../fees/domain/fees";
+import { ISanctions } from "../domain/partner";
+
 export interface IPartnerPersistence {
   partner_id: string;
   access_code?: string | null;
@@ -17,6 +20,9 @@ export interface IPartnerPersistence {
   partner_type_id: number;
   active: number;
   therapeutic: number;
+  fee?: FeesVariants;
+  inscription?: FeesVariants;
+  sanctions: ISanctions[];
   user_created?: string | null;
   user_updated?: string | null;
   created_at?: string | null;

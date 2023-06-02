@@ -17,7 +17,24 @@ export class MySqlPartnerRepository implements IPartnerRepository {
 
   async getById(partnerId: string): Promise<IPartner> {
     const rows = await MysqlDataBase.query(
-      `SELECT * FROM partners WHERE partner_id = ? and deleted_at IS NULL`,
+      `SELECT partners.*, 
+          IF(COUNT(sanctions.sanction_id) > 0,
+            JSON_ARRAYAGG(
+                JSON_OBJECT('sanction_id', sanctions.sanction_id,
+                         'partner_id', sanctions.partner_id,
+                         'severity', sanctions.severity,
+                         'sanction_date', sanctions.sanction_date,
+                         'description', sanctions.description,
+                         'user_created', sanctions.user_created)
+                ),
+            JSON_ARRAY()
+        ) AS sanctions
+      FROM partners
+      LEFT JOIN sanctions ON partners.partner_id = sanctions.partner_id
+      WHERE partners.partner_id = ? AND partners.deleted_at IS NULL
+      GROUP BY partners.partner_id
+      ORDER BY partners.number ASC;
+`,
       [partnerId]
     );
     if (isNil(rows[0])) {
@@ -30,7 +47,23 @@ export class MySqlPartnerRepository implements IPartnerRepository {
 
   async getAll(): Promise<IPartner[]> {
     const rows = await MysqlDataBase.query(
-      `SELECT * FROM partners where deleted_at IS NULL AND leaves IS NULL ORDER BY number ASC`
+      `SELECT partners.*, 
+        IF(COUNT(sanctions.sanction_id) > 0,
+          JSON_ARRAYAGG(
+              JSON_OBJECT('sanction_id', sanctions.sanction_id,
+                          'partner_id', sanctions.partner_id,
+                          'severity', sanctions.severity,
+                          'sanction_date', sanctions.sanction_date,
+                          'description', sanctions.description,
+                          'user_created', sanctions.user_created)
+              ),
+            JSON_ARRAY()
+        ) AS sanctions
+      FROM partners
+      LEFT JOIN sanctions ON partners.partner_id = sanctions.partner_id
+      WHERE partners.deleted_at IS NULL AND partners.leaves IS NULL
+      GROUP BY partners.partner_id
+      ORDER BY partners.number ASC;`
     );
     if (rows.length === 0) {
       Logger.error(`mysql : getAll : PartnersNotFoundError`);
@@ -92,7 +125,7 @@ export class MySqlPartnerRepository implements IPartnerRepository {
     else partnerNumber = partnerMaxNumbers[1];
     const partnerPersistence =
       this.partnerPersistenceMapper.toPersistence(partner);
-    const insertQuery = `INSERT INTO partners (partner_id, access_code, number, name, surname, email, phone, address, dni, birth_date, cannabis_month, hash_month, extractions_month, others_month, partner_type_id, active, user_created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`;
+    const insertQuery = `INSERT INTO partners (partner_id, access_code, number, name, surname, email, phone, address, dni, birth_date, cannabis_month, hash_month, extractions_month, others_month, partner_type_id, active, fee, inscription, user_created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?, ?)`;
 
     const selectQuery = `SELECT * FROM partners ORDER BY created_at DESC LIMIT 1`;
 
@@ -113,6 +146,8 @@ export class MySqlPartnerRepository implements IPartnerRepository {
       partnerPersistence.others_month.toString(),
       partnerPersistence.partner_type_id.toString(),
       partnerPersistence.active.toString(),
+      partnerPersistence.fee!.toString(),
+      partnerPersistence.inscription!.toString(),
       partnerPersistence.user_created!,
     ]);
     const selectResult = await MysqlDataBase.query(selectQuery);
@@ -125,7 +160,7 @@ export class MySqlPartnerRepository implements IPartnerRepository {
       this.partnerPersistenceMapper.toPersistence(partner);
     const result = await MysqlDataBase.update(
       `UPDATE partners SET name = ?, surname = ?, email = ?, phone = ?, address = ?, dni = ?, birth_date = ?,
-       cannabis_month = ?, hash_month = ?, extractions_month = ?, others_month = ?, partner_type_id = ?, active = ?, therapeutic = ?, user_updated = ?
+       cannabis_month = ?, hash_month = ?, extractions_month = ?, others_month = ?, partner_type_id = ?, active = ?, therapeutic = ?, fee = ?, inscription = ?, user_updated = ?
        WHERE partner_id = ?`,
       [
         partnerPersistence.name,
@@ -142,6 +177,8 @@ export class MySqlPartnerRepository implements IPartnerRepository {
         partnerPersistence.partner_type_id.toString(),
         partnerPersistence.active.toString(),
         partnerPersistence.therapeutic.toString(),
+        partnerPersistence.fee!.toString(),
+        partnerPersistence.inscription!.toString(),
         partnerPersistence.user_updated!,
         partnerPersistence.partner_id,
       ]
@@ -190,6 +227,18 @@ export class MySqlPartnerRepository implements IPartnerRepository {
     const result = await MysqlDataBase.update(
       "UPDATE partners SET leaves = NOW(), active = ?  WHERE partner_id = ?",
       ["0", partnerId]
+    );
+    if (result.affectedRows === 0) {
+      Logger.error(`mysql : partnerLeaves : PartnerDoesNotExistError`);
+      throw new PartnerDoesNotExistError();
+    }
+    return result;
+  }
+
+  async updateAccessCode(accessCode: string, partnerId: string): Promise<void> {
+    const result = await MysqlDataBase.update(
+      "UPDATE partners SET access_code = ? WHERE partner_id = ?",
+      [accessCode, partnerId]
     );
     if (result.affectedRows === 0) {
       Logger.error(`mysql : partnerLeaves : PartnerDoesNotExistError`);

@@ -1,5 +1,7 @@
 import { Email } from 'src/app/shared/domain/value-objects/email.value-object';
 import { PartnersType } from './partner-type.enum';
+import { FeesVariants, IFees, IFeesType } from './fees';
+import { ISanctions } from './sanctions';
 export interface IPartner {
   partner_id?: string;
   access_code?: string;
@@ -19,6 +21,9 @@ export interface IPartner {
   partner_type_id: PartnersType;
   active: boolean | number;
   therapeutic: boolean | number;
+  sanctions?: ISanctions[];
+  fee?: FeesVariants;
+  inscription?: FeesVariants;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -50,6 +55,9 @@ export class Partner implements IPartner {
   partner_type_id: PartnersType;
   active: boolean | number;
   therapeutic: boolean | number;
+  sanctions?: ISanctions[];
+  fee?: FeesVariants;
+  inscription?: FeesVariants;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -75,6 +83,9 @@ export class Partner implements IPartner {
     this.partner_type_id = props.partner_type_id;
     this.active = props.active;
     this.therapeutic = props.therapeutic;
+    this.sanctions = props.sanctions;
+    this.fee = props.fee;
+    this.inscription = props.inscription;
     this.user_created = props.user_created ? props.user_created : '';
     this.user_updated = props.user_updated ? props.user_updated : '';
     this.created_at = props.created_at ? props.created_at : '';

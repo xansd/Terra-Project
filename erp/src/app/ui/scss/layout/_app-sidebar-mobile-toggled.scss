@@ -1,33 +1,89 @@
-@keyframes appSidebarMobileSlideInLeft {
+@-webkit-keyframes appSidebarMobileSlideInLeft {
 	@if ($enable-rtl) {
-		from { right: -$app-sidebar-width; } 
-		to { right: 0; }
-	} @else {
-		from { left: -$app-sidebar-width; } 
-		to { left: 0; }
+		from {
+			right: -$app-sidebar-width;
+		}
+
+		to {
+			right: 0;
+		}
+	}
+
+	@else {
+		from {
+			left: -$app-sidebar-width;
+		}
+
+		to {
+			left: 0;
+		}
 	}
 }
 
-@keyframes appSidebarMobileBackdrop { 
-	from { background: transparent; } 
-	to { background: $app-sidebar-mobile-backdrop-bg; } 
+@keyframes appSidebarMobileSlideInLeft {
+	@if ($enable-rtl) {
+		from {
+			right: -$app-sidebar-width;
+		}
+
+		to {
+			right: 0;
+		}
+	}
+
+	@else {
+		from {
+			left: -$app-sidebar-width;
+		}
+
+		to {
+			left: 0;
+		}
+	}
+}
+
+@-webkit-keyframes appSidebarMobileBackdrop {
+	from {
+		background: transparent;
+	}
+
+	to {
+		background: $app-sidebar-mobile-backdrop-bg;
+	}
+}
+
+@keyframes appSidebarMobileBackdrop {
+	from {
+		background: transparent;
+	}
+
+	to {
+		background: $app-sidebar-mobile-backdrop-bg;
+	}
 }
 
 .app-sidebar-mobile-toggled {
-	@include media-breakpoint-down(md) {
+
+	// MODIFICADO
+	@include media-breakpoint-down(lg) {
 		& .app-sidebar {
-			animation: appSidebarMobileSlideInLeft .1s ease;
-			
+			-webkit-animation: appSidebarMobileSlideInLeft .1s ease;
+			animation        : appSidebarMobileSlideInLeft .1s ease;
+
 			@if ($enable-rtl) {
 				right: 0;
-			} @else {
+			}
+
+			@else {
 				left: 0;
 			}
 		}
+
 		& .app-sidebar-mobile-backdrop:not(.app-sidebar-end) {
-			display: block;
-			background: $app-sidebar-mobile-backdrop-bg;
-			animation: appSidebarMobileBackdrop .1s ease;
+			display          : block;
+			background       : $app-sidebar-mobile-backdrop-bg;
+			-webkit-animation: appSidebarMobileBackdrop .1s ease;
+			animation        : appSidebarMobileBackdrop .1s ease;
 		}
 	}
 }

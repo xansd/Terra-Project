@@ -59,4 +59,22 @@ export class MysqlDataBase {
       connection.release();
     }
   }
+
+  static toMySQLDateTime(d: any): string {
+    // Construir la fecha
+    const date = new Date(d.year, d.month - 1, d.day);
+
+    // Obtener los componentes de la fecha
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hours = "00";
+    const minutes = "00";
+    const seconds = "00";
+
+    // Formatear la fecha en formato datetime de MySQL
+    const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+    return formattedDate;
+  }
 }

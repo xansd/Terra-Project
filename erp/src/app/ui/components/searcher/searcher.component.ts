@@ -58,7 +58,11 @@ export class SearcherComponent implements OnInit, OnDestroy {
     if (changes['options']) {
       const currentOptions = changes['options'].currentValue;
       if (currentOptions && currentOptions.length > 0) {
-        this.populateAutocomplete(currentOptions);
+        if (this.options.length > 0)
+          this.options = this.concatName(this.options);
+        this.populateAutocomplete(
+          this.concatName(this.concatName(currentOptions))
+        );
       }
     }
   }
@@ -78,6 +82,14 @@ export class SearcherComponent implements OnInit, OnDestroy {
           this.partner = partner;
         },
       });
+  }
+
+  concatName(data: IPartner[]): IPartner[] {
+    const newArray = data.map((obj) => {
+      const fullName = obj.surname + ', ' + obj.name;
+      return { ...obj, name: fullName };
+    });
+    return newArray;
   }
 
   /*********************************** AUTOCOMPLETE *************************************/
@@ -126,8 +138,7 @@ export class SearcherComponent implements OnInit, OnDestroy {
   }
 
   formatter(option: any): string {
-    const f = option[this.selectedSearchType];
-    return f;
+    return option[this.selectedSearchType];
   }
 
   selectOption(selectedValue: any): void {

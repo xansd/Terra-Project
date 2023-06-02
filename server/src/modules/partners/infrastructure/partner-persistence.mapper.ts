@@ -1,4 +1,5 @@
 import { Email } from "../../shared/domain/value-objects/email.value-object";
+import { MysqlDataBase } from "../../shared/infraestructure/mysql/mysql";
 import { IPersistenceMapper } from "../../shared/infraestructure/persistence-mapper.interface";
 import { IPartner, Partner } from "../domain/partner";
 import { PartnerID } from "../domain/value-objects/partner-id.value.object";
@@ -32,6 +33,9 @@ export class PartnerPersistenceMapper
       partner_type_id: persistence.partner_type_id,
       active: persistence.active == 1 ? true : false,
       therapeutic: persistence.therapeutic == 1 ? true : false,
+      sanctions: persistence.sanctions,
+      fee: persistence.fee,
+      inscription: persistence.inscription,
       user_created: persistence.user_created,
       user_updated: persistence.user_updated,
       created_at: persistence.created_at,
@@ -61,6 +65,9 @@ export class PartnerPersistenceMapper
       partner_type_id,
       active,
       therapeutic,
+      sanctions,
+      fee,
+      inscription,
       user_created,
       user_updated,
     } = domain;
@@ -74,7 +81,7 @@ export class PartnerPersistenceMapper
       phone: phone,
       address: address,
       dni: dni ? dni : null,
-      birth_date: this.toMySQLDateTime(birthday),
+      birth_date: MysqlDataBase.toMySQLDateTime(birthday),
       leaves: leaves ? leaves : null,
       cannabis_month: cannabis_month,
       hash_month: hash_month,
@@ -83,6 +90,9 @@ export class PartnerPersistenceMapper
       partner_type_id: partner_type_id,
       active: active == true ? 1 : 0,
       therapeutic: therapeutic == true ? 1 : 0,
+      sanctions: sanctions,
+      fee: fee,
+      inscription: inscription,
       user_created: user_created ? user_created : null,
       user_updated: user_updated ? user_updated : null,
     };
@@ -113,24 +123,5 @@ export class PartnerPersistenceMapper
     return persistenceList.map((partnerPersistence) =>
       this.toDomain(partnerPersistence)
     );
-  }
-
-  toMySQLDateTime(d: any): string {
-    // Construir la fecha
-    const date = new Date(d.year, d.month - 1, d.day);
-
-    // Obtener los componentes de la fecha
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const hours = "00";
-    const minutes = "00";
-    const seconds = "00";
-
-    // Formatear la fecha en formato datetime de MySQL
-    const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-
-    console.log(formattedDate);
-    return formattedDate;
   }
 }

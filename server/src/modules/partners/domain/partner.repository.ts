@@ -14,4 +14,5 @@ export interface IPartnerRepository {
   makeInactive(partnerId: string): Promise<void>;
   partnerLeaves(partnerId: string): Promise<void>;
   checkPartnerExistenceByEmail(email: string): Promise<boolean>;
+  updateAccessCode(accessCode: string, partnerId: string): Promise<void>;
 }

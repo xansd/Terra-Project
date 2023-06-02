@@ -38,7 +38,7 @@ const partnerController = new PartnerController(
 router.get(
   "/:id",
   authorize([Role.ADMIN, Role.USER]),
-  [check("id", "El id es obligatorio").not().isEmpty()],
+  [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
   partnerController.getById.bind(partnerController)
 );
 
@@ -88,7 +88,7 @@ router.put(
 router.delete(
   "/:id",
   authorize([Role.ADMIN, Role.USER]),
-  [check("id", "El id es obligatorio").not().isEmpty()],
+  [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
   partnerController.delete.bind(partnerController)
 );
 
@@ -96,7 +96,7 @@ router.delete(
 router.put(
   "/activate/:id",
   authorize([Role.ADMIN, Role.USER]),
-  [check("id", "El id es obligatorio").not().isEmpty()],
+  [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
   partnerController.makeActive.bind(partnerController)
 );
 
@@ -104,7 +104,7 @@ router.put(
 router.put(
   "/block/:id",
   authorize([Role.ADMIN, Role.USER]),
-  [check("id", "El id es obligatorio").not().isEmpty()],
+  [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
   partnerController.makeInactive.bind(partnerController)
 );
 
@@ -112,8 +112,16 @@ router.put(
 router.put(
   "/leaves/:id",
   authorize([Role.ADMIN, Role.USER]),
-  [check("id", "El id es obligatorio").not().isEmpty()],
+  [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
   partnerController.partnerLeaves.bind(partnerController)
+);
+
+// UPDATE ACCESS CODE
+router.put(
+  "/access/:id",
+  authorize([Role.ADMIN, Role.USER]),
+  [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
+  partnerController.updateAccessCode.bind(partnerController)
 );
 
 export { router };

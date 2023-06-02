@@ -18,12 +18,14 @@ import { UpdatePartnerUseCase } from 'src/app/partners/application/update-partne
 import { GetPartnerUseCase } from 'src/app/partners/application/get-partners.use-case';
 import { DomainValidationError } from 'src/app/shared/domain/domain-validation.exception';
 import { PartnerDTOMapper } from 'src/app/partners/infrastructure/partner-dto.mapper';
-import { DatetimeHelperService } from 'src/app/ui/shared/helpers/datetime.helper.service';
 import {
   AppStateService,
   FormMode,
 } from 'src/app/ui/services/app-state.service';
 import { ModalActions } from 'src/app/ui/shared/enums/modalActions.enum';
+import { FeesTypes, IFeesType } from 'src/app/partners/domain/fees';
+import { FeesUseCases } from 'src/app/partners/application/fees.use-case';
+import { DatetimeHelperService } from 'src/app/shared/application/datetime.helper.service';
 
 @Component({
   selector: 'app-edit-partner',
@@ -40,6 +42,8 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
   matcher = new CustomErrorStateMatcher();
   private destroy$ = new Subject();
   partner!: IPartner;
+  feesType: IFeesType[] = [];
+  inscriptionsType: IFeesType[] = [];
   editPartnerForm: UntypedFormGroup = this.formBuilder.group({
     type: [null, [Validators.required]],
     therapeutic: [null],
@@ -58,6 +62,8 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
     hash: [0, [Validators.required]],
     extractions: [0, [Validators.required]],
     others: [0, [Validators.required]],
+    fee: [null, [Validators.required]],
+    inscription: [null, [Validators.required]],
   });
 
   partnerMapper = new PartnerDTOMapper();
@@ -70,12 +76,14 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
     private formsHelperService: FormsHelperService,
     private updatePartnerService: UpdatePartnerUseCase,
     private getPartnersService: GetPartnerUseCase,
+    private feesService: FeesUseCases,
     private dateFormatter: DatetimeHelperService
   ) {}
 
   ngOnInit(): void {
     this, this.formsHelperService.initFormUpdateMode();
     this.getPartner(this.uid);
+    this.getFeesType();
   }
 
   ngOnDestroy(): void {
@@ -100,10 +108,12 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
       phone: partner.phone,
       birth: birthDate,
       address: partner.address,
-      cannabis: 0,
-      hash: 0,
-      extractions: 0,
-      others: 0,
+      cannabis: partner.cannabis_month,
+      hash: partner.hash_month,
+      extractions: partner.extractions_month,
+      others: partner.others_month,
+      fee: partner.fee,
+      inscription: partner.inscription,
     });
   }
 
@@ -142,6 +152,30 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
           this.types = types;
           this.populateForm(partner);
           this.isLoading = false;
+        },
+      });
+  }
+
+  getFeesType(): void {
+    this.feesService
+      .getTypes()
+      .pipe(take(1))
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (types: IFeesType[]) => {
+          const feesType: IFeesType[] = [];
+          const inscriptionsType: IFeesType[] = [];
+
+          types.forEach((type: IFeesType) => {
+            if (type.type === FeesTypes.FEES) {
+              feesType.push(type);
+            } else if (type.type === FeesTypes.INSCRIPTION) {
+              inscriptionsType.push(type);
+            }
+          });
+
+          this.feesType = feesType;
+          this.inscriptionsType = inscriptionsType;
         },
       });
   }
@@ -189,7 +223,7 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
     partnerId: string
   ): IPartner {
     const mode: FormMode = FormMode.UPDATE;
-    return this.partnerMapper.createPartnerFormData(
+    return this.formsHelperService.createPartnerFormData(
       form,
       mode,
       user,
@@ -198,8 +232,8 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
   }
 
   formatDate(date: string) {
-    const t = this.dateFormatter.getFormattedDate(date);
-    return this.dateFormatter.getFormattedDate(date);
+    const t = DatetimeHelperService.fromDatePickerDate(date);
+    return DatetimeHelperService.fromDatePickerDate(date);
   }
 
   switchEvent(status: boolean) {
@@ -239,4 +273,33 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
   get othersControl(): AbstractControl {
     return this.editPartnerForm.controls['others'];
   }
+
+  /*********************************CONDUCTA************************************/
+
+  conduct: number = 0;
+  // Codigo de colores de conducta
+  getIconClasses() {
+    let classes = [];
+
+    switch (this.conduct) {
+      case 0:
+        classes.push('text-success border-success');
+        break;
+      case 1:
+        classes.push('text-primary border-primary');
+        break;
+      case 2:
+        classes.push('text-warning border-warning');
+        break;
+      case 3:
+        classes.push('text-danger border-danger');
+        break;
+      default:
+        classes.push('text-success');
+    }
+
+    return classes;
+  }
+
+  /*********************************CONDUCTA************************************/
 }

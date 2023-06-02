@@ -1,0 +1,40 @@
+<div class="modal-header">
+  <h5 class="modal-title">Introduce el nuevo código</h5>
+  <button type="button" class="btn-close" (click)="close(false)"></button>
+</div>
+<div class="modal-body">
+  <form
+    [formGroup]="accessPasswordForm"
+    (ngSubmit)="submit(accessPasswordForm)"
+    autocomplete="off"
+    #formDirective="ngForm"
+  >
+    <div class="mb-3">
+      <label class="form-label"
+        >Código <span class="text-danger">*</span></label
+      >
+      <div class="password-container">
+        <input
+          type="password"
+          class="form-control form-control-lg bg-inverse bg-opacity-5"
+          formControlName="code"
+          matInput
+          placeholder="Escribe el código..."
+          [errorStateMatcher]="matcher"
+          autocomplete="off"
+        />
+        <mat-error *ngIf="code.invalid && (code.dirty || code.touched)">
+          <span *ngIf="code.hasError('required')"> Campo obligatorio.</span>
+        </mat-error>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-warning" (click)="close(false)">
+    Cancelar
+  </button>
+  <button (click)="close(true)" type="submit" class="btn btn-outline-theme">
+    Enviar
+  </button>
+</div>

@@ -1,9 +1,12 @@
 <div class="container-fluid">
-  <app-searcher
-    [options]="options"
-    [searchTypes]="searchTypes"
-    (optionSelected)="handleOptionSelected($event)"
-  ></app-searcher>
+  <div class="search">
+    <app-searcher
+      [options]="options"
+      [searchTypes]="searchTypes"
+      (optionSelected)="handleOptionSelected($event)"
+    ></app-searcher>
+  </div>
+
   <ng-container *ngIf="isLoading; else partnerSelection">
     <div class="d-flex justify-content-center align-items-center py-4 spinner">
       <div class="spinner-grow text-success"></div>
@@ -11,28 +14,318 @@
     <p class="text-center">Esperando socio...</p>
   </ng-container>
   <ng-template #partnerSelection>
-    <div class="row">
+    <!-- Contenido  -->
+    <div class="row content">
       <div class="col-lg-10">
-        <!-- Contenido de la columna de datos -->
-        <h2>Contenido</h2>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam id
-          ligula non ligula vehicula vestibulum. Quisque volutpat nunc et
-          posuere gravida.
-        </p>
+        <div class="row row-cols-1 row-cols-xl-2 g-3">
+          <div class="col">
+            <card class="card h-100 data-card mb-4">
+              <card-header class="card-header bg-inverse bg-opacity-10 fw-400">
+                <div class="title">DATOS PERSONALES</div>
+              </card-header>
+              <card-body class="pb-2">
+                <!--Number-->
+                <div
+                  class="badge badge-primary border col-xl-2 number-container text-info"
+                  [ngClass]="getIconClasses()"
+                >
+                  <div class="">
+                    <i
+                      class="bi bi-person-fill"
+                      [ngClass]="getIconClasses()"
+                    ></i>
+                  </div>
+                  <div *ngIf="partner" [ngClass]="getIconClasses()">
+                    {{ partner.number || 0 }}
+                  </div>
+                </div>
+                <div class="property">
+                  <span class="property-name">Alta:</span>
+                  <span class="property-value">{{
+                    formatDate(partner.created_at!)
+                  }}</span>
+                </div>
+                <div class="property">
+                  <span class="property-name">Nombre:</span>
+                  <span class="property-value"
+                    >{{ partner.surname }}, {{ partner.name }}</span
+                  >
+                </div>
+                <div class="property">
+                  <span class="property-name">Nacimiento:</span>
+                  <span class="property-value">{{
+                    formatDate(partner.birthday)
+                  }}</span>
+                </div>
+                <div class="property">
+                  <span class="property-name">DNI:</span>
+                  <span class="property-value">{{ partner.dni }}</span>
+                </div>
+                <div class="property">
+                  <span class="property-name">Email:</span>
+                  <span class="property-value">{{ partner.email.value }}</span>
+                </div>
+                <div class="property">
+                  <span class="property-name">Teléfono:</span>
+                  <span class="property-value">{{ partner.phone }}</span>
+                </div>
+                <div class="property">
+                  <span class="property-name">Domicilio:</span>
+                  <span class="property-value">{{ partner.address }}</span>
+                </div>
+                <div class="property" *ngIf="partner.leaves">
+                  <span class="property-name">Baja:</span>
+                  <span class="property-value">{{ partner.leaves }}</span>
+                </div>
+                <!-- TOPES -->
+                <h6 class="card-subtitle mb-3 text-inverse text-opacity-50">
+                  Topes mes
+                </h6>
+                <div class="property">
+                  <span class="property-name">Tope maria/mes:</span>
+                  <span class="property-value"
+                    >{{ partner.cannabis_month | number : "1.2-2" }} gr.</span
+                  >
+                </div>
+                <div class="property">
+                  <span class="property-name">Tope hash/mes:</span>
+                  <span class="property-value"
+                    >{{ partner.hash_month | number : "1.2-2" }} gr.</span
+                  >
+                </div>
+                <div class="property">
+                  <span class="property-name">Tope extrac./mes:</span>
+                  <span class="property-value"
+                    >{{
+                      partner.extractions_month | number : "1.2-2"
+                    }}
+                    gr.</span
+                  >
+                </div>
+                <div class="property">
+                  <span class="property-name">Tope otros/mes:</span>
+                  <span class="property-value"
+                    >{{ partner.others_month | number : "1.2-2" }} gr.</span
+                  >
+                </div>
+                <div class="property" style="font-weight: bold">
+                  <span class="property-name">Tope total/mes:</span>
+                  <span class="property-value"
+                    >{{ getTotalTopMonth() | number : "1.2-2" }} gr.</span
+                  >
+                </div>
+              </card-body>
+            </card>
+          </div>
+          <div class="col">
+            <card class="card h-100 activity-card">
+              <card-header class="card-header bg-inverse bg-opacity-10 fw-400">
+                <div class="title">ACTIVIDAD</div>
+              </card-header>
+              <card-body class="pb-2">
+                <!-- ACTIVIDAD -->
+                <div class="property">
+                  <span class="property-name">Activo:</span>
+                  <span
+                    class="property-value fw-bold"
+                    [ngClass]="{
+                      'text-success': partner.active,
+                      'text-danger': !partner.active
+                    }"
+                    >{{ partner.active ? "SI" : "NO" }}</span
+                  >
+                </div>
+                <div class="property">
+                  <span class="property-name">Última actividad:</span>
+                  <span class="property-value">{{
+                    formatDate(partner.created_at!)
+                  }}</span>
+                </div>
+
+                <!-- CONSUMO -->
+                <h6 class="card-subtitle mb-3 text-inverse text-opacity-50">
+                  Consumo
+                </h6>
+                <div class="property">
+                  <span class="property-name">Consumo mes:</span>
+                  <span class="property-value"
+                    >{{ 0 | number : "1.2-2" }} gr.</span
+                  >
+                </div>
+                <div class="property">
+                  <span class="property-name">Consumo total:</span>
+                  <span class="property-value"
+                    >{{ 0 | number : "1.2-2" }} gr.</span
+                  >
+                </div>
+                <div class="property">
+                  <span class="property-name">Exceso mes:</span>
+                  <span
+                    class="property-value"
+                    [ngClass]="{
+                      'text-success': overMonth <= 0,
+                      'text-danger': overMonth > 0
+                    }"
+                    >{{ 0 | number : "1.2-2" }} gr.</span
+                  >
+                </div>
+                <div class="property">
+                  <span class="property-name">Exceso total:</span>
+                  <span
+                    class="property-value"
+                    [ngClass]="{
+                      'text-success': overTotal <= 0,
+                      'text-danger': overTotal > 0
+                    }"
+                    >{{ 0 | number : "1.2-2" }} gr.</span
+                  >
+                </div>
+                <!-- CUOTA -->
+                <h6 class="card-subtitle mb-3 text-inverse text-opacity-50">
+                  Cuota
+                </h6>
+                <div class="property">
+                  <span class="property-name">Cuota:</span>
+                  <span class="property-value fw-bold">
+                    {{ getFeesTypeString(lastCuotaFee.fees_type_id) }}
+                  </span>
+                </div>
+                <div class="property">
+                  <span class="property-name">Vencimiento:</span>
+                  <span
+                    class="property-value fw-bold"
+                    [ngClass]="{
+                      'text-danger':
+                        !isFeeExent(lastCuotaFee) &&
+                        isExpired(lastCuotaFee.expiration!),
+                      'text-warning':
+                        !isFeeExent(lastCuotaFee) &&
+                        isCurrentMonth(lastCuotaFee.expiration!),
+                      'text-success':
+                        !isFeeExent(lastCuotaFee) &&
+                        !isCurrentMonth(lastCuotaFee.expiration!) &&
+                        !isExpired(lastCuotaFee.expiration!)
+                    }"
+                  >
+                    {{
+                      !isFeeExent(lastCuotaFee)
+                        ? formatDate(lastCuotaFee.expiration!)
+                        : "N/A"
+                    }}
+                  </span>
+                </div>
+                <div
+                  class="property"
+                  *ngIf="
+                    !isInscriptionExent(lastInscriptionFee) &&
+                    !lastInscriptionFee.paid
+                  "
+                >
+                  <span class="property-name">Inscripción:</span>
+                  <span class="property-value fw-bold">{{
+                    getFeesTypeString(lastInscriptionFee.fees_type_id)
+                  }}</span>
+                </div>
+                <div
+                  class="property"
+                  *ngIf="
+                    !isInscriptionExent(lastInscriptionFee) &&
+                    !lastInscriptionFee.paid
+                  "
+                >
+                  <span class="property-name">Vencimiento:</span>
+                  <span
+                    class="property-value fw-bold"
+                    [ngClass]="{
+                      'text-danger':
+                        !isFeeExent(lastInscriptionFee) &&
+                        isExpired(lastInscriptionFee.expiration!),
+                      'text-success':
+                        !isFeeExent(lastInscriptionFee) &&
+                        !isExpired(lastInscriptionFee.expiration!)
+                    }"
+                    >{{
+                      !isInscriptionExent(lastInscriptionFee)
+                        ? formatDate(lastInscriptionFee.expiration!)
+                        : "N/A"
+                    }}</span
+                  >
+                </div>
+
+                <!-- PRODECTOS PREFERIDOS -->
+
+                <!-- <h6
+                  class="card-subtitle mb-3 text-inverse text-opacity-50"
+                  style="margin-top: 15px"
+                >
+                  Preferidos
+                </h6> -->
+                <div class="list-group">
+                  <a class="list-group-item list-group-item-action"
+                    ><i class="bi bi-trophy-fill"></i> <span>Sour Diesel</span>
+                  </a>
+                  <a class="list-group-item list-group-item-action"
+                    ><i class="bi bi-trophy-fill"></i> <span>White Widow</span>
+                  </a>
+                  <a class="list-group-item list-group-item-action"
+                    ><i class="bi bi-trophy-fill"></i> <span>Lemon Haze</span>
+                  </a>
+                </div>
+              </card-body>
+            </card>
+          </div>
+        </div>
+        <!-- <div class="documentacion">
+          <app-file-downloader></app-file-downloader>
+        </div> -->
       </div>
+      <!-- Botones -->
       <div class="col-lg-2">
         <div class="button-container">
+          <button class="btn btn-default">
+            <i class="bi bi-cart3"></i> Dispensar
+          </button>
+          <button class="btn btn-default" (click)="payFeeConfirm(lastCuotaFee)">
+            <i class="bi bi-currency-euro"></i> Abonar cuota
+          </button>
+          <button
+            class="btn btn-default"
+            (click)="payFeeConfirm(lastInscriptionFee)"
+            *ngIf="
+              !isInscriptionExent(lastInscriptionFee) &&
+              !lastInscriptionFee.paid
+            "
+          >
+            <i class="bi bi-currency-euro"></i> Abonar inscripción
+          </button>
+          <button class="btn btn-default">
+            <i class="bi bi-person-badge"></i> Historial
+          </button>
           <button class="btn btn-info" (click)="openEditPartnerDialog()">
-            Editar
+            <i class="bi bi-pencil-square"></i> Editar & Doc.
           </button>
-          <button class="btn btn-default">Abonar cutoa</button>
-          <button class="btn btn-danger" (click)="openConfirmDialog()">
-            Baja socio
+          <button class="btn btn-warning" (click)="updateAccessCode()">
+            <i class="bi bi-door-open"></i> Acceso
           </button>
-          <button class="btn btn-success">Dispensar</button>
+          <button class="btn btn-danger" (click)="partnersLeavesConfirm()">
+            <i class="bi bi-person-down"></i> Baja socio
+          </button>
+          <button
+            (click)="openCreatePartnerDialog()"
+            class="btn btn-success new-partner-btn"
+          >
+            <i class="bi bi-person-fill-add"></i> Alta nueva
+          </button>
         </div>
       </div>
     </div>
   </ng-template>
+  <div *ngIf="!partner" class="new-partner-standalone">
+    <button
+      (click)="openCreatePartnerDialog()"
+      class="btn btn-success new-partner-btn"
+    >
+      <i class="bi bi-person-fill-add"></i> Alta nueva
+    </button>
+  </div>
 </div>

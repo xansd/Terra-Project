@@ -1,9 +1,38 @@
 import { IDTOMapper } from 'src/app/shared/application/dto-mapper.interface';
-import { IPartner, Partner } from '../domain/partner';
-import { IPartnerDTO } from './partner.dto';
 import { Email } from 'src/app/shared/domain/value-objects/email.value-object';
-import { UntypedFormGroup } from '@angular/forms';
-import { FormMode } from 'src/app/ui/services/app-state.service';
+import { FeesVariants } from '../domain/fees';
+import { IPartner, Partner } from '../domain/partner';
+import { PartnersType } from '../domain/partner-type.enum';
+import { ISanctions } from '../domain/sanctions';
+
+export interface IPartnerDTO {
+  partner_id?: string;
+  access_code?: string;
+  number?: string;
+  name: string;
+  surname: string;
+  email: string;
+  phone: string;
+  address: string;
+  dni?: string;
+  birthday: string;
+  leaves?: string;
+  cannabis_month: number;
+  hash_month: number;
+  extractions_month: number;
+  others_month: number;
+  partner_type_id: PartnersType;
+  active: boolean | number;
+  therapeutic: boolean | number;
+  sanctions?: ISanctions[];
+  fee?: FeesVariants;
+  inscription?: FeesVariants;
+  user_created?: string;
+  user_updated?: string;
+  created_at?: string;
+  updated_at?: string;
+  deleted_at?: string;
+}
 
 export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
   constructor() {}
@@ -28,6 +57,9 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       partner_type_id: dto.partner_type_id,
       therapeutic: dto.therapeutic,
       active: dto.active,
+      sanctions: dto.sanctions,
+      fee: dto.fee,
+      inscription: dto.inscription,
       user_created: dto.user_created,
       user_updated: dto.user_updated,
       created_at: dto.created_at,
@@ -57,6 +89,9 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       partner_type_id,
       active,
       therapeutic,
+      fee,
+      inscription,
+      sanctions,
       user_created,
       user_updated,
       created_at,
@@ -79,9 +114,12 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       hash_month: domain.hash_month,
       extractions_month: domain.hash_month,
       others_month: domain.hash_month,
-      partner_type_id: domain.hash_month,
+      partner_type_id: domain.partner_type_id,
       active: domain.active,
       therapeutic: domain.therapeutic,
+      fee: domain.fee,
+      inscription: domain.inscription,
+      sanctions: domain.sanctions,
       user_created: domain.user_created,
       user_updated: domain.user_updated,
       created_at: domain.created_at,
@@ -98,46 +136,5 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
   // Convierte una lista de DTO a una lista de dominio
   toDomainList(dtoList: IPartnerDTO[]): IPartner[] {
     return dtoList.map((partnerDTO) => this.toDomain(partnerDTO));
-  }
-
-  createPartnerFormData(
-    form: UntypedFormGroup,
-    mode: FormMode,
-    user: string,
-    partnerId?: string
-  ): IPartner {
-    const formValues = form.value;
-    const id = partnerId ? partnerId : undefined;
-    const partnerData: IPartner = {
-      name: formValues.name,
-      surname: formValues.surname,
-      dni: formValues.dni,
-      email: formValues.email,
-      phone: formValues.phone,
-      address: formValues.address,
-      birthday: formValues.birth,
-      cannabis_month: formValues.cannabis,
-      hash_month: formValues.hash,
-      extractions_month: formValues.extractions,
-      others_month: formValues.others,
-      partner_type_id:
-        mode === FormMode.CREATE
-          ? formValues.type
-          : formValues.type.partner_type_id,
-      active: formValues.active,
-      therapeutic: formValues.therapeutic,
-    };
-
-    if (mode === FormMode.CREATE) {
-      partnerData.user_created = user;
-    } else if (FormMode.UPDATE) {
-      partnerData.user_updated = user;
-    }
-
-    if (id) {
-      partnerData.partner_id = id;
-    }
-
-    return partnerData;
   }
 }

@@ -14,13 +14,13 @@ export class UpdatePartnerUseCase implements IUpdatePartner {
   private partnerMapper: PartnerMapper = new PartnerMapper();
   partnerDomain!: IPartner;
 
-  constructor(private readonly userRepository: IPartnerRepository) {}
+  constructor(private readonly partnerRepository: IPartnerRepository) {}
 
   async updatePartner(partner: IPartnerDTO): Promise<IPartner | undefined> {
     try {
       this.partnerDomain = this.partnerMapper.toDomain(partner);
       // Comprobamo si ya exsite el email
-      const partnerExists = await this.userRepository.getById(
+      const partnerExists = await this.partnerRepository.getById(
         partner.partner_id
       );
       const originalEmail = partnerExists.email;
@@ -28,7 +28,9 @@ export class UpdatePartnerUseCase implements IUpdatePartner {
       if (partner.email !== originalEmail.value) {
         // Realizar la consulta para verificar duplicados
         const isEmailDuplicate =
-          await this.userRepository.checkPartnerExistenceByEmail(partner.email);
+          await this.partnerRepository.checkPartnerExistenceByEmail(
+            partner.email
+          );
 
         if (isEmailDuplicate) {
           Logger.error(
@@ -38,7 +40,7 @@ export class UpdatePartnerUseCase implements IUpdatePartner {
         }
       }
 
-      const result = await this.userRepository.update(this.partnerDomain);
+      const result = await this.partnerRepository.update(this.partnerDomain);
       return result;
     } catch (error) {
       if (error instanceof DomainValidationError) {
@@ -49,5 +51,13 @@ export class UpdatePartnerUseCase implements IUpdatePartner {
       }
       throw error;
     }
+  }
+
+  async updateAccessCode(accessCode: string, partnerId: string): Promise<void> {
+    const result = await this.partnerRepository.updateAccessCode(
+      accessCode,
+      partnerId
+    );
+    return result;
   }
 }

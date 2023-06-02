@@ -6,9 +6,13 @@ import {
   Validators,
 } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable, Subject, take, takeUntil } from 'rxjs';
+import { Observable, Subject, forkJoin, take, takeUntil } from 'rxjs';
 import { CreatePartnerUseCase } from 'src/app/partners/application/create-partner.use-case';
-import { IPartner, IPartnersType } from 'src/app/partners/domain/partner';
+import {
+  IPartner,
+  IPartnersType,
+  Partner,
+} from 'src/app/partners/domain/partner';
 import { DomainValidationError } from 'src/app/shared/domain/domain-validation.exception';
 import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
 import { FieldValidationError } from 'src/app/shared/error/field-validation-error';
@@ -25,6 +29,9 @@ import {
 import { PartnerIDNotFoundError } from 'src/app/partners/domain/partner.exceptions';
 import { ModalActions } from 'src/app/ui/shared/enums/modalActions.enum';
 import { ActiveEntityService } from 'src/app/ui/services/active-entity-service.service';
+import { FeesTypes, IFees, IFeesType } from 'src/app/partners/domain/fees';
+import { FeesUseCases } from 'src/app/partners/application/fees.use-case';
+import { InvalidFeeType } from 'src/app/partners/domain/fees.exceptions';
 
 @Component({
   selector: 'app-create-partner',
@@ -36,6 +43,8 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
   config = CONFIG;
   active = true;
   types: IPartnersType[] = [];
+  feesType: IFeesType[] = [];
+  inscriptionsType: IFeesType[] = [];
   lastNumber: number = 20;
   partnerMapper = new PartnerDTOMapper();
   isUploaderEnabled = false;
@@ -60,6 +69,8 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
     hash: [0, [Validators.required]],
     extractions: [0, [Validators.required]],
     others: [0, [Validators.required]],
+    fee: [1, [Validators.required]],
+    inscription: [3, [Validators.required]],
   });
 
   matcher = new CustomErrorStateMatcher();
@@ -73,6 +84,7 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
     private formsHelperService: FormsHelperService,
     private createPartnerService: CreatePartnerUseCase,
     private getPartnersService: GetPartnerUseCase,
+    private feesService: FeesUseCases,
     private activeEntityService: ActiveEntityService
   ) {}
 
@@ -81,6 +93,7 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
     this.formsHelperService.initFormCreateMode();
     this.getPartnersLastNumber();
     this.getPartnersType();
+    this.getFeesType();
   }
 
   ngOnDestroy(): void {
@@ -102,7 +115,7 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
       );
       this.notifier.showNotification('warning', invalidFields);
       throw new FieldValidationError(invalidFields);
-    } else this.createPartner(action);
+    } else this.newPartner(action);
   }
 
   getPartnersType(): void {
@@ -113,6 +126,30 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
       .subscribe({
         next: (types: IPartnersType[]) => {
           this.types = types;
+        },
+      });
+  }
+
+  getFeesType(): void {
+    this.feesService
+      .getTypes()
+      .pipe(take(1))
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (types: IFeesType[]) => {
+          const feesType: IFeesType[] = [];
+          const inscriptionsType: IFeesType[] = [];
+
+          types.forEach((type: IFeesType) => {
+            if (type.name === 'CUOTA_20' || type.name === 'CUOTA_EXENTA') {
+              feesType.push(type);
+            } else {
+              inscriptionsType.push(type);
+            }
+          });
+
+          this.feesType = feesType;
+          this.inscriptionsType = inscriptionsType;
         },
       });
   }
@@ -131,11 +168,11 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
       });
   }
 
-  createPartner(action: ModalActions): void {
+  newPartner(action: ModalActions): void {
     let partner!: IPartner;
     try {
       const user = this.createPartnerService.getCreator();
-      partner = this.createPartnerEntity(this.createPartnerForm, user);
+      partner = Partner.create(this.getFormData(this.createPartnerForm, user));
     } catch (error: any) {
       if (error instanceof DomainValidationError) {
         this.errorHandler.handleDomainError(error);
@@ -144,7 +181,26 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
       } else this.errorHandler.handleUnkonwError(error);
     }
 
-    this.apiCreatePartner(partner)
+    this.createPartner(partner, action);
+  }
+
+  newPartnerFees(partner: IPartner) {
+    let fee!: IFees;
+    let inscription!: IFees;
+    try {
+      fee = this.feesService.createFee(partner, FeesTypes.FEES);
+      inscription = this.feesService.createFee(partner, FeesTypes.INSCRIPTION);
+    } catch (error: any) {
+      if (error instanceof InvalidFeeType) {
+        this.errorHandler.handleDomainError(error);
+      } else this.errorHandler.handleUnkonwError(error);
+    }
+    this.createFees(fee, inscription);
+  }
+
+  createPartner(partner: IPartner, action: ModalActions): void {
+    this.createPartnerService
+      .createPartner(partner)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res: any) => {
@@ -160,17 +216,45 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
             } else if (action === this.modalActions.SAVE) {
               this.modalRef.close(res);
             }
+            this.newPartnerFees(res);
           }
         },
       });
   }
-  apiCreatePartner(partner: IPartner): Observable<void> {
-    return this.createPartnerService.createPartner(partner);
+
+  createFees(fee: IFees, inscription: IFees): void {
+    const createPartnerFee$ = this.feesService.createPartnerFee(fee);
+    const createPartnerInscription$ =
+      this.feesService.createPartnerFee(inscription);
+
+    forkJoin([createPartnerFee$, createPartnerInscription$])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ([createPartnerFeeRes, createPartnerInscriptionRes]: [
+          any,
+          any
+        ]) => {
+          if (createPartnerFeeRes && createPartnerInscriptionRes) {
+            this.notifier.showNotification(
+              'success',
+              'Asiento contable generado'
+            );
+          } else {
+            this.notifier.showNotification(
+              'error',
+              'Atención, ha ocurrido un error al generar la cuota del socio.'
+            );
+          }
+        },
+        error: (error) => {
+          this.errorHandler.handleUnkonwError(error);
+        },
+      });
   }
 
-  createPartnerEntity(form: UntypedFormGroup, user: string): IPartner {
+  getFormData(form: UntypedFormGroup, user: string): IPartner {
     const mode: FormMode = FormMode.CREATE;
-    return this.partnerMapper.createPartnerFormData(form, mode, user);
+    return this.formsHelperService.createPartnerFormData(form, mode, user);
   }
 
   get nameControl(): AbstractControl {

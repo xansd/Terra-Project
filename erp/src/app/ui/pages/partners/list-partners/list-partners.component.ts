@@ -14,8 +14,8 @@ import { DeletePartnerUseCase } from 'src/app/partners/application/delete-user.c
 import { NotificationAdapter } from '../../../../shared/infraestructure/notifier.adapter';
 import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
 import { ConfirmDialogComponent } from 'src/app/ui/shared/components/confirm-dialog/confirm-dialog.component';
-import { DatetimeHelperService } from 'src/app/ui/shared/helpers/datetime.helper.service';
 import { ActiveEntityService } from 'src/app/ui/services/active-entity-service.service';
+import { DatetimeHelperService } from 'src/app/shared/application/datetime.helper.service';
 
 const modalOptions: NgbModalOptions = {
   backdrop: 'static',
@@ -73,6 +73,8 @@ export class ListPartnersComponent implements OnDestroy {
 
   private destroy$ = new Subject();
 
+  isLoading: boolean = true;
+
   constructor(
     private modalService: NgbModal,
     private partnersService: GetPartnerUseCase,
@@ -80,7 +82,6 @@ export class ListPartnersComponent implements OnDestroy {
     private deleteService: DeletePartnerUseCase,
     private notifier: NotificationAdapter,
     private errorHandler: ErrorHandlerService,
-    private dateFormatter: DatetimeHelperService,
     private activeEntityService: ActiveEntityService
   ) {
     this.dataSource = new MatTableDataSource(this.partnersList);
@@ -115,6 +116,7 @@ export class ListPartnersComponent implements OnDestroy {
             this.partnersListTable.renderRows();
           }
           this.tableHasChanged = false;
+          this.isLoading = false;
         },
       });
   }
@@ -127,7 +129,9 @@ export class ListPartnersComponent implements OnDestroy {
         next: (res: any) => {
           if (res.affectedRows > 0) {
             this.notifier.showNotification('success', 'Socio eliminado');
-            this.sustractFromTable(id);
+            // this.sustractFromTable(id);
+            this.tableHasChanged = true;
+            this.getPartners();
           } else {
             this.errorHandler.handleUnkonwError(res);
           }
@@ -162,7 +166,9 @@ export class ListPartnersComponent implements OnDestroy {
     modalRef.result
       .then((result) => {
         if (result) {
-          this.addToTable(result);
+          // this.addToTable(result);
+          this.tableHasChanged = true;
+          this.getPartners();
           this.activeEntityService.clearActiveEntity();
         }
       })
@@ -178,7 +184,9 @@ export class ListPartnersComponent implements OnDestroy {
     modalRef.result
       .then((result) => {
         if (result) {
-          this.updateTable(result);
+          // this.updateTable(result);
+          this.tableHasChanged = true;
+          this.getPartners();
           this.activeEntityService.clearActiveEntity();
         }
       })
@@ -188,29 +196,29 @@ export class ListPartnersComponent implements OnDestroy {
   }
 
   getFormattedDate(d: any): string {
-    return this.dateFormatter.getFormattedDate(d);
+    return DatetimeHelperService.fromDatePickerDate(d);
   }
 
   /************************* Gestión de tabla ************************************/
 
-  private updateTable(updatedPartner: IPartner) {
-    const index = this.partnersList.findIndex(
-      (p) => p.partner_id === updatedPartner.partner_id
-    );
-    this.partnersList[index] = updatedPartner;
-    this.renderTable();
-  }
+  // private updateTable(updatedPartner: IPartner) {
+  //   const index = this.partnersList.findIndex(
+  //     (p) => p.partner_id === updatedPartner.partner_id
+  //   );
+  //   this.partnersList[index] = updatedPartner;
+  //   this.renderTable();
+  // }
 
-  private addToTable(newPartner: IPartner) {
-    this.partnersList.push(newPartner);
-    this.renderTable();
-  }
+  // private addToTable(newPartner: IPartner) {
+  //   this.partnersList.push(newPartner);
+  //   this.renderTable();
+  // }
 
-  private sustractFromTable(id: string) {
-    const index = this.partnersList.findIndex((p) => p.partner_id === id);
-    this.partnersList.splice(index, 1);
-    this.renderTable();
-  }
+  // private sustractFromTable(id: string) {
+  //   const index = this.partnersList.findIndex((p) => p.partner_id === id);
+  //   this.partnersList.splice(index, 1);
+  //   this.renderTable();
+  // }
 
   private renderTable() {
     this.dataSource = new MatTableDataSource(this.partnersList);

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import {
   FormGroup,
   Validators,
@@ -17,13 +17,14 @@ import { CheckPasswordUseCase } from 'src/app/auth/application/use-cases/check-p
 import { FieldValidationError } from 'src/app/shared/error/field-validation-error';
 import { AuthToken } from 'src/app/auth/domain/token';
 import { TokenInvalidError } from 'src/app/auth/domain/auth.exceptions';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-check-password',
   templateUrl: './check-password.component.html',
   styleUrls: ['./check-password.component.scss'],
 })
-export class CheckPasswordComponent {
+export class CheckPasswordComponent implements OnDestroy {
   matcher = new CustomErrorStateMatcher();
   config = CONFIG;
   public pageRoutes = PageRoutes;
@@ -39,6 +40,8 @@ export class CheckPasswordComponent {
     ],
   });
 
+  private destroy$ = new Subject();
+
   constructor(
     private fb: UntypedFormBuilder,
     private formsHelperService: FormsHelperService,
@@ -49,6 +52,11 @@ export class CheckPasswordComponent {
     public modal: NgbActiveModal,
     private tokenService: AuthToken
   ) {}
+
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete();
+  }
 
   close(result: boolean) {
     if (result) this.submit(this.checkPasswordForm);
@@ -72,22 +80,25 @@ export class CheckPasswordComponent {
       }
     }
     const password = form.controls['password'].value;
-    this.chekPasswordService.checkPassword(username, password).subscribe({
-      next: (res: any) => {
-        if (res.statusCode) {
-          if (res.statusCode === 403) {
-            this.notifier.showNotification(
-              'error',
-              'La contraseña es incorrecta'
-            );
-          } else this.errorHandler.handleAPIKnowError(res);
-        } else {
-          this.tokenService.saveToken(res);
-          this.modal.close(true);
-          this.router.navigateByUrl(PageRoutes.RESET_PASSWORD);
-        }
-      },
-    });
+    this.chekPasswordService
+      .checkPassword(username, password)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res: any) => {
+          if (res.statusCode) {
+            if (res.statusCode === 403) {
+              this.notifier.showNotification(
+                'error',
+                'La contraseña es incorrecta'
+              );
+            } else this.errorHandler.handleAPIKnowError(res);
+          } else {
+            this.tokenService.saveToken(res);
+            this.modal.close(true);
+            this.router.navigateByUrl(PageRoutes.RESET_PASSWORD);
+          }
+        },
+      });
   }
 
   get password(): AbstractControl {
