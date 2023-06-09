@@ -1,0 +1,8 @@
+<div class="editor">
+  <ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
+  <ngx-editor
+    [editor]="editor"
+    (input)="handleEditorChange($event)"
+    placeholder="Escribe la descripción del producto..."
+  ></ngx-editor>
+</div>

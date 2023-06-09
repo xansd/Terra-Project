@@ -12,6 +12,10 @@ import { UsersComponent } from './users/users.component';
 import { PartnersComponent } from './partners/partners.component';
 import { ListPartnersComponent } from './partners/list-partners/list-partners.component';
 import { DetailsPartnerComponent } from './partners/details-partner/details-partner.component';
+import { ListProductsComponent } from './products/list-products/list-products.component';
+import { ProductsStatisticsComponent } from './products/products-statistics/products-statistics.component';
+import { ProductsComponent } from './products/products.component';
+import { ProductsDetailsComponent } from './products/products-details/products-details.component';
 const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
   {
@@ -71,6 +75,35 @@ const routes: Routes = [
           {
             path: 'alta',
             component: DetailsPartnerComponent,
+            canActivate: [AuthGuard],
+            data: { roles: [Roles.ADMIN, Roles.USER] },
+          },
+        ],
+      },
+      {
+        path: 'productos',
+        component: ProductsComponent,
+        children: [
+          {
+            path: '',
+            redirectTo: 'detalles',
+            pathMatch: 'full',
+          },
+          {
+            path: 'detalles',
+            component: ProductsDetailsComponent,
+            canActivate: [AuthGuard],
+            data: { roles: [Roles.ADMIN, Roles.USER] },
+          },
+          {
+            path: 'listado',
+            component: ListProductsComponent,
+            canActivate: [AuthGuard],
+            data: { roles: [Roles.ADMIN, Roles.USER] },
+          },
+          {
+            path: 'estadisticas',
+            component: ProductsStatisticsComponent,
             canActivate: [AuthGuard],
             data: { roles: [Roles.ADMIN, Roles.USER] },
           },

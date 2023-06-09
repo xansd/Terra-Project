@@ -63,11 +63,15 @@ export class PartnerAPIRepository implements IPartnerAPIPort {
     });
   }
 
-  createPartner(partner: IPartner): Observable<void> {
+  createPartner(partner: IPartner): Observable<IPartner> {
     const partnerDTO = this.partnerDTOMapper.toDTO(partner);
-    return this.http.post<void>(`${API_URI}/partners`, partnerDTO, {
-      withCredentials: true,
-    });
+    return this.http
+      .post<IPartnerDTO>(`${API_URI}/partners`, partnerDTO, {
+        withCredentials: true,
+      })
+      .pipe(
+        map((partner: IPartnerDTO) => this.partnerDTOMapper.toDomain(partner))
+      );
   }
 
   updatePartner(partner: IPartner): Observable<void> {
@@ -105,6 +109,16 @@ export class PartnerAPIRepository implements IPartnerAPIPort {
     return this.http.put<void>(
       `${API_URI}/partners/access/${partnerId}`,
       { access_code: code },
+      {
+        withCredentials: true,
+      }
+    );
+  }
+
+  updatePartnersCash(amount: number, partnerId: string): Observable<void> {
+    return this.http.put<void>(
+      `${API_URI}/partners/cash/${partnerId}`,
+      { amount: amount },
       {
         withCredentials: true,
       }

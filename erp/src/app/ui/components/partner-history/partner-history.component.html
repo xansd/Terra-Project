@@ -1,0 +1,52 @@
+<div class="modal-body">
+  <ul class="nav nav-pills mb-3 nav-fill" id="pills-tab">
+    <li class="nav-item">
+      <a
+        class="nav-link active"
+        id="pills-home-tab"
+        data-bs-toggle="pill"
+        href="#retiradas"
+        >Retiradas</a
+      >
+    </li>
+    <li class="nav-item">
+      <a
+        class="nav-link"
+        id="pills-profile-tab"
+        data-bs-toggle="pill"
+        href="#sanciones"
+        >Sanciones</a
+      >
+    </li>
+    <li class="nav-item">
+      <a
+        class="nav-link"
+        id="pills-contact-tab"
+        data-bs-toggle="pill"
+        href="#cuotas"
+        >Cuotas</a
+      >
+    </li>
+  </ul>
+  <div class="tab-content" id="tab-content">
+    <div class="tab-pane fade show active" id="retiradas">En desarrollo...</div>
+    <div class="tab-pane fade" id="sanciones">
+      <app-sanctions></app-sanctions>
+    </div>
+    <div class="tab-pane fade" id="cuotas">
+      <div *ngFor="let fee of fees">
+        <div *ngIf="fee.paid">
+          {{ fee.created_at | date }} - {{ fee.fees_type_id }}-
+          {{ fee.paid | date }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div
+  class="modal-footer d-block d-flex align-items-center bg-inverse bg-opacity-10 fw-400"
+>
+  <button (click)="close(false)" type="button" class="btn btn-warning">
+    Cerrar
+  </button>
+</div>

@@ -13,7 +13,26 @@ export interface IGetAllPartners {
   getAllPartners(): Promise<IPartner[]>;
 }
 
-export class GetPartnerUseCase implements IGetPartner, IGetAllPartners {
+export interface IGetPartnerFiltered {
+  getAllPartnersFiltered(): Promise<IPartnerSubsetDTO[]>;
+}
+
+export interface IGetTypes {
+  getTypes(): Promise<IPartnersType[]>;
+}
+
+export interface IGetPartnerLastNumber {
+  getPartnerLastNumber(): Promise<any>;
+}
+
+export class GetPartnerUseCase
+  implements
+    IGetPartner,
+    IGetAllPartners,
+    IGetPartnerFiltered,
+    IGetTypes,
+    IGetPartnerLastNumber
+{
   constructor(private readonly partnerRepository: IPartnerRepository) {}
 
   async getPartner(id: string): Promise<IPartner> {
@@ -42,13 +61,6 @@ export class GetPartnerUseCase implements IGetPartner, IGetAllPartners {
 
   async getAllPartnersFiltered(): Promise<IPartnerSubsetDTO[]> {
     const partners = await this.partnerRepository.getAllFiltered();
-    if (partners.length === 0) {
-      const partnersNotFound = new PartnersNotFoundError();
-      Logger.error(
-        `partner-repository : getAllPartnersFiltered : ${PartnersNotFoundError}`
-      );
-      throw partnersNotFound;
-    }
 
     return partners;
   }

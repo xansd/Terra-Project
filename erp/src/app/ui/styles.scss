@@ -8,6 +8,12 @@
 @import 'node_modules/angular-notifier/styles';
 
 
+select>* {
+
+    // color: cadetblue;
+
+}
+
 .btn-danger {
     background-color: #DC4C64 !important;
     border-color    : #DC4C64 !important;
@@ -45,4 +51,9 @@ mat-error {
     }
 
     .active {}
+}
+
+form label {
+    font-weight: 600;
+    color      : #36bd94;
 }

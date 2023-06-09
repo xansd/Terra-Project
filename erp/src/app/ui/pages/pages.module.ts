@@ -33,7 +33,13 @@ import { CreatePartnerComponent } from './partners/create-partner/create-partner
 import { EditPartnerComponent } from './partners/edit-partner/edit-partner.component';
 import { DetailsPartnerComponent } from './partners/details-partner/details-partner.component';
 import { PartnerAPIRepository } from 'src/app/partners/infrastructure/partner-api.repository';
-import { FeesUseCases } from 'src/app/partners/application/fees.use-case';
+import { ProductAPIRepository } from 'src/app/products/infrastructure/products-api.repository';
+import { ListProductsComponent } from './products/list-products/list-products.component';
+import { CreateProductComponent } from './products/create-product/create-product.component';
+import { EditProductComponent } from './products/edit-product/edit-product.component';
+import { ProductsComponent } from './products/products.component';
+import { ProductsStatisticsComponent } from './products/products-statistics/products-statistics.component';
+import { ProductsDetailsComponent } from './products/products-details/products-details.component';
 
 @NgModule({
   declarations: [
@@ -53,6 +59,12 @@ import { FeesUseCases } from 'src/app/partners/application/fees.use-case';
     CreatePartnerComponent,
     EditPartnerComponent,
     DetailsPartnerComponent,
+    ListProductsComponent,
+    CreateProductComponent,
+    EditProductComponent,
+    ProductsComponent,
+    ProductsStatisticsComponent,
+    ProductsDetailsComponent,
   ],
   imports: [
     CommonModule,
@@ -70,6 +82,7 @@ import { FeesUseCases } from 'src/app/partners/application/fees.use-case';
     { provide: 'authAPI', useClass: AuthAPIAdapter },
     { provide: 'usersAPI', useClass: UsersAPIRepository },
     { provide: 'partnersAPI', useClass: PartnerAPIRepository },
+    { provide: 'productsAPI', useClass: ProductAPIRepository },
     { provide: 'authToken', useClass: AuthToken },
     { provide: 'registerUserIO', useClass: RegisterActiveUserUseCase },
     { provide: 'unRegisterUserIO', useClass: UnRegisterActiveUserUseCase },

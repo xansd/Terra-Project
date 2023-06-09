@@ -426,6 +426,32 @@
                   </option>
                 </select>
               </div>
+              <!-- Monedero -->
+              <label
+                for="inscription"
+                class="col-12 col-xl-1 col-form-label inscription-label"
+                >Monedero</label
+              >
+              <div class="col-12 col-xl-2">
+                <input
+                  autocomplete="off"
+                  type="number"
+                  class="form-control"
+                  id="cash"
+                  formControlName="cash"
+                  [errorStateMatcher]="matcher"
+                  matInput
+                /><mat-error
+                  *ngIf="
+                    cashControl.invalid &&
+                    (cashControl.dirty || cashControl.touched)
+                  "
+                >
+                  <span *ngIf="cashControl.hasError('required')">
+                    Campo obligatorio.</span
+                  >
+                </mat-error>
+              </div>
             </div>
           </div>
           <div

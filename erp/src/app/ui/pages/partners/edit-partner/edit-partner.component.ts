@@ -23,7 +23,12 @@ import {
   FormMode,
 } from 'src/app/ui/services/app-state.service';
 import { ModalActions } from 'src/app/ui/shared/enums/modalActions.enum';
-import { FeesTypes, IFeesType } from 'src/app/partners/domain/fees';
+import {
+  FeesTypes,
+  FeesVariants,
+  IFees,
+  IFeesType,
+} from 'src/app/partners/domain/fees';
 import { FeesUseCases } from 'src/app/partners/application/fees.use-case';
 import { DatetimeHelperService } from 'src/app/shared/application/datetime.helper.service';
 
@@ -42,7 +47,6 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
   matcher = new CustomErrorStateMatcher();
   private destroy$ = new Subject();
   partner!: IPartner;
-  feesType: IFeesType[] = [];
   inscriptionsType: IFeesType[] = [];
   editPartnerForm: UntypedFormGroup = this.formBuilder.group({
     type: [null, [Validators.required]],
@@ -64,7 +68,13 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
     others: [0, [Validators.required]],
     fee: [null, [Validators.required]],
     inscription: [null, [Validators.required]],
+    cash: [0, [Validators.required]],
   });
+
+  // Cuotas e inscripciones
+  feesType: IFeesType[] = [];
+  lastCuotaFee!: IFees;
+  lastInscriptionFee!: IFees;
 
   partnerMapper = new PartnerDTOMapper();
 
@@ -84,6 +94,7 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
     this, this.formsHelperService.initFormUpdateMode();
     this.getPartner(this.uid);
     this.getFeesType();
+    this.getPartnersFees(this.uid);
   }
 
   ngOnDestroy(): void {
@@ -114,6 +125,7 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
       others: partner.others_month,
       fee: partner.fee,
       inscription: partner.inscription,
+      cash: partner.cash,
     });
   }
 
@@ -180,6 +192,58 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
       });
   }
 
+  // Obtener cuotas e inscripciones
+  getPartnersFees(partnerId: string) {
+    this.feesService
+      .getPartnersFees(partnerId)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (fees: IFees[]) => {
+          // Filtrar por tipo de fees
+          const cuotaFees = fees.filter((fee) => this.isFee(fee));
+          const inscripcionFees = fees.filter((fee) => this.isInscription(fee));
+          // Obtener el último de cada tipo
+          this.lastCuotaFee = this.getLastFee(cuotaFees)!;
+          this.lastInscriptionFee = this.getLastFee(inscripcionFees)!;
+        },
+      });
+  }
+
+  getLastFee(fees: IFees[]): IFees | undefined {
+    if (fees.length === 0) {
+      return undefined;
+    }
+    fees.sort((a, b) => {
+      const dateA = a.created_at || '';
+      const dateB = b.created_at || '';
+      return new Date(dateB).getTime() - new Date(dateA).getTime();
+    });
+
+    return fees[0];
+  }
+
+  hasFeeBeenUpdated(partner: IPartner): boolean {
+    if (
+      this.lastCuotaFee &&
+      partner.fee &&
+      partner.fee !== this.lastCuotaFee.fees_type_id
+    ) {
+      return true;
+    }
+    return false;
+  }
+
+  hasInscriptionBeenUpdated(partner: IPartner): boolean {
+    if (
+      this.lastInscriptionFee &&
+      partner.inscription &&
+      partner.inscription !== this.lastInscriptionFee.fees_type_id
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   updatePartner(action: ModalActions): void {
     let partner!: IPartner;
     try {
@@ -190,6 +254,15 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
         user,
         partnerId!
       );
+      // Si la cuota o inscripcion ha sido modificada
+      if (this.hasFeeBeenUpdated(partner)) {
+        this.lastCuotaFee.fees_type_id = Number(partner.fee!);
+        this.apiUpdateFees(this.lastCuotaFee);
+      }
+      if (this.hasInscriptionBeenUpdated(partner)) {
+        this.lastInscriptionFee.fees_type_id = Number(partner.inscription!);
+        this.apiUpdateFees(this.lastInscriptionFee);
+      }
     } catch (error: any) {
       if (error instanceof DomainValidationError) {
         this.errorHandler.handleDomainError(error);
@@ -213,8 +286,20 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
         },
       });
   }
+
   apiUpdatePartner(partner: IPartner): Observable<void> {
     return this.updatePartnerService.updatePartner(partner);
+  }
+
+  apiUpdateFees(fee: IFees) {
+    this.feesService
+      .updateFee(fee)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res) => {
+          this.notifier.showNotification('success', 'Cuota actualizada');
+        },
+      });
   }
 
   createPartnerEntity(
@@ -238,6 +323,13 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
 
   switchEvent(status: boolean) {
     this.switchEventActive = status;
+  }
+
+  isFee(fee: IFees): boolean {
+    return this.feesService.isFee(fee);
+  }
+  isInscription(fee: IFees): boolean {
+    return this.feesService.isInscription(fee);
   }
 
   get nameControl(): AbstractControl {
@@ -272,6 +364,9 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
   }
   get othersControl(): AbstractControl {
     return this.editPartnerForm.controls['others'];
+  }
+  get cashControl(): AbstractControl {
+    return this.editPartnerForm.controls['cash'];
   }
 
   /*********************************CONDUCTA************************************/

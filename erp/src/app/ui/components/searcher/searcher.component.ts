@@ -63,6 +63,9 @@ export class SearcherComponent implements OnInit, OnDestroy {
         this.populateAutocomplete(
           this.concatName(this.concatName(currentOptions))
         );
+      } else if (currentOptions && currentOptions.length === 0) {
+        this.filteredOptions = of([]);
+        this.searchTerm.reset();
       }
     }
   }

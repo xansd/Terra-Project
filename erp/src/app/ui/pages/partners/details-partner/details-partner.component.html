@@ -42,40 +42,47 @@
                 <div class="property">
                   <span class="property-name">Alta:</span>
                   <span class="property-value">{{
-                    formatDate(partner.created_at!)
+                    formatDate(partner!.created_at!)
                   }}</span>
                 </div>
                 <div class="property">
                   <span class="property-name">Nombre:</span>
                   <span class="property-value"
-                    >{{ partner.surname }}, {{ partner.name }}</span
+                    >{{ partner!.surname }}, {{ partner!.name }}</span
                   >
                 </div>
                 <div class="property">
                   <span class="property-name">Nacimiento:</span>
                   <span class="property-value">{{
-                    formatDate(partner.birthday)
+                    formatDate(partner!.birthday)
                   }}</span>
                 </div>
                 <div class="property">
                   <span class="property-name">DNI:</span>
-                  <span class="property-value">{{ partner.dni }}</span>
+                  <span class="property-value">{{ partner!.dni }}</span>
                 </div>
                 <div class="property">
                   <span class="property-name">Email:</span>
-                  <span class="property-value">{{ partner.email.value }}</span>
+                  <span class="property-value">{{ partner!.email.value }}</span>
                 </div>
                 <div class="property">
                   <span class="property-name">Teléfono:</span>
-                  <span class="property-value">{{ partner.phone }}</span>
+                  <span class="property-value">{{ partner!.phone }}</span>
                 </div>
                 <div class="property">
                   <span class="property-name">Domicilio:</span>
-                  <span class="property-value">{{ partner.address }}</span>
+                  <span class="property-value">{{ partner!.address }}</span>
                 </div>
-                <div class="property" *ngIf="partner.leaves">
+                <div class="property" *ngIf="partner!.leaves">
                   <span class="property-name">Baja:</span>
-                  <span class="property-value">{{ partner.leaves }}</span>
+                  <span class="property-value">{{ partner!.leaves }}</span>
+                </div>
+
+                <div class="property">
+                  <span class="property-name">Terapéutico:</span>
+                  <span class="property-value fw-bold">{{
+                    partner!.therapeutic ? "SI" : "NO"
+                  }}</span>
                 </div>
                 <!-- TOPES -->
                 <h6 class="card-subtitle mb-3 text-inverse text-opacity-50">
@@ -84,20 +91,20 @@
                 <div class="property">
                   <span class="property-name">Tope maria/mes:</span>
                   <span class="property-value"
-                    >{{ partner.cannabis_month | number : "1.2-2" }} gr.</span
+                    >{{ partner!.cannabis_month | number : "1.2-2" }} gr.</span
                   >
                 </div>
                 <div class="property">
                   <span class="property-name">Tope hash/mes:</span>
                   <span class="property-value"
-                    >{{ partner.hash_month | number : "1.2-2" }} gr.</span
+                    >{{ partner!.hash_month | number : "1.2-2" }} gr.</span
                   >
                 </div>
                 <div class="property">
                   <span class="property-name">Tope extrac./mes:</span>
                   <span class="property-value"
                     >{{
-                      partner.extractions_month | number : "1.2-2"
+                      partner!.extractions_month | number : "1.2-2"
                     }}
                     gr.</span
                   >
@@ -105,7 +112,7 @@
                 <div class="property">
                   <span class="property-name">Tope otros/mes:</span>
                   <span class="property-value"
-                    >{{ partner.others_month | number : "1.2-2" }} gr.</span
+                    >{{ partner!.others_month | number : "1.2-2" }} gr.</span
                   >
                 </div>
                 <div class="property" style="font-weight: bold">
@@ -124,62 +131,36 @@
               </card-header>
               <card-body class="pb-2">
                 <!-- ACTIVIDAD -->
+                <!-- CASH -->
+                <div class="property">
+                  <span class="property-name">Monedero:</span>
+                  <span
+                    class="property-value fw-bold"
+                    [ngClass]="{
+                      'text-success': partner!.cash >= 0,
+                      'text-danger': overTotal < 0
+                    }"
+                    >{{ partner!.cash | number : "1.2-2" }} €</span
+                  >
+                </div>
                 <div class="property">
                   <span class="property-name">Activo:</span>
                   <span
                     class="property-value fw-bold"
                     [ngClass]="{
-                      'text-success': partner.active,
-                      'text-danger': !partner.active
+                      'text-success': partner!.active,
+                      'text-danger': !partner!.active
                     }"
-                    >{{ partner.active ? "SI" : "NO" }}</span
+                    >{{ partner!.active ? "SI" : "NO" }}</span
                   >
                 </div>
                 <div class="property">
                   <span class="property-name">Última actividad:</span>
                   <span class="property-value">{{
-                    formatDate(partner.created_at!)
+                    formatDate(partner!.created_at!)
                   }}</span>
                 </div>
 
-                <!-- CONSUMO -->
-                <h6 class="card-subtitle mb-3 text-inverse text-opacity-50">
-                  Consumo
-                </h6>
-                <div class="property">
-                  <span class="property-name">Consumo mes:</span>
-                  <span class="property-value"
-                    >{{ 0 | number : "1.2-2" }} gr.</span
-                  >
-                </div>
-                <div class="property">
-                  <span class="property-name">Consumo total:</span>
-                  <span class="property-value"
-                    >{{ 0 | number : "1.2-2" }} gr.</span
-                  >
-                </div>
-                <div class="property">
-                  <span class="property-name">Exceso mes:</span>
-                  <span
-                    class="property-value"
-                    [ngClass]="{
-                      'text-success': overMonth <= 0,
-                      'text-danger': overMonth > 0
-                    }"
-                    >{{ 0 | number : "1.2-2" }} gr.</span
-                  >
-                </div>
-                <div class="property">
-                  <span class="property-name">Exceso total:</span>
-                  <span
-                    class="property-value"
-                    [ngClass]="{
-                      'text-success': overTotal <= 0,
-                      'text-danger': overTotal > 0
-                    }"
-                    >{{ 0 | number : "1.2-2" }} gr.</span
-                  >
-                </div>
                 <!-- CUOTA -->
                 <h6 class="card-subtitle mb-3 text-inverse text-opacity-50">
                   Cuota
@@ -251,15 +232,53 @@
                     }}</span
                   >
                 </div>
+                <!-- CONSUMO -->
+                <h6 class="card-subtitle mb-3 text-inverse text-opacity-50">
+                  Consumo
+                </h6>
 
+                <div class="property">
+                  <span class="property-name">Consumo mes:</span>
+                  <span class="property-value"
+                    >{{ 0 | number : "1.2-2" }} gr.</span
+                  >
+                </div>
+                <div class="property">
+                  <span class="property-name">Consumo total:</span>
+                  <span class="property-value"
+                    >{{ 0 | number : "1.2-2" }} gr.</span
+                  >
+                </div>
+                <div class="property">
+                  <span class="property-name">Exceso mes:</span>
+                  <span
+                    class="property-value"
+                    [ngClass]="{
+                      'text-success': overMonth <= 0,
+                      'text-danger': overMonth > 0
+                    }"
+                    >{{ 0 | number : "1.2-2" }} gr.</span
+                  >
+                </div>
+                <div class="property">
+                  <span class="property-name">Exceso total:</span>
+                  <span
+                    class="property-value"
+                    [ngClass]="{
+                      'text-success': overTotal <= 0,
+                      'text-danger': overTotal > 0
+                    }"
+                    >{{ 0 | number : "1.2-2" }} gr.</span
+                  >
+                </div>
                 <!-- PRODECTOS PREFERIDOS -->
 
-                <!-- <h6
+                <h6
                   class="card-subtitle mb-3 text-inverse text-opacity-50"
                   style="margin-top: 15px"
                 >
                   Preferidos
-                </h6> -->
+                </h6>
                 <div class="list-group">
                   <a class="list-group-item list-group-item-action"
                     ><i class="bi bi-trophy-fill"></i> <span>Sour Diesel</span>
@@ -282,11 +301,14 @@
       <!-- Botones -->
       <div class="col-lg-2">
         <div class="button-container">
+          <button class="btn btn-default" (click)="updatePartnersCash()">
+            <i class="bi bi-cash-coin"></i> Ingreso
+          </button>
           <button class="btn btn-default">
             <i class="bi bi-cart3"></i> Dispensar
           </button>
           <button class="btn btn-default" (click)="payFeeConfirm(lastCuotaFee)">
-            <i class="bi bi-currency-euro"></i> Abonar cuota
+            <i class="bi bi-shield-check"></i> Abonar cuota
           </button>
           <button
             class="btn btn-default"
@@ -298,7 +320,7 @@
           >
             <i class="bi bi-currency-euro"></i> Abonar inscripción
           </button>
-          <button class="btn btn-default">
+          <button class="btn btn-default" (click)="openPartnerHistory()">
             <i class="bi bi-person-badge"></i> Historial
           </button>
           <button class="btn btn-info" (click)="openEditPartnerDialog()">

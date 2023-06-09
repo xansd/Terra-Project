@@ -24,6 +24,7 @@ export interface IPartner {
   sanctions?: ISanctions[];
   fee?: FeesVariants;
   inscription?: FeesVariants;
+  cash: number;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -58,6 +59,7 @@ export class Partner implements IPartner {
   sanctions?: ISanctions[];
   fee?: FeesVariants;
   inscription?: FeesVariants;
+  cash: number;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -86,6 +88,7 @@ export class Partner implements IPartner {
     this.sanctions = props.sanctions;
     this.fee = props.fee;
     this.inscription = props.inscription;
+    this.cash = props.cash;
     this.user_created = props.user_created ? props.user_created : '';
     this.user_updated = props.user_updated ? props.user_updated : '';
     this.created_at = props.created_at ? props.created_at : '';

@@ -1,3 +1,4 @@
+import { Readable } from "nodemailer/lib/xoauth2";
 import { IFiles, IFilesType } from "./files";
 
 export interface IFilesRepository {
@@ -6,4 +7,9 @@ export interface IFilesRepository {
   getTypes(): Promise<IFilesType[]>;
   uploadFile(file: IFiles): Promise<void>;
   deleteFile(fileId: string): Promise<void>;
+}
+
+export interface ILocalFileHandler {
+  downloadFile(fileName: string): Promise<Buffer>;
+  streamFile(localFilePath: string): Promise<Readable>;
 }

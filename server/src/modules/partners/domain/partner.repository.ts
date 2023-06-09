@@ -8,11 +8,22 @@ export interface IPartnerRepository {
   getTypes(): Promise<IPartnersType[]>;
   getPartnerLastNumber(): Promise<number>;
   create(partner: IPartner): Promise<IPartner>;
-  update(partner: IPartner): Promise<IPartner>;
+  update(partner: IPartner): Promise<void>;
   delete(partnerId: string): Promise<void>;
   makeActive(partnerId: string): Promise<void>;
   makeInactive(partnerId: string): Promise<void>;
   partnerLeaves(partnerId: string): Promise<void>;
   checkPartnerExistenceByEmail(email: string): Promise<boolean>;
   updateAccessCode(accessCode: string, partnerId: string): Promise<void>;
+  updatePartnerCash(amount: number, partnerId: string): Promise<void>;
+  getPartnerCash(partnerId: string): Promise<{ cash: number }>;
+}
+
+export interface IODTGenerator {
+  generateDocument(
+    partner: IPartner,
+    sourceDoc: string,
+    outPutDoc: string,
+    type: string
+  ): any;
 }

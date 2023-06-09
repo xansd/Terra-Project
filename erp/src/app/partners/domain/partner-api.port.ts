@@ -8,13 +8,14 @@ export interface IPartnerAPIPort {
   getAllPartnersFiltered(): Observable<Partial<IPartner[]>>;
   getPartnersType(): Observable<IPartnersType[]>;
   getPartnerLastNumber(): Observable<object>;
-  createPartner(partner: IPartner): Observable<void>;
+  createPartner(partner: IPartner): Observable<IPartner>;
   updatePartner(partner: IPartner): Observable<void>;
   deletePartner(partnerId: string): Observable<void>;
   makeActive(partnerId: string): Observable<void>;
   makeInactive(partnerId: string): Observable<void>;
   partnerLeaves(partnerId: string): Observable<void>;
   updateAccessCode(code: string, partnerId: string): Observable<void>;
+  updatePartnersCash(amount: number, partnerId: string): Observable<void>;
 
   createPartnerFee(fee: IFees): Observable<void>;
   getPartnersFees(partnerId: string): Observable<IFees[]>;

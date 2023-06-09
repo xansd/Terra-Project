@@ -1,5 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
@@ -7,7 +7,6 @@ import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, takeUntil } from 'rxjs';
 import { GetPartnerUseCase } from 'src/app/partners/application/get-partners.use-case';
 import { IPartner } from 'src/app/partners/domain/partner';
-import { PartnerDTOMapper } from 'src/app/partners/infrastructure/partner-dto.mapper';
 import { CreatePartnerComponent } from '../create-partner/create-partner.component';
 import { EditPartnerComponent } from '../edit-partner/edit-partner.component';
 import { DeletePartnerUseCase } from 'src/app/partners/application/delete-user.case-use';
@@ -28,8 +27,7 @@ const modalOptions: NgbModalOptions = {
   templateUrl: './list-partners.component.html',
   styleUrls: ['./list-partners.component.scss'],
 })
-export class ListPartnersComponent implements OnDestroy {
-  partnerDTOMapper = new PartnerDTOMapper();
+export class ListPartnersComponent implements OnDestroy, OnInit {
   partnersList: IPartner[] = [];
   dataSource!: MatTableDataSource<IPartner>;
   tableHasChanged = false;

@@ -17,6 +17,8 @@ import { UpdateAccessCodeComponent } from 'src/app/ui/components/update-access-c
 import { FeesTypes } from 'src/app/partners/domain/fees';
 import { DatetimeHelperService } from 'src/app/shared/application/datetime.helper.service';
 import { CreatePartnerComponent } from '../create-partner/create-partner.component';
+import { PartnerHistoryComponent } from 'src/app/ui/components/partner-history/partner-history.component';
+import { UpdatePartnerCashComponent } from 'src/app/ui/components/update-partner-cash/update-partner-cash.component';
 
 const modalEditOptions: NgbModalOptions = {
   backdrop: 'static',
@@ -34,7 +36,7 @@ const modalOptions: NgbModalOptions = {
   styleUrls: ['./details-partner.component.scss'],
 })
 export class DetailsPartnerComponent implements OnInit, OnDestroy {
-  partner!: IPartner;
+  partner!: IPartner | undefined;
   id!: string;
   fees: IFees[] = [];
   lastCuotaFee!: IFees;
@@ -69,6 +71,52 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
     this.destroy$.next(true);
     this.destroy$.complete();
   }
+
+  /*********************************BUSCADOR************************************/
+
+  getPartnerList() {
+    this.partnerService
+      .getAllPartnersFiltered()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (partnerList: Partial<IPartner[]>) => {
+          this.options = partnerList;
+          if (partnerList.length > 0) {
+            const lastID = this.getLastPartner(partnerList);
+            if (lastID && !this.id) {
+              this.id = lastID;
+              this.getPartner();
+            }
+          } else {
+            this.isLoading = true;
+            this.partner = undefined;
+          }
+        },
+      });
+  }
+
+  getLastPartner(partnerList: Partial<IPartner[]>): string | undefined {
+    if (partnerList && partnerList.length > 0) {
+      const lastPartner = partnerList[partnerList.length - 1];
+      const lastPartnerId = lastPartner!.partner_id;
+      return lastPartnerId;
+    }
+    return undefined;
+  }
+
+  handleOptionSelected(option: any): void {
+    if (!this.selectInProgress) {
+      this.selectInProgress = true;
+      this.id = option.partner_id;
+      this.getPartner();
+
+      setTimeout(() => {
+        this.selectInProgress = false;
+      }, 100);
+    }
+  }
+
+  /*********************************BUSCADOR************************************/
 
   /*************************************CARGA SOCIO**************************************/
 
@@ -159,6 +207,7 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
     modalRef.result
       .then((result) => {
         if (result) {
+          this.id = '';
           this.getPartnerList();
         }
       })
@@ -176,6 +225,8 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
         next: (res: any) => {
           if (res.affectedRows > 0) {
             this.notifier.showNotification('success', 'Socio dado de baja');
+            this.id = '';
+            this.getPartnerList();
           }
         },
       });
@@ -193,6 +244,27 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
       .then((result) => {
         if (result) {
           this.notifier.showNotification('success', 'Codigo actualizado');
+        }
+      })
+      .catch((error) => {
+        if (error) console.error(error);
+      });
+  }
+
+  // Actualizar monedero
+  updatePartnersCash() {
+    if (!this.checkPartnerSelected()) return;
+    const modalRef = this.modalService.open(
+      UpdatePartnerCashComponent,
+      modalOptions
+    );
+    modalRef.componentInstance.uid = this.id;
+    modalRef.result
+      .then((result) => {
+        if (result) {
+          this.notifier.showNotification('success', 'Monedero actualizado');
+          this.isLoading = true;
+          this.getPartner();
         }
       })
       .catch((error) => {
@@ -322,46 +394,6 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
 
   /*********************************CONDUCTA************************************/
 
-  /*********************************BUSCADOR************************************/
-
-  getPartnerList() {
-    this.partnerService
-      .getAllPartnersFiltered()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (partnerList: Partial<IPartner[]>) => {
-          this.options = partnerList;
-          const lastID = this.getLastPartner(partnerList);
-          if (lastID && !this.id) {
-            this.id = lastID;
-            this.getPartner();
-          }
-        },
-      });
-  }
-
-  getLastPartner(partnerList: Partial<IPartner[]>): string | undefined {
-    if (partnerList && partnerList.length > 0) {
-      const lastPartner = partnerList[partnerList.length - 1];
-      const lastPartnerId = lastPartner!.partner_id;
-      return lastPartnerId;
-    }
-    return undefined;
-  }
-
-  handleOptionSelected(option: any): void {
-    if (!this.selectInProgress) {
-      this.selectInProgress = true;
-      this.id = option.partner_id;
-      this.getPartner();
-
-      setTimeout(() => {
-        this.selectInProgress = false;
-      }, 100);
-    }
-  }
-  /*********************************BUSCADOR************************************/
-
   /*********************************VISTA************************************/
 
   // Topes sobrepasados
@@ -374,10 +406,10 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
 
   getTotalTopMonth() {
     return (
-      Number(this.partner.cannabis_month) +
-      Number(this.partner.hash_month) +
-      Number(this.partner.extractions_month) +
-      Number(this.partner.others_month)
+      Number(this.partner!.cannabis_month) +
+      Number(this.partner!.hash_month) +
+      Number(this.partner!.extractions_month) +
+      Number(this.partner!.others_month)
     );
   }
 
@@ -392,4 +424,24 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
   isCurrentMonth(expiration: string): boolean {
     return this.feesService.isFeesCurrentMonth(expiration);
   }
+
+  /**********************************HISTORIAL***********************************/
+  openPartnerHistory() {
+    const modalRef = this.modalService.open(
+      PartnerHistoryComponent,
+      modalEditOptions
+    );
+    modalRef.componentInstance.fees = this.fees;
+    modalRef.componentInstance.partner = this.partner;
+    modalRef.result
+      .then((result) => {
+        if (result) {
+        }
+      })
+      .catch((error) => {
+        if (error) console.error(error);
+      });
+  }
+
+  /**********************************HISTORIAL***********************************/
 }

@@ -17,14 +17,14 @@ export class CreatePartnerUseCase implements ICreatePartner {
   private partnerMapper: PartnerMapper = new PartnerMapper();
   partnerDomain!: IPartner;
 
-  constructor(private readonly userRepository: IPartnerRepository) {}
+  constructor(private readonly partnerRepository: IPartnerRepository) {}
 
   async createPartner(partner: IPartnerDTO): Promise<IPartner | undefined> {
     // Comprobamos si el email ya existe en la tabla de socios
     try {
       this.partnerDomain = this.partnerMapper.toDomain(partner);
       const partnerExists =
-        await this.userRepository.checkPartnerExistenceByEmail(
+        await this.partnerRepository.checkPartnerExistenceByEmail(
           this.partnerDomain.email.value
         );
       if (partnerExists) {
@@ -34,7 +34,7 @@ export class CreatePartnerUseCase implements ICreatePartner {
         throw new PartnerAlreadyExistsError(this.partnerDomain.email.value);
       }
       // Guardamos el socio en la base de datos
-      const partnerRepository = await this.userRepository.create(
+      const partnerRepository = await this.partnerRepository.create(
         this.partnerDomain
       );
       return partnerRepository;

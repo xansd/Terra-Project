@@ -1,6 +1,5 @@
 import { DatetimeHelperService } from "../../../shared/application/datetime.helper.service";
 import { IFees, FeesVariants } from "../../domain/fees";
-import { FeeNotFoundError } from "../../domain/fees.exceptions";
 import { MysqlFeesRepository } from "../../infrastructure/mysql-fees.repository";
 import { FeesDTOMapper } from "../fees.mapper";
 import { IFeesDTO } from "../fees.mapper";
@@ -27,20 +26,27 @@ export class FeesUseCases implements IFeesUseCases {
 
     // CUOTA NO EXENTA SIN VTO (nueva)
     if (this.isFee(fee) && !this.isFeeExent(fee) && !fee.expiration) {
-      feeDomain.expiration = expiration;
+      const lastTypeFee = await this.feesRepository.getLastTypeFee(fee);
+      if (
+        lastTypeFee &&
+        expiration < DatetimeHelperService.dateToString(lastTypeFee.expiration!)
+      ) {
+        feeDomain.expiration = DatetimeHelperService.dateToString(
+          lastTypeFee.expiration
+        );
+      } else feeDomain.expiration = expiration;
       result = await this.feesRepository.create(feeDomain);
       // CUOTA NO EXENTA CON VTO (renovacion)
     } else if (this.isFee(fee) && !this.isFeeExent(fee) && fee.expiration) {
       result = await this.feesRepository.create(feeDomain);
       // INSCRIPCION NO EXENTA
     } else if (this.isInscription(fee) && !this.isInscriptionExent(fee)) {
-      feeDomain.expiration = expiration;
       result = await this.feesRepository.create(feeDomain);
       // COUTA O INSCRIPCION EXENTAS (se crean sin VTO)
-    } else if (
-      (this.isInscription(fee) && this.isInscriptionExent(fee)) ||
-      (this.isFee(fee) && this.isFeeExent(fee))
-    ) {
+    } else if (this.isFee(fee) && this.isFeeExent(fee)) {
+      feeDomain.expiration = null;
+      result = await this.feesRepository.create(feeDomain);
+    } else {
       result = await this.feesRepository.create(feeDomain);
     }
 
@@ -55,8 +61,9 @@ export class FeesUseCases implements IFeesUseCases {
     return fees;
   }
   async updateFee(fee: IFeesDTO): Promise<IFees | null> {
-    const _fee = await this.feesRepository.update(fee);
-    return _fee;
+    const deleteFee = await this.deleteFee(fee.fee_id?.toString()!);
+    const create = await this.createFee(fee);
+    return create;
   }
   async deleteFee(feeId: string): Promise<void> {
     const result = await this.feesRepository.delete(feeId);

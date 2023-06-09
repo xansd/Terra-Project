@@ -15,7 +15,7 @@ export interface IFees {
   fee_id?: number;
   partner_id?: string;
   fees_type_id: FeesVariants;
-  expiration?: string;
+  expiration?: string | null;
   paid?: number | boolean;
   created_at?: string;
   updated_at?: string;
@@ -33,7 +33,7 @@ export class Fees implements IFees {
   fee_id?: number;
   partner_id?: string;
   fees_type_id: FeesVariants;
-  expiration?: string;
+  expiration?: string | null;
   paid?: number | boolean;
   created_at?: string;
   updated_at?: string;

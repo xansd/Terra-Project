@@ -7,7 +7,7 @@ import { PartnerMapper } from "../partner-dto.mapper";
 import { IPartnerDTO } from "../partner.dto";
 
 export interface IUpdatePartner {
-  updatePartner(partner: IPartnerDTO): Promise<IPartner | undefined>;
+  updatePartner(partner: IPartnerDTO): Promise<void>;
 }
 
 export class UpdatePartnerUseCase implements IUpdatePartner {
@@ -16,10 +16,10 @@ export class UpdatePartnerUseCase implements IUpdatePartner {
 
   constructor(private readonly partnerRepository: IPartnerRepository) {}
 
-  async updatePartner(partner: IPartnerDTO): Promise<IPartner | undefined> {
+  async updatePartner(partner: IPartnerDTO): Promise<void> {
     try {
       this.partnerDomain = this.partnerMapper.toDomain(partner);
-      // Comprobamo si ya exsite el email
+      // Comprobamos si ya exsite el email
       const partnerExists = await this.partnerRepository.getById(
         partner.partner_id
       );
@@ -56,6 +56,16 @@ export class UpdatePartnerUseCase implements IUpdatePartner {
   async updateAccessCode(accessCode: string, partnerId: string): Promise<void> {
     const result = await this.partnerRepository.updateAccessCode(
       accessCode,
+      partnerId
+    );
+    return result;
+  }
+
+  async updatePartnerCash(amount: string, partnerId: string): Promise<void> {
+    const actualCash = await this.partnerRepository.getPartnerCash(partnerId);
+    const total = Number(actualCash.cash) + Number(amount);
+    const result = await this.partnerRepository.updatePartnerCash(
+      total,
       partnerId
     );
     return result;

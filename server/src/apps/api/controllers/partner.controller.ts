@@ -224,4 +224,23 @@ export class PartnerController {
       }
     }
   }
+
+  async updatePartnerCash(request: Request, response: Response): Promise<void> {
+    const { id } = request.params;
+    try {
+      const result = await this.updatePartnerUseCase.updatePartnerCash(
+        request.body.amount,
+        id
+      );
+      response.send(result);
+    } catch (error) {
+      if (error instanceof DomainValidationError) {
+        response.send(BadRequest(error.message));
+      } else if (error instanceof PartnerDoesNotExistError) {
+        response.send(NotFound(error.message));
+      } else {
+        response.send(InternalServerError(error));
+      }
+    }
+  }
 }

@@ -84,20 +84,24 @@ export class FeesUseCases implements IFeesUseCases {
   }
 
   isFee(fee: IFees): boolean {
+    if (!fee) return false;
     if (fee.fees_type_id > 2) return false;
     return true;
   }
   isInscription(fee: IFees): boolean {
+    if (!fee) return false;
     if (fee.fees_type_id > 2) return true;
     return false;
   }
 
   isFeeExent(fee: IFees): boolean {
+    if (!fee) return false;
     if (fee.fees_type_id === 2) return true;
     return false;
   }
 
   isInscriptionExent(fee: IFees): boolean {
+    if (!fee) return false;
     if (fee.fees_type_id === 3) return true;
     return false;
   }

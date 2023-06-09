@@ -9,14 +9,20 @@ export class AppMenuService {
       { text: 'General', is_header: true },
       { path: PageRoutes.HOME, icon: PageIcon.HOME, text: PageTitle.HOME },
       { is_divider: true },
-      { text: 'Aplicación', is_header: true },
-      { path: PageRoutes.USERS, icon: PageIcon.USERS, text: PageTitle.USERS },
       { text: 'Asociación', is_header: true },
       {
         path: PageRoutes.PARTNERS,
         icon: PageIcon.PARTNERS,
         text: PageTitle.PARTNERS,
       },
+      {
+        path: PageRoutes.PRODUCTS,
+        icon: PageIcon.PRODUCTS,
+        text: PageTitle.PRODUCTS,
+      },
+      { is_divider: true },
+      { text: 'Ajustes', is_header: true },
+      { path: PageRoutes.USERS, icon: PageIcon.USERS, text: PageTitle.USERS },
     ];
   }
 }

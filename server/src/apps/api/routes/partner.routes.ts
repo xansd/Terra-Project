@@ -124,4 +124,38 @@ router.put(
   partnerController.updateAccessCode.bind(partnerController)
 );
 
+// UPDATE PARTNER CASH
+router.put(
+  "/cash/:id",
+  authorize([Role.ADMIN, Role.USER]),
+  [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
+  partnerController.updatePartnerCash.bind(partnerController)
+);
+
+/*****************************DOCUMENTS********************************************/
+// GET FEE
+router.get(
+  "/documents/fee",
+  authorize([Role.ADMIN, Role.USER]),
+  partnerController.getTypes.bind(partnerController)
+);
+// GET REGISTRATION FEE
+router.get(
+  "/documents/registration-fee",
+  authorize([Role.ADMIN, Role.USER]),
+  partnerController.getTypes.bind(partnerController)
+);
+// GET REGISTRATION
+router.get(
+  "/documents/registration",
+  authorize([Role.ADMIN, Role.USER]),
+  partnerController.getTypes.bind(partnerController)
+);
+// GET CONTRACT
+router.get(
+  "/documents/contract",
+  authorize([Role.ADMIN, Role.USER]),
+  partnerController.getTypes.bind(partnerController)
+);
+
 export { router };

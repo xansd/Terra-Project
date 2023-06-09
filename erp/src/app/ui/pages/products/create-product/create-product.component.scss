@@ -1,0 +1,113 @@
+::ng-deep .modal-xl {
+    width    : 90% !important;
+    max-width: 100% !important;
+    padding  : 0 !important;
+}
+
+::ng-deep .modal-body {
+    padding: 0 !important;
+}
+
+::ng-deep .dropdown-menu {
+    background-color: rgb(53, 67, 74) !important;
+}
+
+::ng-deep card-header {
+    z-index: 1 !important;
+}
+
+
+form {
+
+    padding: 15px;
+
+    .save-btn-container {
+        margin-top: 50px;
+
+        button {
+            margin-left: 15px;
+        }
+    }
+
+    .row {
+        margin-bottom: 40px !important;
+    }
+
+    label {
+        text-transform  : uppercase;
+        display         : -webkit-box;
+        display         : -ms-flexbox;
+        display         : flex;
+        -webkit-box-pack: start;
+        -ms-flex-pack   : start;
+        justify-content : flex-start;
+    }
+
+
+    .text-editor-container {
+        height: 280px;
+    }
+
+    .categories .select-container {
+        margin-bottom: 10px;
+    }
+
+    .categories .select-container:first-child {
+        margin-top: -100px;
+    }
+
+
+}
+
+@media (max-width: 1199px) {
+    label {
+        -webkit-box-pack: start;
+        -ms-flex-pack   : start;
+        justify-content : flex-start;
+    }
+
+    .text-editor-container {
+        margin-bottom: 50px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .percentages {
+        position: relative;
+        top     : -60px
+    }
+
+    .flawour {
+        position: relative;
+        top     : -70px
+    }
+
+    .save-btn-container {
+        position     : relative;
+        top          : -90px;
+        margin-bottom: -90px;
+    }
+
+    .prices {
+        position     : relative;
+        top          : -50px;
+        margin-bottom: -60px;
+    }
+
+    .categories {
+        margin-top: -20px;
+    }
+}
+
+
+::ng-deep .dropdown-menu.show {
+    z-index: 1090 !important;
+}
+
+
+.hide-component {
+    opacity       : 0.5;
+    /* Cambia este valor según tu preferencia */
+    pointer-events: none;
+    /* Evita que se puedan realizar interacciones con el componente oscurecido */
+}

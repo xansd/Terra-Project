@@ -6,7 +6,7 @@ export interface IFeesDTO {
   partner_id?: string;
   fees_type_id: FeesVariants;
   expiration?: string;
-  paid?: number | boolean;
+  paid?: string;
   created_at?: string;
   updated_at?: string;
   deleted_at?: string;

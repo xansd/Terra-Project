@@ -1,0 +1,59 @@
+.editor {
+    border       : 1px solid #CCC !important;
+    border-radius: 4px;
+    width        : 100%;
+    height       : 100%;
+    margin       : 0 !important;
+}
+
+
+:host ::ng-deep {
+
+
+    /* to penetrate <ngx-editor> CSS styling */
+    .NgxEditor__MenuBar {
+        background-color: transparent !important;
+        color           : azure !important;
+        border-bottom   : 1px solid #CCC !important;
+
+        button {
+            background-color: #333;
+            color           : #FFF;
+        }
+
+        label {
+            color: #333;
+        }
+    }
+
+    .NgxEditor {
+        height          : calc(100% - 40px);
+        width           : 100%;
+        overflow-y      : auto;
+        background-color: transparent !important;
+        color           : azure !important;
+    }
+
+    .NgxEditor__Content {
+        padding         : 10px;
+        background-color: transparent !important;
+        color           : azure !important;
+    }
+
+    .NgxEditor__Dropdown--DropdownMenu {
+        background-color: #FFF !important;
+        color           : #333 !important;
+    }
+
+    .NgxEditor__MenuItem--IconContainer:hover,
+    .NgxEditor__MenuItem:hover,
+    .NgxEditor__MenuItem--Icon:hover,
+    .NgxEditor__Dropdown--Text:hover,
+    .NgxEditor__Dropdown--Selected:hover {
+        color : #333;
+        cursor: pointer;
+    }
+
+
+
+}

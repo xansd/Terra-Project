@@ -31,6 +31,7 @@ export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
     const sanctions = dto.sanctions;
     const fee = dto.fee;
     const inscription = dto.inscription;
+    const cash = dto.cash;
     const user_created = dto.user_created;
     const user_updated = dto.user_updated;
     const props = {
@@ -55,6 +56,7 @@ export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       sanctions,
       fee,
       inscription,
+      cash,
       user_created,
       user_updated,
     };
@@ -86,6 +88,7 @@ export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       sanctions: domain.sanctions,
       fee: domain.fee,
       inscription: domain.inscription,
+      cash: domain.cash,
       user_created: domain.user_created,
       user_updated: domain.user_updated,
       created_at: domain.created_at,
@@ -94,20 +97,26 @@ export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
     };
   }
 
+  // Convierte una lista de dominio a una lista de DTO
+  toDTOList(domainList: IPartner[]): IPartnerDTO[] {
+    return domainList.map((partner) => this.toDTO(partner));
+  }
+
+  // Convierte una lista de DTO a una lista de dominio
+  toDomainList(dtoList: IPartnerDTO[]): IPartner[] {
+    return dtoList.map((partnerDTO) => this.toDomain(partnerDTO));
+  }
+
   // Convierte un dominio a un DTO
-  toDTOFiltered(domain: IPartner): Partial<IPartnerDTO> {
+  toDTOFiltered(domain: IPartner): IPartnerSubsetDTO {
     return {
       partner_id: domain.partner_id.value,
       access_code: undefined,
       number: domain.number,
       name: domain.name,
       surname: domain.surname,
+      dni: domain.dni!,
     };
-  }
-
-  // Convierte una lista de dominio a una lista de DTO
-  toDTOList(domainList: IPartner[]): IPartnerDTO[] {
-    return domainList.map((partner) => this.toDTO(partner));
   }
 
   // Convierte una lista de dominio a una lista de DTO
@@ -122,10 +131,5 @@ export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
         dni: partner.dni!,
       };
     });
-  }
-
-  // Convierte una lista de DTO a una lista de dominio
-  toDomainList(dtoList: IPartnerDTO[]): IPartner[] {
-    return dtoList.map((partnerDTO) => this.toDomain(partnerDTO));
   }
 }

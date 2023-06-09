@@ -27,4 +27,8 @@ export class UpdatePartnerUseCase implements IUpdatePartnerUseCase {
   updateAccessCode(code: string, partnerId: string): Observable<void> {
     return this.partnersAPI.updateAccessCode(code, partnerId);
   }
+
+  updatePartnersCash(amount: number, partnerId: string): Observable<void> {
+    return this.partnersAPI.updatePartnersCash(amount, partnerId);
+  }
 }

@@ -27,6 +27,7 @@ export interface IPartnerDTO {
   sanctions?: ISanctions[];
   fee?: FeesVariants;
   inscription?: FeesVariants;
+  cash: number;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -60,6 +61,7 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       sanctions: dto.sanctions,
       fee: dto.fee,
       inscription: dto.inscription,
+      cash: dto.cash,
       user_created: dto.user_created,
       user_updated: dto.user_updated,
       created_at: dto.created_at,
@@ -92,6 +94,7 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       fee,
       inscription,
       sanctions,
+      cash,
       user_created,
       user_updated,
       created_at,
@@ -112,14 +115,15 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       leaves: domain.leaves,
       cannabis_month: domain.cannabis_month,
       hash_month: domain.hash_month,
-      extractions_month: domain.hash_month,
-      others_month: domain.hash_month,
+      extractions_month: domain.extractions_month,
+      others_month: domain.others_month,
       partner_type_id: domain.partner_type_id,
       active: domain.active,
       therapeutic: domain.therapeutic,
       fee: domain.fee,
       inscription: domain.inscription,
       sanctions: domain.sanctions,
+      cash: domain.cash,
       user_created: domain.user_created,
       user_updated: domain.user_updated,
       created_at: domain.created_at,

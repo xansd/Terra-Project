@@ -96,4 +96,13 @@ export class MysqlFeesRepository implements IFeesRepository {
     }
     return result;
   }
+
+  async getLastTypeFee(fee: IFees): Promise<IFees> {
+    const type = fee.fees_type_id;
+    const result = await MysqlDataBase.query(
+      `SELECT * FROM fees WHERE fees_type_id = ? AND deleted_at IS NOT NULL LIMIT 1`,
+      [type.toString()]
+    );
+    return result[0] as IFees;
+  }
 }

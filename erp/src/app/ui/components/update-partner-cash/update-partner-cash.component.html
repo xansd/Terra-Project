@@ -1,0 +1,40 @@
+<div class="modal-header">
+  <h5 class="modal-title">Introduce la cantidad a ingresar</h5>
+  <button type="button" class="btn-close" (click)="close(false)"></button>
+</div>
+<div class="modal-body">
+  <form
+    [formGroup]="cashUpdateForm"
+    (ngSubmit)="submit(cashUpdateForm)"
+    autocomplete="off"
+    #formDirective="ngForm"
+  >
+    <div class="mb-3">
+      <label class="form-label"
+        >Cantidad <span class="text-danger">*</span></label
+      >
+      <div class="amount-container">
+        <input
+          type="number"
+          class="form-control form-control-lg bg-inverse bg-opacity-5"
+          formControlName="amount"
+          matInput
+          placeholder="Escribe la cantidad..."
+          [errorStateMatcher]="matcher"
+          autocomplete="off"
+        />
+        <mat-error *ngIf="amount.invalid && (amount.dirty || amount.touched)">
+          <span *ngIf="amount.hasError('required')"> Campo obligatorio.</span>
+        </mat-error>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-warning" (click)="close(false)">
+    Cancelar
+  </button>
+  <button (click)="close(true)" type="submit" class="btn btn-outline-theme">
+    Enviar
+  </button>
+</div>

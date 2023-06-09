@@ -76,10 +76,10 @@ export class MySqlPartnerRepository implements IPartnerRepository {
     const rows = await MysqlDataBase.query(
       `SELECT partner_id, access_code, number, name, surname, dni FROM partners where deleted_at IS NULL  AND leaves IS NULL  ORDER BY number ASC`
     );
-    if (rows.length === 0) {
-      Logger.error(`mysql : getAll : PartnersNotFoundError`);
-      throw new PartnersNotFoundError();
-    }
+    // if (rows.length === 0) {
+    //   Logger.error(`mysql : getAll : PartnersNotFoundError`);
+    //   throw new PartnersNotFoundError();
+    // }
     return this.partnerPersistenceMapper.toDtoFilteredList(
       rows
     ) as unknown as IPartnerSubsetDTO[];
@@ -155,12 +155,13 @@ export class MySqlPartnerRepository implements IPartnerRepository {
 
     return this.partnerPersistenceMapper.toDomain(partnerSaved);
   }
-  async update(partner: IPartner): Promise<IPartner> {
+  async update(partner: IPartner): Promise<void> {
     const partnerPersistence =
       this.partnerPersistenceMapper.toPersistence(partner);
     const result = await MysqlDataBase.update(
       `UPDATE partners SET name = ?, surname = ?, email = ?, phone = ?, address = ?, dni = ?, birth_date = ?,
-       cannabis_month = ?, hash_month = ?, extractions_month = ?, others_month = ?, partner_type_id = ?, active = ?, therapeutic = ?, fee = ?, inscription = ?, user_updated = ?
+       cannabis_month = ?, hash_month = ?, extractions_month = ?, others_month = ?, partner_type_id = ?,
+        active = ?, therapeutic = ?, fee = ?, cash = ?, inscription = ?, user_updated = ?
        WHERE partner_id = ?`,
       [
         partnerPersistence.name,
@@ -178,6 +179,7 @@ export class MySqlPartnerRepository implements IPartnerRepository {
         partnerPersistence.active.toString(),
         partnerPersistence.therapeutic.toString(),
         partnerPersistence.fee!.toString(),
+        partnerPersistence.cash.toString(),
         partnerPersistence.inscription!.toString(),
         partnerPersistence.user_updated!,
         partnerPersistence.partner_id,
@@ -202,7 +204,7 @@ export class MySqlPartnerRepository implements IPartnerRepository {
   }
   async makeActive(partnerId: string): Promise<void> {
     const result = await MysqlDataBase.update(
-      "UPDATE partners SET active = ? WHERE user_id = ?",
+      "UPDATE partners SET active = ? WHERE partner_id = ?",
       ["1", partnerId]
     );
     if (result.affectedRows === 0) {
@@ -213,7 +215,7 @@ export class MySqlPartnerRepository implements IPartnerRepository {
   }
   async makeInactive(partnerId: string): Promise<void> {
     const result = await MysqlDataBase.update(
-      "UPDATE partners SET active = ? WHERE user_id = ?",
+      "UPDATE partners SET active = ? WHERE partner_id = ?",
       ["0", partnerId]
     );
     if (result.affectedRows === 0) {
@@ -249,9 +251,29 @@ export class MySqlPartnerRepository implements IPartnerRepository {
 
   async checkPartnerExistenceByEmail(email: string): Promise<boolean> {
     const partner = await MysqlDataBase.query(
-      `SELECT * FROM partners WHERE email = ? and deleted_at IS NULL`,
+      `SELECT * FROM partners WHERE email = ? and deleted_at IS NULL and leaves IS NULL`,
       [email]
     );
     return !!partner.length;
+  }
+
+  async updatePartnerCash(amount: number, partnerId: string): Promise<void> {
+    const result = await MysqlDataBase.update(
+      "UPDATE partners SET cash = ? WHERE partner_id = ?",
+      [amount.toString(), partnerId]
+    );
+    if (result.affectedRows === 0) {
+      Logger.error(`mysql : partnerLeaves : PartnerDoesNotExistError`);
+      throw new PartnerDoesNotExistError();
+    }
+    return result;
+  }
+
+  async getPartnerCash(partnerId: string): Promise<{ cash: number }> {
+    const rows = await MysqlDataBase.query(
+      `SELECT cash FROM partners WHERE partner_id = ?`,
+      [partnerId]
+    );
+    return rows[0];
   }
 }

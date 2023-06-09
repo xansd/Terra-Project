@@ -23,6 +23,7 @@ export interface IPartnerPersistence {
   fee?: FeesVariants;
   inscription?: FeesVariants;
   sanctions: ISanctions[];
+  cash: number;
   user_created?: string | null;
   user_updated?: string | null;
   created_at?: string | null;

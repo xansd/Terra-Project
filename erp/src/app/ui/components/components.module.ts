@@ -26,6 +26,11 @@ import { FileDownloaderComponent } from './file-downloader/file-downloader.compo
 import { SearcherComponent } from './searcher/searcher.component';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { UpdateAccessCodeComponent } from './update-access-code/update-access-code.component';
+import { PartnerHistoryComponent } from './partner-history/partner-history.component';
+import { SanctionsComponent } from './sanctions/sanctions.component';
+import { UpdatePartnerCashComponent } from './update-partner-cash/update-partner-cash.component';
+import { TextEditorComponent } from './text-editor/text-editor.component';
+import { NgxEditorModule } from 'ngx-editor';
 
 @NgModule({
   declarations: [
@@ -46,6 +51,10 @@ import { UpdateAccessCodeComponent } from './update-access-code/update-access-co
     FileDownloaderComponent,
     SearcherComponent,
     UpdateAccessCodeComponent,
+    PartnerHistoryComponent,
+    SanctionsComponent,
+    UpdatePartnerCashComponent,
+    TextEditorComponent,
   ],
   imports: [
     CommonModule,
@@ -55,6 +64,44 @@ import { UpdateAccessCodeComponent } from './update-access-code/update-access-co
     ReactiveFormsModule,
     MaterialModule,
     NgbTypeaheadModule,
+    NgxEditorModule.forRoot({
+      locals: {
+        // menu
+        bold: 'Bold',
+        italic: 'Italic',
+        code: 'Code',
+        underline: 'Underline',
+        strike: 'Strike',
+        blockquote: 'Blockquote',
+        bullet_list: 'Bullet List',
+        ordered_list: 'Ordered List',
+        heading: 'Heading',
+        h1: 'Header 1',
+        h2: 'Header 2',
+        h3: 'Header 3',
+        h4: 'Header 4',
+        h5: 'Header 5',
+        h6: 'Header 6',
+        align_left: 'Left Align',
+        align_center: 'Center Align',
+        align_right: 'Right Align',
+        align_justify: 'Justify',
+        text_color: 'Text Color',
+        background_color: 'Background Color',
+        insertLink: 'Insert Link',
+        removeLink: 'Remove Link',
+        insertImage: 'Insert Image',
+
+        // pupups, forms, others...
+        url: 'URL',
+        text: 'Text',
+        openInNewTab: 'Open in new tab',
+        insert: 'Insert',
+        altText: 'Alt Text',
+        title: 'Title',
+        remove: 'Remove',
+      },
+    }),
   ],
   exports: [
     CardComponent,
@@ -72,6 +119,8 @@ import { UpdateAccessCodeComponent } from './update-access-code/update-access-co
     FileUploaderComponent,
     FileDownloaderComponent,
     SearcherComponent,
+    PartnerHistoryComponent,
+    TextEditorComponent,
   ],
   providers: [
     {

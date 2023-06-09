@@ -1,27 +1,40 @@
-CREATE TABLE categories (
-  category_id VARCHAR(36) NOT NULL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  INDEX categories_name (name)
+
+
+
+/******************************************************FILES*********************************************/
+
+CREATE TABLE file_type (
+    file_type_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT
 );
 
-CREATE TABLE subcategories (
-  subcategory_id VARCHAR(36) NOT NULL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  category_id VARCHAR(36) NOT NULL,
-  INDEX subcategories_name (name),
-  FOREIGN KEY (category_id) REFERENCES categories(category_id),
-  FOREIGN KEY (product_id) REFERENCES products(product_id),
-  FOREIGN KEY (subcategory_id) REFERENCES subcategories(subcategory_id)
+INSERT INTO file_type (name, description) VALUES ('DNI', ''); 
+INSERT INTO file_type (name, description) VALUES ('IMAGE', '');
+INSERT INTO file_type (name, description) VALUES ('COVER', '');
+INSERT INTO file_type (name, description) VALUES ('ALTA', '');
+INSERT INTO file_type (name, description) VALUES ('CUOTA', '');
+INSERT INTO file_type (name, description) VALUES ('RECIBO', '');
+
+
+
+CREATE TABLE files (
+    file_id INT(11) NOT NULL AUTO_INCREMENT,
+    file_name VARCHAR(255) NOT NULL,
+    reference_id VARCHAR(36) DEFAULT NULL,
+    file_type_id INT(11) NOT NULL,
+    document_url VARCHAR(255) NOT NULL,
+    policy VARCHAR(25) NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME DEFAULT NULL,
+    PRIMARY KEY (file_id),
+    FOREIGN KEY (file_type_id) REFERENCES file_type (file_type_id)
 );
 
-CREATE TABLE product_subcategory (
-  product_id VARCHAR(36),
-  subcategory_id VARCHAR(36),
-  PRIMARY KEY (product_id, subcategory_id),
-  FOREIGN KEY (product_id) REFERENCES products(product_id),
-  FOREIGN KEY (subcategory_id) REFERENCES subcategories(subcategory_id)
-);
+/******************************************************FILES*********************************************/
 
+/******************************************************USERS*********************************************/
 CREATE TABLE roles (
 role_id INT(11) AUTO_INCREMENT PRIMARY KEY,
 name VARCHAR(255) NOT NULL,
@@ -61,7 +74,9 @@ CREATE TABLE `password_history` (
   PRIMARY KEY (password_id),
   FOREIGN KEY (user_id) REFERENCES users (user_id)
 );
+/******************************************************USERS*********************************************/
 
+/******************************************************PARTNERS*********************************************/
 CREATE TABLE partner_type (
    partner_type_id INT(11) NOT NULL AUTO_INCREMENT,
    name VARCHAR(255) NOT NULL,
@@ -73,37 +88,6 @@ INSERT INTO partner_type (name) VALUES ('Directiva');
 INSERT INTO partner_type (name) VALUES ('Colaborador');
 INSERT INTO partner_type (name) VALUES ('Honorario');
 INSERT INTO partner_type (name) VALUES ('Fundador');
-
-
-
-CREATE TABLE file_type (
-    file_type_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT
-);
-
-INSERT INTO file_type (name, description) VALUES ('DNI', ''); 
-INSERT INTO file_type (name, description) VALUES ('IMAGE', '');
-INSERT INTO file_type (name, description) VALUES ('COVER', '');
-INSERT INTO file_type (name, description) VALUES ('ALTA', '');
-INSERT INTO file_type (name, description) VALUES ('CUOTA', '');
-INSERT INTO file_type (name, description) VALUES ('RECIBO', '');
-
-
-
-CREATE TABLE files (
-    file_id INT(11) NOT NULL AUTO_INCREMENT,
-    file_name VARCHAR(255) NOT NULL,
-    reference_id VARCHAR(36) DEFAULT NULL,
-    file_type_id INT(11) NOT NULL,
-    document_url VARCHAR(255) NOT NULL,
-    policy VARCHAR(25) NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL,
-    PRIMARY KEY (file_id),
-    FOREIGN KEY (file_type_id) REFERENCES file_type (file_type_id)
-);
 
 
 CREATE TABLE partners (
@@ -127,6 +111,7 @@ CREATE TABLE partners (
   active TINYINT(1) DEFAULT 1,
   fee INT(11) NOT NULL,
   inscription INT(11) NOT NULL,
+  cash DECIMAL(10, 2) DEFAULT 0,
   user_created VARCHAR(36) DEFAULT NULL,
   user_updated VARCHAR(36) DEFAULT NULL,
   created_at datetime DEFAULT CURRENT_TIMESTAMP,
@@ -180,7 +165,7 @@ CREATE TABLE fees(
   FOREIGN KEY (user_created) REFERENCES users(user_id),
   FOREIGN KEY (partner_id) REFERENCES partners(partner_id)
 );
-
+/******************************************************PARTNERS*********************************************/
 
 CREATE TABLE providers (
 provider_id VARCHAR(36) PRIMARY KEY,
@@ -201,24 +186,110 @@ INDEX providers_name (name)
 );
 
 
-CREATE TABLE products (
-  product_id VARCHAR(36) PRIMARY KEY,
+/******************************************************PRODUCTOS*********************************************/
+CREATE TABLE categories (
+  category_id INT(11) PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(255) NOT NULL,
   type ENUM('mancomunados', 'terceros') NOT NULL,
-  category_id VARCHAR(36),
+  created_at datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at datetime DEFAULT NULL,
+  INDEX categories_name (name)
+);
+
+INSERT INTO categories (name, type) VALUES ('Cannabis y derivados', 'mancomunados');
+INSERT INTO categories (name, type) VALUES ('Bebidas', 'terceros');
+INSERT INTO categories (name, type) VALUES ('Parafernalia', 'terceros');
+INSERT INTO categories (name, type) VALUES ('Servicios', 'terceros');
+
+CREATE TABLE subcategories (
+  subcategory_id INT(11) PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(255) NOT NULL,
+  category_id INT(11) NOT NULL,
+  created_at datetime DEFAULT CURRENT_TIMESTAMP,
+  updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at datetime DEFAULT NULL,
+  INDEX subcategories_name (name),
+  FOREIGN KEY (category_id) REFERENCES categories(category_id)
+);
+
+INSERT INTO subcategories (name, category_id) VALUES ('Sativa predominante', 1);
+INSERT INTO subcategories (name, category_id) VALUES ('Indica predominante', 1);
+INSERT INTO subcategories (name, category_id) VALUES ('Genética equilibrada', 1);
+INSERT INTO subcategories (name, category_id) VALUES ('CBD Alto', 1);
+INSERT INTO subcategories (name, category_id) VALUES ('THC Alto', 1);
+INSERT INTO subcategories (name, category_id) VALUES ('Refrescos', 2);
+INSERT INTO subcategories (name, category_id) VALUES ('Zumos', 2);
+INSERT INTO subcategories (name, category_id) VALUES ('Cervezas', 2);
+
+
+CREATE TABLE products (
+  product_id VARCHAR(36) PRIMARY KEY,
+  code VARCHAR(36) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  type ENUM('mancomunados', 'terceros') NOT NULL,
+  category_id INT(11),
   description TEXT,
-  image VARCHAR(255),
-  price DECIMAL(10,2) NOT NULL,
+  cost_price DECIMAL(10,2),
+  sale_price DECIMAL(10,2),
+  sativa INT(3) DEFAULT NULL,
+  indica INT(3) DEFAULT NULL,
+  thc DECIMAL(5, 2) DEFAULT NULL,
+  cbd DECIMAL(5, 2) DEFAULT NULL,
+  bank VARCHAR(255) DEFAULT NULL,
+  flawour VARCHAR(255) DEFAULT NULL,
+  effect VARCHAR(255) DEFAULT NULL,
+  stock DECIMAL(10,2) DEFAULT 0,
   user_created VARCHAR(36) DEFAULT NULL,
   user_updated VARCHAR(36) DEFAULT NULL,
   created_at datetime DEFAULT CURRENT_TIMESTAMP,
   updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   deleted_at datetime DEFAULT NULL,
   INDEX products_name (name),
+  INDEX products_code (code),
   FOREIGN KEY (user_created) REFERENCES users(user_id),
   FOREIGN KEY (user_updated) REFERENCES users(user_id),
   FOREIGN KEY (category_id) REFERENCES categories(category_id)
 );
+
+
+CREATE TABLE product_subcategory (
+  product_id VARCHAR(36),
+  subcategory_id INT(11),
+  PRIMARY KEY (product_id, subcategory_id),
+  FOREIGN KEY (product_id) REFERENCES products(product_id),
+  FOREIGN KEY (subcategory_id) REFERENCES subcategories(subcategory_id)
+);
+
+
+CREATE TABLE ancestors (
+  ancestor_id VARCHAR(36) PRIMARY KEY,
+  product_id VARCHAR(36),
+  FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+/******************************************************PRODUCTOS*********************************************/
+
+CREATE TABLE harvests (
+harvest_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+product_id VARCHAR(36) NOT NULL,
+  cost_price DECIMAL(10,2),
+  sale_price DECIMAL(10,2),
+  fee_amount DECIMAL(10,2),
+quantity DECIMAL(10,2) NOT NULL,
+notes TEXT,
+date_occurred DATE NOT NULL,
+    user_created VARCHAR(36) DEFAULT NULL,
+    user_updated VARCHAR(36) DEFAULT NULL,
+    created_at datetime DEFAULT CURRENT_TIMESTAMP,
+    updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at datetime DEFAULT NULL,
+    INDEX harvests_product_id (product_id),
+FOREIGN KEY (product_id) REFERENCES products(product_id),
+  FOREIGN KEY (user_created) REFERENCES users(user_id),
+  FOREIGN KEY (user_updated) REFERENCES users(user_id)
+);
+
 
 
 
@@ -318,23 +389,6 @@ FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 
 
-
-CREATE TABLE harvests (
-harvest_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-product_id VARCHAR(36) NOT NULL,
-quantity DECIMAL(10,2) NOT NULL,
-notes TEXT,
-date_occurred DATE NOT NULL,
-    user_created VARCHAR(36) DEFAULT NULL,
-    user_updated VARCHAR(36) DEFAULT NULL,
-    created_at datetime DEFAULT CURRENT_TIMESTAMP,
-    updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at datetime DEFAULT NULL,
-    INDEX harvests_product_id (product_id),
-FOREIGN KEY (product_id) REFERENCES products(product_id),
-  FOREIGN KEY (user_created) REFERENCES users(user_id),
-  FOREIGN KEY (user_updated) REFERENCES users(user_id)
-);
 
 
 

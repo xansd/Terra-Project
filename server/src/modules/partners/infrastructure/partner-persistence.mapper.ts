@@ -36,6 +36,7 @@ export class PartnerPersistenceMapper
       sanctions: persistence.sanctions,
       fee: persistence.fee,
       inscription: persistence.inscription,
+      cash: persistence.cash,
       user_created: persistence.user_created,
       user_updated: persistence.user_updated,
       created_at: persistence.created_at,
@@ -68,6 +69,7 @@ export class PartnerPersistenceMapper
       sanctions,
       fee,
       inscription,
+      cash,
       user_created,
       user_updated,
     } = domain;
@@ -93,6 +95,7 @@ export class PartnerPersistenceMapper
       sanctions: sanctions,
       fee: fee,
       inscription: inscription,
+      cash: cash,
       user_created: user_created ? user_created : null,
       user_updated: user_updated ? user_updated : null,
     };

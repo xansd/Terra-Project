@@ -84,10 +84,12 @@ mat-table {
     }
 
     mat-row {
-        height: 45px !important;
+        height          : 45px !important;
+        color           : #EEE;
+        background-color: rgba(0, 0, 0, .1) !important;
 
         &:hover {
-            background-color: rgba(0, 0, 0, .1) !important;
+            background-color: rgba(0, 0, 0, .3) !important;
             color           : azure !important;
         }
     }
