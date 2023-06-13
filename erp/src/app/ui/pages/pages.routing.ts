@@ -16,6 +16,7 @@ import { ListProductsComponent } from './products/list-products/list-products.co
 import { ProductsStatisticsComponent } from './products/products-statistics/products-statistics.component';
 import { ProductsComponent } from './products/products.component';
 import { ProductsDetailsComponent } from './products/products-details/products-details.component';
+import { PartnersStatisticsComponent } from './partners/partners-statistics/partners-statistics.component';
 const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
   {
@@ -78,10 +79,16 @@ const routes: Routes = [
             canActivate: [AuthGuard],
             data: { roles: [Roles.ADMIN, Roles.USER] },
           },
+          {
+            path: 'estadisticas',
+            component: PartnersStatisticsComponent,
+            canActivate: [AuthGuard],
+            data: { roles: [Roles.ADMIN, Roles.USER] },
+          },
         ],
       },
       {
-        path: 'productos',
+        path: 'variedades',
         component: ProductsComponent,
         children: [
           {

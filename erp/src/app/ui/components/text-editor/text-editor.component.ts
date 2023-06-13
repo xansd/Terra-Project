@@ -6,7 +6,7 @@ import { Editor, schema, Toolbar, Validators } from 'ngx-editor';
   styleUrls: ['./text-editor.component.scss'],
 })
 export class TextEditorComponent {
-  @Input() initialContent!: string;
+  @Input() productDescription!: string;
   @Output() editorValueChange = new EventEmitter<string>();
   editor = new Editor({
     content: '',
@@ -29,9 +29,12 @@ export class TextEditorComponent {
     ['align_left', 'align_center', 'align_right', 'align_justify'],
     ['horizontal_rule', 'format_clear'],
   ];
-  addEmoji($event: any) {}
-  showEmojiPicker = false;
-  toggleEmojiPicker() {}
+
+  ngOnInit(): void {
+    this.editor = new Editor({
+      content: this.productDescription || '',
+    });
+  }
 
   handleEditorChange(event: any): void {
     const editorValue = event.target.innerHTML;

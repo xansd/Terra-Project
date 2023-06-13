@@ -12,6 +12,13 @@ export interface ISanctions {
   created_at: string;
 }
 
+export enum DocumentTypes {
+  ALTA = "alta",
+  CULTIVO = "cultivo",
+  RECIBO_ALTA = "recibo_alta",
+  RECIBO_CUOTA = "recibo_cuota",
+}
+
 export interface IPartner {
   partner_id: PartnerID;
   access_code?: string | null;

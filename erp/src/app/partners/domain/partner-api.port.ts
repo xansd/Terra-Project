@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { IPartner, IPartnersType } from './partner';
+import { DocumentTypes, IPartner, IPartnersType } from './partner';
 import { IFees, IFeesType } from './fees';
 
 export interface IPartnerAPIPort {
@@ -16,6 +16,10 @@ export interface IPartnerAPIPort {
   partnerLeaves(partnerId: string): Observable<void>;
   updateAccessCode(code: string, partnerId: string): Observable<void>;
   updatePartnersCash(amount: number, partnerId: string): Observable<void>;
+  getPartnerDocument(
+    partner: IPartner,
+    documentType: DocumentTypes
+  ): Observable<object>;
 
   createPartnerFee(fee: IFees): Observable<void>;
   getPartnersFees(partnerId: string): Observable<IFees[]>;

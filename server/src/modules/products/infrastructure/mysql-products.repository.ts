@@ -42,6 +42,12 @@ export class MySQLProductRepository implements IProductRepository {
       throw new ProductDoesNotExistError();
     }
 
+    const product = rows[0];
+    product.subcategories = product.subcategories
+      ? product.subcategories.split(",")
+      : [];
+    product.ancestors = product.ancestors ? product.ancestors.split(",") : [];
+
     return this.productPersistenceMapper.toDomain(rows[0]) as IProduct;
   }
   async getAll(): Promise<IProduct[]> {
@@ -65,7 +71,7 @@ export class MySQLProductRepository implements IProductRepository {
   }
   async getAllFiltered(): Promise<IProductSubsetDTO[]> {
     const rows = await MysqlDataBase.query(
-      `SELECT product_id, code, name FROM products where deleted_at IS NULL`
+      `SELECT product_id, code, name FROM products where deleted_at IS NULL  ORDER BY name`
     );
     return this.productPersistenceMapper.toDtoFilteredList(
       rows
@@ -73,7 +79,7 @@ export class MySQLProductRepository implements IProductRepository {
   }
 
   async create(product: IProduct): Promise<IProduct> {
-    const productPersistenceMapper =
+    const productPersistence =
       this.productPersistenceMapper.toPersistence(product);
     const insertQuery = `INSERT INTO products (product_id, code, name, type, category_id, description, cost_price, sale_price, sativa, indica, thc, cbd, bank, flawour, effect, user_created)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
@@ -81,12 +87,12 @@ export class MySQLProductRepository implements IProductRepository {
     const selectQuery = `SELECT * FROM products WHERE product_id = ?`;
 
     const values: any[] = [
-      productPersistenceMapper.product_id!,
-      productPersistenceMapper.code!,
-      productPersistenceMapper.name!,
-      productPersistenceMapper.type,
-      productPersistenceMapper.category_id,
-      productPersistenceMapper.description!,
+      productPersistence.product_id!,
+      productPersistence.code!,
+      productPersistence.name!,
+      productPersistence.type,
+      productPersistence.category_id,
+      productPersistence.description!,
       null, // cost_price (conditional)
       null, // sale_price (conditional)
       null, // sativa (conditional)
@@ -96,25 +102,38 @@ export class MySQLProductRepository implements IProductRepository {
       null, // bank (conditional)
       null, // flawour (conditional)
       null, // effect (conditional)
-      productPersistenceMapper.user_created!,
+      productPersistence.user_created!,
     ];
 
-    if (productPersistenceMapper.type === ProductsType.TERCEROS) {
-      values[6] = productPersistenceMapper.cost_price?.toString()!;
-      values[7] = productPersistenceMapper.sale_price?.toString()!;
-    } else if (productPersistenceMapper.type === ProductsType.MANCOMUNADOS) {
-      values[8] = productPersistenceMapper.sativa?.toString()!;
-      values[9] = productPersistenceMapper.indica?.toString()!;
-      values[10] = productPersistenceMapper.thc?.toString()!;
-      values[11] = productPersistenceMapper.cbd?.toString()!;
-      values[12] = productPersistenceMapper.bank!;
-      values[13] = productPersistenceMapper.flawour!;
-      values[14] = productPersistenceMapper.effect!;
+    if (productPersistence.type === ProductsType.TERCEROS) {
+      values[6] = productPersistence.cost_price?.toString()!;
+      values[7] = productPersistence.sale_price?.toString()!;
+    } else if (productPersistence.type === ProductsType.MANCOMUNADOS) {
+      values[8] = productPersistence.sativa?.toString()!;
+      values[9] = productPersistence.indica?.toString()!;
+      values[10] = productPersistence.thc?.toString()!;
+      values[11] = productPersistence.cbd?.toString()!;
+      values[12] = productPersistence.bank!;
+      values[13] = productPersistence.flawour!;
+      values[14] = productPersistence.effect!;
     }
 
     await MysqlDataBase.update(insertQuery, values);
+
+    // Guardar subcategorías
+    await this.enrollSubCategories(
+      productPersistence.subcategories,
+      productPersistence.product_id!
+    );
+
+    // Guardar ancestros
+    await this.enrollAncestors(
+      productPersistence.ancestors!,
+      productPersistence.product_id!
+    );
+
     const selectResult = await MysqlDataBase.query(selectQuery, [
-      productPersistenceMapper.product_id!,
+      productPersistence.product_id!,
     ]);
     const productSaved = selectResult[0];
 
@@ -124,30 +143,56 @@ export class MySQLProductRepository implements IProductRepository {
   async update(product: IProduct): Promise<void> {
     const productPersistence =
       this.productPersistenceMapper.toPersistence(product);
-    const result = await MysqlDataBase.update(
-      `
+    const updateQuery = `
       UPDATE products
       SET name = ?, type = ?, category_id = ?, description = ?, cost_price = ?, sale_price = ?,
         sativa = ?, indica = ?, thc = ?, cbd = ?, bank = ?, flawour = ?, effect = ?, user_updated = ?
       WHERE product_id = ?
-      `,
-      [
-        productPersistence.name,
-        productPersistence.type,
-        productPersistence.category_id,
-        productPersistence.description!,
-        productPersistence.cost_price?.toString()!,
-        productPersistence.sale_price?.toString()!,
-        productPersistence.sativa?.toString()!,
-        productPersistence.indica?.toString()!,
-        productPersistence.thc?.toString()!,
-        productPersistence.cbd?.toString()!,
-        productPersistence.bank!,
-        productPersistence.flawour!,
-        productPersistence.effect!,
-        productPersistence.user_updated!,
-        productPersistence.product_id!,
-      ]
+    `;
+
+    const values: any[] = [
+      productPersistence.name,
+      productPersistence.type,
+      productPersistence.category_id,
+      productPersistence.description!,
+      null, // cost_price (conditional)
+      null, // sale_price (conditional)
+      null, // sativa (conditional)
+      null, // indica (conditional)
+      null, // thc (conditional)
+      null, // cbd (conditional)
+      null, // bank (conditional)
+      null, // flawour (conditional)
+      null, // effect (conditional)
+      productPersistence.user_updated!,
+      productPersistence.product_id!,
+    ];
+
+    if (productPersistence.type === ProductsType.TERCEROS) {
+      values[4] = productPersistence.cost_price?.toString()!;
+      values[5] = productPersistence.sale_price?.toString()!;
+    } else if (productPersistence.type === ProductsType.MANCOMUNADOS) {
+      values[6] = productPersistence.sativa?.toString()!;
+      values[7] = productPersistence.indica?.toString()!;
+      values[8] = productPersistence.thc?.toString()!;
+      values[9] = productPersistence.cbd?.toString()!;
+      values[10] = productPersistence.bank!;
+      values[11] = productPersistence.flawour!;
+      values[12] = productPersistence.effect!;
+    }
+
+    const result = await MysqlDataBase.update(updateQuery, values);
+
+    // Guardar subcategorías
+    await this.enrollSubCategories(
+      productPersistence.subcategories,
+      productPersistence.product_id!
+    );
+
+    // Guardar ancestros
+    await this.enrollAncestors(
+      productPersistence.ancestors!,
+      productPersistence.product_id!
     );
 
     if (result.affectedRows === 0) {
@@ -236,14 +281,14 @@ export class MySQLProductRepository implements IProductRepository {
 
   async getAllCategories(): Promise<ICategories[]> {
     const rows = await MysqlDataBase.query(
-      `SELECT * FROM categories where deleted_at IS NULL`
+      `SELECT * FROM categories where deleted_at IS NULL ORDER BY category_id`
     );
     return rows as unknown as ICategories[];
   }
 
   async getAllSubCategories(): Promise<ISubcategories[]> {
     const rows = await MysqlDataBase.query(
-      `SELECT * FROM subcategories where deleted_at IS NULL`
+      `SELECT * FROM subcategories where deleted_at IS NULL ORDER BY name`
     );
     return rows as unknown as ISubcategories[];
   }
@@ -263,6 +308,10 @@ export class MySQLProductRepository implements IProductRepository {
     subcategoryIds: string[],
     productId: string
   ): Promise<void> {
+    const result = await MysqlDataBase.update(
+      `DELETE from product_subcategory WHERE product_id = ?`,
+      [productId]
+    );
     for (const subcategoryId of subcategoryIds) {
       const insertQuery = `INSERT INTO product_subcategory (product_id, subcategory_id) VALUES (?,?)`;
       const result = await MysqlDataBase.update(insertQuery, [
@@ -282,6 +331,10 @@ export class MySQLProductRepository implements IProductRepository {
     ancestorIds: string[],
     productId: string
   ): Promise<void> {
+    const result = await MysqlDataBase.update(
+      `DELETE from ancestors WHERE product_id = ?`,
+      [productId]
+    );
     for (const ancestorId of ancestorIds) {
       const insertQuery = `INSERT INTO ancestors (ancestor_id, product_id) VALUES (?, ?)`;
       const result = await MysqlDataBase.update(insertQuery, [

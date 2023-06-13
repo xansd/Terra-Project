@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import SERVER from '../../config/server.config';
 import { IPartnerAPIPort } from '../domain/partner-api.port';
 import { IPartnerDTO, PartnerDTOMapper } from './partner-dto.mapper';
-import { IPartner, IPartnersType } from '../domain/partner';
+import { DocumentTypes, IPartner, IPartnersType } from '../domain/partner';
 import { IFees, IFeesType } from '../domain/fees';
 import { FeesDTOMapper, IFeesDTO } from './fees-dto.mapper';
 
@@ -125,6 +125,19 @@ export class PartnerAPIRepository implements IPartnerAPIPort {
     );
   }
 
+  getPartnerDocument(
+    partner: IPartner,
+    documentType: DocumentTypes
+  ): Observable<Blob> {
+    const body = {
+      partner: partner,
+      documentType: documentType,
+    };
+    return this.http.post(`${API_URI}/partners/documents`, body, {
+      responseType: 'blob',
+      withCredentials: true,
+    });
+  }
   /**************************************FEES************************************************/
   createPartnerFee(fee: IFees): Observable<void> {
     const feesDTO = this.feesDTOMapper.toDTO(fee);

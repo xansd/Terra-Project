@@ -46,7 +46,7 @@ export class UpdateProductUseCase
       this.productDomain = this.productMapper.toDomain(product);
       // Comprobamos si ya exsite el nombre de producto
       const productExists = await this.productRepository.getById(
-        product.product_id
+        product.product_id!
       );
       const originalName = productExists.name;
       // Verificar si el name ha cambiado

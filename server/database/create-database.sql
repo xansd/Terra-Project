@@ -230,12 +230,12 @@ CREATE TABLE products (
   type ENUM('mancomunados', 'terceros') NOT NULL,
   category_id INT(11),
   description TEXT,
-  cost_price DECIMAL(10,2),
-  sale_price DECIMAL(10,2),
-  sativa INT(3) DEFAULT NULL,
-  indica INT(3) DEFAULT NULL,
-  thc DECIMAL(5, 2) DEFAULT NULL,
-  cbd DECIMAL(5, 2) DEFAULT NULL,
+  cost_price DECIMAL(10,2) DEFAULT 0,
+  sale_price DECIMAL(10,2) DEFAULT 0,
+  sativa DECIMAL(5, 2) DEFAULT 0,
+  indica DECIMAL(5, 2) DEFAULT 0,
+  thc DECIMAL(5, 2) DEFAULT 0,
+  cbd DECIMAL(5, 2) DEFAULT 0,
   bank VARCHAR(255) DEFAULT NULL,
   flawour VARCHAR(255) DEFAULT NULL,
   effect VARCHAR(255) DEFAULT NULL,
@@ -263,7 +263,8 @@ CREATE TABLE product_subcategory (
 
 
 CREATE TABLE ancestors (
-  ancestor_id VARCHAR(36) PRIMARY KEY,
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  ancestor_id VARCHAR(36),
   product_id VARCHAR(36),
   FOREIGN KEY (product_id) REFERENCES products(product_id)
 );

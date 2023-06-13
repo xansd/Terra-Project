@@ -106,6 +106,8 @@ export class ProductDTOMapper implements IDTOMapper<IProduct, IProductDTO> {
       sale_price: domain.sale_price,
       ancestors: domain.ancestors,
       sativa: domain.sativa,
+      indica: domain.indica,
+      thc: domain.thc,
       cbd: domain.cbd,
       bank: domain.bank,
       flawour: domain.flawour,

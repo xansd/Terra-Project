@@ -39,18 +39,18 @@ export class ListProductsComponent implements OnDestroy, OnInit {
   @ViewChild(MatTable)
   productsListTable!: MatTable<IProduct>;
   displayedColumns: string[] = [
+    'name',
     'product_id',
     'code',
     'created_at',
-    'name',
     'stock',
     'actions',
   ];
   columnDefinitions = [
+    { def: 'name', show: true },
     { def: 'product_id', show: false },
     { def: 'code', show: true },
     { def: 'created_at', show: true },
-    { def: 'name', show: true },
     { def: 'stock', show: true },
     { def: 'actions', show: true },
   ];

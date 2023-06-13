@@ -33,8 +33,8 @@ export class ProductController {
   async getById(request: Request, response: Response): Promise<void> {
     const { id } = request.params;
     try {
-      const partner = await this.getProductUseCase.getProduct(id);
-      response.json(this.productMapper.toDTO(partner));
+      const product = await this.getProductUseCase.getProduct(id);
+      response.json(this.productMapper.toDTO(product));
     } catch (error) {
       if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));
@@ -48,9 +48,9 @@ export class ProductController {
 
   async getAll(request: Request, response: Response): Promise<void> {
     try {
-      const partners = await this.getProductUseCase.getAllProducts();
-      const partnersDTOs = this.productMapper.toDTOList(partners);
-      response.json(partnersDTOs);
+      const products = await this.getProductUseCase.getAllProducts();
+      const productsDTOs = this.productMapper.toDTOList(products);
+      response.json(productsDTOs);
     } catch (error: any) {
       if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));
@@ -64,8 +64,8 @@ export class ProductController {
 
   async getAllFiltered(request: Request, response: Response): Promise<void> {
     try {
-      const partners = await this.getProductUseCase.getAllProductsFiltered();
-      response.json(partners);
+      const products = await this.getProductUseCase.getAllProductsFiltered();
+      response.json(products);
     } catch (error: any) {
       if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));

@@ -70,12 +70,13 @@ export class PagesComponent implements OnDestroy {
           icon: PageIcon.PARTNERS,
         };
         break;
-      case PageRoutes.PRODUCTS:
-      case PageRoutes.PRODUCTS_LIST:
-      case PageRoutes.PRODUCTS_STATISTICS:
+      case PageRoutes.VARIETIES:
+      case PageRoutes.VARIETIES_LIST:
+      case PageRoutes.VARIETIES_STATISTICS:
+      case PageRoutes.VARIETIES_DETAILS:
         this.info = {
-          pageHeader: PageTitle.PRODUCTS,
-          icon: PageIcon.PRODUCTS,
+          pageHeader: PageTitle.VARIETIES,
+          icon: PageIcon.VARIETIES,
         };
         break;
     }

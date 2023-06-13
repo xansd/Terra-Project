@@ -32,6 +32,13 @@ export interface IPartner {
   deleted_at?: string;
 }
 
+export enum DocumentTypes {
+  ALTA = 'alta',
+  CULTIVO = 'cultivo',
+  RECIBO_ALTA = 'recibo_alta',
+  RECIBO_CUOTA = 'recibo_cuota',
+}
+
 export interface IPartnersType {
   partner_type_id: number;
   name: string;

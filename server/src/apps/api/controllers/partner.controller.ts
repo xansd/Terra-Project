@@ -21,6 +21,9 @@ import {
 import { UserAlreadyExistsError } from "../../../modules/users/domain";
 import { MysqlFilesRepository } from "../../../modules/files/infrastructure/mysql-files.repository";
 import { FilesCaseUses } from "../../../modules/files/application/files.use-case";
+import { DownloadError } from "../../../modules/files/domain/files.exceptions";
+import { PartnerDocumentsService } from "../../../modules/partners/application/use-cases/partner-documents.service";
+import LocalFileHandler from "../../../modules/files/infrastructure/local-file-handler";
 
 export class PartnerController {
   partnerMapper = new PartnerMapper();
@@ -29,7 +32,8 @@ export class PartnerController {
     private readonly getPartnersUseCase: GetPartnerUseCase,
     private readonly deletePartnerUseCase: DeletePartnerUseCase,
     private readonly toggleActivePartnerUserCase: ToggleActivePartnerUseCase,
-    private readonly updatePartnerUseCase: UpdatePartnerUseCase
+    private readonly updatePartnerUseCase: UpdatePartnerUseCase,
+    private readonly documentService: PartnerDocumentsService
   ) {}
 
   async getById(request: Request, response: Response): Promise<void> {
@@ -237,6 +241,28 @@ export class PartnerController {
       if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));
       } else if (error instanceof PartnerDoesNotExistError) {
+        response.send(NotFound(error.message));
+      } else {
+        response.send(InternalServerError(error));
+      }
+    }
+  }
+
+  async getPartnerDocument(
+    request: Request,
+    response: Response
+  ): Promise<void> {
+    try {
+      const out = await this.documentService.generateDocument(
+        request.body.partner,
+        request.body.documentType
+      );
+      const fileData = await this.documentService.downloadDocument(out!);
+      response.setHeader("Content-Type", "application/octet-stream");
+      response.setHeader("Content-Disposition", `attachment; filename=${out}`);
+      response.send(fileData);
+    } catch (error) {
+      if (error instanceof DownloadError) {
         response.send(NotFound(error.message));
       } else {
         response.send(InternalServerError(error));

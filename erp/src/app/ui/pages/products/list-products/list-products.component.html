@@ -14,7 +14,7 @@
                   class="btn btn-success"
                   (click)="openCreateProductDialog()"
                 >
-                  <i class="bi bi-person-fill-add"></i> Nuevo
+                  <i class="bi bi-plus-circle"></i> Nuevo
                 </button>
               </div>
               <div class="filter-table">
@@ -82,7 +82,7 @@
                   <mat-cell *matCellDef="let row">
                     <div class="mobile-label">Nombre:</div>
                     <div class="cell-value">
-                      {{ row.name }}
+                      {{ row.name | uppercase }}
                     </div>
                   </mat-cell>
                 </ng-container>

@@ -1,0 +1,23 @@
+<div class="modal-body">
+  <card>
+    <image-cropper
+      [imageChangedEvent]="imageChangedEvent"
+      [maintainAspectRatio]="true"
+      [aspectRatio]="aspectRatio"
+      [cropperMinWidth]="minWidth"
+      [format]="output"
+      (imageCropped)="imageCropped($event)"
+      (imageLoaded)="imageLoaded($event)"
+      (cropperReady)="cropperReady($event)"
+      (loadImageFailed)="loadImageFailed($event)"
+    ></image-cropper>
+  </card>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-warning" (click)="close(false)">
+    Cancelar
+  </button>
+  <button type="button" class="btn btn-outline-theme" (click)="close(true)">
+    Confirmar
+  </button>
+</div>

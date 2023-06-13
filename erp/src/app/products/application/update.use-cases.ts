@@ -60,4 +60,8 @@ export class UpdateProductUseCase
   makeInactive(id: string): Observable<void> {
     return this.productsAPI.makeInactive(id);
   }
+
+  getUpdater(): string {
+    return this.authTokenService.getUserID();
+  }
 }

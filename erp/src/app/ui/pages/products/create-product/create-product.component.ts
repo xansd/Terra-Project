@@ -25,6 +25,7 @@ import { ModalActions } from 'src/app/ui/shared/enums/modalActions.enum';
 import { FieldValidationError } from 'src/app/shared/error/field-validation-error';
 import { FormMode } from 'src/app/ui/services/app-state.service';
 import { DomainValidationError } from 'src/app/shared/domain/domain-validation.exception';
+import { IProductSubsetDTO } from 'src/app/products/infrastructure/products-dto.mapper';
 
 @Component({
   selector: 'app-create-product',
@@ -41,7 +42,7 @@ export class CreateProductComponent {
   categories: ICategories[] = [];
   subcategories: ISubcategories[] = [];
   filteredSubcategories: ISubcategories[] = [];
-  ancestors: IProduct[] = [];
+  ancestors: IProductSubsetDTO[] = [];
   isUploaderEnabled = false;
   modalActions = ModalActions;
   newProductCreated!: IProduct;
@@ -49,16 +50,16 @@ export class CreateProductComponent {
   createProductForm: UntypedFormGroup = this.formBuilder.group({
     name: [null, [Validators.required]],
     category_id: [1, [Validators.required]],
-    subcategories: [1, [Validators.required]],
-    description: [null, [Validators.required]],
-    ancestors: [0, [Validators.required]],
-    sativa: [0, [Validators.required]],
-    indica: [0, [Validators.required]],
-    thc: [0, [Validators.required]],
-    cbd: [0, [Validators.required]],
-    bank: [null, [Validators.required]],
-    flawour: [null, [Validators.required]],
-    effect: [null, [Validators.required]],
+    subcategories: [[], [Validators.required]],
+    description: [null],
+    ancestors: [[]],
+    sativa: [0],
+    indica: [0],
+    thc: [0],
+    cbd: [0],
+    bank: [null],
+    flawour: [null],
+    effect: [null],
     cost_price: [0, [Validators.required]],
     sale_price: [0, [Validators.required]],
   });
@@ -83,6 +84,7 @@ export class CreateProductComponent {
     this.formsHelperService.initFormCreateMode();
     this.getCategories();
     this.getSubCategories();
+    this.getAllFilteredProducts();
   }
 
   onCategoryChange(event: Event) {
@@ -109,7 +111,6 @@ export class CreateProductComponent {
         next: (categories: ICategories[]) => {
           this.categories = categories;
           this.selectedCategory = categories[0];
-          console.log(this.selectedCategory);
         },
       });
   }
@@ -129,14 +130,12 @@ export class CreateProductComponent {
 
   getAllFilteredProducts(): void {
     this.getProductsService
-      .getAllCategories()
+      .getAllProductsFiltered()
       .pipe(take(1))
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (categories: ICategories[]) => {
-          this.categories = categories;
-          this.selectedCategory = categories[0];
-          console.log(this.selectedCategory);
+        next: (filteredProducts: IProductSubsetDTO[]) => {
+          this.ancestors = filteredProducts;
         },
       });
   }

@@ -10,331 +10,341 @@
       <form [formGroup]="createProductForm" class="form-container">
         <div class="form-group first-group">
           <div class="row">
-            <!-- NOMBRE -->
-            <label for="name" class="col-12 col-xl-1 col-form-label"
-              >Nombre</label
-            >
-            <div class="col-12 col-xl-11">
-              <input
-                [readonly]="isUploaderEnabled"
-                autocomplete="off"
-                type="text"
-                class="form-control"
-                id="name"
-                formControlName="name"
-                [errorStateMatcher]="matcher"
-                matInput
-              />
-              <mat-error
-                *ngIf="
-                  nameControl.invalid &&
-                  (nameControl.dirty || nameControl.touched)
-                "
-              >
-                <span *ngIf="nameControl.hasError('required')">
-                  Campo obligatorio.</span
-                >
-              </mat-error>
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <!-- Descripción -->
-          <div class="row description">
-            <label for="description" class="col-12 col-xl-1 col-form-label"
-              >Descripción</label
-            >
-            <div class="col-12 col-xl-6 text-editor-container">
-              <app-text-editor
-                (editorValueChange)="
-                  createProductForm.controls['description'].setValue($event)
-                "
-              ></app-text-editor>
-            </div>
-            <div class="offset-xl-1 col-xl-4 col-12">
-              <div class="row categories">
-                <!-- CATEGORIA -->
-                <label for="category_id" class="col-12 col-form-label"
-                  >Categoría</label
-                >
-                <div class="col-12 col-xl-12 select-container">
-                  <select
-                    (change)="onCategoryChange($event)"
-                    [attr.disabled]="isUploaderEnabled"
-                    id="category_id"
-                    formControlName="category_id"
-                    class="form-select float-start"
+            <!-- Columna 1 -->
+            <div class="col-xl-9 col-12">
+              <!-- NOMBRE -->
+              <div class="form-group first-group">
+                <div class="row">
+                  <label for="name" class="col-12 col-xl-1 col-form-label"
+                    >Nombre</label
                   >
-                    <option
-                      *ngFor="let cat of categories"
-                      [value]="cat.category_id"
+                  <div class="col-12 col-xl-10">
+                    <input
+                      [readonly]="isUploaderEnabled"
+                      autocomplete="off"
+                      type="text"
+                      class="form-control"
+                      id="name"
+                      formControlName="name"
+                      [errorStateMatcher]="matcher"
+                      matInput
+                    />
+                    <mat-error
+                      *ngIf="
+                        nameControl.invalid &&
+                        (nameControl.dirty || nameControl.touched)
+                      "
                     >
-                      {{ cat.name | uppercase }}
-                    </option>
-                  </select>
+                      <span *ngIf="nameControl.hasError('required')">
+                        Campo obligatorio.</span
+                      >
+                    </mat-error>
+                  </div>
                 </div>
-                <!-- SUBCATEGORIA -->
-                <label for="subcategories" class="col-12 col-form-label"
-                  >Subcategorías</label
-                >
-                <div class="col-12 col-xl-12 select-container">
-                  <select
-                    multiple
-                    [attr.disabled]="isUploaderEnabled"
-                    id="subcategories"
-                    formControlName="subcategories"
-                    class="form-select float-start"
+              </div>
+              <!-- Descripción -->
+              <div class="form-group">
+                <div class="row description">
+                  <label for="description" class="col-12 col-form-label"
+                    >Descripción</label
                   >
-                    <option
-                      *ngFor="let sub of filteredSubcategories"
-                      [value]="sub.subcategory_id"
-                    >
-                      {{ sub.name | uppercase }}
-                    </option>
-                  </select>
+                  <div class="col-12 col-xl-11 text-editor-container">
+                    <app-text-editor
+                      (editorValueChange)="
+                        createProductForm.controls['description'].setValue(
+                          $event
+                        )
+                      "
+                    ></app-text-editor>
+                  </div>
                 </div>
-                <!-- ANCESTROS -->
-                <label for="ancestors" class="col-12 col-xl-1 col-form-label"
-                  >Ancestros</label
-                >
-                <div class="col-12 col-xl-12">
-                  <select
-                    multiple
-                    [attr.disabled]="isUploaderEnabled"
-                    id="ancestors"
-                    formControlName="ancestors"
-                    #selectedSub
-                    gory
-                    class="form-select float-start"
+              </div>
+
+              <div
+                class="form-group percentages"
+                *ngIf="selectedCategory!.type == productsType.MANCOMUNADOS"
+              >
+                <div class="row">
+                  <!-- Sativa -->
+                  <label for="sativa" class="col-12 col-xl-1 col-form-label"
+                    >Sativa</label
                   >
-                    <option
-                      *ngFor="let anc of ancestors"
-                      [value]="anc.product_id"
+                  <div class="col-12 col-xl-2">
+                    <div class="input-group">
+                      <input
+                        [readonly]="isUploaderEnabled"
+                        autocomplete="off"
+                        type="number"
+                        class="form-control"
+                        id="sativa"
+                        formControlName="sativa"
+                        [errorStateMatcher]="matcher"
+                        matInput
+                      />
+                      <div class="input-group-append">
+                        <span class="input-group-text">%</span>
+                      </div>
+                    </div>
+                    <mat-error
+                      *ngIf="
+                        sativaControl.invalid &&
+                        (sativaControl.dirty || sativaControl.touched)
+                      "
                     >
-                      {{ anc.name | uppercase }}
-                    </option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+                      <span *ngIf="sativaControl.hasError('required')">
+                        Campo obligatorio.</span
+                      >
+                    </mat-error>
+                  </div>
 
-        <div
-          class="form-group percentages"
-          *ngIf="selectedCategory!.type == productsType.MANCOMUNADOS"
-        >
-          <div class="row">
-            <!-- Sativa -->
-            <label for="sativa" class="col-12 col-xl-1 col-form-label"
-              >Sativa</label
-            >
-            <div class="col-12 col-xl-1">
-              <div class="input-group">
-                <input
-                  [readonly]="isUploaderEnabled"
-                  autocomplete="off"
-                  type="number"
-                  class="form-control"
-                  id="sativa"
-                  formControlName="sativa"
-                  [errorStateMatcher]="matcher"
-                  matInput
-                />
-                <div class="input-group-append">
-                  <span class="input-group-text">%</span>
-                </div>
-              </div>
-              <mat-error
-                *ngIf="
-                  sativaControl.invalid &&
-                  (sativaControl.dirty || sativaControl.touched)
-                "
-              >
-                <span *ngIf="sativaControl.hasError('required')">
-                  Campo obligatorio.</span
-                >
-              </mat-error>
-            </div>
+                  <!-- Indica -->
+                  <label for="indica" class="col-12 col-xl-1 col-form-label"
+                    >Indica</label
+                  >
+                  <div class="col-12 col-xl-2">
+                    <div class="input-group">
+                      <input
+                        [readonly]="isUploaderEnabled"
+                        autocomplete="off"
+                        type="number"
+                        class="form-control"
+                        id="indica"
+                        formControlName="indica"
+                        [errorStateMatcher]="matcher"
+                        matInput
+                      />
+                      <div class="input-group-append">
+                        <span class="input-group-text">%</span>
+                      </div>
+                    </div>
+                    <mat-error
+                      *ngIf="
+                        indicaControl.invalid &&
+                        (indicaControl.dirty || indicaControl.touched)
+                      "
+                    >
+                      <span *ngIf="indicaControl.hasError('required')">
+                        Campo obligatorio.</span
+                      >
+                    </mat-error>
+                  </div>
 
-            <!-- Indica -->
-            <label for="indica" class="col-12 col-xl-1 col-form-label"
-              >Indica</label
-            >
-            <div class="col-12 col-xl-1">
-              <div class="input-group">
-                <input
-                  [readonly]="isUploaderEnabled"
-                  autocomplete="off"
-                  type="number"
-                  class="form-control"
-                  id="indica"
-                  formControlName="indica"
-                  [errorStateMatcher]="matcher"
-                  matInput
-                />
-                <div class="input-group-append">
-                  <span class="input-group-text">%</span>
-                </div>
-              </div>
-              <mat-error
-                *ngIf="
-                  indicaControl.invalid &&
-                  (indicaControl.dirty || indicaControl.touched)
-                "
-              >
-                <span *ngIf="indicaControl.hasError('required')">
-                  Campo obligatorio.</span
-                >
-              </mat-error>
-            </div>
+                  <!-- THC -->
+                  <label for="thc" class="col-12 col-xl-1 col-form-label"
+                    >THC</label
+                  >
+                  <div class="col-12 col-xl-2">
+                    <div class="input-group">
+                      <input
+                        [readonly]="isUploaderEnabled"
+                        autocomplete="off"
+                        type="number"
+                        class="form-control"
+                        id="thc"
+                        formControlName="thc"
+                        [errorStateMatcher]="matcher"
+                        matInput
+                      />
+                      <div class="input-group-append">
+                        <span class="input-group-text">%</span>
+                      </div>
+                    </div>
+                    <mat-error
+                      *ngIf="
+                        thcControl.invalid &&
+                        (thcControl.dirty || thcControl.touched)
+                      "
+                    >
+                      <span *ngIf="thcControl.hasError('required')">
+                        Campo obligatorio.</span
+                      >
+                    </mat-error>
+                  </div>
 
-            <!-- THC -->
-            <label for="thc" class="col-12 col-xl-1 col-form-label">THC</label>
-            <div class="col-12 col-xl-1">
-              <div class="input-group">
-                <input
-                  [readonly]="isUploaderEnabled"
-                  autocomplete="off"
-                  type="number"
-                  class="form-control"
-                  id="thc"
-                  formControlName="thc"
-                  [errorStateMatcher]="matcher"
-                  matInput
-                />
-                <div class="input-group-append">
-                  <span class="input-group-text">%</span>
-                </div>
-              </div>
-              <mat-error
-                *ngIf="
-                  thcControl.invalid && (thcControl.dirty || thcControl.touched)
-                "
-              >
-                <span *ngIf="thcControl.hasError('required')">
-                  Campo obligatorio.</span
-                >
-              </mat-error>
-            </div>
+                  <!-- CBD -->
+                  <label for="cbd" class="col-12 col-xl-1 col-form-label"
+                    >CBD</label
+                  >
+                  <div class="col-12 col-xl-2">
+                    <div class="input-group">
+                      <input
+                        [readonly]="isUploaderEnabled"
+                        autocomplete="off"
+                        type="number"
+                        class="form-control"
+                        id="cbd"
+                        formControlName="cbd"
+                        [errorStateMatcher]="matcher"
+                        matInput
+                      />
+                      <div class="input-group-append">
+                        <span class="input-group-text">%</span>
+                      </div>
+                    </div>
 
-            <!-- CBD -->
-            <label for="cbd" class="col-12 col-xl-1 col-form-label">CBD</label>
-            <div class="col-12 col-xl-1">
-              <div class="input-group">
-                <input
-                  [readonly]="isUploaderEnabled"
-                  autocomplete="off"
-                  type="number"
-                  class="form-control"
-                  id="cbd"
-                  formControlName="cbd"
-                  [errorStateMatcher]="matcher"
-                  matInput
-                />
-                <div class="input-group-append">
-                  <span class="input-group-text">%</span>
+                    <mat-error
+                      *ngIf="
+                        cbdControl.invalid &&
+                        (cbdControl.dirty || cbdControl.touched)
+                      "
+                    >
+                      <span *ngIf="cbdControl.hasError('required')">
+                        Campo obligatorio.</span
+                      >
+                    </mat-error>
+                  </div>
                 </div>
               </div>
 
-              <mat-error
-                *ngIf="
-                  cbdControl.invalid && (cbdControl.dirty || cbdControl.touched)
-                "
+              <div
+                class="form-group flawour"
+                *ngIf="selectedCategory!.type == productsType.MANCOMUNADOS"
               >
-                <span *ngIf="cbdControl.hasError('required')">
-                  Campo obligatorio.</span
-                >
-              </mat-error>
-            </div>
-          </div>
-        </div>
+                <div class="row">
+                  <!-- BANCO -->
+                  <label for="bank" class="col-12 col-xl-1 col-form-label"
+                    >Banco</label
+                  >
+                  <div class="col-12 col-xl-3">
+                    <input
+                      autocomplete="off"
+                      type="text"
+                      class="form-control"
+                      id="bank"
+                      formControlName="bank"
+                      [errorStateMatcher]="matcher"
+                      matInput
+                    />
+                    <mat-error
+                      *ngIf="
+                        bankControl.invalid &&
+                        (bankControl.dirty || bankControl.touched)
+                      "
+                    >
+                      <span *ngIf="bankControl.hasError('required')">
+                        Campo obligatorio.</span
+                      >
+                    </mat-error>
+                  </div>
 
-        <div
-          class="form-group flawour"
-          *ngIf="selectedCategory!.type == productsType.MANCOMUNADOS"
-        >
-          <div class="row">
-            <!-- BANCO -->
-            <label for="bank" class="col-12 col-xl-1 col-form-label"
-              >Banco</label
-            >
-            <div class="col-12 col-xl-2">
-              <input
-                [readonly]="isUploaderEnabled"
-                autocomplete="off"
-                type="text"
-                class="form-control"
-                id="bank"
-                formControlName="bank"
-                [errorStateMatcher]="matcher"
-                matInput
-              />
-              <mat-error
-                *ngIf="
-                  bankControl.invalid &&
-                  (bankControl.dirty || bankControl.touched)
-                "
-              >
-                <span *ngIf="bankControl.hasError('required')">
-                  Campo obligatorio.</span
-                >
-              </mat-error>
+                  <!-- SABOR -->
+                  <label for="flawour" class="col-12 col-xl-1 col-form-label"
+                    >Sabor</label
+                  >
+                  <div class="col-12 col-xl-6">
+                    <input
+                      autocomplete="off"
+                      type="text"
+                      class="form-control"
+                      id="flawour"
+                      formControlName="flawour"
+                      [errorStateMatcher]="matcher"
+                      matInput
+                    />
+                    <mat-error
+                      *ngIf="
+                        flawourControl.invalid &&
+                        (flawourControl.dirty || flawourControl.touched)
+                      "
+                    >
+                      <span *ngIf="flawourControl.hasError('required')">
+                        Campo obligatorio.</span
+                      >
+                    </mat-error>
+                  </div>
+                </div>
+                <div class="row">
+                  <!-- EFECTO -->
+                  <label for="effect" class="col-12 col-xl-1 col-form-label"
+                    >Efecto</label
+                  >
+                  <div class="col-12 col-xl-10">
+                    <input
+                      autocomplete="off"
+                      type="text"
+                      class="form-control"
+                      id="effect"
+                      formControlName="effect"
+                      [errorStateMatcher]="matcher"
+                      matInput
+                    />
+                    <mat-error
+                      *ngIf="
+                        effectControl.invalid &&
+                        (effectControl.dirty || effectControl.touched)
+                      "
+                    >
+                      <span *ngIf="effectControl.hasError('required')">
+                        Campo obligatorio.</span
+                      >
+                    </mat-error>
+                  </div>
+                </div>
+              </div>
             </div>
-
-            <!-- SABOR -->
-            <label for="flawour" class="col-12 col-xl-1 col-form-label"
-              >Sabor</label
-            >
-            <div class="col-12 col-xl-3">
-              <input
-                [readonly]="isUploaderEnabled"
-                autocomplete="off"
-                type="text"
-                class="form-control"
-                id="flawour"
-                formControlName="flawour"
-                [errorStateMatcher]="matcher"
-                matInput
-              />
-              <mat-error
-                *ngIf="
-                  flawourControl.invalid &&
-                  (flawourControl.dirty || flawourControl.touched)
-                "
+            <!-- Columna 2 -->
+            <div class="col-xl-3 col-12">
+              <!-- CATEGORIA -->
+              <label for="category_id" class="col-12 col-form-label"
+                >Categoría</label
               >
-                <span *ngIf="flawourControl.hasError('required')">
-                  Campo obligatorio.</span
+              <div class="col-12 col-xl-12 select-container">
+                <select
+                  readonly
+                  (change)="onCategoryChange($event)"
+                  id="category_id"
+                  formControlName="category_id"
+                  class="form-select float-start"
                 >
-              </mat-error>
-            </div>
-
-            <!-- EFECTO -->
-            <label for="effect" class="col-12 col-xl-1 col-form-label"
-              >Efecto</label
-            >
-            <div class="col-12 col-xl-4">
-              <input
-                [readonly]="isUploaderEnabled"
-                autocomplete="off"
-                type="text"
-                class="form-control"
-                id="effect"
-                formControlName="effect"
-                [errorStateMatcher]="matcher"
-                matInput
-              />
-              <mat-error
-                *ngIf="
-                  effectControl.invalid &&
-                  (effectControl.dirty || effectControl.touched)
-                "
+                  <option
+                    *ngFor="let cat of categories"
+                    [value]="cat.category_id"
+                  >
+                    {{ cat.name | uppercase }}
+                  </option>
+                </select>
+              </div>
+              <!-- SUBCATEGORIA -->
+              <label for="subcategories" class="col-12 col-form-label"
+                >Subcategorías</label
               >
-                <span *ngIf="effectControl.hasError('required')">
-                  Campo obligatorio.</span
+              <div class="col-12 col-xl-12 select-container">
+                <select
+                  multiple
+                  id="subcategories"
+                  formControlName="subcategories"
+                  class="form-select float-start"
                 >
-              </mat-error>
+                  <option
+                    *ngFor="let sub of filteredSubcategories"
+                    [value]="sub.subcategory_id"
+                  >
+                    {{ sub.name | uppercase }}
+                  </option>
+                </select>
+              </div>
+
+              <!-- ANCESTROS -->
+              <label for="ancestors" class="col-12 col-xl-1 col-form-label"
+                >Ancestros</label
+              >
+              <div class="col-12 col-xl-12 select-container">
+                <select
+                  multiple
+                  id="ancestors"
+                  formControlName="ancestors"
+                  #selectedSub
+                  gory
+                  class="form-select float-start"
+                >
+                  <option
+                    *ngFor="let anc of ancestors"
+                    [value]="anc.product_id"
+                  >
+                    {{ anc.name | uppercase }}
+                  </option>
+                </select>
+              </div>
             </div>
           </div>
         </div>

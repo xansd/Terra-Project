@@ -40,6 +40,7 @@ import { EditProductComponent } from './products/edit-product/edit-product.compo
 import { ProductsComponent } from './products/products.component';
 import { ProductsStatisticsComponent } from './products/products-statistics/products-statistics.component';
 import { ProductsDetailsComponent } from './products/products-details/products-details.component';
+import { PartnersStatisticsComponent } from './partners/partners-statistics/partners-statistics.component';
 
 @NgModule({
   declarations: [
@@ -65,6 +66,7 @@ import { ProductsDetailsComponent } from './products/products-details/products-d
     ProductsComponent,
     ProductsStatisticsComponent,
     ProductsDetailsComponent,
+    PartnersStatisticsComponent,
   ],
   imports: [
     CommonModule,

@@ -10,8 +10,14 @@ import { GetPartnerUseCase } from "../../../modules/partners/application/use-cas
 import { UpdatePartnerUseCase } from "../../../modules/partners/application/use-cases/update-partner.use-case";
 import { Role } from "../../../modules/users/domain";
 import { ToggleActivePartnerUseCase } from "../../../modules/partners/application/use-cases/toggle-active-partner.use-case";
+import { PartnerDocumentsService } from "../../../modules/partners/application/use-cases/partner-documents.service";
+import { ODTGenerator } from "../../../modules/partners/infrastructure/odt-generator";
+import LocalFileHandler from "../../../modules/files/infrastructure/local-file-handler";
 
 const router = Router();
+
+const odtGenerator = new ODTGenerator();
+const localFileHandler = new LocalFileHandler();
 
 // Repositorio
 const userRepository = new MySqlPartnerRepository();
@@ -24,6 +30,10 @@ const deletePartnerUseCase = new DeletePartnerUseCase(userRepository);
 const toggleActivePartnerUserCase = new ToggleActivePartnerUseCase(
   userRepository
 );
+const documentService = new PartnerDocumentsService(
+  odtGenerator,
+  localFileHandler
+);
 
 // Controlador
 const partnerController = new PartnerController(
@@ -31,7 +41,8 @@ const partnerController = new PartnerController(
   getPartnerUseCase,
   deletePartnerUseCase,
   toggleActivePartnerUserCase,
-  updatePartnerUseCase
+  updatePartnerUseCase,
+  documentService
 );
 
 // GET BY ID
@@ -133,29 +144,11 @@ router.put(
 );
 
 /*****************************DOCUMENTS********************************************/
-// GET FEE
-router.get(
-  "/documents/fee",
+// GET DOCUMENT
+router.post(
+  "/documents",
   authorize([Role.ADMIN, Role.USER]),
-  partnerController.getTypes.bind(partnerController)
-);
-// GET REGISTRATION FEE
-router.get(
-  "/documents/registration-fee",
-  authorize([Role.ADMIN, Role.USER]),
-  partnerController.getTypes.bind(partnerController)
-);
-// GET REGISTRATION
-router.get(
-  "/documents/registration",
-  authorize([Role.ADMIN, Role.USER]),
-  partnerController.getTypes.bind(partnerController)
-);
-// GET CONTRACT
-router.get(
-  "/documents/contract",
-  authorize([Role.ADMIN, Role.USER]),
-  partnerController.getTypes.bind(partnerController)
+  partnerController.getPartnerDocument.bind(partnerController)
 );
 
 export { router };

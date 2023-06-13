@@ -10,4 +10,9 @@ export class DatetimeHelperService {
 
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
+
+  static _toString(d: any) {
+    const date = new Date(d.year, d.month - 1, d.day);
+    return date.toLocaleDateString();
+  }
 }

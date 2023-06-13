@@ -5,11 +5,11 @@ import Logger from "../../../apps/utils/logger";
 import path from "path";
 import { ILocalFileHandler } from "../domain/file.repository";
 
-export class LocalFileHandler implements ILocalFileHandler {
+export class LocalFileHandler {
   async downloadFile(fileName: string): Promise<Buffer> {
-    const documentsFolder = path.join(__dirname, "../../../../documents");
-    const filePath = documentsFolder + "/" + fileName;
     try {
+      const documentsFolder = path.join(__dirname, "../../../../../documents");
+      const filePath = path.join(documentsFolder, fileName);
       const fileData = await fs.promises.readFile(filePath);
       return fileData;
     } catch (error) {
@@ -18,13 +18,14 @@ export class LocalFileHandler implements ILocalFileHandler {
     }
   }
 
-  async streamFile(localFilePath: string): Promise<Readable> {
+  async streamFile(fileName: string): Promise<Readable> {
     try {
-      const fileStream = fs.createReadStream(localFilePath);
+      const documentsFolder = path.join(__dirname, "../../../../../documents");
+      const fileStream = fs.createReadStream(documentsFolder + "/" + fileName);
       return fileStream;
     } catch (error) {
       Logger.error(`LocalFileHandler : streamFile : DownloadError`);
-      throw new DownloadError(localFilePath);
+      throw new DownloadError(fileName);
     }
   }
 }

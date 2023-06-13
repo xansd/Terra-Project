@@ -31,6 +31,8 @@ import { SanctionsComponent } from './sanctions/sanctions.component';
 import { UpdatePartnerCashComponent } from './update-partner-cash/update-partner-cash.component';
 import { TextEditorComponent } from './text-editor/text-editor.component';
 import { NgxEditorModule } from 'ngx-editor';
+import { ImgCropperComponent } from './img-cropper/img-cropper.component';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 @NgModule({
   declarations: [
@@ -55,6 +57,7 @@ import { NgxEditorModule } from 'ngx-editor';
     SanctionsComponent,
     UpdatePartnerCashComponent,
     TextEditorComponent,
+    ImgCropperComponent,
   ],
   imports: [
     CommonModule,
@@ -102,6 +105,7 @@ import { NgxEditorModule } from 'ngx-editor';
         remove: 'Remove',
       },
     }),
+    ImageCropperModule,
   ],
   exports: [
     CardComponent,

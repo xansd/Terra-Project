@@ -16,9 +16,9 @@ export class AppMenuService {
         text: PageTitle.PARTNERS,
       },
       {
-        path: PageRoutes.PRODUCTS,
-        icon: PageIcon.PRODUCTS,
-        text: PageTitle.PRODUCTS,
+        path: PageRoutes.VARIETIES,
+        icon: PageIcon.VARIETIES,
+        text: PageTitle.VARIETIES,
       },
       { is_divider: true },
       { text: 'Ajustes', is_header: true },

@@ -21,8 +21,13 @@ form {
 
     padding: 15px;
 
+    #subcategories,
+    #ancestors {
+        min-height: 180px;
+    }
+
     .save-btn-container {
-        margin-top: 50px;
+        margin-top: 30px;
 
         button {
             margin-left: 15px;
@@ -30,7 +35,7 @@ form {
     }
 
     .row {
-        margin-bottom: 40px !important;
+        margin-bottom: 30px !important;
     }
 
     label {
@@ -45,15 +50,7 @@ form {
 
 
     .text-editor-container {
-        height: 280px;
-    }
-
-    .categories .select-container {
-        margin-bottom: 10px;
-    }
-
-    .categories .select-container:first-child {
-        margin-top: -100px;
+        height: 180px;
     }
 
 
@@ -72,30 +69,16 @@ form {
 }
 
 @media (min-width: 1200px) {
-    .percentages {
-        position: relative;
-        top     : -60px
+    .percentages input {
+        max-width: 120px;
     }
 
-    .flawour {
-        position: relative;
-        top     : -70px
-    }
-
-    .save-btn-container {
-        position     : relative;
-        top          : -90px;
-        margin-bottom: -90px;
-    }
-
-    .prices {
-        position     : relative;
-        top          : -50px;
-        margin-bottom: -60px;
+    .percentages label {
+        max-width: 90px;
     }
 
     .categories {
-        margin-top: -20px;
+        margin-top: -50px;
     }
 }
 
@@ -110,4 +93,8 @@ form {
     /* Cambia este valor según tu preferencia */
     pointer-events: none;
     /* Evita que se puedan realizar interacciones con el componente oscurecido */
+}
+
+select[readonly] {
+    pointer-events: none;
 }

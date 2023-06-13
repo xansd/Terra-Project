@@ -9,6 +9,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Observable, Subject, forkJoin, take, takeUntil } from 'rxjs';
 import { CreatePartnerUseCase } from 'src/app/partners/application/create-partner.use-case';
 import {
+  DocumentTypes,
   IPartner,
   IPartnersType,
   Partner,
@@ -32,6 +33,7 @@ import { ActiveEntityService } from 'src/app/ui/services/active-entity-service.s
 import { FeesTypes, IFees, IFeesType } from 'src/app/partners/domain/fees';
 import { FeesUseCases } from 'src/app/partners/application/fees.use-case';
 import { InvalidFeeType } from 'src/app/partners/domain/fees.exceptions';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-create-partner',
@@ -217,8 +219,21 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
               this.modalRef.close(res);
             }
             this.newPartnerFees(res);
+            this.getNewRegistrationDocument(partner);
           }
         },
+      });
+  }
+
+  getNewRegistrationDocument(partner: IPartner) {
+    this.getPartnersService
+      .getPartnerDocument(partner, DocumentTypes.ALTA)
+      .subscribe((res: any) => {
+        const blob = res as Blob;
+        saveAs(
+          blob,
+          `${partner.surname}_${partner.name}_${DocumentTypes.ALTA}.docx`
+        );
       });
   }
 

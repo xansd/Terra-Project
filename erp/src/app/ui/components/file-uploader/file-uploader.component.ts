@@ -22,7 +22,11 @@ import {
   InvalidFileSizeError,
 } from 'src/app/files/domain/files.exceptions';
 import { AppStateService, FormMode } from '../../services/app-state.service';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import {
+  NgbActiveModal,
+  NgbModal,
+  NgbModalOptions,
+} from '@ng-bootstrap/ng-bootstrap';
 import { ModalActions } from '../../shared/enums/modalActions.enum';
 import {
   AbstractControl,
@@ -33,6 +37,13 @@ import {
 import { Subject, take, takeUntil } from 'rxjs';
 import { PageRoutes } from '../../pages/pages-info.config';
 import { ActiveEntityService } from '../../services/active-entity-service.service';
+import { ImageCropperComponent } from 'ngx-image-cropper';
+import { ImgCropperComponent } from '../img-cropper/img-cropper.component';
+
+const modalOptions: NgbModalOptions = {
+  backdrop: 'static',
+  keyboard: false,
+};
 
 @Component({
   selector: 'app-file-uploader',
@@ -40,6 +51,9 @@ import { ActiveEntityService } from '../../services/active-entity-service.servic
   styleUrls: ['./file-uploader.component.scss'],
 })
 export class FileUploaderComponent implements OnInit, OnDestroy {
+  @ViewChild('selectedDocumentType', { static: false })
+  selectedDocumentType!: ElementRef<HTMLSelectElement>;
+  documetTypeActive!: any;
   isLoading: boolean = true;
   @Input('isUploaderEnabled') isUploaderEnabled!: boolean;
   @Input('modalRef') modalRef!: NgbActiveModal;
@@ -66,6 +80,7 @@ export class FileUploaderComponent implements OnInit, OnDestroy {
 
   constructor(
     private fileService: FileService,
+    private modalService: NgbModal,
     private filesUseCase: FilesUseCases,
     private notifier: NotificationAdapter,
     private appState: AppStateService,
@@ -97,6 +112,10 @@ export class FileUploaderComponent implements OnInit, OnDestroy {
           this.documentTypes = types;
         },
       });
+  }
+
+  getSelectedDocumentType() {
+    this.documetTypeActive = this.selectedDocumentType.nativeElement.value;
   }
 
   getFormMode(): string {
@@ -132,10 +151,14 @@ export class FileUploaderComponent implements OnInit, OnDestroy {
           }
         }
       }
+      setTimeout(() => {
+        this.getSelectedDocumentType();
+      }, 100);
     } catch (error) {
       this.errorHandler.handleUnkonwError(error as unknown as Error);
     }
   }
+
   validateFile(file: File): boolean {
     if (!this.fileService.validateFileExtension(file)) {
       this.errorHandler.handleDomainError({
@@ -204,6 +227,11 @@ export class FileUploaderComponent implements OnInit, OnDestroy {
 
   updateType(type: string, index: number): void {
     this.files[index].type = type;
+    console.log(type);
+    if (type == '3') {
+      this.openImageCropper(this.files[index].file);
+    }
+    this.getSelectedDocumentType();
   }
 
   getPolicy(): FilePolicy {
@@ -225,5 +253,19 @@ export class FileUploaderComponent implements OnInit, OnDestroy {
 
   get documentTypeControl(): AbstractControl {
     return this.uploaderForm.controls['documentType'];
+  }
+
+  openImageCropper(event: Event): void {
+    const modalRef = this.modalService.open(ImgCropperComponent, modalOptions);
+    modalRef.componentInstance.event = event;
+    modalRef.result
+      .then((result) => {
+        if (result) {
+          console.log(result);
+        }
+      })
+      .catch((error) => {
+        if (error) console.error(error);
+      });
   }
 }

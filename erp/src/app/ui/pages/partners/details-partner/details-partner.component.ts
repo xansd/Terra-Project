@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, take, takeUntil } from 'rxjs';
 import { GetPartnerUseCase } from 'src/app/partners/application/get-partners.use-case';
-import { IPartner } from 'src/app/partners/domain/partner';
+import { DocumentTypes, IPartner } from 'src/app/partners/domain/partner';
 import searchConfig, {
   PartnersSearchTypes,
 } from 'src/app/ui/components/searcher/search.config';
@@ -19,6 +19,7 @@ import { DatetimeHelperService } from 'src/app/shared/application/datetime.helpe
 import { CreatePartnerComponent } from '../create-partner/create-partner.component';
 import { PartnerHistoryComponent } from 'src/app/ui/components/partner-history/partner-history.component';
 import { UpdatePartnerCashComponent } from 'src/app/ui/components/update-partner-cash/update-partner-cash.component';
+import { saveAs } from 'file-saver';
 
 const modalEditOptions: NgbModalOptions = {
   backdrop: 'static',
@@ -333,10 +334,23 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
       .payFee(fee)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (fee: any) => {
+        next: (res: any) => {
           this.notifier.showNotification('success', 'Abono completado');
+          this.getNewFeePaidDocument(this.partner!, fee);
           this.getPartner();
         },
+      });
+  }
+
+  getNewFeePaidDocument(partner: IPartner, fee: IFees) {
+    const type: DocumentTypes = this.isFee(fee)
+      ? DocumentTypes.RECIBO_CUOTA
+      : DocumentTypes.RECIBO_ALTA;
+    this.partnerService
+      .getPartnerDocument(partner, type)
+      .subscribe((res: any) => {
+        const blob = res as Blob;
+        saveAs(blob, `${partner.surname}_${partner.name}_${type}.docx`);
       });
   }
 
