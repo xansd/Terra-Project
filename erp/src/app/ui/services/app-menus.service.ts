@@ -20,6 +20,13 @@ export class AppMenuService {
         icon: PageIcon.VARIETIES,
         text: PageTitle.VARIETIES,
       },
+
+      { text: 'Terceros', is_header: true },
+      {
+        path: PageRoutes.PRODUCTS,
+        icon: PageIcon.PRODUCTS,
+        text: PageTitle.PRODUCTS,
+      },
       { is_divider: true },
       { text: 'Ajustes', is_header: true },
       { path: PageRoutes.USERS, icon: PageIcon.USERS, text: PageTitle.USERS },

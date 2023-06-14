@@ -23,8 +23,9 @@ export default {
     'txt',
     'xlsx',
   ],
+  REQUIRED_FILE_IMAGE_TYPES: ['jpg', 'jpeg', 'png', 'webp'],
   MAX_FILE_SIZE: 10 * 1024 * 1024,
-  DEFAULT_IMAGE: '/assets/images/loading.gif',
+  DEFAULT_IMAGE: '/assets/img/loading.gif',
   MIME_TYPES: {
     // Texto
     txt: 'text/plain',

@@ -13,7 +13,7 @@ import { IPartner } from 'src/app/partners/domain/partner';
 import { GetPartnerUseCase } from 'src/app/partners/application/get-partners.use-case';
 import { Observable, Subject, of } from 'rxjs';
 import { map, startWith, takeUntil } from 'rxjs/operators';
-import { PartnersSearchTypes } from './search.config';
+import { PartnersSearchTypes, ProductsSearchTypes } from './search.config';
 
 @Component({
   selector: 'app-searcher',
@@ -22,21 +22,24 @@ import { PartnersSearchTypes } from './search.config';
 })
 export class SearcherComponent implements OnInit, OnDestroy {
   @Input() options: any[] = [];
-  @Input() searchTypes: { label: string; value: PartnersSearchTypes }[] = [];
+  @Input() searchTypes: {
+    label: string;
+    value: PartnersSearchTypes | ProductsSearchTypes;
+  }[] = [];
   @Output() optionSelected = new EventEmitter<any>();
 
   private destroy$ = new Subject();
-  partner!: IPartner;
-  id!: string;
+  // partner!: IPartner;
+  // id!: string;
 
   searchForm: FormGroup = this.formBuilder.group({
     searchControl: [''],
-    typeControl: ['number'],
+    typeControl: [''],
   });
 
   searchTerm = new FormControl();
   filteredOptions!: Observable<any[] | Iterable<any> | undefined>;
-  selectedSearchType: string = 'number';
+  selectedSearchType: string = '';
 
   constructor(
     private formBuilder: FormBuilder,
@@ -45,8 +48,13 @@ export class SearcherComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.isEntitySaved();
-    if (this.id) this.getPartner(this.id);
+    // this.isEntitySaved();
+    // if (this.id) this.getPartner(this.id);
+  }
+
+  ngAfterViewInit(): void {
+    this.selectedSearchType = this.searchTypes[0].value;
+    this.searchForm.patchValue({ typeControl: this.searchTypes[0].value });
   }
 
   ngOnDestroy(): void {
@@ -57,12 +65,19 @@ export class SearcherComponent implements OnInit, OnDestroy {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['options']) {
       const currentOptions = changes['options'].currentValue;
+
       if (currentOptions && currentOptions.length > 0) {
-        if (this.options.length > 0)
-          this.options = this.concatName(this.options);
-        this.populateAutocomplete(
-          this.concatName(this.concatName(currentOptions))
-        );
+        // Verificar el tipo de objeto y aplicar la lógica correspondiente
+        if (currentOptions[0].hasOwnProperty('surname')) {
+          // Es un objeto "partners" que tiene "surname" y "name"
+          if (this.options.length > 0) {
+            this.options = this.concatName(this.options);
+          }
+          this.populateAutocomplete(this.concatName(currentOptions));
+        } else {
+          // Es un objeto "products" que no requiere concatenación
+          this.populateAutocomplete(currentOptions);
+        }
       } else if (currentOptions && currentOptions.length === 0) {
         this.filteredOptions = of([]);
         this.searchTerm.reset();
@@ -70,22 +85,22 @@ export class SearcherComponent implements OnInit, OnDestroy {
     }
   }
 
-  isEntitySaved(): void {
-    if (this.activeEntityService.getActiveEntityId()) {
-      this.id = this.activeEntityService.getActiveEntityId()!;
-    }
-  }
+  // isEntitySaved(): void {
+  //   if (this.activeEntityService.getActiveEntityId()) {
+  //     this.id = this.activeEntityService.getActiveEntityId()!;
+  //   }
+  // }
 
-  getPartner(id: string) {
-    this.partnerService
-      .getPartner(id)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (partner: IPartner) => {
-          this.partner = partner;
-        },
-      });
-  }
+  // getPartner(id: string) {
+  //   this.partnerService
+  //     .getPartner(id)
+  //     .pipe(takeUntil(this.destroy$))
+  //     .subscribe({
+  //       next: (partner: IPartner) => {
+  //         this.partner = partner;
+  //       },
+  //     });
+  // }
 
   concatName(data: IPartner[]): IPartner[] {
     const newArray = data.map((obj) => {

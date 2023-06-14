@@ -10,12 +10,19 @@ export class FileService {
   private mimeTypes: { [key: string]: string } = this.MIME_TYPES;
 
   REQUIRED_FILE_TYPES = config.REQUIRED_FILE_TYPES;
+  REQUIRED_FILE_IMAGE_TYPES = config.REQUIRED_FILE_IMAGE_TYPES;
   MAX_FILE_SIZE = config.MAX_FILE_SIZE;
   constructor() {}
 
   validateFileExtension(file: File) {
     const ext = file.name.substring(file.name.lastIndexOf('.') + 1);
     if (this.REQUIRED_FILE_TYPES.indexOf(ext) === -1) return false;
+    return true;
+  }
+
+  validateFileImageExtension(file: File) {
+    const ext = file.name.substring(file.name.lastIndexOf('.') + 1);
+    if (this.REQUIRED_FILE_IMAGE_TYPES.indexOf(ext) === -1) return false;
     return true;
   }
 

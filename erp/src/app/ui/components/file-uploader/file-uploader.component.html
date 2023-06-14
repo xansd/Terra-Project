@@ -22,7 +22,7 @@
         <div class="btn-container">
           <input
             #inputFile
-            multiple
+            [multiple]="documetTypeActive !== filesTypes.COVER"
             formControlName="files"
             type="file"
             style="display: none"
@@ -37,6 +37,20 @@
             <i class="fa fa-fw fa-plus"></i>
             <span>Añadir...</span>
           </button>
+          <select
+            id="documentType"
+            formControlName="documentType"
+            #selectedDocumentType
+            class="type-select"
+            (change)="onChangeSelectedDocumentType()"
+          >
+            <option
+              *ngFor="let type of documentTypes"
+              [value]="type.file_type_id"
+            >
+              {{ type.name | uppercase }}
+            </option>
+          </select>
           <button
             (click)="uploadFiles()"
             type="submit"
@@ -45,6 +59,7 @@
             <i class="fa fa-fw fa-upload"></i>
             <span>Subir</span>
           </button>
+
           <button
             (click)="deleteFiles()"
             type="button"
@@ -109,20 +124,7 @@
                 <p class="name mb-1 text-left">{{ file.name }}</p>
               </td>
               <td class="type-container text-left">
-                <select
-                  id="documentType"
-                  formControlName="documentType"
-                  #selectedDocumentType
-                  class="form-select"
-                  (change)="updateType(selectedDocumentType.value, i)"
-                >
-                  <option
-                    *ngFor="let type of documentTypes"
-                    [value]="type.file_type_id"
-                  >
-                    {{ type.name | uppercase }}
-                  </option>
-                </select>
+                {{ getDocumentType(files[i]) }}
               </td>
               <td class="size-container text-center">
                 <p class="text-center">{{ file.file.size }} KB</p>

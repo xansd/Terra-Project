@@ -17,7 +17,7 @@ export class ProductCode extends ValueObject<string> {
   private static generateProductCode(productId: string): string {
     const hash = createHash("sha-256").update(productId).digest("hex");
     const alphanumeric = hash.replace(/\d/g, "").toUpperCase();
-    const code = alphanumeric.substring(0, 8);
+    const code = "V-" + alphanumeric.substring(0, 7);
 
     return code;
   }

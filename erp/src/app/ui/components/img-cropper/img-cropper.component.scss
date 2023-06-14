@@ -1,0 +1,8 @@
+card {
+    width: 100%;
+
+    image-cropper {
+        -o-object-fit: cover;
+        object-fit   : cover;
+    }
+}

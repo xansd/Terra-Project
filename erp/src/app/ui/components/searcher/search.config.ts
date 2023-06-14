@@ -5,6 +5,12 @@ export enum PartnersSearchTypes {
   ID = 'partner_id',
 }
 
+export enum ProductsSearchTypes {
+  NAME = 'name',
+  CODE = 'code',
+  ID = 'product_id',
+}
+
 export default {
   PARTNERS_TYPES: [
     {
@@ -22,6 +28,20 @@ export default {
     {
       label: 'ID',
       value: PartnersSearchTypes.ID,
+    },
+  ],
+  PRODUCTS_TYPES: [
+    {
+      label: 'Nombre',
+      value: ProductsSearchTypes.NAME,
+    },
+    {
+      label: 'Código',
+      value: ProductsSearchTypes.CODE,
+    },
+    {
+      label: 'ID',
+      value: ProductsSearchTypes.ID,
     },
   ],
 };

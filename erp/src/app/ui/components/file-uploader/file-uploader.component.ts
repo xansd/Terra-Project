@@ -12,7 +12,12 @@ import { FileService } from 'src/app/files/application/files.service';
 import { FilesUseCases } from 'src/app/files/application/files.use-cases';
 
 import config from '../../../config/client.config';
-import { FilePolicy, IFiles, IFilesType } from 'src/app/files/domain/files';
+import {
+  FilePolicy,
+  FilesTypes,
+  IFiles,
+  IFilesType,
+} from 'src/app/files/domain/files';
 import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
 import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
@@ -53,7 +58,8 @@ const modalOptions: NgbModalOptions = {
 export class FileUploaderComponent implements OnInit, OnDestroy {
   @ViewChild('selectedDocumentType', { static: false })
   selectedDocumentType!: ElementRef<HTMLSelectElement>;
-  documetTypeActive!: any;
+  filesTypes = FilesTypes;
+  documetTypeActive: any;
   isLoading: boolean = true;
   @Input('isUploaderEnabled') isUploaderEnabled!: boolean;
   @Input('modalRef') modalRef!: NgbActiveModal;
@@ -102,6 +108,7 @@ export class FileUploaderComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  /***********************GESTION TYPE DOC***********************************/
   getDocumentsType(): void {
     this.filesUseCase
       .getTypes()
@@ -109,57 +116,161 @@ export class FileUploaderComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (types: IFilesType[]) => {
-          this.documentTypes = types;
+          this.filterDocumentTypes(types);
         },
       });
   }
 
-  getSelectedDocumentType() {
-    this.documetTypeActive = this.selectedDocumentType.nativeElement.value;
+  filterDocumentTypes(types: IFilesType[]) {
+    const currentURL = this.appState.state.activeRoute;
+    if (
+      currentURL === PageRoutes.PARTNERS_LIST ||
+      currentURL === PageRoutes.PARTNER_DETAILS ||
+      currentURL === PageRoutes.PARTNERS ||
+      currentURL === PageRoutes.PARTNER_STATISTICS
+    ) {
+      const allowedFileTypes = [
+        FilesTypes.ALTA,
+        FilesTypes.CUOTA,
+        FilesTypes.DNI,
+        FilesTypes.RECIBO,
+        FilesTypes.IMAGE,
+      ];
+      this.documentTypes = types.filter((type) =>
+        allowedFileTypes.includes(type.file_type_id)
+      );
+      this.setActiveDocumentType(FilesTypes.ALTA);
+    } else if (
+      currentURL === PageRoutes.VARIETIES_LIST ||
+      currentURL === PageRoutes.VARIETIES_DETAILS ||
+      currentURL === PageRoutes.VARIETIES ||
+      currentURL === PageRoutes.VARIETIES_STATISTICS
+    ) {
+      const allowedFileTypes = [FilesTypes.COVER, FilesTypes.IMAGE];
+      this.documentTypes = types.filter((type) =>
+        allowedFileTypes.includes(type.file_type_id)
+      );
+      this.setActiveDocumentType(FilesTypes.COVER);
+    } else {
+      this.documentTypes = types;
+      this.setActiveDocumentType(FilesTypes.DNI);
+    }
   }
 
-  getFormMode(): string {
-    return this.appState.state.formMode;
+  setActiveDocumentType(i: number) {
+    const documentActive: any = this.documentTypes.find(
+      (type) => type.file_type_id === i
+    );
+    this.documetTypeActive = documentActive.file_type_id;
+    this.uploaderForm.patchValue({
+      documentType: this.documetTypeActive.toString(),
+    });
   }
 
-  isImage(file: IFiles) {
-    return this.fileService.isImage(file.file);
+  onChangeSelectedDocumentType() {
+    this.documetTypeActive = Number(
+      this.selectedDocumentType.nativeElement.value
+    );
   }
 
-  async onFileSelect(event: Event): Promise<void> {
+  getDocumentType(file: IFiles): string {
+    for (const i of this.documentTypes) {
+      if (i.file_type_id == file.type) return i.name;
+    }
+    return '';
+  }
+
+  /***********************GESTION TYPE DOC***********************************/
+
+  /***********************GESTION FICHEROS***********************************/
+
+  onFileSelect(event: Event) {
+    if (this.documetTypeActive !== this.filesTypes.COVER)
+      this.onFileMultipleSelect(event);
+    else this.onFileCoverSelect(event);
+  }
+
+  onFileCoverSelect(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    if (target.files) {
+      const file: File = target.files[0];
+      if (this.validateFile(file, true)) {
+        // Pasamos la imagen al cropper
+        const modalRef = this.modalService.open(
+          ImgCropperComponent,
+          modalOptions
+        );
+        modalRef.componentInstance.event = event;
+        modalRef.componentInstance.type = file.type;
+        modalRef.result
+          .then((result) => {
+            if (result) {
+              const fileCropped = this.fileService.dataURItoFile(
+                result,
+                file.name,
+                file.type
+              );
+              this.storeFile(fileCropped);
+            }
+          })
+          .catch((error) => {
+            if (error) console.error(error);
+          });
+      }
+    }
+  }
+
+  onFileMultipleSelect(event: Event): void {
     try {
-      const entityId = this.activeEntityService.getActiveEntityId();
       const target = event.target as HTMLInputElement;
       if (target.files) {
         const fileList = Array.from(target.files);
         for (const file of fileList) {
           if (file) {
             if (this.validateFile(file)) {
-              const fileAsData = await this.fileService.readFile(file);
-              // Guardamos la imagen en this.preview (renderizado)
-              this.preview.push(fileAsData);
-              // Creamos un objeto Files y lo añadimos a this.files
-              this.files.push(
-                this.fileService.createFileObject(
-                  file,
-                  this.uploaderForm.controls['documentType'].value,
-                  entityId!,
-                  this.getPolicy()
-                )
-              );
+              this.storeFile(file);
             }
           }
         }
       }
-      setTimeout(() => {
-        this.getSelectedDocumentType();
-      }, 100);
     } catch (error) {
       this.errorHandler.handleUnkonwError(error as unknown as Error);
     }
   }
 
-  validateFile(file: File): boolean {
+  async storeFile(file: File) {
+    const entityId = this.activeEntityService.getActiveEntityId();
+    const fileAsData = await this.fileService.readFile(file);
+    // Guardamos la imagen en this.preview (renderizado)
+    this.preview.push(fileAsData);
+    // Creamos un objeto Files y lo añadimos a this.files
+    this.files.push(
+      this.fileService.createFileObject(
+        file,
+        //this.uploaderForm.controls['documentType'].value,
+        this.documetTypeActive,
+        entityId!,
+        this.getPolicy()
+      )
+    );
+  }
+
+  validateFile(file: File, isCover?: boolean): boolean {
+    if (isCover) {
+      if (!this.fileService.validateFileImageExtension(file)) {
+        this.errorHandler.handleDomainError({
+          message: `Fichero "${file.name}" con formato incorrecto (jpg, png, webp, jpeg). Selección anulada`,
+        } as Error);
+        return false;
+      }
+    } else {
+      if (!this.fileService.validateFileExtension(file)) {
+        this.errorHandler.handleDomainError({
+          message: `Fichero "${file.name}" con formato incorrecto. Selección anulada`,
+        } as Error);
+        return false;
+      }
+    }
     if (!this.fileService.validateFileExtension(file)) {
       this.errorHandler.handleDomainError({
         message: `Fichero "${file.name}" con formato incorrecto. Selección anulada`,
@@ -217,29 +328,6 @@ export class FileUploaderComponent implements OnInit, OnDestroy {
     });
   }
 
-  closeParentModal(action: ModalActions) {
-    this.closeModal.emit(action);
-  }
-
-  switchEvent() {
-    this.switch.emit(true);
-  }
-
-  updateType(type: string, index: number): void {
-    this.files[index].type = type;
-    console.log(type);
-    if (type == '3') {
-      this.openImageCropper(this.files[index].file);
-    }
-    this.getSelectedDocumentType();
-  }
-
-  getPolicy(): FilePolicy {
-    const route = this.appState.state.activeRoute;
-    if (route === PageRoutes.PRODUCTS_LIST) return FilePolicy.PUBLIC;
-    else return FilePolicy.PRIVATE;
-  }
-
   deleteFiles(i?: number): void {
     if (i) {
       this.preview.splice(i, 1);
@@ -255,17 +343,30 @@ export class FileUploaderComponent implements OnInit, OnDestroy {
     return this.uploaderForm.controls['documentType'];
   }
 
-  openImageCropper(event: Event): void {
-    const modalRef = this.modalService.open(ImgCropperComponent, modalOptions);
-    modalRef.componentInstance.event = event;
-    modalRef.result
-      .then((result) => {
-        if (result) {
-          console.log(result);
-        }
-      })
-      .catch((error) => {
-        if (error) console.error(error);
-      });
+  /***********************GESTION FICHEROS***********************************/
+
+  /***********************************AUX************************************/
+  getFormMode(): string {
+    return this.appState.state.formMode;
   }
+
+  isImage(file: IFiles) {
+    return this.fileService.isImage(file.file);
+  }
+
+  switchEvent() {
+    this.switch.emit(true);
+  }
+
+  getPolicy(): FilePolicy {
+    const route = this.appState.state.activeRoute;
+    if (route === PageRoutes.PRODUCTS_LIST) return FilePolicy.PUBLIC;
+    else return FilePolicy.PRIVATE;
+  }
+
+  closeParentModal(action: ModalActions) {
+    this.closeModal.emit(action);
+  }
+
+  /***********************************AUX************************************/
 }

@@ -121,6 +121,6 @@ export class AppComponent implements OnInit, OnDestroy {
     if (token) {
       const uid = this.authTokenService.getUserID();
       this.userIOAdapter.registerActiveUser(uid);
-    }
+    } else this.router.navigate(['/login']);
   }
 }

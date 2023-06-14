@@ -48,9 +48,9 @@ export class UpdateProductUseCase
       const productExists = await this.productRepository.getById(
         product.product_id!
       );
-      const originalName = productExists.name;
+      const originalName = productExists.name.toLowerCase();
       // Verificar si el name ha cambiado
-      if (product.name !== originalName) {
+      if (product.name.toLowerCase() !== originalName) {
         // Realizar la consulta para verificar duplicados
         const isNameDuplicate =
           await this.productRepository.checkProductExistenceByName(

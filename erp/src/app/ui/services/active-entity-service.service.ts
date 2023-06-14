@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { IPartner } from 'src/app/partners/domain/partner';
+import { IProduct } from 'src/app/products/domain/products';
 
 @Injectable({
   providedIn: 'root',
@@ -23,5 +25,15 @@ export class ActiveEntityService {
   clearActiveEntity(): void {
     this.activeEntity = undefined;
     this.activeEntityId = undefined;
+  }
+
+  getActiveEntityType(obj: IProduct | IPartner): string {
+    if (typeof obj === 'object' && obj.hasOwnProperty('product_id')) {
+      return 'product';
+    } else if (typeof obj === 'object' && obj.hasOwnProperty('partner_id')) {
+      return 'partner';
+    } else {
+      return 'unknow';
+    }
   }
 }

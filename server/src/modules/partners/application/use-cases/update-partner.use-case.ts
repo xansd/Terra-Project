@@ -23,9 +23,9 @@ export class UpdatePartnerUseCase implements IUpdatePartner {
       const partnerExists = await this.partnerRepository.getById(
         partner.partner_id
       );
-      const originalEmail = partnerExists.email;
+      const originalEmail = partnerExists.email.value.toLowerCase();
       // Verificar si el email ha cambiado
-      if (partner.email !== originalEmail.value) {
+      if (partner.email.toLowerCase() !== originalEmail) {
         // Realizar la consulta para verificar duplicados
         const isEmailDuplicate =
           await this.partnerRepository.checkPartnerExistenceByEmail(
