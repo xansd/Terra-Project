@@ -42,8 +42,8 @@ import {
 import { Subject, take, takeUntil } from 'rxjs';
 import { PageRoutes } from '../../pages/pages-info.config';
 import { ActiveEntityService } from '../../services/active-entity-service.service';
-import { ImageCropperComponent } from 'ngx-image-cropper';
 import { ImgCropperComponent } from '../img-cropper/img-cropper.component';
+import UPLOADER_CONFIG from './file-uploader.config';
 
 const modalOptions: NgbModalOptions = {
   backdrop: 'static',
@@ -122,33 +122,16 @@ export class FileUploaderComponent implements OnInit, OnDestroy {
   }
 
   filterDocumentTypes(types: IFilesType[]) {
-    const currentURL = this.appState.state.activeRoute;
-    if (
-      currentURL === PageRoutes.PARTNERS_LIST ||
-      currentURL === PageRoutes.PARTNER_DETAILS ||
-      currentURL === PageRoutes.PARTNERS ||
-      currentURL === PageRoutes.PARTNER_STATISTICS
-    ) {
-      const allowedFileTypes = [
-        FilesTypes.ALTA,
-        FilesTypes.CUOTA,
-        FilesTypes.DNI,
-        FilesTypes.RECIBO,
-        FilesTypes.IMAGE,
-      ];
+    const currentURL = this.appState.state.activeRoute as PageRoutes;
+
+    if (UPLOADER_CONFIG.PARTNERS_VIEWS.includes(currentURL)) {
       this.documentTypes = types.filter((type) =>
-        allowedFileTypes.includes(type.file_type_id)
+        UPLOADER_CONFIG.PARTNERS_DOCUMENTS.includes(type.file_type_id)
       );
       this.setActiveDocumentType(FilesTypes.ALTA);
-    } else if (
-      currentURL === PageRoutes.VARIETIES_LIST ||
-      currentURL === PageRoutes.VARIETIES_DETAILS ||
-      currentURL === PageRoutes.VARIETIES ||
-      currentURL === PageRoutes.VARIETIES_STATISTICS
-    ) {
-      const allowedFileTypes = [FilesTypes.COVER, FilesTypes.IMAGE];
+    } else if (UPLOADER_CONFIG.PRODUCTS_VIEWS.includes(currentURL)) {
       this.documentTypes = types.filter((type) =>
-        allowedFileTypes.includes(type.file_type_id)
+        UPLOADER_CONFIG.PRODUCTS_DOCUMENTS.includes(type.file_type_id)
       );
       this.setActiveDocumentType(FilesTypes.COVER);
     } else {

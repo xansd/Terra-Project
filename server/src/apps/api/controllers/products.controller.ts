@@ -21,6 +21,7 @@ import {
   InternalServerError,
   Conflict,
 } from "../error/http-error";
+import { ProductType } from "aws-sdk/clients/servicecatalog";
 export class ProductController {
   productMapper = new ProductDTOMapper();
   constructor(
@@ -47,8 +48,9 @@ export class ProductController {
   }
 
   async getAll(request: Request, response: Response): Promise<void> {
+    const { type } = request.params;
     try {
-      const products = await this.getProductUseCase.getAllProducts();
+      const products = await this.getProductUseCase.getAllProducts(type);
       const productsDTOs = this.productMapper.toDTOList(products);
       response.json(productsDTOs);
     } catch (error: any) {
@@ -63,8 +65,11 @@ export class ProductController {
   }
 
   async getAllFiltered(request: Request, response: Response): Promise<void> {
+    const { type } = request.params;
     try {
-      const products = await this.getProductUseCase.getAllProductsFiltered();
+      const products = await this.getProductUseCase.getAllProductsFiltered(
+        type
+      );
       response.json(products);
     } catch (error: any) {
       if (error instanceof DomainValidationError) {

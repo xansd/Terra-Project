@@ -3,31 +3,31 @@
   class="nav nav-pills mb-3 nav-fill"
   [ngClass]="{ 'fixed-tabs': isNavFixed }"
 >
+  <!-- <li class="nav-item">
+    <a
+      class="nav-link"
+      [routerLink]="pagesRoutes.PRODUCTS_DETAILS"
+      routerLinkActive="active"
+    >
+      <i [class]="icons.PRODUCTS_DETAILS"></i> CONSULTA
+    </a>
+  </li> -->
   <li class="nav-item">
     <a
       class="nav-link"
-      [routerLink]="pagesRoutes.VARIETIES_DETAILS"
+      [routerLink]="pagesRoutes.PRODUCTS_LIST"
       routerLinkActive="active"
     >
-      <i [class]="icons.VARIETIES_DETAILS"></i> CONSULTA
+      <i [class]="icons.PRODUCTS_LIST"></i> LISTADO PRODUCTOS
     </a>
   </li>
   <li class="nav-item">
     <a
       class="nav-link"
-      [routerLink]="pagesRoutes.VARIETIES_LIST"
+      [routerLink]="pagesRoutes.PRODUCTS_STATISTICS"
       routerLinkActive="active"
     >
-      <i [class]="icons.VARIETIES_LIST"></i> LISTADO VARIEDADES
-    </a>
-  </li>
-  <li class="nav-item">
-    <a
-      class="nav-link"
-      [routerLink]="pagesRoutes.VARIETIES_STATISTICS"
-      routerLinkActive="active"
-    >
-      <i [class]="icons.VARIETIES_STATISTICS"></i> ESTADÍSTICAS VARIEDADES
+      <i [class]="icons.PRODUCTS_STATISTICS"></i> ESTADÍSTICAS PRODUCTOS
     </a>
   </li>
 </ul>

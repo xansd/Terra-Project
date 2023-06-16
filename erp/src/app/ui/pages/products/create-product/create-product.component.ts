@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import {
   UntypedFormGroup,
   Validators,
@@ -26,6 +26,7 @@ import { FieldValidationError } from 'src/app/shared/error/field-validation-erro
 import { FormMode } from 'src/app/ui/services/app-state.service';
 import { DomainValidationError } from 'src/app/shared/domain/domain-validation.exception';
 import { IProductSubsetDTO } from 'src/app/products/infrastructure/products-dto.mapper';
+import { ProductsService } from 'src/app/ui/services/products.service';
 
 @Component({
   selector: 'app-create-product',
@@ -37,9 +38,10 @@ export class CreateProductComponent {
   selectedCategory: ICategories = {
     name: '',
     category_id: '',
-    type: ProductsType.MANCOMUNADOS,
+    type: ProductsType.TERCEROS,
   };
   categories: ICategories[] = [];
+  filteredCategories: ICategories[] = [];
   subcategories: ISubcategories[] = [];
   filteredSubcategories: ISubcategories[] = [];
   ancestors: IProductSubsetDTO[] = [];
@@ -76,7 +78,8 @@ export class CreateProductComponent {
     private formsHelperService: FormsHelperService,
     private createProductService: CreateProductUseCase,
     private getProductsService: GetProductsUseCase,
-    private activeEntityService: ActiveEntityService
+    private activeEntityService: ActiveEntityService,
+    private productsService: ProductsService
   ) {}
 
   ngOnInit(): void {
@@ -102,6 +105,11 @@ export class CreateProductComponent {
     );
   }
 
+  filterCategories(categories: ICategories[]): void {
+    this.filteredCategories =
+      this.productsService.filterCategoriesAllowed(categories);
+  }
+
   getCategories(): void {
     this.getProductsService
       .getAllCategories()
@@ -110,7 +118,11 @@ export class CreateProductComponent {
       .subscribe({
         next: (categories: ICategories[]) => {
           this.categories = categories;
-          this.selectedCategory = categories[0];
+          this.filterCategories(categories);
+          this.selectedCategory = this.filteredCategories[0];
+          this.createProductForm.patchValue({
+            category_id: this.filteredCategories[0].category_id,
+          });
         },
       });
   }
@@ -123,14 +135,14 @@ export class CreateProductComponent {
       .subscribe({
         next: (subcategories: ISubcategories[]) => {
           this.subcategories = subcategories;
-          this.filterSubCategories(subcategories[0].category_id);
+          this.filterSubCategories(subcategories[1].category_id);
         },
       });
   }
 
   getAllFilteredProducts(): void {
     this.getProductsService
-      .getAllProductsFiltered()
+      .getAllProductsFiltered(ProductsType.TERCEROS)
       .pipe(take(1))
       .pipe(takeUntil(this.destroy$))
       .subscribe({

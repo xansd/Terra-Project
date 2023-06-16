@@ -13,11 +13,11 @@ export interface IGetProduct {
 }
 
 export interface IGetAllProducts {
-  getAllProducts(): Promise<IProduct[]>;
+  getAllProducts(type: string): Promise<IProduct[]>;
 }
 
 export interface IGetProductsFiltered {
-  getAllProductsFiltered(): Promise<IProductSubsetDTO[]>;
+  getAllProductsFiltered(type: string): Promise<IProductSubsetDTO[]>;
 }
 
 export interface IGetAllCategories {
@@ -48,8 +48,8 @@ export class GetProductsUseCase
     return product;
   }
 
-  async getAllProducts(): Promise<IProduct[]> {
-    const products = await this.productsRepository.getAll();
+  async getAllProducts(type: string): Promise<IProduct[]> {
+    const products = await this.productsRepository.getAll(type);
     if (products.length === 0) {
       const productNotFound = new ProductDoesNotExistError();
       Logger.error(
@@ -61,8 +61,8 @@ export class GetProductsUseCase
     return products;
   }
 
-  async getAllProductsFiltered(): Promise<IProductSubsetDTO[]> {
-    const products = await this.productsRepository.getAllFiltered();
+  async getAllProductsFiltered(type: string): Promise<IProductSubsetDTO[]> {
+    const products = await this.productsRepository.getAllFiltered(type);
 
     return products;
   }

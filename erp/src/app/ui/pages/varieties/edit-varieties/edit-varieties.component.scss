@@ -1,0 +1,100 @@
+::ng-deep .modal-xl {
+    width    : 90% !important;
+    max-width: 100% !important;
+    padding  : 0 !important;
+}
+
+::ng-deep .modal-body {
+    padding: 0 !important;
+}
+
+::ng-deep .dropdown-menu {
+    background-color: rgb(53, 67, 74) !important;
+}
+
+::ng-deep card-header {
+    z-index: 1 !important;
+}
+
+
+form {
+
+    padding: 15px;
+
+    #subcategories,
+    #ancestors {
+        min-height: 180px;
+    }
+
+    .save-btn-container {
+        margin-top: 30px;
+
+        button {
+            margin-left: 15px;
+        }
+    }
+
+    .row {
+        margin-bottom: 30px !important;
+    }
+
+    label {
+        text-transform  : uppercase;
+        display         : -webkit-box;
+        display         : -ms-flexbox;
+        display         : flex;
+        -webkit-box-pack: start;
+        -ms-flex-pack   : start;
+        justify-content : flex-start;
+    }
+
+
+    .text-editor-container {
+        height: 180px;
+    }
+
+
+}
+
+@media (max-width: 1199px) {
+    label {
+        -webkit-box-pack: start;
+        -ms-flex-pack   : start;
+        justify-content : flex-start;
+    }
+
+    .text-editor-container {
+        margin-bottom: 50px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .percentages input {
+        max-width: 120px;
+    }
+
+    .percentages label {
+        max-width: 90px;
+    }
+
+    .categories {
+        margin-top: -50px;
+    }
+}
+
+
+::ng-deep .dropdown-menu.show {
+    z-index: 1090 !important;
+}
+
+
+.hide-component {
+    opacity       : 0.5;
+    /* Cambia este valor según tu preferencia */
+    pointer-events: none;
+    /* Evita que se puedan realizar interacciones con el componente oscurecido */
+}
+
+select[readonly] {
+    pointer-events: none;
+}

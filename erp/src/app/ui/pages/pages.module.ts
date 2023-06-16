@@ -34,13 +34,19 @@ import { EditPartnerComponent } from './partners/edit-partner/edit-partner.compo
 import { DetailsPartnerComponent } from './partners/details-partner/details-partner.component';
 import { PartnerAPIRepository } from 'src/app/partners/infrastructure/partner-api.repository';
 import { ProductAPIRepository } from 'src/app/products/infrastructure/products-api.repository';
-import { ListProductsComponent } from './products/list-products/list-products.component';
+import { PartnersStatisticsComponent } from './partners/partners-statistics/partners-statistics.component';
+import { VarietiesComponent } from './varieties/varieties.component';
+import { CreateVarietiesComponent } from './varieties/create-varieties/create-varieties.component';
+import { EditVarietiesComponent } from './varieties/edit-varieties/edit-varieties.component';
+import { ListVarietiesComponent } from './varieties/list-varieties/list-varieties.component';
+import { VarietiesDetailsComponent } from './varieties/varieties-details/varieties-details.component';
+import { VarietiesStatisticsComponent } from './varieties/varieties-statistics/varieties-statistics.component';
 import { CreateProductComponent } from './products/create-product/create-product.component';
 import { EditProductComponent } from './products/edit-product/edit-product.component';
-import { ProductsComponent } from './products/products.component';
-import { ProductsStatisticsComponent } from './products/products-statistics/products-statistics.component';
+import { ListProductsComponent } from './products/list-products/list-products.component';
 import { ProductsDetailsComponent } from './products/products-details/products-details.component';
-import { PartnersStatisticsComponent } from './partners/partners-statistics/partners-statistics.component';
+import { ProductsStatisticsComponent } from './products/products-statistics/products-statistics.component';
+import { ProductsComponent } from './products/products.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +73,12 @@ import { PartnersStatisticsComponent } from './partners/partners-statistics/part
     ProductsStatisticsComponent,
     ProductsDetailsComponent,
     PartnersStatisticsComponent,
+    VarietiesComponent,
+    CreateVarietiesComponent,
+    EditVarietiesComponent,
+    ListVarietiesComponent,
+    VarietiesDetailsComponent,
+    VarietiesStatisticsComponent,
   ],
   imports: [
     CommonModule,

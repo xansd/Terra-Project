@@ -50,7 +50,7 @@ export class MySQLProductRepository implements IProductRepository {
 
     return this.productPersistenceMapper.toDomain(rows[0]) as IProduct;
   }
-  async getAll(): Promise<IProduct[]> {
+  async getAll(type: string): Promise<IProduct[]> {
     const rows = await MysqlDataBase.query(
       `
       SELECT products.*,
@@ -59,9 +59,10 @@ export class MySQLProductRepository implements IProductRepository {
       FROM products
       LEFT JOIN product_subcategory ps ON products.product_id = ps.product_id
       LEFT JOIN ancestors a ON products.product_id = a.product_id
-      WHERE  deleted_at IS NULL
+      WHERE products.type = ? AND deleted_at IS NULL
       GROUP BY products.product_id;
-      `
+      `,
+      [type]
     );
     if (rows.length === 0) {
       Logger.error(`mysql : getAll : ProductNotFoundError`);
@@ -69,9 +70,11 @@ export class MySQLProductRepository implements IProductRepository {
     }
     return this.productPersistenceMapper.toDomainList(rows) as IProduct[];
   }
-  async getAllFiltered(): Promise<IProductSubsetDTO[]> {
+
+  async getAllFiltered(type: string): Promise<IProductSubsetDTO[]> {
     const rows = await MysqlDataBase.query(
-      `SELECT product_id, code, name FROM products where deleted_at IS NULL  ORDER BY name`
+      `SELECT product_id, code, name FROM products WHERE type = ? AND deleted_at IS NULL ORDER BY name`,
+      [type]
     );
     return this.productPersistenceMapper.toDtoFilteredList(
       rows
@@ -126,11 +129,13 @@ export class MySQLProductRepository implements IProductRepository {
       productPersistence.product_id!
     );
 
-    // Guardar ancestros
-    await this.enrollAncestors(
-      productPersistence.ancestors!,
-      productPersistence.product_id!
-    );
+    if (productPersistence.type === ProductsType.MANCOMUNADOS) {
+      // Guardar ancestros
+      await this.enrollAncestors(
+        productPersistence.ancestors!,
+        productPersistence.product_id!
+      );
+    }
 
     const selectResult = await MysqlDataBase.query(selectQuery, [
       productPersistence.product_id!,

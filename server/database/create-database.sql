@@ -28,6 +28,7 @@ CREATE TABLE files (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at DATETIME DEFAULT NULL,
+    INDEX idf_reference_id (reference_id),
     PRIMARY KEY (file_id),
     FOREIGN KEY (file_type_id) REFERENCES file_type (file_type_id)
 );
@@ -167,23 +168,6 @@ CREATE TABLE fees(
 );
 /******************************************************PARTNERS*********************************************/
 
-CREATE TABLE providers (
-provider_id VARCHAR(36) PRIMARY KEY,
-name VARCHAR(255) NOT NULL,
-email VARCHAR(255) NOT NULL UNIQUE,
-phone VARCHAR(20) NOT NULL,
-address VARCHAR(255) NOT NULL,
-country VARCHAR(255) NOT NULL,
-type ENUM('mancomunados', 'terceros') NOT NULL,
-user_created VARCHAR(36) DEFAULT NULL,
-user_updated VARCHAR(36) DEFAULT NULL,
-created_at datetime DEFAULT CURRENT_TIMESTAMP,
-updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-deleted_at datetime DEFAULT NULL,
-  FOREIGN KEY (user_created) REFERENCES users(user_id),
-  FOREIGN KEY (user_updated) REFERENCES users(user_id),
-INDEX providers_name (name)
-);
 
 
 /******************************************************PRODUCTOS*********************************************/
@@ -271,86 +255,108 @@ CREATE TABLE ancestors (
 
 /******************************************************PRODUCTOS*********************************************/
 
+
+
+
+
+
+/******************************************************COMPRAS*********************************************/
+
+CREATE TABLE providers (
+provider_id VARCHAR(36) PRIMARY KEY,
+name VARCHAR(255) NOT NULL,
+email VARCHAR(255) NOT NULL UNIQUE,
+phone VARCHAR(20) NOT NULL,
+address VARCHAR(255) NOT NULL,
+type ENUM('mancomunados', 'terceros') NOT NULL,
+user_created VARCHAR(36) DEFAULT NULL,
+user_updated VARCHAR(36) DEFAULT NULL,
+created_at datetime DEFAULT CURRENT_TIMESTAMP,
+updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+deleted_at datetime DEFAULT NULL,
+FOREIGN KEY (user_created) REFERENCES users(user_id),
+FOREIGN KEY (user_updated) REFERENCES users(user_id),
+INDEX providers_name (name)
+);
+
 CREATE TABLE harvests (
-harvest_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+harvest_id VARCHAR(36) PRIMARY KEY,
+code VARCHAR(36) NOT NULL,
 product_id VARCHAR(36) NOT NULL,
-  cost_price DECIMAL(10,2),
-  sale_price DECIMAL(10,2),
-  fee_amount DECIMAL(10,2),
-quantity DECIMAL(10,2) NOT NULL,
+provider_id VARCHAR(36) NOT NULL,
+cost_price DECIMAL(10,2) DEFAULT 0,
+sale_price DECIMAL(10,2) DEFAULT 0,
+fee_amount DECIMAL(10,2) DEFAULT 0,
+quantity DECIMAL(10,2) DEFAULT 0,
 notes TEXT,
-date_occurred DATE NOT NULL,
-    user_created VARCHAR(36) DEFAULT NULL,
-    user_updated VARCHAR(36) DEFAULT NULL,
-    created_at datetime DEFAULT CURRENT_TIMESTAMP,
-    updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at datetime DEFAULT NULL,
-    INDEX harvests_product_id (product_id),
+user_created VARCHAR(36) DEFAULT NULL,
+user_updated VARCHAR(36) DEFAULT NULL,
+created_at datetime DEFAULT CURRENT_TIMESTAMP,
+updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+deleted_at datetime DEFAULT NULL,
+INDEX harvests_product_id (product_id),
+FOREIGN KEY (provider_id) REFERENCES providers(provider_id),
 FOREIGN KEY (product_id) REFERENCES products(product_id),
-  FOREIGN KEY (user_created) REFERENCES users(user_id),
-  FOREIGN KEY (user_updated) REFERENCES users(user_id)
+FOREIGN KEY (user_created) REFERENCES users(user_id),
+FOREIGN KEY (user_updated) REFERENCES users(user_id)
 );
 
-
-
-
-CREATE TABLE expenses (
-expense_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-name VARCHAR(255) NOT NULL,
-amount DECIMAL(10,2) NOT NULL,
-date_occurred DATE NOT NULL,
+CREATE TABLE purchases (
+purchase_id VARCHAR(36) PRIMARY KEY,
+code VARCHAR(36) NOT NULL,
+provider_id VARCHAR(36)  NOT NULL,
+total_amount DECIMAL(10,2) DEFAULT 0,
 notes TEXT,
-    user_created VARCHAR(36) DEFAULT NULL,
-    user_updated VARCHAR(36) DEFAULT NULL,
-    created_at datetime DEFAULT CURRENT_TIMESTAMP,
-    updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at datetime DEFAULT NULL,
-
-  FOREIGN KEY (user_created) REFERENCES users(user_id),
-  FOREIGN KEY (user_updated) REFERENCES users(user_id)
+user_created VARCHAR(36) DEFAULT NULL,
+user_updated VARCHAR(36) DEFAULT NULL,
+created_at datetime DEFAULT CURRENT_TIMESTAMP,
+updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+deleted_at datetime DEFAULT NULL,
+INDEX purchases_provider_id (provider_id),
+FOREIGN KEY (provider_id) REFERENCES providers(provider_id),
+FOREIGN KEY (user_created) REFERENCES users(user_id),
+FOREIGN KEY (user_updated) REFERENCES users(user_id)
 );
 
 
-CREATE TABLE incomes (
-income_id INT(11)  AUTO_INCREMENT PRIMARY KEY,
-name VARCHAR(255) NOT NULL,
-amount DECIMAL(10,2) NOT NULL,
-date_occurred DATE NOT NULL,
-notes TEXT,
-    user_created VARCHAR(36) DEFAULT NULL,
-    user_updated VARCHAR(36) DEFAULT NULL,
-    created_at datetime DEFAULT CURRENT_TIMESTAMP,
-    updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at datetime DEFAULT NULL,
-
-  FOREIGN KEY (user_created) REFERENCES users(user_id),
-  FOREIGN KEY (user_updated) REFERENCES users(user_id)
+CREATE TABLE purchase_details (
+purchase_detail_id INT(11)  AUTO_INCREMENT PRIMARY KEY,
+purchase_id VARCHAR(36) NOT NULL,
+product_id VARCHAR(36) NOT NULL,
+quantity DECIMAL(10,2)  DEFAULT 0,
+INDEX purchase_details_product_id (product_id),
+INDEX purchase_details_purchase_id (purchase_id),
+FOREIGN KEY (purchase_id) REFERENCES purchases(purchase_id),
+FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 
+/******************************************************COMPRAS*********************************************/
+
+/****************************************************** VENTAS*********************************************/
 
 CREATE TABLE sales (
-sale_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+sale_id VARCHAR(36) PRIMARY KEY,
+code VARCHAR(36) NOT NULL,
 partner_id VARCHAR(36) NOT NULL,
-sale_price DECIMAL(10, 2),
-   tax DECIMAL(5, 2),
-   discount DECIMAL(10, 2),
-   total_price DECIMAL(10, 2),
-date_occurred DATE NOT NULL,
-    user_created VARCHAR(36) DEFAULT NULL,
-    user_updated VARCHAR(36) DEFAULT NULL,
-    created_at datetime DEFAULT CURRENT_TIMESTAMP,
-    updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at datetime DEFAULT NULL,
-    INDEX sales_partner_id (partner_id),
+total_amount DECIMAL(10, 2),
+tax DECIMAL(5, 2),
+notes TEXT,
+discount DECIMAL(10, 2),
+user_created VARCHAR(36) DEFAULT NULL,
+user_updated VARCHAR(36) DEFAULT NULL,
+created_at datetime DEFAULT CURRENT_TIMESTAMP,
+updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+deleted_at datetime DEFAULT NULL,
+INDEX sales_partner_id (partner_id),
 FOREIGN KEY (partner_id) REFERENCES partners(partner_id),
-  FOREIGN KEY (user_created) REFERENCES users(user_id),
-  FOREIGN KEY (user_updated) REFERENCES users(user_id)
+FOREIGN KEY (user_created) REFERENCES users(user_id),
+FOREIGN KEY (user_updated) REFERENCES users(user_id)
 );
 
 
 CREATE TABLE sale_details (
 sale_detail_id INT(11)  AUTO_INCREMENT PRIMARY KEY,
-sale_id INT(11) NOT NULL,
+sale_id VARCHAR(36) NOT NULL,
 product_id VARCHAR(36)  NOT NULL,
 quantity DECIMAL(10,2) NOT NULL,
 INDEX sale_details_product_id (product_id),
@@ -358,114 +364,75 @@ INDEX sale_details_sale_id (sale_id),
 FOREIGN KEY (sale_id) REFERENCES sales(sale_id),
 FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
+/****************************************************** VENTAS*********************************************/
 
+/******************************************************GASTOS E INGRESOS*********************************************/
 
-
-CREATE TABLE purchases (
-purchase_id INT(11)  AUTO_INCREMENT PRIMARY KEY,
-provider_id VARCHAR(36)  NOT NULL,
-total_amount DECIMAL(10,2) NOT NULL,
-date_occurred DATE NOT NULL,
-    user_created VARCHAR(36) DEFAULT NULL,
-    user_updated VARCHAR(36) DEFAULT NULL,
-    created_at datetime DEFAULT CURRENT_TIMESTAMP,
-    updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at datetime DEFAULT NULL,
-    INDEX purchases_provider_id (provider_id),
-FOREIGN KEY (provider_id) REFERENCES providers(provider_id),
-  FOREIGN KEY (user_created) REFERENCES users(user_id),
-  FOREIGN KEY (user_updated) REFERENCES users(user_id)
-);
-
-
-CREATE TABLE purchase_details (
-purchase_detail_id INT(11)  AUTO_INCREMENT PRIMARY KEY,
-purchase_id INT(11)  NOT NULL,
-product_id VARCHAR(36) NOT NULL,
-quantity DECIMAL(10,2) NOT NULL,
-    INDEX purchase_details_product_id (product_id),
-    INDEX purchase_details_purchase_id (purchase_id),
-FOREIGN KEY (purchase_id) REFERENCES purchases(purchase_id),
-FOREIGN KEY (product_id) REFERENCES products(product_id)
-);
-
-
-
-
-
-CREATE TABLE expenses_details (
-expense_detail_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-expense_id INT(11) NOT NULL,
-name VARCHAR(255) NOT NULL,
+CREATE TABLE transactions (
+transaction_id VARCHAR(36) AUTO_INCREMENT PRIMARY KEY,
+code VARCHAR(36) NOT NULL,
 amount DECIMAL(10,2) NOT NULL,
-FOREIGN KEY (expense_id) REFERENCES expenses(expense_id)
+notes TEXT,
+transaction_type_id INT(11) NOT NULL,
+recurrence_days INT(11),
+recurrence_times INT(11),
+date_start DATETIME DEFAULT NULL,
+interest DECIMAL(10,2) DEFAULT 0,
+user_created VARCHAR(36) DEFAULT NULL,
+user_updated VARCHAR(36) DEFAULT NULL,
+created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+deleted_at DATETIME DEFAULT NULL,
+FOREIGN KEY (user_created) REFERENCES users(user_id),
+FOREIGN KEY (user_updated) REFERENCES users(user_id),
+FOREIGN KEY (transaction_type_id) REFERENCES transaction_type(transaction_type_id)
 );
 
-
-CREATE TABLE incomes_details (
-  income_detail_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-  income_id INT(11) NOT NULL,
-  name VARCHAR(255) NOT NULL,
-  amount DECIMAL(10,2) NOT NULL,
-  FOREIGN KEY (income_id) REFERENCES incomes(income_id)
+CREATE TABLE transaction_type (
+transaction_type_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(255) NOT NULL,
+description TEXT,
+transaction_category ENUM('GASTO', 'INGRESO') NOT NULL, 'GASTO'
 );
+
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('COBRO_CUOTA', '', 'INGRESO'); 
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('COBRO_INSCRIPCION', '', 'INGRESO'); 
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('INGRESO_MONEDERO', '', 'INGRESO');
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('DONACION', '', 'INGRESO');
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('INGRESO_PRESTAMO', '');
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('ALQUILER', '', 'GASTO'); 
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('SERVICIOS', '', 'GASTO'); 
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('ACTIVIDADES', '', 'GASTO');
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('PRESTAMOS', '', 'GASTO');
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('RETIRADA_MONEDERO', '', 'GASTO');
+
+
+
+
+/******************************************************GASTOS E INGRESOS*********************************************/
+
+
+
+/******************************************************PAGOS Y COBROS*********************************************/
 
 
 CREATE TABLE payments (
     payment_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    expense_id INT(11),
-    purchase_id INT(11),
+    type ENUM('PAGO', 'COBRO') NOT NULL,
+    reference_id VARCHAR(36) NOT NULL,
     amount DECIMAL(10,2) NOT NULL,
-    date_occurred DATE NOT NULL,
     notes TEXT,
     user_created VARCHAR(36) DEFAULT NULL,
     user_updated VARCHAR(36) DEFAULT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,
-    FOREIGN KEY (expense_id) REFERENCES expenses(expense_id),
-    FOREIGN KEY (purchase_id) REFERENCES purchases(purchase_id),
-   FOREIGN KEY (user_created) REFERENCES users(user_id),
-  FOREIGN KEY (user_updated) REFERENCES users(user_id)
+    INDEX idx_reference_id (reference_id),
+    FOREIGN KEY (user_created) REFERENCES users(user_id),
+    FOREIGN KEY (user_updated) REFERENCES users(user_id)
 );
 
-
-CREATE TABLE receipts (
-    receipt_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    income_id INT(11),
-    sale_id INT(11),
-    amount DECIMAL(10,2) NOT NULL,
-date_occurred DATE NOT NULL,
-    notes TEXT,
-    user_created VARCHAR(36) DEFAULT NULL,
-    user_updated VARCHAR(36) DEFAULT NULL,
-    created_at datetime DEFAULT CURRENT_TIMESTAMP,
-    updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at datetime DEFAULT NULL,
-    FOREIGN KEY (income_id) REFERENCES incomes(income_id),
-    FOREIGN KEY (sale_id) REFERENCES sales(sale_id),
-  FOREIGN KEY (user_created) REFERENCES users(user_id),
-  FOREIGN KEY (user_updated) REFERENCES users(user_id)
-);
-
-
-CREATE TABLE debts (
-    debt_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    partner_id VARCHAR(36) NOT NULL,
-    sale_id INT(11) NOT NULL,
-    amount DECIMAL(10,2) NOT NULL,
-    date_occurred DATE NOT NULL,
-    paid TINYINT(1) DEFAULT 0,
-    user_created VARCHAR(36) DEFAULT NULL,
-    user_updated VARCHAR(36) DEFAULT NULL,
-    created_at datetime DEFAULT CURRENT_TIMESTAMP,
-    updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at datetime DEFAULT NULL,
-    FOREIGN KEY (partner_id) REFERENCES partners(partner_id),
-    FOREIGN KEY (sale_id) REFERENCES sales(sale_id),
-  FOREIGN KEY (user_created) REFERENCES users(user_id),
-  FOREIGN KEY (user_updated) REFERENCES users(user_id),
-);
+/******************************************************PAGOS Y COBROS*********************************************/
 
 
 

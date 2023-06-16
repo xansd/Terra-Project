@@ -1,5 +1,10 @@
 import { Observable } from 'rxjs';
-import { IProduct, ICategories, ISubcategories } from '../domain/products';
+import {
+  IProduct,
+  ICategories,
+  ISubcategories,
+  ProductsType,
+} from '../domain/products';
 import { IProductAPIPort } from '../domain/products.repository';
 import { IProductSubsetDTO } from '../infrastructure/products-dto.mapper';
 import { Inject, Injectable } from '@angular/core';
@@ -9,11 +14,11 @@ export interface IGetProduct {
 }
 
 export interface IGetAllProducts {
-  getAllProducts(): Observable<IProduct[]>;
+  getAllProducts(type: ProductsType): Observable<IProduct[]>;
 }
 
 export interface IGetProductsFiltered {
-  getAllProductsFiltered(): Observable<IProductSubsetDTO[]>;
+  getAllProductsFiltered(type: ProductsType): Observable<IProductSubsetDTO[]>;
 }
 
 export interface IGetAllCategories {
@@ -38,11 +43,11 @@ export class GetProductsUseCase
   constructor(
     @Inject('productsAPI') private readonly productsAPI: IProductAPIPort
   ) {}
-  getAllProducts(): Observable<IProduct[]> {
-    return this.productsAPI.getAll();
+  getAllProducts(type: ProductsType): Observable<IProduct[]> {
+    return this.productsAPI.getAll(type);
   }
-  getAllProductsFiltered(): Observable<IProductSubsetDTO[]> {
-    return this.productsAPI.getAllFiltered();
+  getAllProductsFiltered(type: ProductsType): Observable<IProductSubsetDTO[]> {
+    return this.productsAPI.getAllFiltered(type);
   }
   getAllCategories(): Observable<ICategories[]> {
     return this.productsAPI.getAllCategories();

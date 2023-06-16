@@ -3,8 +3,8 @@ import { ICategories, IProduct, ISubcategories } from "./products";
 
 export interface IProductRepository {
   getById(productId: string): Promise<IProduct>;
-  getAll(): Promise<IProduct[]>;
-  getAllFiltered(): Promise<IProductSubsetDTO[]>;
+  getAll(type: string): Promise<IProduct[]>;
+  getAllFiltered(type: string): Promise<IProductSubsetDTO[]>;
   create(product: IProduct): Promise<IProduct>;
   update(product: IProduct): Promise<void>;
   delete(productId: string): Promise<void>;

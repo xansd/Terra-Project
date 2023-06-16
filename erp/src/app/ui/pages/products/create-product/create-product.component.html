@@ -1,5 +1,5 @@
 <div class="modal-body">
-  <!-- FORMULARIO CREACION SOCIO -->
+  <!-- FORMULARIO CREACION PRODUCTO -->
   <card [ngClass]="{ 'hide-component': isUploaderEnabled }">
     <card-header
       class="d-block d-flex align-items-center bg-inverse bg-opacity-10 fw-400"
@@ -290,14 +290,13 @@
               >
               <div class="col-12 col-xl-12 select-container">
                 <select
-                  readonly
                   (change)="onCategoryChange($event)"
                   id="category_id"
                   formControlName="category_id"
                   class="form-select float-start"
                 >
                   <option
-                    *ngFor="let cat of categories"
+                    *ngFor="let cat of filteredCategories"
                     [value]="cat.category_id"
                   >
                     {{ cat.name | uppercase }}
@@ -325,26 +324,29 @@
               </div>
 
               <!-- ANCESTROS -->
-              <label for="ancestors" class="col-12 col-xl-1 col-form-label"
-                >Ancestros</label
-              >
-              <div class="col-12 col-xl-12 select-container">
-                <select
-                  multiple
-                  id="ancestors"
-                  formControlName="ancestors"
-                  #selectedSub
-                  gory
-                  class="form-select float-start"
+              <ng-container
+                *ngIf="selectedCategory!.type == productsType.MANCOMUNADOS"
+                ><label for="ancestors" class="col-12 col-xl-1 col-form-label"
+                  >Ancestros</label
                 >
-                  <option
-                    *ngFor="let anc of ancestors"
-                    [value]="anc.product_id"
+                <div class="col-12 col-xl-12 select-container">
+                  <select
+                    multiple
+                    id="ancestors"
+                    formControlName="ancestors"
+                    #selectedSub
+                    gory
+                    class="form-select float-start"
                   >
-                    {{ anc.name | uppercase }}
-                  </option>
-                </select>
-              </div>
+                    <option
+                      *ngFor="let anc of ancestors"
+                      [value]="anc.product_id"
+                    >
+                      {{ anc.name | uppercase }}
+                    </option>
+                  </select>
+                </div>
+              </ng-container>
             </div>
           </div>
         </div>
@@ -442,7 +444,7 @@
       </form>
     </div>
   </card>
-  <!-- FORMULARIO CREACION SOCIO -->
+  <!-- FORMULARIO CREACION PRODUCTO -->
   <app-file-uploader
     [isUploaderEnabled]="isUploaderEnabled"
     [modalRef]="modalRef"

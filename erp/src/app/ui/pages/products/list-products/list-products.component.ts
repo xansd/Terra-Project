@@ -7,7 +7,7 @@ import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, takeUntil } from 'rxjs';
 import { DeleteProductUseCase } from 'src/app/products/application/delete.use-cases';
 import { GetProductsUseCase } from 'src/app/products/application/get.use-cases';
-import { IProduct } from 'src/app/products/domain/products';
+import { IProduct, ProductsType } from 'src/app/products/domain/products';
 import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
 import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
 import { ActiveEntityService } from 'src/app/ui/services/active-entity-service.service';
@@ -87,7 +87,7 @@ export class ListProductsComponent implements OnDestroy, OnInit {
 
   getProducts(): void {
     this.getService
-      .getAllProducts()
+      .getAllProducts(ProductsType.TERCEROS)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (partners: IProduct[]) => {

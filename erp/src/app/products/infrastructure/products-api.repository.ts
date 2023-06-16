@@ -2,7 +2,12 @@ import SERVER from '../../config/server.config';
 import { Injectable } from '@angular/core';
 import { Observable, map, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { IProduct, ISubcategories, ICategories } from '../domain/products';
+import {
+  IProduct,
+  ISubcategories,
+  ICategories,
+  ProductsType,
+} from '../domain/products';
 import {
   IProductDTO,
   IProductSubsetDTO,
@@ -28,9 +33,9 @@ export class ProductAPIRepository implements IProductAPIPort {
       );
   }
 
-  getAll(): Observable<IProduct[]> {
+  getAll(type: ProductsType): Observable<IProduct[]> {
     return this.http
-      .get<IProductDTO[]>(`${API_URI}/products`, {
+      .get<IProductDTO[]>(`${API_URI}/products/all/${type}`, {
         withCredentials: true,
       })
       .pipe(
@@ -40,9 +45,9 @@ export class ProductAPIRepository implements IProductAPIPort {
       );
   }
 
-  getAllFiltered(): Observable<IProductSubsetDTO[]> {
+  getAllFiltered(type: ProductsType): Observable<IProductSubsetDTO[]> {
     return this.http.get<IProductSubsetDTO[]>(
-      `${API_URI}/products/all/filtered`,
+      `${API_URI}/products//all/${type}/filtered`,
       {
         withCredentials: true,
       }

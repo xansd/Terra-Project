@@ -21,6 +21,7 @@ import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
 import { FieldValidationError } from 'src/app/shared/error/field-validation-error';
 import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
 import { FormMode } from 'src/app/ui/services/app-state.service';
+import { ProductsService } from 'src/app/ui/services/products.service';
 import { ModalActions } from 'src/app/ui/shared/enums/modalActions.enum';
 import { CustomErrorStateMatcher } from 'src/app/ui/shared/helpers/custom-error-state-macher';
 import { FormsHelperService } from 'src/app/ui/shared/helpers/forms-helper.service';
@@ -58,9 +59,10 @@ export class EditProductComponent {
   selectedCategory: ICategories = {
     name: '',
     category_id: '',
-    type: ProductsType.MANCOMUNADOS,
+    type: ProductsType.TERCEROS,
   };
   categories: ICategories[] = [];
+  filteredCategories: ICategories[] = [];
   subcategories: ISubcategories[] = [];
   filteredSubcategories: ISubcategories[] = [];
   ancestors: IProductSubsetDTO[] = [];
@@ -73,7 +75,8 @@ export class EditProductComponent {
     private errorHandler: ErrorHandlerService,
     private formsHelperService: FormsHelperService,
     private updateProductService: UpdateProductUseCase,
-    private getProductService: GetProductsUseCase
+    private getProductService: GetProductsUseCase,
+    private productsService: ProductsService
   ) {}
 
   ngOnInit(): void {
@@ -89,7 +92,7 @@ export class EditProductComponent {
 
   getAllFilteredProducts(): void {
     this.getProductService
-      .getAllProductsFiltered()
+      .getAllProductsFiltered(ProductsType.TERCEROS)
       .pipe(take(1))
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -110,8 +113,14 @@ export class EditProductComponent {
           this.categories = categories;
           this.getSubCategories();
           this.getProduct(this.uid);
+          this.filterCategories(categories);
         },
       });
+  }
+
+  filterCategories(categories: ICategories[]): void {
+    this.filteredCategories =
+      this.productsService.filterCategoriesAllowed(categories);
   }
 
   getSubCategories(): void {
@@ -128,7 +137,7 @@ export class EditProductComponent {
               subcategory_id: sub.subcategory_id.toString(),
             };
           });
-          this.filterSubCategories(subcategories[0].category_id);
+          // this.filterSubCategories(subcategories[0].category_id);
         },
       });
   }
@@ -167,6 +176,7 @@ export class EditProductComponent {
     }
 
     this.editProductForm.patchValue(formValue);
+    this.filterSubCategories(product.category_id);
   }
 
   onCategoryChange(event: Event) {

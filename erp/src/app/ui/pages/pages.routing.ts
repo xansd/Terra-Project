@@ -12,11 +12,15 @@ import { UsersComponent } from './users/users.component';
 import { PartnersComponent } from './partners/partners.component';
 import { ListPartnersComponent } from './partners/list-partners/list-partners.component';
 import { DetailsPartnerComponent } from './partners/details-partner/details-partner.component';
-import { ListProductsComponent } from './products/list-products/list-products.component';
-import { ProductsStatisticsComponent } from './products/products-statistics/products-statistics.component';
+import { PartnersStatisticsComponent } from './partners/partners-statistics/partners-statistics.component';
+import { VarietiesComponent } from './varieties/varieties.component';
+import { VarietiesDetailsComponent } from './varieties/varieties-details/varieties-details.component';
+import { ListVarietiesComponent } from './varieties/list-varieties/list-varieties.component';
+import { VarietiesStatisticsComponent } from './varieties/varieties-statistics/varieties-statistics.component';
 import { ProductsComponent } from './products/products.component';
 import { ProductsDetailsComponent } from './products/products-details/products-details.component';
-import { PartnersStatisticsComponent } from './partners/partners-statistics/partners-statistics.component';
+import { ListProductsComponent } from './products/list-products/list-products.component';
+import { ProductsStatisticsComponent } from './products/products-statistics/products-statistics.component';
 const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
   {
@@ -89,7 +93,7 @@ const routes: Routes = [
       },
       {
         path: 'variedades',
-        component: ProductsComponent,
+        component: VarietiesComponent,
         children: [
           {
             path: '',
@@ -98,10 +102,39 @@ const routes: Routes = [
           },
           {
             path: 'detalles',
-            component: ProductsDetailsComponent,
+            component: VarietiesDetailsComponent,
             canActivate: [AuthGuard],
             data: { roles: [Roles.ADMIN, Roles.USER] },
           },
+          {
+            path: 'listado',
+            component: ListVarietiesComponent,
+            canActivate: [AuthGuard],
+            data: { roles: [Roles.ADMIN, Roles.USER] },
+          },
+          {
+            path: 'estadisticas',
+            component: VarietiesStatisticsComponent,
+            canActivate: [AuthGuard],
+            data: { roles: [Roles.ADMIN, Roles.USER] },
+          },
+        ],
+      },
+      {
+        path: 'productos',
+        component: ProductsComponent,
+        children: [
+          {
+            path: '',
+            redirectTo: 'listado',
+            pathMatch: 'full',
+          },
+          // {
+          //   path: 'detalles',
+          //   component: ProductsDetailsComponent,
+          //   canActivate: [AuthGuard],
+          //   data: { roles: [Roles.ADMIN, Roles.USER] },
+          // },
           {
             path: 'listado',
             component: ListProductsComponent,

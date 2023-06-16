@@ -39,14 +39,14 @@ router.get(
 
 // GET ALL
 router.get(
-  "/",
+  "/all/:type",
   authorize([Role.ADMIN, Role.USER]),
   productController.getAll.bind(productController)
 );
 
 // GET ALL FILTERED
 router.get(
-  "/all/filtered",
+  "/all/:type/filtered",
   authorize([Role.ADMIN, Role.USER]),
   productController.getAllFiltered.bind(productController)
 );

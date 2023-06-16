@@ -1,11 +1,16 @@
 import { Observable } from 'rxjs';
 import { IProductSubsetDTO } from '../infrastructure/products-dto.mapper';
-import { ICategories, IProduct, ISubcategories } from './products';
+import {
+  ICategories,
+  IProduct,
+  ISubcategories,
+  ProductsType,
+} from './products';
 
 export interface IProductAPIPort {
   getById(productId: string): Observable<IProduct>;
-  getAll(): Observable<IProduct[]>;
-  getAllFiltered(): Observable<IProductSubsetDTO[]>;
+  getAll(type: ProductsType): Observable<IProduct[]>;
+  getAllFiltered(type: ProductsType): Observable<IProductSubsetDTO[]>;
   create(product: IProduct): Observable<IProduct>;
   update(product: IProduct): Observable<void>;
   delete(productId: string): Observable<void>;

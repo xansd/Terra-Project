@@ -6,6 +6,7 @@ import {
   ICategories,
   IProduct,
   ISubcategories,
+  ProductsType,
 } from 'src/app/products/domain/products';
 import { IProductSubsetDTO } from 'src/app/products/infrastructure/products-dto.mapper';
 import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
@@ -72,7 +73,7 @@ export class ProductsDetailsComponent {
 
   getProductsList() {
     this.productsService
-      .getAllProductsFiltered()
+      .getAllProductsFiltered(ProductsType.TERCEROS)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (productsList: IProductSubsetDTO[]) => {
