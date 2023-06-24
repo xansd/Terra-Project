@@ -1,11 +1,17 @@
 import { Component, Input, OnInit } from '@angular/core';
 import {
+  FormGroup,
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 import { IPartner } from 'src/app/partners/domain/partner';
-import { ISanctions } from 'src/app/partners/domain/sanctions';
+import { FieldValidationError } from 'src/app/shared/error/field-validation-error';
+import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.adapter';
+import { FormsHelperService } from '../../shared/helpers/forms-helper.service';
+import { CreatePartnerUseCase } from 'src/app/partners/application/create-partner.use-case';
+import { Subject, scan, takeUntil } from 'rxjs';
+import config from '../../../config/client.config';
 
 @Component({
   selector: 'app-sanctions',
@@ -14,18 +20,47 @@ import { ISanctions } from 'src/app/partners/domain/sanctions';
 })
 export class SanctionsComponent implements OnInit {
   @Input('partner') partner!: IPartner;
-  severities: string[] = ['Leve', 'Grave', 'Muy Grave'];
+  severities: { name: string; level: number }[] = config.SEVERITY;
   sanctionForm: UntypedFormGroup = this.formBuilder.group({
-    type: [this.severities[0], [Validators.required]],
+    severity: [this.severities[0].level, [Validators.required]],
     description: ['', [Validators.required]],
   });
+  private destroy$ = new Subject();
 
-  constructor(private formBuilder: UntypedFormBuilder) {}
+  constructor(
+    private formBuilder: UntypedFormBuilder,
+    private formsHelperService: FormsHelperService,
+    private createService: CreatePartnerUseCase,
+    private notifier: NotificationAdapter
+  ) {}
 
-  ngOnInit(): void {}
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete();
+  }
 
-  addSanction() {
-    console.log(this.sanctionForm);
+  ngOnInit(): void {
+    console.log(this.partner);
+  }
+
+  addSanction(form: FormGroup) {
+    if (!form.valid) {
+      const invalidFields = this.formsHelperService.getInvalidFields(form);
+      this.notifier.showNotification('warning', invalidFields);
+      throw new FieldValidationError(invalidFields);
+    }
+    const sanction = this.formsHelperService.createSanctionFormData(
+      form,
+      this.partner
+    );
+    this.createService
+      .createSanction(sanction)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res: any) => {
+          this.notifier.showNotification('success', 'Sanción registrada');
+        },
+      });
     this.sanctionForm.get('description')?.setValue('');
   }
 

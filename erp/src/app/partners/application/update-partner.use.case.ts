@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { Injectable, Inject } from '@angular/core';
 import { IPartnerAPIPort } from '../domain/partner-api.port';
-import { IPartner } from '../domain/partner';
+import { IOperationPartnerCash, IPartner } from '../domain/partner';
 import { IAuthToken } from 'src/app/auth/domain/token';
 
 export interface IUpdatePartnerUseCase {
@@ -28,7 +28,7 @@ export class UpdatePartnerUseCase implements IUpdatePartnerUseCase {
     return this.partnersAPI.updateAccessCode(code, partnerId);
   }
 
-  updatePartnersCash(amount: number, partnerId: string): Observable<void> {
-    return this.partnersAPI.updatePartnersCash(amount, partnerId);
+  updatePartnersCash(data: IOperationPartnerCash): Observable<void> {
+    return this.partnersAPI.updatePartnersCash(data);
   }
 }

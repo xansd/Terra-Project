@@ -15,6 +15,7 @@ import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
 import { ConfirmDialogComponent } from 'src/app/ui/shared/components/confirm-dialog/confirm-dialog.component';
 import { ActiveEntityService } from 'src/app/ui/services/active-entity-service.service';
 import { DatetimeHelperService } from 'src/app/shared/application/datetime.helper.service';
+import { FeesUseCases } from 'src/app/partners/application/fees.use-case';
 
 const modalOptions: NgbModalOptions = {
   backdrop: 'static',
@@ -42,9 +43,9 @@ export class ListPartnersComponent implements OnDestroy, OnInit {
     'partner_id',
     'number',
     'name',
-    'wallet',
-    'fee',
-    'registration',
+    'cash',
+    'fee_expiration',
+    'created_at',
     'leaves',
     'active',
     'cannabis',
@@ -55,15 +56,15 @@ export class ListPartnersComponent implements OnDestroy, OnInit {
   columnDefinitions = [
     { def: 'partner_id', show: false },
     { def: 'number', show: true },
+    { def: 'active', show: true },
     { def: 'name', show: true },
+    { def: 'cash', show: true },
+    { def: 'fee_expiration', show: true },
     { def: 'cannabis', show: true },
     { def: 'hash', show: true },
     { def: 'extractions', show: true },
-    { def: 'wallet', show: true },
-    { def: 'fee', show: true },
-    { def: 'leaves', show: false },
-    { def: 'active', show: true },
-    { def: 'registration', show: true },
+    { def: 'created_at', show: true },
+    { def: 'leaves', show: true },
     { def: 'actions', show: true },
   ];
   isLargeScreen = false;
@@ -80,7 +81,8 @@ export class ListPartnersComponent implements OnDestroy, OnInit {
     private deleteService: DeletePartnerUseCase,
     private notifier: NotificationAdapter,
     private errorHandler: ErrorHandlerService,
-    private activeEntityService: ActiveEntityService
+    private activeEntityService: ActiveEntityService,
+    private feesService: FeesUseCases
   ) {
     this.dataSource = new MatTableDataSource(this.partnersList);
     this.dataSource.paginator = this.paginator;
@@ -110,11 +112,19 @@ export class ListPartnersComponent implements OnDestroy, OnInit {
           list.length ? (this.emptyTable = false) : (this.emptyTable = true);
           this.partnersList = list;
           this.renderTable();
-          if (this.tableHasChanged) {
-            this.partnersListTable.renderRows();
-          }
           this.tableHasChanged = false;
           this.isLoading = false;
+        },
+        error: (error: any) => {
+          if (error.statusCode) {
+            if (
+              error.statusCode === 404 &&
+              error.message === 'No hay socios registrados'
+            ) {
+              this.partnersList = [];
+              this.renderTable();
+            }
+          }
         },
       });
   }
@@ -259,6 +269,10 @@ export class ListPartnersComponent implements OnDestroy, OnInit {
     if (this.selectedRowIndex === rowId) {
       this.selectedRowIndex = null;
     } else this.selectedRowIndex = rowId;
+  }
+
+  isFeeExpired(expiration: string): boolean {
+    return this.feesService.isFeeExpired(expiration);
   }
   /************************* Gestión de tabla ************************************/
 }

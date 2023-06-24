@@ -33,10 +33,22 @@ export class GetPartnerUseCase
   getPartnerLastNumber(): Observable<object> {
     return this.partnersAPI.getPartnerLastNumber();
   }
+
   getPartnerDocument(
     partner: IPartner,
     documentType: DocumentTypes
   ): Observable<object> {
     return this.partnersAPI.getPartnerDocument(partner, documentType);
+  }
+
+  getPartnerConduct(partner: IPartner): number {
+    let condcut = 0;
+    if (!partner.sanctions || partner.sanctions.length === 0) {
+      return condcut;
+    }
+    for (const i of partner.sanctions!) {
+      condcut += i.severity;
+    }
+    return condcut;
   }
 }

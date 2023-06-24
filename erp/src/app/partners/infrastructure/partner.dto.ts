@@ -23,6 +23,7 @@ export interface IPartnerDTO {
   therapeutic: boolean | number;
   sanctions?: ISanctions[];
   fee?: FeesVariants;
+  fee_expiration?: string;
   inscription?: FeesVariants;
   user_created?: string;
   user_updated?: string;

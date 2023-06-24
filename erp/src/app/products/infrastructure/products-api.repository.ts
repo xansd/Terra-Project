@@ -75,7 +75,7 @@ export class ProductAPIRepository implements IProductAPIPort {
   }
 
   makeActive(productId: string): Observable<void> {
-    return this.http.put<void>(`${API_URI}/products/block/${productId}`, {
+    return this.http.put<void>(`${API_URI}/products/activate/${productId}`, {
       withCredentials: true,
     });
   }

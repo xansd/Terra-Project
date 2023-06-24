@@ -1,6 +1,12 @@
 import { Observable } from 'rxjs';
-import { DocumentTypes, IPartner, IPartnersType } from './partner';
+import {
+  DocumentTypes,
+  IOperationPartnerCash,
+  IPartner,
+  IPartnersType,
+} from './partner';
 import { IFees, IFeesType } from './fees';
+import { ISanctions } from './sanctions';
 
 export interface IPartnerAPIPort {
   getPartner(partnerId: string): Observable<IPartner>;
@@ -15,7 +21,7 @@ export interface IPartnerAPIPort {
   makeInactive(partnerId: string): Observable<void>;
   partnerLeaves(partnerId: string): Observable<void>;
   updateAccessCode(code: string, partnerId: string): Observable<void>;
-  updatePartnersCash(amount: number, partnerId: string): Observable<void>;
+  updatePartnersCash(data: IOperationPartnerCash): Observable<void>;
   getPartnerDocument(
     partner: IPartner,
     documentType: DocumentTypes
@@ -28,4 +34,7 @@ export interface IPartnerAPIPort {
   deleteFee(feeId: string): Observable<void>;
   getFeesTypes(): Observable<IFeesType[]>;
   payFee(fee: IFees): Observable<void>;
+
+  createSanction(sanction: ISanctions): Observable<ISanctions>;
+  deleteSanction(id: string): Observable<void>;
 }

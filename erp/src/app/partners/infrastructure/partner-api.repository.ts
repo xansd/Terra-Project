@@ -4,9 +4,15 @@ import { Injectable } from '@angular/core';
 import SERVER from '../../config/server.config';
 import { IPartnerAPIPort } from '../domain/partner-api.port';
 import { IPartnerDTO, PartnerDTOMapper } from './partner-dto.mapper';
-import { DocumentTypes, IPartner, IPartnersType } from '../domain/partner';
+import {
+  DocumentTypes,
+  IOperationPartnerCash,
+  IPartner,
+  IPartnersType,
+} from '../domain/partner';
 import { IFees, IFeesType } from '../domain/fees';
 import { FeesDTOMapper, IFeesDTO } from './fees-dto.mapper';
+import { ISanctions } from '../domain/sanctions';
 
 const API_URI = SERVER.API_URI;
 
@@ -115,14 +121,12 @@ export class PartnerAPIRepository implements IPartnerAPIPort {
     );
   }
 
-  updatePartnersCash(amount: number, partnerId: string): Observable<void> {
-    return this.http.put<void>(
-      `${API_URI}/partners/cash/${partnerId}`,
-      { amount: amount },
-      {
-        withCredentials: true,
-      }
-    );
+  updatePartnersCash(data: IOperationPartnerCash): Observable<void> {
+    const partnerDTO = this.partnerDTOMapper.toDTO(data.partner as IPartner);
+    data.partner = partnerDTO;
+    return this.http.put<void>(`${API_URI}/partners/cash`, data, {
+      withCredentials: true,
+    });
   }
 
   getPartnerDocument(
@@ -187,4 +191,21 @@ export class PartnerAPIRepository implements IPartnerAPIPort {
     });
   }
   /**************************************FEES************************************************/
+
+  /**************************************SANCTIONS************************************************/
+  createSanction(sanction: ISanctions): Observable<ISanctions> {
+    return this.http.post<ISanctions>(
+      `${API_URI}/partners/sanctions/`,
+      sanction,
+      {
+        withCredentials: true,
+      }
+    );
+  }
+
+  deleteSanction(id: string): Observable<void> {
+    return this.http.delete<void>(`${API_URI}/partners/sanctions/${id}`, {
+      withCredentials: true,
+    });
+  }
 }

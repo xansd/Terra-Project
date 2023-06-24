@@ -1,5 +1,12 @@
 <div class="modal-header">
-  <h5 class="modal-title">Introduce la cantidad a ingresar</h5>
+  <ng-container *ngIf="operation">
+    <h5 *ngIf="operation === cashOperation.INCOME" class="modal-title">
+      Introduce la cantidad a ingresar
+    </h5>
+    <h5 *ngIf="operation === cashOperation.REFUND" class="modal-title">
+      Introduce la cantidad a reintegrar
+    </h5>
+  </ng-container>
   <button type="button" class="btn-close" (click)="close(false)"></button>
 </div>
 <div class="modal-body">
@@ -24,7 +31,13 @@
           autocomplete="off"
         />
         <mat-error *ngIf="amount.invalid && (amount.dirty || amount.touched)">
-          <span *ngIf="amount.hasError('required')"> Campo obligatorio.</span>
+          <span *ngIf="amount.hasError('required')">Campo obligatorio.</span>
+          <span *ngIf="amount.hasError('max')">
+            La cantidad supera el límite actual de la cuenta del socio.
+          </span>
+          <span *ngIf="amount.hasError('min')"
+            >La cantidad debe ser mayor que cero.</span
+          >
         </mat-error>
       </div>
     </div>

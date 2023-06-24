@@ -430,6 +430,31 @@
                 </option>
               </select>
             </div>
+            <!-- LIMITE DEUDA -->
+            <label for="debt_limit" class="col-12 col-xl-1 col-form-label"
+              >Límite deuda</label
+            >
+            <div class="col-12 col-xl-2">
+              <input
+                [readonly]="isUploaderEnabled"
+                autocomplete="off"
+                type="number"
+                class="form-control"
+                id="debt_limit"
+                formControlName="debt_limit"
+                matInput
+                [errorStateMatcher]="matcher"
+              /><mat-error
+                *ngIf="
+                  debtLimitControl.invalid &&
+                  (debtLimitControl.dirty || debtLimitControl.touched)
+                "
+              >
+                <span *ngIf="debtLimitControl.hasError('required')">
+                  Campo obligatorio.</span
+                >
+              </mat-error>
+            </div>
           </div>
         </div>
         <div

@@ -69,6 +69,7 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
     fee: [null, [Validators.required]],
     inscription: [null, [Validators.required]],
     cash: [0, [Validators.required]],
+    debt_limit: [0, [Validators.required]],
   });
 
   // Cuotas e inscripciones
@@ -126,6 +127,7 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
       fee: partner.fee,
       inscription: partner.inscription,
       cash: partner.cash,
+      debt_limit: partner.debt_limit,
     });
   }
 
@@ -367,6 +369,9 @@ export class EditPartnerComponent implements OnInit, OnDestroy {
   }
   get cashControl(): AbstractControl {
     return this.editPartnerForm.controls['cash'];
+  }
+  get debtLimitControl(): AbstractControl {
+    return this.editPartnerForm.controls['debt_limit'];
   }
 
   /*********************************CONDUCTA************************************/

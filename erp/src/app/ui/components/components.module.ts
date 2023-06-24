@@ -33,6 +33,7 @@ import { TextEditorComponent } from './text-editor/text-editor.component';
 import { NgxEditorModule } from 'ngx-editor';
 import { ImgCropperComponent } from './img-cropper/img-cropper.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
+import { WithdrawalsComponent } from './withdrawals/withdrawals.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { ImageCropperModule } from 'ngx-image-cropper';
     UpdatePartnerCashComponent,
     TextEditorComponent,
     ImgCropperComponent,
+    WithdrawalsComponent,
   ],
   imports: [
     CommonModule,

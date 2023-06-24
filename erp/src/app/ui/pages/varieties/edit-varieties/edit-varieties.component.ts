@@ -37,6 +37,7 @@ export class EditVarietiesComponent {
     name: [null, [Validators.required]],
     category_id: [1, [Validators.required]],
     subcategories: [[], [Validators.required]],
+    active: [null],
     description: [null],
     ancestors: [[]],
     sativa: [0],
@@ -151,6 +152,7 @@ export class EditVarietiesComponent {
       name: product.name,
       category_id: product.category_id,
       subcategories: subcategories,
+      active: product.active,
       description: product.description,
     };
 

@@ -73,6 +73,7 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
     others: [0, [Validators.required]],
     fee: [1, [Validators.required]],
     inscription: [3, [Validators.required]],
+    debt_limit: [0, [Validators.required]],
   });
 
   matcher = new CustomErrorStateMatcher();
@@ -197,7 +198,7 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
         this.errorHandler.handleDomainError(error);
       } else this.errorHandler.handleUnkonwError(error);
     }
-    this.createFees(fee, inscription);
+    this.createFees(fee, inscription, partner);
   }
 
   createPartner(partner: IPartner, action: ModalActions): void {
@@ -219,7 +220,6 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
               this.modalRef.close(res);
             }
             this.newPartnerFees(res);
-            this.getNewRegistrationDocument(partner);
           }
         },
       });
@@ -237,7 +237,7 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
       });
   }
 
-  createFees(fee: IFees, inscription: IFees): void {
+  createFees(fee: IFees, inscription: IFees, partner: IPartner): void {
     const createPartnerFee$ = this.feesService.createPartnerFee(fee);
     const createPartnerInscription$ =
       this.feesService.createPartnerFee(inscription);
@@ -254,6 +254,8 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
               'success',
               'Asiento contable generado'
             );
+
+            this.getNewRegistrationDocument(partner);
           } else {
             this.notifier.showNotification(
               'error',
@@ -304,5 +306,8 @@ export class CreatePartnerComponent implements OnDestroy, OnInit {
   }
   get othersControl(): AbstractControl {
     return this.createPartnerForm.controls['others'];
+  }
+  get debtLimitControl(): AbstractControl {
+    return this.createPartnerForm.controls['debt_limit'];
   }
 }

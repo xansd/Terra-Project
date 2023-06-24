@@ -57,4 +57,18 @@ export default {
     odt: 'application/vnd.oasis.opendocument.text',
     pdf: 'application/pdf',
   },
+  SEVERITY: [
+    {
+      name: 'Leve',
+      level: 1,
+    },
+    {
+      name: 'Grave',
+      level: 2,
+    },
+    {
+      name: 'Muy grave',
+      level: 3,
+    },
+  ],
 };

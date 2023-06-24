@@ -94,8 +94,16 @@ export class ListUsersComponent implements OnInit, OnDestroy {
           }
           this.tableHasChanged = false;
         },
-        error: (error: Error) => {
-          console.log(error);
+        error: (error: any) => {
+          if (error.statusCode) {
+            if (
+              error.statusCode === 404 &&
+              error.message === 'No hay usuarios registrados'
+            ) {
+              this.usersList = [];
+              this.renderTable();
+            }
+          }
         },
       });
   }

@@ -32,18 +32,22 @@ export class FeesUseCases implements IFeesUseCases {
   getPartnersFees(partnerId: string): Observable<IFees[]> {
     return this.partnersAPI.getPartnersFees(partnerId);
   }
+
   getAllFees(): Observable<IFees[]> {
     return this.partnersAPI.getAllFees();
   }
   updateFee(fee: IFees): Observable<void> {
     return this.partnersAPI.updateFee(fee);
   }
+
   deleteFee(feeId: string): Observable<void> {
     return this.partnersAPI.deleteFee(feeId);
   }
+
   getTypes(): Observable<IFeesType[]> {
     return this.partnersAPI.getFeesTypes();
   }
+
   payFee(fee: IFees): Observable<void> {
     return this.partnersAPI.payFee(fee);
   }

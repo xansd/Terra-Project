@@ -2,41 +2,43 @@
   <ul class="nav nav-pills mb-3 nav-fill" id="pills-tab">
     <li class="nav-item">
       <a
-        class="nav-link active"
+        class="nav-link active fw-600"
         id="pills-home-tab"
         data-bs-toggle="pill"
         href="#retiradas"
-        >Retiradas</a
+        >RETIRADAS</a
       >
     </li>
     <li class="nav-item">
       <a
-        class="nav-link"
+        class="nav-link fw-600"
         id="pills-profile-tab"
         data-bs-toggle="pill"
         href="#sanciones"
-        >Sanciones</a
+        >SANCIONES</a
       >
     </li>
     <li class="nav-item">
       <a
-        class="nav-link"
+        class="nav-link fw-600"
         id="pills-contact-tab"
         data-bs-toggle="pill"
         href="#cuotas"
-        >Cuotas</a
+        >CUOTAS</a
       >
     </li>
   </ul>
   <div class="tab-content" id="tab-content">
-    <div class="tab-pane fade show active" id="retiradas">En desarrollo...</div>
+    <div class="tab-pane fade show active" id="retiradas">
+      <app-withdrawals [partner]="partner"></app-withdrawals>
+    </div>
     <div class="tab-pane fade" id="sanciones">
-      <app-sanctions></app-sanctions>
+      <app-sanctions [partner]="partner"></app-sanctions>
     </div>
     <div class="tab-pane fade" id="cuotas">
       <div *ngFor="let fee of fees">
         <div *ngIf="fee.paid">
-          {{ fee.created_at | date }} - {{ fee.fees_type_id }}-
+          {{ fee.created_at | date }} - {{ getFeesType(fee.fees_type_id) }}-
           {{ fee.paid | date }}
         </div>
       </div>

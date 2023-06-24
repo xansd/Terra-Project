@@ -21,6 +21,22 @@ form {
 
     padding: 15px;
 
+    .active-container {
+        display         : -webkit-box;
+        display         : -ms-flexbox;
+        display         : flex;
+        -webkit-box-pack: end;
+        -ms-flex-pack   : end;
+        justify-content : flex-end;
+
+        input {
+            position: relative;
+            top     : 7px;
+            left    : 20px;
+
+        }
+    }
+
     #subcategories,
     #ancestors {
         min-height: 180px;
@@ -57,6 +73,14 @@ form {
 }
 
 @media (max-width: 1199px) {
+    .active-container {
+        margin-top      : 20px;
+        -webkit-box-pack: start !important;
+        -ms-flex-pack   : start !important;
+        justify-content : flex-start !important;
+
+    }
+
     label {
         -webkit-box-pack: start;
         -ms-flex-pack   : start;
@@ -69,6 +93,11 @@ form {
 }
 
 @media (min-width: 1200px) {
+    .active-container {
+        position: relative;
+        left    : -20px;
+    }
+
     .percentages input {
         max-width: 120px;
     }

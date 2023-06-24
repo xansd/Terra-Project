@@ -1,0 +1,9 @@
+::ng-deep .modal-body {
+    padding: 25px !important;
+}
+
+::ng-deep .modal-xl {
+    width    : 90% !important;
+    max-width: 1900px;
+    margin   : inherit auto;
+}

@@ -18,6 +18,7 @@ export interface ISubcategories {
 export interface IProduct {
   product_id?: string;
   code?: string;
+  active: boolean | number;
   name: string;
   type: ProductsType;
   category_id: string;
@@ -44,6 +45,7 @@ export interface IProduct {
 export class Product implements IProduct {
   product_id?: string;
   code?: string;
+  active: boolean | number;
   name: string;
   type: ProductsType;
   category_id: string;
@@ -69,6 +71,7 @@ export class Product implements IProduct {
   private constructor(props: IProduct) {
     this.product_id = props.product_id;
     this.code = props.code;
+    this.active = props.active;
     this.name = props.name;
     this.type = props.type;
     this.category_id = props.category_id;

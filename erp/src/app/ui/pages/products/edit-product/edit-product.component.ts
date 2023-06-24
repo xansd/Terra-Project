@@ -37,6 +37,7 @@ export class EditProductComponent {
     name: [null, [Validators.required]],
     category_id: [1, [Validators.required]],
     subcategories: [[], [Validators.required]],
+    active: [null],
     description: [null],
     ancestors: [[]],
     sativa: [0],
@@ -152,6 +153,7 @@ export class EditProductComponent {
       name: product.name,
       category_id: product.category_id,
       subcategories: subcategories,
+      active: product.active,
       description: product.description,
     };
 
@@ -170,8 +172,8 @@ export class EditProductComponent {
     } else if (product.type === ProductsType.TERCEROS) {
       formValue = {
         ...formValue,
-        cost_price: product.cost_price,
-        sale_price: product.sale_price,
+        cost_price: product.cost_price || 0.0,
+        sale_price: product.sale_price || 0.0,
       };
     }
 

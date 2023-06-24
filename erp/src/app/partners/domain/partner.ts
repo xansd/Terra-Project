@@ -1,7 +1,7 @@
 import { Email } from 'src/app/shared/domain/value-objects/email.value-object';
-import { PartnersType } from './partner-type.enum';
-import { FeesVariants, IFees, IFeesType } from './fees';
+import { FeesVariants } from './fees';
 import { ISanctions } from './sanctions';
+import { IPartnerDTO } from '../infrastructure/partner-dto.mapper';
 export interface IPartner {
   partner_id?: string;
   access_code?: string;
@@ -23,8 +23,10 @@ export interface IPartner {
   therapeutic: boolean | number;
   sanctions?: ISanctions[];
   fee?: FeesVariants;
+  fee_expiration?: string;
   inscription?: FeesVariants;
   cash: number;
+  debt_limit?: number;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -42,6 +44,26 @@ export enum DocumentTypes {
 export interface IPartnersType {
   partner_type_id: number;
   name: string;
+}
+
+export enum PartnersType {
+  USUARIO = 1,
+  DIRECTIVA = 2,
+  COLABORADOR = 3,
+  HONORARIO = 4,
+  FUNDADOR = 5,
+}
+
+export enum OperationPartnerCash {
+  INCOME = 'INGRESO_CUENTA_SOCIO',
+  REFUND = 'REINTEGRO_CUENTA_SOCIO',
+  WITHDRAWAL = 'RETIRADA_DISPENSARIO',
+}
+
+export interface IOperationPartnerCash {
+  amount: number;
+  operation: OperationPartnerCash;
+  partner: IPartnerDTO | IPartner;
 }
 
 export class Partner implements IPartner {
@@ -65,8 +87,10 @@ export class Partner implements IPartner {
   therapeutic: boolean | number;
   sanctions?: ISanctions[];
   fee?: FeesVariants;
+  fee_expiration?: string;
   inscription?: FeesVariants;
   cash: number;
+  debt_limit?: number;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -94,8 +118,10 @@ export class Partner implements IPartner {
     this.therapeutic = props.therapeutic;
     this.sanctions = props.sanctions;
     this.fee = props.fee;
+    this.fee_expiration = props.fee_expiration;
     this.inscription = props.inscription;
     this.cash = props.cash;
+    this.debt_limit = props.debt_limit;
     this.user_created = props.user_created ? props.user_created : '';
     this.user_updated = props.user_updated ? props.user_updated : '';
     this.created_at = props.created_at ? props.created_at : '';

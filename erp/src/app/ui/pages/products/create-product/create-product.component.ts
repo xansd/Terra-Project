@@ -34,6 +34,7 @@ import { ProductsService } from 'src/app/ui/services/products.service';
   styleUrls: ['./create-product.component.scss'],
 })
 export class CreateProductComponent {
+  active = true;
   productsType = ProductsType;
   selectedCategory: ICategories = {
     name: '',
@@ -51,6 +52,7 @@ export class CreateProductComponent {
 
   createProductForm: UntypedFormGroup = this.formBuilder.group({
     name: [null, [Validators.required]],
+    active: [true],
     category_id: [1, [Validators.required]],
     subcategories: [[], [Validators.required]],
     description: [null],

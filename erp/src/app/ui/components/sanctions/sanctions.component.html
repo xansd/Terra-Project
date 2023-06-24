@@ -1,47 +1,74 @@
-<form [formGroup]="sanctionForm" (ngSubmit)="addSanction()" class="form">
-  <div class="row">
-    <div class="col-2">
-      <div class="severity-container">
-        <label>Gravedad:</label>
-        <select
-          id="type"
-          formControlName="type"
-          #selectedType
-          class="form-select"
-        >
-          <option *ngFor="let severity of severities" [value]="severity">
-            {{ severity }}
-          </option>
-        </select>
+<div class="container-fluid">
+  <form
+    [formGroup]="sanctionForm"
+    (ngSubmit)="addSanction(sanctionForm)"
+    class="form"
+  >
+    <div class="row">
+      <div class="col-12">
+        <div class="severity-container">
+          <label>Gravedad:</label>
+          <select
+            id="severity"
+            formControlName="severity"
+            #selectedType
+            class="form-select"
+          >
+            <option
+              *ngFor="let severity of severities"
+              [value]="severity.level"
+            >
+              {{ severity.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-12">
+        <div class="description-container">
+          <label>Descripción:</label>
+          <textarea
+            class="form-control"
+            name="description"
+            placeholder="Explica lo ocurrido..."
+            formControlName="description"
+          ></textarea>
+        </div>
       </div>
     </div>
-    <div class="col-10">
-      <div class="description-container">
-        <label>Descripción:</label>
-        <textarea
-          class="form-control"
-          name="description"
-          placeholder="Explica lo ocurrido..."
-          formControlName="description"
-        ></textarea>
-      </div>
+
+    <div class="submit-container d-flex justify-content-end">
+      <button class="btn btn-success" type="submit">Enviar</button>
     </div>
+  </form>
+  <div *ngIf="partner && partner.sanctions!.length === 0" class="no-sanctions">
+    No hay sanciones registradas
   </div>
-
-  <div class="submit-container d-flex justify-content-end">
-    <button class="btn btn-success" type="submit">Agregar</button>
-  </div>
-</form>
-
-<h4>Sanciones Registradas:</h4>
-<ul *ngIf="partner">
-  <li *ngFor="let sanction of partner.sanctions; let i = index">
-    <span>Fecha de Creación: {{ sanction.sanction_date | date }}</span
-    ><br />
-    <span>Gravedad: {{ sanction.severity }}</span
-    ><br />
-    <span>Descripción: {{ sanction.description }}</span
-    ><br />
-    <button (click)="deleteSanction(i)">Eliminar</button>
-  </li>
-</ul>
+  <table
+    class="table"
+    *ngIf="partner && partner.sanctions!.length > 0"
+    style="width: 100%"
+  >
+    <thead>
+      <tr>
+        <th class="text-center">Fecha de Creación</th>
+        <th class="text-center">Gravedad</th>
+        <th style="width: 60%; text-align: center">Descripción</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let sanction of partner.sanctions; let i = index">
+        <td class="text-center">{{ sanction.created_at | date }}</td>
+        <td class="text-center">{{ sanction.severity }}</td>
+        <td style="width: 60%; text-align: center">
+          {{ sanction.description }}
+        </td>
+        <td>
+          <button class="btn btn-danger" (click)="deleteSanction(i)">
+            Eliminar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

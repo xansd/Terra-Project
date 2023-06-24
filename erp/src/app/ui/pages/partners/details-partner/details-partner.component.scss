@@ -4,7 +4,7 @@
 }
 
 .content {
-    margin-top: 50px;
+    margin-top: 40px;
 }
 
 .new-partner-btn {
@@ -14,7 +14,9 @@
     max-width     : 200px;
 }
 
-.button-container {
+
+.button-container,
+.btn-gr {
     position             : -webkit-sticky;
     position             : sticky;
     top                  : 150px;
@@ -34,8 +36,17 @@
     -ms-flex-align       : center;
     align-items          : center;
 
+    .btn-gr {
+        margin       : 20px auto;
+        margin-bottom: 0;
+
+        &:last-child {
+            margin-top: 30px;
+        }
+    }
+
     button {
-        min-height    : 50px;
+        min-height    : 45px;
         letter-spacing: .7px;
         width         : 100%;
         max-width     : 200px;
@@ -53,10 +64,6 @@
                 top      : 0;
             }
 
-        }
-
-        &:last-child {
-            margin-top: 30px;
         }
 
         &:nth-child(1) {
@@ -96,6 +103,7 @@
         margin-top: 20px;
     }
 
+
     .number-container {
         font-weight      : 600;
         font-size        : 1rem;
@@ -115,10 +123,16 @@
         font-size        : 1.1rem;
         padding          : 10px;
         position         : relative;
+        margin-bottom    : 20px;
 
         top : -7.5px i {
             font-size: 1.2rem;
         }
+    }
+
+    .monedero .property-value {
+        font-size: 1rem;
+
     }
 
     .property {
@@ -161,10 +175,13 @@
     justify-content : center;
 }
 
+
+
 .list-group {
-    max-height: 140px;
-    overflow-y: auto;
-    margin-top: 50px;
+    max-height   : 140px;
+    overflow-y   : auto;
+    margin-top   : 30px;
+    margin-bottom: 15px;
 
     a {
         display         : -webkit-box;

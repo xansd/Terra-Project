@@ -13,6 +13,10 @@ import { CustomErrorStateMatcher } from '../../shared/helpers/custom-error-state
 import { FormsHelperService } from '../../shared/helpers/forms-helper.service';
 import { Subject, takeUntil } from 'rxjs';
 import { FieldValidationError } from 'src/app/shared/error/field-validation-error';
+import {
+  IPartner,
+  OperationPartnerCash,
+} from 'src/app/partners/domain/partner';
 
 @Component({
   selector: 'app-update-partner-cash',
@@ -20,7 +24,9 @@ import { FieldValidationError } from 'src/app/shared/error/field-validation-erro
   styleUrls: ['./update-partner-cash.component.scss'],
 })
 export class UpdatePartnerCashComponent {
-  @Input('uid') uid!: string;
+  @Input('partner') partner!: IPartner;
+  @Input('operation') operation!: OperationPartnerCash;
+  cashOperation = OperationPartnerCash;
   matcher = new CustomErrorStateMatcher();
   cashUpdateForm: FormGroup = this.fb.group({
     amount: ['', Validators.compose([Validators.required])],
@@ -35,23 +41,35 @@ export class UpdatePartnerCashComponent {
     private errorHandler: ErrorHandlerService
   ) {}
 
+  ngAfterViewInit(): void {
+    this.cashUpdateForm = this.fb.group({
+      amount: [
+        '',
+        Validators.compose([
+          Validators.required,
+          Validators.min(0.01),
+          this.operation === this.cashOperation.REFUND
+            ? Validators.max(Number(this.partner.cash))
+            : null,
+        ]),
+      ],
+    });
+  }
+
   submit(form: FormGroup) {
     if (!form.valid) {
       const invalidFields = this.formsHelperService.getInvalidFields(form);
       this.notifier.showNotification('warning', invalidFields);
       throw new FieldValidationError(invalidFields);
     }
-    if (!this.uid) {
-      this.notifier.showNotification(
-        'error',
-        'No se ha encontrado el identificador del socio'
-      );
-      return;
-    }
 
-    const amount = form.controls['amount'].value;
+    let amount = form.controls['amount'].value;
     this.partnerService
-      .updatePartnersCash(amount, this.uid)
+      .updatePartnersCash({
+        amount: amount,
+        operation: this.operation,
+        partner: this.partner,
+      })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res: any) => {

@@ -1,8 +1,7 @@
 import { IDTOMapper } from 'src/app/shared/application/dto-mapper.interface';
 import { Email } from 'src/app/shared/domain/value-objects/email.value-object';
 import { FeesVariants } from '../domain/fees';
-import { IPartner, Partner } from '../domain/partner';
-import { PartnersType } from '../domain/partner-type.enum';
+import { IPartner, Partner, PartnersType } from '../domain/partner';
 import { ISanctions } from '../domain/sanctions';
 
 export interface IPartnerDTO {
@@ -26,8 +25,10 @@ export interface IPartnerDTO {
   therapeutic: boolean | number;
   sanctions?: ISanctions[];
   fee?: FeesVariants;
+  fee_expiration?: string;
   inscription?: FeesVariants;
   cash: number;
+  debt_limit?: number;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -60,8 +61,10 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       active: dto.active,
       sanctions: dto.sanctions,
       fee: dto.fee,
+      fee_expiration: dto.fee_expiration,
       inscription: dto.inscription,
       cash: dto.cash,
+      debt_limit: dto.debt_limit,
       user_created: dto.user_created,
       user_updated: dto.user_updated,
       created_at: dto.created_at,
@@ -92,9 +95,11 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       active,
       therapeutic,
       fee,
+      fee_expiration,
       inscription,
       sanctions,
       cash,
+      debt_limit,
       user_created,
       user_updated,
       created_at,
@@ -121,9 +126,11 @@ export class PartnerDTOMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       active: domain.active,
       therapeutic: domain.therapeutic,
       fee: domain.fee,
+      fee_expiration: domain.fee_expiration,
       inscription: domain.inscription,
       sanctions: domain.sanctions,
       cash: domain.cash,
+      debt_limit: domain.debt_limit,
       user_created: domain.user_created,
       user_updated: domain.user_updated,
       created_at: domain.created_at,

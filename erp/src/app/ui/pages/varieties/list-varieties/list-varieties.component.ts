@@ -42,6 +42,7 @@ export class ListVarietiesComponent {
     'name',
     'product_id',
     'code',
+    'active',
     'created_at',
     'stock',
     'actions',
@@ -50,8 +51,9 @@ export class ListVarietiesComponent {
     { def: 'name', show: true },
     { def: 'product_id', show: false },
     { def: 'code', show: true },
-    { def: 'created_at', show: true },
+    { def: 'active', show: true },
     { def: 'stock', show: true },
+    { def: 'created_at', show: true },
     { def: 'actions', show: true },
   ];
   isLargeScreen = false;

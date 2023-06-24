@@ -47,6 +47,11 @@ import { ListProductsComponent } from './products/list-products/list-products.co
 import { ProductsDetailsComponent } from './products/products-details/products-details.component';
 import { ProductsStatisticsComponent } from './products/products-statistics/products-statistics.component';
 import { ProductsComponent } from './products/products.component';
+import { TransactionsAPIRepository } from 'src/app/transactions/infrastructure/transactions-api.repository';
+import { PaymentsAPIRepository } from 'src/app/payments/infrastructure/payments-api.repository';
+import { PurchasesAPIRepository } from 'src/app/purchases/infrastructure/purchases-api.repository';
+import { SalesAPIRepository } from 'src/app/sales/infrastructure/sales-api.repository';
+import { ProvidersAPIRepository } from 'src/app/providers/infrastructure/providers-api.repository';
 
 @NgModule({
   declarations: [
@@ -97,6 +102,11 @@ import { ProductsComponent } from './products/products.component';
     { provide: 'usersAPI', useClass: UsersAPIRepository },
     { provide: 'partnersAPI', useClass: PartnerAPIRepository },
     { provide: 'productsAPI', useClass: ProductAPIRepository },
+    { provide: 'transactionsAPI', useClass: TransactionsAPIRepository },
+    { provide: 'paymentsAPI', useClass: PaymentsAPIRepository },
+    { provide: 'purchasesAPI', useClass: PurchasesAPIRepository },
+    { provide: 'salesAPI', useClass: SalesAPIRepository },
+    { provide: 'providersAPI', useClass: ProvidersAPIRepository },
     { provide: 'authToken', useClass: AuthToken },
     { provide: 'registerUserIO', useClass: RegisterActiveUserUseCase },
     { provide: 'unRegisterUserIO', useClass: UnRegisterActiveUserUseCase },

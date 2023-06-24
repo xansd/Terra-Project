@@ -18,7 +18,7 @@
                   <label for="name" class="col-12 col-xl-1 col-form-label"
                     >Nombre</label
                   >
-                  <div class="col-12 col-xl-10">
+                  <div class="col-12 col-xl-8">
                     <input
                       [readonly]="isUploaderEnabled"
                       autocomplete="off"
@@ -39,6 +39,19 @@
                         Campo obligatorio.</span
                       >
                     </mat-error>
+                  </div>
+                  <!-- Activo? -->
+                  <div class="active-container col-12 col-xl-2">
+                    <label for="active" class="col-form-label">Activo</label>
+                    <input
+                      [attr.disabled]="isUploaderEnabled"
+                      class="form-check-input"
+                      type="checkbox"
+                      value=""
+                      id="active"
+                      [checked]="active"
+                      formControlName="active"
+                    />
                   </div>
                 </div>
               </div>

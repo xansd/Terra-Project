@@ -75,7 +75,7 @@
                 </ng-container>
 
                 <!-- wallet column -->
-                <ng-container matColumnDef="wallet">
+                <ng-container matColumnDef="cash">
                   <mat-header-cell *matHeaderCellDef mat-sort-header
                     >Monedero</mat-header-cell
                   >
@@ -84,17 +84,19 @@
                     <div
                       class="cell-value"
                       [ngClass]="{
-                        'text-danger': row.wallet < 0,
-                        'text-success': row.wallet >= 0
+                        'text-danger': row.cash < 0,
+                        'text-success': row.cash > 0,
+                        'text-warning': row.cash == 0,
+
                       }"
                     >
-                      {{ 0 | currency : "EUR" : "symbol" : "1.2-2" }}
+                      {{ row.cash | currency : "EUR" : "symbol" : "1.2-2" }}
                     </div>
                   </mat-cell>
                 </ng-container>
 
                 <!-- fee column -->
-                <ng-container matColumnDef="fee">
+                <ng-container matColumnDef="fee_expiration">
                   <mat-header-cell *matHeaderCellDef mat-sort-header
                     >Cuota</mat-header-cell
                   >
@@ -102,23 +104,23 @@
                     <div class="mobile-label">Cuota:</div>
                     <div class="cell-value">
                       <span
-                        *ngIf="true"
+                        *ngIf="!isFeeExpired(row.fee_expiration)"
                         class="badge border border-success text-success px-2 pt-5px pb-5px rounded fs-12px d-inline-flex align-items-center"
                         ><i class="fa fa-circle fs-9px fa-fw me-5px"></i>
                         PAGADA</span
                       >
                       <span
-                        *ngIf="false"
+                        *ngIf="isFeeExpired(row.fee_expiration)"
                         class="badge border border-danger text-danger px-2 pt-5px pb-5px rounded fs-12px d-inline-flex align-items-center"
                         ><i class="fa fa-circle fs-9px fa-fw me-5px"></i>
-                        PENDING</span
+                        PENDIENTE</span
                       >
                     </div>
                   </mat-cell>
                 </ng-container>
 
                 <!-- registration column -->
-                <ng-container matColumnDef="registration">
+                <ng-container matColumnDef="created_at">
                   <mat-header-cell *matHeaderCellDef mat-sort-header
                     >Alta</mat-header-cell
                   >

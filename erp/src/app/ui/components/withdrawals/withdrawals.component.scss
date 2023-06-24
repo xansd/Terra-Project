@@ -1,0 +1,118 @@
+@import '../../tables.scss';
+
+
+.withdrawals-container {
+    margin-top: 50px;
+}
+
+
+
+.details-container {
+    display              : -webkit-box;
+    display              : -ms-flexbox;
+    display              : flex;
+    -webkit-box-orient   : vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction   : column;
+    flex-direction       : column;
+    border-collapse      : collapse;
+    border               : 1px solid azure;
+    min-height           : 250px;
+    margin-top           : 15px;
+    border-radius        : 0 0 5px 5px;
+
+    .row-sale-details {
+        display              : -webkit-box;
+        display              : -ms-flexbox;
+        display              : flex;
+        -webkit-box-orient   : horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-direction   : row;
+        flex-direction       : row;
+        -webkit-box-pack     : justify;
+        -ms-flex-pack        : justify;
+        justify-content      : space-between;
+        border-bottom        : 1px solid #ccc;
+
+        .cell {
+            -webkit-box-flex: 1;
+            -ms-flex        : 1;
+            flex            : 1;
+            padding         : 10px 5px;
+            text-align      : center;
+        }
+    }
+
+    .code {
+        height           : 55px;
+        font-size        : 1rem;
+        background-color : azure;
+        color            : #333;
+        display          : -webkit-box;
+        display          : -ms-flexbox;
+        display          : flex;
+        -webkit-box-pack : center;
+        -ms-flex-pack    : center;
+        justify-content  : center;
+        -webkit-box-align: center;
+        -ms-flex-align   : center;
+        align-items      : center;
+        text-transform   : uppercase;
+    }
+}
+
+
+
+
+
+
+.table-container {
+    max-width            : 100%;
+    margin-top           : 15px;
+    display              : -webkit-box;
+    display              : -ms-flexbox;
+    display              : flex;
+    -webkit-box-orient   : vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction   : column;
+    flex-direction       : column;
+
+
+
+
+
+    .mat-column-actions {
+
+        .btn-group {
+            display         : -webkit-box;
+            display         : -ms-flexbox;
+            display         : flex;
+            -webkit-box-pack: center;
+            -ms-flex-pack   : center;
+            justify-content : center;
+
+            button {
+                height   : 30px;
+                min-width: 50px;
+                cursor   : pointer;
+
+                i {
+                    font-size : 15px;
+                    position  : relative;
+                    top       : -2px;
+                    font-style: normal !important;
+                }
+            }
+        }
+    }
+
+    .no-data {
+        width           : 100%;
+        display         : -webkit-box;
+        display         : -ms-flexbox;
+        display         : flex;
+        -webkit-box-pack: center;
+        -ms-flex-pack   : center;
+        justify-content : center;
+    }
+}

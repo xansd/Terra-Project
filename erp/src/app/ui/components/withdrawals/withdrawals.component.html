@@ -1,0 +1,178 @@
+<div class="withdrawals-container">
+  <div class="row justify-content-center">
+    <div class="col-xl-12">
+      <div class="mb-5">
+        <ng-container *ngIf="salesList.length === 0; else salesTableView">
+          <div
+            class="d-flex justify-content-center align-items-center py-4 spinner"
+          >
+            <div class="spinner-grow text-success"></div>
+          </div>
+          <p class="text-center">Esperando datos...</p>
+        </ng-container>
+        <ng-template #salesTableView>
+          <div class="row">
+            <div class="col-12 col-xl-7">
+              <div
+                class="text-inverse text-opacity-50 mb-3 table-container table-responsive"
+              >
+                <mat-table
+                  mat-table
+                  [dataSource]="dataSource"
+                  matSort
+                  multiTemplateDataRows
+                  #salesTable
+                >
+                  <!-- ID column -->
+                  <ng-container matColumnDef="sale_id">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                      >ID</mat-header-cell
+                    >
+                    <mat-cell *matCellDef="let row">
+                      <div class="mobile-label">ID:</div>
+                      <div class="cell-value">{{ row.sale_id }}</div>
+                    </mat-cell>
+                  </ng-container>
+
+                  <!-- Code column -->
+                  <ng-container matColumnDef="code">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                      >Código</mat-header-cell
+                    >
+                    <mat-cell *matCellDef="let row">
+                      <div class="mobile-label">Código:</div>
+                      <div class="cell-value">
+                        {{ row.code }}
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+
+                  <!-- created column -->
+                  <ng-container matColumnDef="created_at">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                      >Creación</mat-header-cell
+                    >
+                    <mat-cell *matCellDef="let row">
+                      <div class="mobile-label">Creación:</div>
+                      <div class="cell-value">
+                        {{ getFormattedDate(row.created_at) }}
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+
+                  <!-- discount column -->
+                  <ng-container matColumnDef="discount">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                      >Descuento</mat-header-cell
+                    >
+                    <mat-cell *matCellDef="let row">
+                      <div class="mobile-label">Descuento:</div>
+                      <div class="cell-value">
+                        {{ row.discount | number : "1.2-2" }}
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+
+                  <!-- discount column -->
+                  <ng-container matColumnDef="total_amount">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                      >Total</mat-header-cell
+                    >
+                    <mat-cell *matCellDef="let row">
+                      <div class="mobile-label">Total:</div>
+                      <div class="cell-value">
+                        {{ row.total_amount | number : "1.2-2" }}
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+
+                  <!-- actions column -->
+                  <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef>Acción</mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                      <div
+                        class="btn-group btn-group-toggle"
+                        data-toggle="buttons"
+                      >
+                        <button
+                          type="button"
+                          class="btn btn-danger"
+                          title="Eliminar socio"
+                        >
+                          <i class="bi bi-x"> </i>
+                        </button>
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+
+                  <mat-header-row
+                    mat-header-row
+                    *matHeaderRowDef="getDisplayedColumns(); sticky: true"
+                  ></mat-header-row>
+                  <mat-row
+                    mat-row
+                    *matRowDef="let row; columns: getDisplayedColumns()"
+                    [ngClass]="{
+                      'selected-row': selectedRowIndex === row.sale_id
+                    }"
+                    (click)="selectRow(row)"
+                  ></mat-row>
+
+                  <!-- Row shown when there is no matching data. -->
+                  <tr class="mat-row" *matNoDataRow>
+                    <td
+                      class="mat-cell no-data"
+                      [attr.colspan]="getDisplayedColumns().length"
+                      style="width: 100%"
+                    >
+                      Sin datos
+                    </td>
+                  </tr>
+                </mat-table>
+              </div>
+
+              <div class="mat-paginatory">
+                <mat-paginator
+                  [length]="salesList.length"
+                  [pageSize]="10"
+                ></mat-paginator>
+              </div>
+            </div>
+            <div class="col-12 col-xl-5">
+              <div class="details-container">
+                <div class="code">{{ activeSaleCode }}</div>
+                <ng-container
+                  *ngIf="activeSaleDetails.length === 0; else details"
+                >
+                  <div
+                    class="d-flex justify-content-center align-items-center py-4 spinner"
+                    style="margin-top: 25px"
+                  >
+                    <div class="spinner-grow text-success"></div>
+                  </div>
+                  <p class="text-center">Esperando datos...</p>
+                </ng-container>
+                <ng-template #details>
+                  <div
+                    class="row-sale-details"
+                    *ngFor="let i of activeSaleDetails"
+                  >
+                    <div class="cell">{{ i.product_name }}</div>
+                    <div *ngIf="i.harvest_code" class="cell">
+                      {{ i.harvest_code }}
+                    </div>
+                    <div *ngIf="!i.harvest_code" class="cell">
+                      {{ i.product_code }}
+                    </div>
+                    <div class="cell">{{ i.quantity | number : "1.2-2" }}</div>
+                    <div class="cell">{{ i.amount | number : "1.2-2" }}€</div>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

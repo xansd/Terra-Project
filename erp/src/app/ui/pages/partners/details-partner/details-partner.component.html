@@ -39,17 +39,31 @@
                     {{ partner.number || 0 }}
                   </div>
                 </div>
+                <div class="property name fw-bold">
+                  <span class="property-name">Nombre:</span>
+                  <span class="property-value text-theme"
+                    >{{ partner!.surname | uppercase }},
+                    {{ partner!.name | uppercase }}</span
+                  >
+                </div>
+                <div class="property type">
+                  <span class="property-name">Tipo:</span>
+                  <span class="property-value fw-bold text-theme">{{
+                    partnerTypes[partner?.partner_type_id!]
+                  }}</span>
+                </div>
+
                 <div class="property">
-                  <span class="property-name">Alta:</span>
-                  <span class="property-value">{{
-                    formatDate(partner!.created_at!)
+                  <span class="property-name">Terapéutico:</span>
+                  <span class="property-value fw-bold">{{
+                    partner!.therapeutic ? "SI" : "NO"
                   }}</span>
                 </div>
                 <div class="property">
-                  <span class="property-name">Nombre:</span>
-                  <span class="property-value"
-                    >{{ partner!.surname }}, {{ partner!.name }}</span
-                  >
+                  <span class="property-name">Alta:</span>
+                  <span class="property-value fw-bold">{{
+                    formatDate(partner!.created_at!)
+                  }}</span>
                 </div>
                 <div class="property">
                   <span class="property-name">Nacimiento:</span>
@@ -76,13 +90,6 @@
                 <div class="property" *ngIf="partner!.leaves">
                   <span class="property-name">Baja:</span>
                   <span class="property-value">{{ partner!.leaves }}</span>
-                </div>
-
-                <div class="property">
-                  <span class="property-name">Terapéutico:</span>
-                  <span class="property-value fw-bold">{{
-                    partner!.therapeutic ? "SI" : "NO"
-                  }}</span>
                 </div>
                 <!-- TOPES -->
                 <h6 class="card-subtitle mb-3 text-inverse text-opacity-50">
@@ -132,13 +139,13 @@
               <card-body class="pb-2">
                 <!-- ACTIVIDAD -->
                 <!-- CASH -->
-                <div class="property">
+                <div class="property monedero">
                   <span class="property-name">Monedero:</span>
                   <span
                     class="property-value fw-bold"
                     [ngClass]="{
                       'text-success': partner!.cash >= 0,
-                      'text-danger': overTotal < 0
+                      'text-danger': partner!.cash < 0
                     }"
                     >{{ partner!.cash | number : "1.2-2" }} €</span
                   >
@@ -273,12 +280,6 @@
                 </div>
                 <!-- PRODUCTOS PREFERIDOS -->
 
-                <h6
-                  class="card-subtitle mb-3 text-inverse text-opacity-50"
-                  style="margin-top: 15px"
-                >
-                  Preferidos
-                </h6>
                 <div class="list-group">
                   <a class="list-group-item list-group-item-action"
                     ><i class="bi bi-trophy-fill"></i> <span>Sour Diesel</span>
@@ -301,43 +302,68 @@
       <!-- Botones -->
       <div class="col-lg-2">
         <div class="button-container">
-          <button class="btn btn-default" (click)="updatePartnersCash()">
-            <i class="bi bi-cash-coin"></i> Ingreso
-          </button>
-          <button class="btn btn-default">
+          <button class="btn btn-primary">
             <i class="bi bi-cart3"></i> Dispensar
           </button>
-          <button class="btn btn-default" (click)="payFeeConfirm(lastCuotaFee)">
-            <i class="bi bi-shield-check"></i> Abonar cuota
-          </button>
-          <button
-            class="btn btn-default"
-            (click)="payFeeConfirm(lastInscriptionFee)"
-            *ngIf="
-              !isInscriptionExent(lastInscriptionFee) &&
-              !lastInscriptionFee.paid
-            "
-          >
-            <i class="bi bi-currency-euro"></i> Abonar inscripción
-          </button>
-          <button class="btn btn-default" (click)="openPartnerHistory()">
-            <i class="bi bi-person-badge"></i> Historial
-          </button>
-          <button class="btn btn-info" (click)="openEditPartnerDialog()">
-            <i class="bi bi-pencil-square"></i> Editar & Doc.
-          </button>
-          <button class="btn btn-warning" (click)="updateAccessCode()">
-            <i class="bi bi-door-open"></i> Acceso
-          </button>
-          <button class="btn btn-danger" (click)="partnersLeavesConfirm()">
-            <i class="bi bi-person-down"></i> Baja socio
-          </button>
-          <button
-            (click)="openCreatePartnerDialog()"
-            class="btn btn-success new-partner-btn"
-          >
-            <i class="bi bi-person-fill-add"></i> Alta nueva
-          </button>
+          <div class="btn-gr">
+            <button
+              class="btn btn-success"
+              (click)="updatePartnersCash(cashOperation.INCOME)"
+            >
+              <i class="bi bi-cash-coin"></i> Ingreso
+            </button>
+
+            <button
+              [disabled]="partner!.cash <= 0"
+              class="btn btn-danger"
+              (click)="updatePartnersCash(cashOperation.REFUND)"
+            >
+              <i class="bi bi-cash-coin"></i> Reintegro</button
+            ><button
+              [disabled]="
+                !(
+                  isExpired(lastCuotaFee.expiration!) ||
+                  isCurrentMonth(lastCuotaFee.expiration!)
+                ) || isFeeExent(lastCuotaFee)
+              "
+              class="btn btn-success"
+              (click)="payFeeConfirm(lastCuotaFee)"
+            >
+              <i class="bi bi-shield-check"></i> Abonar cuota
+            </button>
+            <button
+              class="btn btn-success"
+              (click)="payFeeConfirm(lastInscriptionFee)"
+              *ngIf="
+                !isInscriptionExent(lastInscriptionFee) &&
+                !lastInscriptionFee.paid
+              "
+            >
+              <i class="bi bi-currency-euro"></i> Abonar inscripción
+            </button>
+          </div>
+          <div class="btn-gr">
+            <button class="btn btn-default" (click)="openPartnerHistory()">
+              <i class="bi bi-person-badge"></i> Historial
+            </button>
+            <button class="btn btn-info" (click)="openEditPartnerDialog()">
+              <i class="bi bi-pencil-square"></i> Editar & Doc.
+            </button>
+            <button class="btn btn-warning" (click)="updateAccessCode()">
+              <i class="bi bi-door-open"></i> Acceso
+            </button>
+            <button class="btn btn-danger" (click)="partnersLeavesConfirm()">
+              <i class="bi bi-person-down"></i> Baja socio
+            </button>
+          </div>
+          <div class="btn-gr">
+            <button
+              (click)="openCreatePartnerDialog()"
+              class="btn btn-success new-partner-btn"
+            >
+              <i class="bi bi-person-fill-add"></i> Alta nueva
+            </button>
+          </div>
         </div>
       </div>
     </div>

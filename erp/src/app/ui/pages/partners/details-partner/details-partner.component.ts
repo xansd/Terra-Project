@@ -2,7 +2,12 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgbModal, NgbModalOptions } from '@ng-bootstrap/ng-bootstrap';
 import { Subject, take, takeUntil } from 'rxjs';
 import { GetPartnerUseCase } from 'src/app/partners/application/get-partners.use-case';
-import { DocumentTypes, IPartner } from 'src/app/partners/domain/partner';
+import {
+  DocumentTypes,
+  IPartner,
+  OperationPartnerCash,
+  PartnersType,
+} from 'src/app/partners/domain/partner';
 import searchConfig, {
   PartnersSearchTypes,
 } from 'src/app/ui/components/searcher/search.config';
@@ -37,7 +42,9 @@ const modalOptions: NgbModalOptions = {
   styleUrls: ['./details-partner.component.scss'],
 })
 export class DetailsPartnerComponent implements OnInit, OnDestroy {
+  partnerTypes = PartnersType;
   partner!: IPartner | undefined;
+  cashOperation = OperationPartnerCash;
   id!: string;
   fees: IFees[] = [];
   lastCuotaFee!: IFees;
@@ -49,6 +56,8 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
     searchConfig.PARTNERS_TYPES;
   selectInProgress = false;
   isLoading: boolean = true;
+
+  conduct: number = 0;
 
   private destroy$ = new Subject();
 
@@ -132,6 +141,7 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
           this.partner = partner;
           this.activeEntityService.setActiveEntity(this.partner, this.id);
           this.getFeesType();
+          this.conduct = this.partnerService.getPartnerConduct(partner);
         },
       });
   }
@@ -253,13 +263,14 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
   }
 
   // Actualizar monedero
-  updatePartnersCash() {
+  updatePartnersCash(type: OperationPartnerCash) {
     if (!this.checkPartnerSelected()) return;
     const modalRef = this.modalService.open(
       UpdatePartnerCashComponent,
       modalOptions
     );
-    modalRef.componentInstance.uid = this.id;
+    modalRef.componentInstance.partner = this.partner;
+    modalRef.componentInstance.operation = type;
     modalRef.result
       .then((result) => {
         if (result) {
@@ -381,7 +392,6 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
 
   /*********************************CONDUCTA************************************/
 
-  conduct: number = 0;
   // Codigo de colores de conducta
   getIconClasses() {
     let classes = [];

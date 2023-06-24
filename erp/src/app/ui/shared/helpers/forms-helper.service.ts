@@ -9,6 +9,7 @@ import {
   ISubcategories,
   ProductsType,
 } from 'src/app/products/domain/products';
+import { ISanctions } from 'src/app/partners/domain/sanctions';
 
 @Injectable({
   providedIn: 'root',
@@ -79,6 +80,7 @@ export class FormsHelperService {
       fee: formValues.fee,
       inscription: formValues.inscription,
       cash: formValues.cash,
+      debt_limit: formValues.debt_limit,
     };
 
     if (mode === FormMode.CREATE) {
@@ -94,6 +96,19 @@ export class FormsHelperService {
     return partnerData;
   }
 
+  createSanctionFormData(
+    form: UntypedFormGroup,
+    partner: IPartner
+  ): ISanctions {
+    const formValues = form.value;
+    const sanctionData: ISanctions = {
+      partner_id: partner.partner_id!,
+      severity: formValues.severity,
+      description: formValues.description,
+    };
+    return sanctionData;
+  }
+
   createProductFormData(
     form: UntypedFormGroup,
     mode: FormMode,
@@ -106,6 +121,7 @@ export class FormsHelperService {
     const productData: IProduct = {
       name: formValues.name,
       type: selectedCategory.type,
+      active: formValues.active,
       category_id: formValues.category_id,
       subcategories: this.getSubcategories(formValues.subcategories),
       description: formValues.description,
@@ -121,8 +137,8 @@ export class FormsHelperService {
       productData.effect = formValues.effect;
       productData.ancestors = this.getAncestors(formValues.ancestors);
     } else if (selectedCategory.type === ProductsType.TERCEROS) {
-      productData.cost_price = formValues.cost_price;
-      productData.sale_price = formValues.sale_price;
+      productData.cost_price = formValues.cost_price || 0;
+      productData.sale_price = formValues.sale_price || 0;
     }
 
     if (mode === FormMode.CREATE) {

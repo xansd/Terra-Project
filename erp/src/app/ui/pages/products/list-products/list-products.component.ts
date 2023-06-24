@@ -42,6 +42,7 @@ export class ListProductsComponent implements OnDestroy, OnInit {
     'name',
     'product_id',
     'code',
+    'active',
     'created_at',
     'stock',
     'actions',
@@ -50,8 +51,9 @@ export class ListProductsComponent implements OnDestroy, OnInit {
     { def: 'name', show: true },
     { def: 'product_id', show: false },
     { def: 'code', show: true },
-    { def: 'created_at', show: true },
+    { def: 'active', show: true },
     { def: 'stock', show: true },
+    { def: 'created_at', show: true },
     { def: 'actions', show: true },
   ];
   isLargeScreen = false;
@@ -90,13 +92,24 @@ export class ListProductsComponent implements OnDestroy, OnInit {
       .getAllProducts(ProductsType.TERCEROS)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (partners: IProduct[]) => {
-          const list = partners;
+        next: (products: IProduct[]) => {
+          const list = products;
           list.length ? (this.emptyTable = false) : (this.emptyTable = true);
           this.productsList = list;
           this.renderTable();
           this.tableHasChanged = false;
           this.isLoading = false;
+        },
+        error: (error: any) => {
+          if (error.statusCode) {
+            if (
+              error.statusCode === 404 &&
+              error.message === 'No hay productos registrados'
+            ) {
+              this.productsList = [];
+              this.renderTable();
+            }
+          }
         },
       });
   }
