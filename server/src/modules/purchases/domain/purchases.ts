@@ -3,10 +3,11 @@ import { PurchaseCode } from "./value-objects/code-id.value-object";
 import { PurchaseID } from "./value-objects/purchase-id.value.object";
 
 export interface IPurchaseDetails {
-  purchase_detail_id: string;
-  purchase_id: PurchaseID;
+  purchase_detail_id?: string;
+  purchase_id?: string;
   product_id: ProductID;
   quantity: number;
+  amount: number;
 }
 
 export interface IPurchase {

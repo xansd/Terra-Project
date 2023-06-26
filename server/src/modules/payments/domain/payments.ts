@@ -4,7 +4,7 @@ export enum PaymentType {
 }
 
 export interface IPayments {
-  payment_id: string;
+  payment_id?: string;
   type: PaymentType;
   reference_id: string;
   amount?: number;
@@ -17,7 +17,7 @@ export interface IPayments {
 }
 
 export class Payments implements IPayments {
-  payment_id: string;
+  payment_id?: string;
   type: PaymentType;
   reference_id: string;
   amount?: number | undefined;

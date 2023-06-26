@@ -6,6 +6,21 @@ export enum TransactionCategoryType {
   INGRESO = "INGRESO",
 }
 
+export enum TransactionsTypes {
+  INGRESO_CUOTA = 1,
+  INGRESO_INSCRIPCION = 2,
+  INGRESO_CUENTA_SOCIO = 3,
+  INGRESOS_DONACIONES = 4,
+  INGRESOS_PRESTAMOS = 5,
+  GASTOS_ALQUILER = 6,
+  GASTOS_SERVICIOS = 7,
+  GASTOS_ACTIVIDADES_ASOCIACION = 8,
+  GASTOS_PRESTAMOS = 9,
+  REINTEGRO_CUENTA_SOCIO = 10,
+  REINTEGRO_CUOTA = 11,
+  REINTEGRO_INSCRIPCION = 12,
+}
+
 export interface ITransactionType {
   transaction_type_id: string;
   name: string;
@@ -13,8 +28,9 @@ export interface ITransactionType {
   transaction_category: TransactionCategoryType;
 }
 
+// Si recurrence_times = -1 significa que es recurrente indefinido
 export interface ITransactions {
-  transaction_id: TransactionsID;
+  transaction_id?: TransactionsID;
   code?: TransactionsCode;
   transaction_type_id: string;
   amount: number;
@@ -31,7 +47,7 @@ export interface ITransactions {
 }
 
 export class Transactions implements ITransactions {
-  transaction_id: TransactionsID;
+  transaction_id?: TransactionsID;
   code?: TransactionsCode | undefined;
   transaction_type_id: string;
   amount: number;

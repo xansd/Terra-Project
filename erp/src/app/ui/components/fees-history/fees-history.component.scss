@@ -1,0 +1,30 @@
+@import '../../tables.scss';
+
+.fees-container {
+    margin-top: 70px;
+    width     : 100%;
+
+
+    .row {
+        width: 100%;
+
+        .col-12 {
+            width           : 100%;
+            display         : -webkit-box;
+            display         : -ms-flexbox;
+            display         : flex;
+            -webkit-box-pack: center;
+            -ms-flex-pack   : center;
+            justify-content : center;
+
+            .table-container {
+                width    : 100%;
+                max-width: 1200px;
+
+                mat-row {
+                    background-color: transparent;
+                }
+            }
+        }
+    }
+}

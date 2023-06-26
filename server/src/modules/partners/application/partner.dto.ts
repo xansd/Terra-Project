@@ -1,6 +1,5 @@
 import { FeesVariants } from "../../fees/domain/fees";
-import { ISanctions } from "../domain/partner";
-import { PartnersType } from "../domain/partner-types.enum";
+import { ISanctions, PartnersType } from "../domain/partner";
 
 export interface IPartnerDTO {
   partner_id: string;
@@ -22,9 +21,11 @@ export interface IPartnerDTO {
   active: boolean | number;
   therapeutic: number | boolean;
   fee?: FeesVariants;
+  fee_expiration?: string | null;
   inscription?: FeesVariants;
   sanctions: ISanctions[];
   cash: number;
+  debt_limit?: number;
   user_created?: string | null;
   user_updated?: string | null;
   created_at?: string | null;

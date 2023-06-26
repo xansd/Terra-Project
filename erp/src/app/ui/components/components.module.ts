@@ -26,7 +26,7 @@ import { FileDownloaderComponent } from './file-downloader/file-downloader.compo
 import { SearcherComponent } from './searcher/searcher.component';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { UpdateAccessCodeComponent } from './update-access-code/update-access-code.component';
-import { PartnerHistoryComponent } from './partner-history/partner-history.component';
+import { PartnerHistoryComponent } from './update-access-code/partner-history/partner-history.component';
 import { SanctionsComponent } from './sanctions/sanctions.component';
 import { UpdatePartnerCashComponent } from './update-partner-cash/update-partner-cash.component';
 import { TextEditorComponent } from './text-editor/text-editor.component';
@@ -34,6 +34,7 @@ import { NgxEditorModule } from 'ngx-editor';
 import { ImgCropperComponent } from './img-cropper/img-cropper.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { WithdrawalsComponent } from './withdrawals/withdrawals.component';
+import { FeesHistoryComponent } from './fees-history/fees-history.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { WithdrawalsComponent } from './withdrawals/withdrawals.component';
     TextEditorComponent,
     ImgCropperComponent,
     WithdrawalsComponent,
+    FeesHistoryComponent,
   ],
   imports: [
     CommonModule,

@@ -2,7 +2,7 @@ import { IPersistenceMapper } from "../../shared/infraestructure/persistence-map
 import { IPayments, PaymentType } from "../domain/payments";
 
 export interface IPaymentsPersistence {
-  payment_id: string;
+  payment_id?: string;
   type: PaymentType;
   reference_id: string;
   amount?: number;

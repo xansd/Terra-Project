@@ -2,10 +2,15 @@ import { SalesCode } from "./value-objects/code-id.value-object";
 import { SalesID } from "./value-objects/sales-id.value.object";
 
 export interface ISalesDetails {
-  sale_detail_id: string;
-  sale_id: SalesID;
+  sale_detail_id?: string;
+  sale_id?: string;
   product_id: string;
+  product_code?: string;
+  product_name?: string;
+  harvest_id?: string | null;
+  harvest_code?: string;
   quantity: number;
+  amount: number;
 }
 
 export interface ISales {
@@ -15,7 +20,7 @@ export interface ISales {
   discount?: number;
   tax?: number;
   total_amount: number;
-  sale_details: ISalesDetails;
+  sale_details: ISalesDetails[];
   notes?: string;
   user_created?: string;
   user_updated?: string;
@@ -31,7 +36,7 @@ export class Sales implements ISales {
   discount?: number;
   tax?: number;
   total_amount: number;
-  sale_details: ISalesDetails;
+  sale_details: ISalesDetails[];
   notes?: string;
   user_created?: string | undefined;
   user_updated?: string | undefined;

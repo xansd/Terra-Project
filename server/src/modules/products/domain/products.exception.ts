@@ -7,7 +7,7 @@ export class ProductDoesNotExistError extends Error {
 
 export class ProductNotFoundError extends Error {
   constructor() {
-    super(`No hay producto registrados`);
+    super(`No hay productos registrados`);
     this.name = "ProductNotFoundError";
   }
 }

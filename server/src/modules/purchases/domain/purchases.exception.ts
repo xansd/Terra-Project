@@ -18,3 +18,17 @@ export class PurchaseDetailsEnrollError extends Error {
     this.name = "PurchaseDetailsEnrollError";
   }
 }
+
+export class HarvestDoesNotExistError extends Error {
+  constructor() {
+    super(`El cultivo/compra no existe`);
+    this.name = "HarvestDoesNotExistError";
+  }
+}
+
+export class HarvestNotFoundError extends Error {
+  constructor() {
+    super(`No hay cultivos/compras registrados`);
+    this.name = "HarvestNotFoundError";
+  }
+}

@@ -203,7 +203,7 @@ export class PartnerAPIRepository implements IPartnerAPIPort {
     );
   }
 
-  deleteSanction(id: string): Observable<void> {
+  deleteSanction(id: number): Observable<void> {
     return this.http.delete<void>(`${API_URI}/partners/sanctions/${id}`, {
       withCredentials: true,
     });

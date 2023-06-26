@@ -13,6 +13,7 @@ export interface IHarvestsPersistence {
   fee_amount?: number;
   quantity?: number;
   notes?: string;
+  stock?: number;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -38,6 +39,7 @@ export class HarvestsPersistenceMapper
       fee_amount: persistence.fee_amount,
       quantity: persistence.quantity,
       notes: persistence.notes,
+      stock: persistence.stock,
       user_created: persistence.user_created,
       user_updated: persistence.user_updated,
       created_at: persistence.created_at,
@@ -56,6 +58,7 @@ export class HarvestsPersistenceMapper
       fee_amount,
       quantity,
       notes,
+      stock,
       user_created,
       user_updated,
       created_at,
@@ -72,6 +75,7 @@ export class HarvestsPersistenceMapper
       fee_amount: fee_amount,
       quantity: quantity,
       notes: notes,
+      stock: stock,
       user_created: user_created,
       user_updated: user_updated,
       created_at: created_at,

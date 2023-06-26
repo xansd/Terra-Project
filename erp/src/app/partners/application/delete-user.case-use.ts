@@ -15,4 +15,8 @@ export class DeletePartnerUseCase implements IDeletePartnerUseCase {
   deletePartner(id: string): Observable<void> {
     return this.partnersAPI.deletePartner(id);
   }
+
+  deletePartnerSanction(id: number): Observable<void> {
+    return this.partnersAPI.deleteSanction(id);
+  }
 }

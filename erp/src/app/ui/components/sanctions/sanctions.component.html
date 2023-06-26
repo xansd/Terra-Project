@@ -59,7 +59,9 @@
     <tbody>
       <tr *ngFor="let sanction of partner.sanctions; let i = index">
         <td class="text-center">{{ sanction.created_at | date }}</td>
-        <td class="text-center">{{ sanction.severity }}</td>
+        <td class="text-center">
+          {{ getNameOfSeverityLevel(sanction.severity) }}
+        </td>
         <td style="width: 60%; text-align: center">
           {{ sanction.description }}
         </td>

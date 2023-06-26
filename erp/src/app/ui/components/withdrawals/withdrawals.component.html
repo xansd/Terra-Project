@@ -8,7 +8,7 @@
           >
             <div class="spinner-grow text-success"></div>
           </div>
-          <p class="text-center">Esperando datos...</p>
+          <p class="text-center fw-600">Esperando datos...</p>
         </ng-container>
         <ng-template #salesTableView>
           <div class="row">
@@ -97,7 +97,8 @@
                         <button
                           type="button"
                           class="btn btn-danger"
-                          title="Eliminar socio"
+                          title="Eliminar retirada"
+                          (click)="deleteSale(row)"
                         >
                           <i class="bi bi-x"> </i>
                         </button>
@@ -150,7 +151,7 @@
                   >
                     <div class="spinner-grow text-success"></div>
                   </div>
-                  <p class="text-center">Esperando datos...</p>
+                  <p class="text-center fw-600">Esperando datos...</p>
                 </ng-container>
                 <ng-template #details>
                   <div

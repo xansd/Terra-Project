@@ -11,6 +11,7 @@ export interface IHarvestsDTO {
   fee_amount?: number;
   quantity?: number;
   notes?: string;
+  stock?: number;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -31,6 +32,7 @@ export class HarvestsMapper implements IDTOMapper<IHarvests, IHarvestsDTO> {
     const fee_amount = dto.fee_amount;
     const quantity = dto.quantity;
     const notes = dto.notes;
+    const stock = dto.stock;
     const user_created = dto.user_created;
     const user_updated = dto.user_updated;
     const created_at = dto.created_at;
@@ -47,6 +49,7 @@ export class HarvestsMapper implements IDTOMapper<IHarvests, IHarvestsDTO> {
       fee_amount,
       quantity,
       notes,
+      stock,
       user_created,
       user_updated,
       created_at,
@@ -68,6 +71,7 @@ export class HarvestsMapper implements IDTOMapper<IHarvests, IHarvestsDTO> {
       fee_amount: domain.fee_amount,
       quantity: domain.quantity,
       notes: domain.notes,
+      stock: domain.stock,
       user_created: domain.user_created,
       user_updated: domain.user_updated,
       created_at: domain.created_at,

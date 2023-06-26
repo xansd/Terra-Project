@@ -11,3 +11,10 @@ export class PaymentNotFoundError extends Error {
     this.name = "PaymentNotFoundError";
   }
 }
+
+export class PaymentCreationError extends Error {
+  constructor() {
+    super(`Ha ocurrido un error al crear el cobro/pago`);
+    this.name = "PaymentCreationError";
+  }
+}

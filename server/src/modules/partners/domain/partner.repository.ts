@@ -1,5 +1,5 @@
 import { IPartnerSubsetDTO } from "../application/partner.dto";
-import { IPartner, IPartnersType } from "./partner";
+import { IPartner, IPartnersType, ISanctions } from "./partner";
 
 export interface IPartnerRepository {
   getById(partnerId: string): Promise<IPartner>;
@@ -17,6 +17,8 @@ export interface IPartnerRepository {
   updateAccessCode(accessCode: string, partnerId: string): Promise<void>;
   updatePartnerCash(amount: number, partnerId: string): Promise<void>;
   getPartnerCash(partnerId: string): Promise<{ cash: number }>;
+  createSanction(sanction: ISanctions, user: string): Promise<ISanctions>;
+  deleteSanction(id: string, user: string): Promise<void>;
 }
 
 export interface IODTGenerator {

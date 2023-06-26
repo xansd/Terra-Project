@@ -11,3 +11,10 @@ export class TransactionNotFoundError extends Error {
     this.name = "TransactionNotFoundError";
   }
 }
+
+export class TransactionCreationError extends Error {
+  constructor() {
+    super(`Ha ocurrido un errror al crear la transacción`);
+    this.name = "TransactionCreationError";
+  }
+}

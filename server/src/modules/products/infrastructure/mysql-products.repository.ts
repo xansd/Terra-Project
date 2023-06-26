@@ -73,7 +73,7 @@ export class MySQLProductRepository implements IProductRepository {
 
   async getAllFiltered(type: string): Promise<IProductSubsetDTO[]> {
     const rows = await MysqlDataBase.query(
-      `SELECT product_id, code, name FROM products WHERE type = ? AND deleted_at IS NULL ORDER BY name`,
+      `SELECT product_id, code, name FROM products WHERE type = ? AND deleted_at IS NULL  AND active = 1 ORDER BY name`,
       [type]
     );
     return this.productPersistenceMapper.toDtoFilteredList(
@@ -84,14 +84,15 @@ export class MySQLProductRepository implements IProductRepository {
   async create(product: IProduct): Promise<IProduct> {
     const productPersistence =
       this.productPersistenceMapper.toPersistence(product);
-    const insertQuery = `INSERT INTO products (product_id, code, name, type, category_id, description, cost_price, sale_price, sativa, indica, thc, cbd, bank, flawour, effect, user_created)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const insertQuery = `INSERT INTO products (product_id, code, active, name, type, category_id, description, cost_price, sale_price, sativa, indica, thc, cbd, bank, flawour, effect, user_created)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     const selectQuery = `SELECT * FROM products WHERE product_id = ?`;
 
     const values: any[] = [
       productPersistence.product_id!,
       productPersistence.code!,
+      productPersistence.active,
       productPersistence.name!,
       productPersistence.type,
       productPersistence.category_id,
@@ -109,16 +110,16 @@ export class MySQLProductRepository implements IProductRepository {
     ];
 
     if (productPersistence.type === ProductsType.TERCEROS) {
-      values[6] = productPersistence.cost_price?.toString()!;
-      values[7] = productPersistence.sale_price?.toString()!;
+      values[7] = productPersistence.cost_price?.toString()!;
+      values[8] = productPersistence.sale_price?.toString()!;
     } else if (productPersistence.type === ProductsType.MANCOMUNADOS) {
-      values[8] = productPersistence.sativa?.toString()!;
-      values[9] = productPersistence.indica?.toString()!;
-      values[10] = productPersistence.thc?.toString()!;
-      values[11] = productPersistence.cbd?.toString()!;
-      values[12] = productPersistence.bank!;
-      values[13] = productPersistence.flawour!;
-      values[14] = productPersistence.effect!;
+      values[9] = productPersistence.sativa?.toString()!;
+      values[10] = productPersistence.indica?.toString()!;
+      values[11] = productPersistence.thc?.toString()!;
+      values[12] = productPersistence.cbd?.toString()!;
+      values[13] = productPersistence.bank!;
+      values[14] = productPersistence.flawour!;
+      values[15] = productPersistence.effect!;
     }
 
     await MysqlDataBase.update(insertQuery, values);
@@ -150,13 +151,14 @@ export class MySQLProductRepository implements IProductRepository {
       this.productPersistenceMapper.toPersistence(product);
     const updateQuery = `
       UPDATE products
-      SET name = ?, type = ?, category_id = ?, description = ?, cost_price = ?, sale_price = ?,
+      SET name = ?, active = ?, type = ?, category_id = ?, description = ?, cost_price = ?, sale_price = ?,
         sativa = ?, indica = ?, thc = ?, cbd = ?, bank = ?, flawour = ?, effect = ?, user_updated = ?
       WHERE product_id = ?
     `;
 
     const values: any[] = [
       productPersistence.name,
+      productPersistence.active,
       productPersistence.type,
       productPersistence.category_id,
       productPersistence.description!,
@@ -174,16 +176,16 @@ export class MySQLProductRepository implements IProductRepository {
     ];
 
     if (productPersistence.type === ProductsType.TERCEROS) {
-      values[4] = productPersistence.cost_price?.toString()!;
-      values[5] = productPersistence.sale_price?.toString()!;
+      values[5] = productPersistence.cost_price?.toString()!;
+      values[6] = productPersistence.sale_price?.toString()!;
     } else if (productPersistence.type === ProductsType.MANCOMUNADOS) {
-      values[6] = productPersistence.sativa?.toString()!;
-      values[7] = productPersistence.indica?.toString()!;
-      values[8] = productPersistence.thc?.toString()!;
-      values[9] = productPersistence.cbd?.toString()!;
-      values[10] = productPersistence.bank!;
-      values[11] = productPersistence.flawour!;
-      values[12] = productPersistence.effect!;
+      values[7] = productPersistence.sativa?.toString()!;
+      values[8] = productPersistence.indica?.toString()!;
+      values[9] = productPersistence.thc?.toString()!;
+      values[10] = productPersistence.cbd?.toString()!;
+      values[11] = productPersistence.bank!;
+      values[12] = productPersistence.flawour!;
+      values[13] = productPersistence.effect!;
     }
 
     const result = await MysqlDataBase.update(updateQuery, values);
@@ -194,11 +196,13 @@ export class MySQLProductRepository implements IProductRepository {
       productPersistence.product_id!
     );
 
-    // Guardar ancestros
-    await this.enrollAncestors(
-      productPersistence.ancestors!,
-      productPersistence.product_id!
-    );
+    if (productPersistence.type === ProductsType.MANCOMUNADOS) {
+      // Guardar ancestros
+      await this.enrollAncestors(
+        productPersistence.ancestors!,
+        productPersistence.product_id!
+      );
+    }
 
     if (result.affectedRows === 0) {
       Logger.error(`mysql : updateProduct : ProductDoesNotExistError`);

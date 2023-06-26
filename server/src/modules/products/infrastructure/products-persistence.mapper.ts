@@ -6,6 +6,7 @@ import { ProductID } from "../domain/value-objects/product-id.value.object";
 export interface IProductPersistence {
   product_id?: string;
   code?: string;
+  active: boolean | number;
   name: string;
   type: ProductsType;
   category_id: string;
@@ -46,6 +47,7 @@ export class ProductPersistenceMapper
         ProductID.create(persistence.product_id),
         persistence.code
       ),
+      active: persistence.active == 1 ? true : false,
       name: persistence.name,
       type: persistence.type,
       category_id: persistence.category_id,
@@ -73,6 +75,7 @@ export class ProductPersistenceMapper
     const {
       product_id,
       code,
+      active,
       name,
       type,
       category_id,
@@ -98,6 +101,7 @@ export class ProductPersistenceMapper
     return {
       product_id: product_id!.value,
       code: code!.value,
+      active: active == true ? 1 : 0,
       name: name,
       type: type,
       category_id: category_id,

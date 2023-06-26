@@ -18,7 +18,7 @@ export interface IProviderDTO {
   deleted_at?: string;
 }
 
-export class Providerapper implements IDTOMapper<IProvider, IProviderDTO> {
+export class ProviderMapper implements IDTOMapper<IProvider, IProviderDTO> {
   constructor() {}
   // Convierte un DTO a un dominio
   toDomain(dto: IProviderDTO): IProvider {

@@ -6,6 +6,7 @@ import { ProductID } from "../domain/value-objects/product-id.value.object";
 export interface IProductDTO {
   product_id?: string;
   code?: string;
+  active: boolean | number;
   name: string;
   type: ProductsType;
   category_id: string;
@@ -44,6 +45,7 @@ export class ProductDTOMapper implements IDTOMapper<IProduct, IProductDTO> {
     const code = dto.code
       ? ProductCode.create(product_id, dto.code)
       : ProductCode.create(product_id);
+    const active = dto.active;
     const name = dto.name;
     const type = dto.type;
     const category_id = dto.category_id;
@@ -68,6 +70,7 @@ export class ProductDTOMapper implements IDTOMapper<IProduct, IProductDTO> {
     const props = {
       product_id,
       code,
+      active,
       name,
       type,
       category_id,
@@ -98,6 +101,7 @@ export class ProductDTOMapper implements IDTOMapper<IProduct, IProductDTO> {
       product_id: domain.product_id?.value,
       code: domain.code?.value,
       name: domain.name,
+      active: domain.active,
       type: domain.type,
       category_id: domain.category_id,
       subcategories: domain.subcategories,

@@ -36,5 +36,5 @@ export interface IPartnerAPIPort {
   payFee(fee: IFees): Observable<void>;
 
   createSanction(sanction: ISanctions): Observable<ISanctions>;
-  deleteSanction(id: string): Observable<void>;
+  deleteSanction(id: number): Observable<void>;
 }

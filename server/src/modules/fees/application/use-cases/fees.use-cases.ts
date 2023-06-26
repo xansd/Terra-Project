@@ -1,8 +1,16 @@
+import { UpdatePayments } from "../../../payments/application/use-cases/update-payments.use-case";
+import { PaymentType } from "../../../payments/domain/payments";
+import { IPaymentsRepository } from "../../../payments/domain/payments.repository";
 import { DatetimeHelperService } from "../../../shared/application/datetime.helper.service";
+import { UpdateTransactions } from "../../../transactions/application/use-cases/update-transactions.use-case";
+import { ITransactionsRepository } from "../../../transactions/domain/transactions.repository";
 import { IFees, FeesVariants } from "../../domain/fees";
+import { NotANumberError } from "../../domain/fees.exceptions";
 import { MysqlFeesRepository } from "../../infrastructure/mysql-fees.repository";
 import { FeesDTOMapper } from "../fees.mapper";
 import { IFeesDTO } from "../fees.mapper";
+import config from "../../../../config/app-config";
+import { FeesService } from "../fees.service";
 
 export interface IFeesUseCases {
   getPartnerFees(partnerId: string): Promise<IFees[] | null>;
@@ -11,13 +19,20 @@ export interface IFeesUseCases {
   updateFee(fee: IFeesDTO): Promise<IFees | null>;
   deleteFee(feeId: string): Promise<void>;
   getTypes(): Promise<FeesVariants[]>;
-  payFee(fee: IFees): Promise<void>;
+  payFee(fee: IFees, token: any): Promise<void>;
   renewFee(fee: IFeesDTO): Promise<IFees | null>;
 }
 
 export class FeesUseCases implements IFeesUseCases {
+  incomeObject = new UpdateTransactions(this.transactionsRepository);
+  paymentObject = new UpdatePayments(this.paymentsRepository);
   feesMapper = new FeesDTOMapper();
-  constructor(private readonly feesRepository: MysqlFeesRepository) {}
+  feesService = new FeesService();
+  constructor(
+    private readonly feesRepository: MysqlFeesRepository,
+    private readonly transactionsRepository: ITransactionsRepository,
+    private readonly paymentsRepository: IPaymentsRepository
+  ) {}
 
   async createFee(fee: IFeesDTO): Promise<IFees | null> {
     let result = null;
@@ -25,7 +40,11 @@ export class FeesUseCases implements IFeesUseCases {
     const expiration = DatetimeHelperService.dateToString(new Date());
 
     // CUOTA NO EXENTA SIN VTO (nueva)
-    if (this.isFee(fee) && !this.isFeeExent(fee) && !fee.expiration) {
+    if (
+      this.feesService.isFee(fee) &&
+      !this.feesService.isFeeExent(fee) &&
+      !fee.expiration
+    ) {
       const lastTypeFee = await this.feesRepository.getLastTypeFee(fee);
       if (
         lastTypeFee &&
@@ -37,13 +56,24 @@ export class FeesUseCases implements IFeesUseCases {
       } else feeDomain.expiration = expiration;
       result = await this.feesRepository.create(feeDomain);
       // CUOTA NO EXENTA CON VTO (renovacion)
-    } else if (this.isFee(fee) && !this.isFeeExent(fee) && fee.expiration) {
+    } else if (
+      this.feesService.isFee(fee) &&
+      !this.feesService.isFeeExent(fee) &&
+      fee.expiration
+    ) {
       result = await this.feesRepository.create(feeDomain);
       // INSCRIPCION NO EXENTA
-    } else if (this.isInscription(fee) && !this.isInscriptionExent(fee)) {
+    } else if (
+      this.feesService.isInscription(fee) &&
+      !this.feesService.isInscriptionExent(fee)
+    ) {
+      feeDomain.expiration = expiration;
       result = await this.feesRepository.create(feeDomain);
       // COUTA O INSCRIPCION EXENTAS (se crean sin VTO)
-    } else if (this.isFee(fee) && this.isFeeExent(fee)) {
+    } else if (
+      this.feesService.isFee(fee) &&
+      this.feesService.isFeeExent(fee)
+    ) {
       feeDomain.expiration = null;
       result = await this.feesRepository.create(feeDomain);
     } else {
@@ -74,20 +104,26 @@ export class FeesUseCases implements IFeesUseCases {
     return types;
   }
 
-  async payFee(fee: IFees): Promise<void> {
+  async payFee(fee: IFees, user: string): Promise<void> {
     const paid = DatetimeHelperService.dateToString(new Date());
+
+    // Actualizamos la cuota a pagada
     const executePayment = await this.feesRepository.payFee(
       fee.fee_id?.toString()!,
       paid
     );
+
+    // Crear ingreso y cobro de la cuota
+    this.createIncomeRecipe(fee, user);
+
     // Si no es una inscripcion la renovamos
-    if (this.isFee(fee)) this.renewFee(fee);
+    if (this.feesService.isFee(fee)) this.renewFee(fee);
     //else if (this.isInscription(fee)) return executePayment;
     return executePayment;
   }
 
   async renewFee(fee: IFeesDTO): Promise<IFees | null> {
-    const period = 12;
+    const period = config.FEES_PERIOD;
     const prevExpiration = new Date(fee.expiration!);
     const newExpiration = DatetimeHelperService.dateToString(
       new Date(prevExpiration.setMonth(prevExpiration.getMonth() + period))
@@ -97,22 +133,34 @@ export class FeesUseCases implements IFeesUseCases {
     return execute;
   }
 
-  isFee(fee: IFees): boolean {
-    if (fee.fees_type_id > 2) return false;
-    return true;
-  }
-  isInscription(fee: IFees): boolean {
-    if (fee.fees_type_id > 2) return true;
-    return false;
-  }
-
-  isFeeExent(fee: IFees): boolean {
-    if (fee.fees_type_id === 2) return true;
-    return false;
-  }
-
-  isInscriptionExent(fee: IFees): boolean {
-    if (fee.fees_type_id === 3) return true;
-    return false;
+  // Crea los registros contables de la cuota pagada
+  private async createIncomeRecipe(fee: IFees, user: string) {
+    let amount = 0;
+    const feeType = this.feesService.getFeesTypeString(fee.fees_type_id);
+    amount = Number(feeType.slice(-2));
+    if (isNaN(amount)) {
+      throw new NotANumberError();
+    }
+    await this.incomeObject.create({
+      transaction_id: undefined,
+      code: undefined,
+      amount: amount,
+      notes: `Ingreso de ${feeType}`,
+      transaction_type_id: this.feesService
+        .getTransactionsTypeId(fee)
+        .toString(),
+      recurrence_days: 0,
+      recurrence_times: 0,
+      date_start: DatetimeHelperService.dateToString(new Date()),
+      interest: 0,
+      user_created: user,
+    });
+    await this.paymentObject.create({
+      type: PaymentType.COBRO,
+      reference_id: fee.fee_id?.toString()!,
+      amount: amount,
+      notes: `Cobro de ${feeType}`,
+      user_created: user,
+    });
   }
 }

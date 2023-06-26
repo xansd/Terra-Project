@@ -4,7 +4,7 @@ import { TransactionsCode } from "../domain/value-objects/code-id.value-object";
 import { TransactionsID } from "../domain/value-objects/transactions-id.value.object";
 
 export interface ITransactionsPersistence {
-  transaction_id: string;
+  transaction_id?: string;
   code?: string;
   transaction_type_id: string;
   amount: number;
@@ -20,7 +20,7 @@ export interface ITransactionsPersistence {
   deleted_at?: string;
 }
 
-export class PaymentsPersistenceMapper
+export class TransactionsPersistenceMapper
   implements IPersistenceMapper<ITransactions, ITransactionsPersistence>
 {
   constructor() {}
@@ -63,7 +63,7 @@ export class PaymentsPersistenceMapper
       deleted_at,
     } = domain;
     return {
-      transaction_id: transaction_id.value,
+      transaction_id: transaction_id?.value,
       code: code?.value,
       transaction_type_id: transaction_type_id,
       amount: amount,

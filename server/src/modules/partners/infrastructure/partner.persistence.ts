@@ -21,9 +21,11 @@ export interface IPartnerPersistence {
   active: number;
   therapeutic: number;
   fee?: FeesVariants;
+  fee_expiration?: string | null;
   inscription?: FeesVariants;
   sanctions: ISanctions[];
   cash: number;
+  debt_limit?: number;
   user_created?: string | null;
   user_updated?: string | null;
   created_at?: string | null;

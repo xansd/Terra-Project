@@ -1,7 +1,7 @@
 import Logger from "../../../../apps/utils/logger";
 import appConfig from "../../../../config/app-config";
 import { DomainValidationError } from "../../../shared/domain/domain-validation.exception";
-import { IPartner } from "../../domain/partner";
+import { IPartner, ISanctions } from "../../domain/partner";
 import { PartnerAlreadyExistsError } from "../../domain/partner.exceptions";
 import { IPartnerRepository } from "../../domain/partner.repository";
 import { PartnerMapper } from "../partner-dto.mapper";
@@ -47,5 +47,16 @@ export class CreatePartnerUseCase implements ICreatePartner {
       }
       throw error;
     }
+  }
+
+  async createSanction(
+    sanction: ISanctions,
+    user: string
+  ): Promise<ISanctions | null> {
+    const sanctionCreated = await this.partnerRepository.createSanction(
+      sanction,
+      user
+    );
+    return sanctionCreated;
   }
 }

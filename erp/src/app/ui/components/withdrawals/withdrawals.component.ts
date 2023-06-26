@@ -6,6 +6,7 @@ import { MatTableDataSource, MatTable } from '@angular/material/table';
 import { Subject, takeUntil } from 'rxjs';
 import { IPartner } from 'src/app/partners/domain/partner';
 import { GetSales } from 'src/app/sales/application/get-sales.use-cases';
+import { UpdateSales } from 'src/app/sales/application/update-sales.use-case';
 import { ISales, ISalesDetails } from 'src/app/sales/domain/sales';
 import { DatetimeHelperService } from 'src/app/shared/application/datetime.helper.service';
 import { ErrorHandlerService } from 'src/app/shared/error/error-handler';
@@ -96,6 +97,71 @@ export class WithdrawalsComponent {
       },
     ],
   };
+  sale1: ISales = {
+    sale_id: '000',
+    code: 'V-FFAACBA',
+    partner_id: '123',
+    created_at: '12/12/90',
+    discount: 0,
+    total_amount: 0,
+    sale_details: [
+      {
+        sale_detail_id: '',
+        sale_id: '123',
+        product_id: '3423',
+        product_name: 'Sour Diesel',
+        product_code: 'P-AAABBFS',
+        harvest_id: '123',
+        harvest_code: 'C-EEEDFFA',
+        quantity: 10,
+        amount: 70,
+      },
+      {
+        sale_detail_id: '',
+        sale_id: '123',
+        product_id: '3423',
+        product_name: 'Critical',
+        product_code: 'P-AAAOOFS',
+        harvest_id: '123',
+        harvest_code: 'C-EELKKE',
+        quantity: 30,
+        amount: 120,
+      },
+      {
+        sale_detail_id: '',
+        sale_id: '123',
+        product_id: '3423',
+        product_name: 'Green Poison',
+        product_code: 'P-AEEBBFS',
+        harvest_id: '123',
+        harvest_code: 'C-EAABBE',
+        quantity: 30,
+        amount: 120,
+      },
+      {
+        sale_detail_id: '',
+        sale_id: '123',
+        product_id: '3423',
+        product_name: '1906',
+        product_code: 'P-AELLBFS',
+        harvest_id: '',
+        harvest_code: '',
+        quantity: 3,
+        amount: 8,
+      },
+      {
+        sale_detail_id: '',
+        sale_id: '123',
+        product_id: '3423',
+        product_name: 'Coca-Cola',
+        product_code: 'P-AELLBFS',
+        harvest_id: '',
+        harvest_code: '',
+        quantity: 2,
+        amount: 3,
+      },
+    ],
+  };
 
   displayedColumns: string[] = [
     'sale_id',
@@ -120,18 +186,18 @@ export class WithdrawalsComponent {
     private breakpointObserver: BreakpointObserver,
     private notifier: NotificationAdapter,
     private errorHandler: ErrorHandlerService,
-    private getService: GetSales
+    private getService: GetSales,
+    private updateService: UpdateSales
   ) {
+    this.salesList.push(this.sale);
+    this.salesList.push(this.sale1);
     this.dataSource = new MatTableDataSource(this.salesList);
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
 
   ngOnInit(): void {
-    this.salesList.push(this.sale);
-    setTimeout(() => {
-      this.renderTable();
-    }, 200);
+    this.renderTable();
     // this.getSales();
   }
 
@@ -211,7 +277,26 @@ export class WithdrawalsComponent {
   }
 
   selectRow(row: ISales) {
+    this.selectedRowIndex = row.sale_id;
     this.activeSaleDetails = row.sale_details;
     this.activeSaleCode = row.code!;
+  }
+
+  deleteSale(sale: ISales) {
+    this.updateService
+      .delete(sale.sale_id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (res: any) => {
+          if (res.affectedRows > 0) {
+            this.notifier.showNotification('success', 'Retirada eliminada');
+          } else {
+            this.errorHandler.handleUnkonwError(res);
+          }
+        },
+        error: (error: any) => {
+          console.error(error);
+        },
+      });
   }
 }

@@ -110,8 +110,8 @@
     min-width: 100px;
 }
 
-:host ::ng-deep .mat-column-fee {
-    min-width: 100px;
+:host ::ng-deep .mat-column-fee_expiration {
+    min-width: 120px;
 }
 
 :host ::ng-deep .mat-column-registration {
@@ -119,7 +119,7 @@
 }
 
 :host ::ng-deep .mat-column-leaves {
-    min-width: 100px;
+    min-width: 120px;
 }
 
 :host ::ng-deep .mat-column-active {
@@ -134,9 +134,16 @@
     min-width: 100px;
 }
 
+:host ::ng-deep .mat-column-cash {
+    min-width: 100px;
+}
 
 :host ::ng-deep .mat-column-extractions {
     min-width: 100px;
+}
+
+:host ::ng-deep .mat-column-created_at {
+    min-width: 120px;
 }
 
 

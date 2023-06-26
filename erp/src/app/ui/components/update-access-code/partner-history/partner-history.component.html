@@ -33,15 +33,13 @@
       <app-withdrawals [partner]="partner"></app-withdrawals>
     </div>
     <div class="tab-pane fade" id="sanciones">
-      <app-sanctions [partner]="partner"></app-sanctions>
+      <app-sanctions
+        (sanctionModified)="onSanctionModified()"
+        [partner]="partner"
+      ></app-sanctions>
     </div>
     <div class="tab-pane fade" id="cuotas">
-      <div *ngFor="let fee of fees">
-        <div *ngIf="fee.paid">
-          {{ fee.created_at | date }} - {{ getFeesType(fee.fees_type_id) }}-
-          {{ fee.paid | date }}
-        </div>
-      </div>
+      <app-fees-history [fees]="fees" [partner]="partner"></app-fees-history>
     </div>
   </div>
 </div>

@@ -4,7 +4,7 @@ import { TransactionsCode } from "../domain/value-objects/code-id.value-object";
 import { TransactionsID } from "../domain/value-objects/transactions-id.value.object";
 
 export interface ITransactionsDTO {
-  transaction_id: string;
+  transaction_id?: string;
   code?: string;
   transaction_type_id: string;
   amount: number;
@@ -67,7 +67,7 @@ export class TransactionsMapper
   // Convierte un dominio a un DTO
   toDTO(domain: ITransactions): ITransactionsDTO {
     return {
-      transaction_id: domain.transaction_id.value,
+      transaction_id: domain.transaction_id?.value,
       code: domain.code?.value,
       transaction_type_id: domain.transaction_type_id,
       amount: domain.amount,

@@ -6,10 +6,18 @@ import authorize from "../middlewares/authorize";
 import { Role } from "../../../modules/users/domain";
 import { check } from "express-validator";
 import { catchValidationErrors } from "../error/validate-fileds";
+import { MySqlTransactionsRepository } from "../../../modules/transactions/infrastructure/mysql-transactions.repository";
+import { MySqlPaymentsRepository } from "../../../modules/payments/infrastructure/mysql-payments.repository";
 
 const router = Router();
 const feesRepository = new MysqlFeesRepository();
-const feesUseCases = new FeesUseCases(feesRepository);
+const transactionsRepository = new MySqlTransactionsRepository();
+const paymentsRepository = new MySqlPaymentsRepository();
+const feesUseCases = new FeesUseCases(
+  feesRepository,
+  transactionsRepository,
+  paymentsRepository
+);
 const feesController = new FeesController(feesUseCases);
 
 // GET BY ID

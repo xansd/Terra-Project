@@ -113,6 +113,7 @@ CREATE TABLE partners (
   fee INT(11) NOT NULL,
   inscription INT(11) NOT NULL,
   cash DECIMAL(10, 2) DEFAULT 0,
+  debt_limit DECIMAL(10, 2) DEFAULT 0,
   user_created VARCHAR(36) DEFAULT NULL,
   user_updated VARCHAR(36) DEFAULT NULL,
   created_at datetime DEFAULT CURRENT_TIMESTAMP,
@@ -160,9 +161,12 @@ CREATE TABLE fees(
   sanction_id INT(11) PRIMARY KEY AUTO_INCREMENT,
   partner_id VARCHAR(36) NOT NULL,
   severity TINYINT(1)  NOT NULL,
-  sanction_date DATE NOT NULL,
-  description TEXT,  
+  description TEXT, 
+    created_at datetime DEFAULT CURRENT_TIMESTAMP,
+    updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at datetime DEFAULT NULL, 
   user_created VARCHAR(36) DEFAULT NULL,
+  user_updated VARCHAR(36) DEFAULT NULL,
   FOREIGN KEY (user_created) REFERENCES users(user_id),
   FOREIGN KEY (partner_id) REFERENCES partners(partner_id)
 );
@@ -210,6 +214,7 @@ INSERT INTO subcategories (name, category_id) VALUES ('Cervezas', 2);
 CREATE TABLE products (
   product_id VARCHAR(36) PRIMARY KEY,
   code VARCHAR(36) NOT NULL,
+  active TINYINT(1) NOT NULL DEFAULT 0,
   name VARCHAR(255) NOT NULL,
   type ENUM('mancomunados', 'terceros') NOT NULL,
   category_id INT(11),
@@ -288,6 +293,8 @@ cost_price DECIMAL(10,2) DEFAULT 0,
 sale_price DECIMAL(10,2) DEFAULT 0,
 fee_amount DECIMAL(10,2) DEFAULT 0,
 quantity DECIMAL(10,2) DEFAULT 0,
+manicured DECIMAL(10,2) DEFAULT 0,
+loss DECIMAL(10,2) DEFAULT 0,
 notes TEXT,
 user_created VARCHAR(36) DEFAULT NULL,
 user_updated VARCHAR(36) DEFAULT NULL,
@@ -324,6 +331,7 @@ purchase_detail_id INT(11)  AUTO_INCREMENT PRIMARY KEY,
 purchase_id VARCHAR(36) NOT NULL,
 product_id VARCHAR(36) NOT NULL,
 quantity DECIMAL(10,2)  DEFAULT 0,
+amount DECIMAL(10, 2) DEFAULT 0,
 INDEX purchase_details_product_id (product_id),
 INDEX purchase_details_purchase_id (purchase_id),
 FOREIGN KEY (purchase_id) REFERENCES purchases(purchase_id),
@@ -358,7 +366,9 @@ CREATE TABLE sale_details (
 sale_detail_id INT(11)  AUTO_INCREMENT PRIMARY KEY,
 sale_id VARCHAR(36) NOT NULL,
 product_id VARCHAR(36)  NOT NULL,
-quantity DECIMAL(10,2) NOT NULL,
+harvest_id VARCHAR(36)  DEFAULT NULL,
+quantity DECIMAL(10,2) DEFAULT 0,
+amount DECIMAL(10, 2) DEFAULT 0,
 INDEX sale_details_product_id (product_id),
 INDEX sale_details_sale_id (sale_id),
 FOREIGN KEY (sale_id) REFERENCES sales(sale_id),
@@ -369,13 +379,13 @@ FOREIGN KEY (product_id) REFERENCES products(product_id)
 /******************************************************GASTOS E INGRESOS*********************************************/
 
 CREATE TABLE transactions (
-transaction_id VARCHAR(36) AUTO_INCREMENT PRIMARY KEY,
+transaction_id VARCHAR(36) PRIMARY KEY,
 code VARCHAR(36) NOT NULL,
 amount DECIMAL(10,2) NOT NULL,
 notes TEXT,
 transaction_type_id INT(11) NOT NULL,
-recurrence_days INT(11),
-recurrence_times INT(11),
+recurrence_days INT(11) DEFAULT NULL,
+recurrence_times INT(11) DEFAULT NULL,
 date_start DATETIME DEFAULT NULL,
 interest DECIMAL(10,2) DEFAULT 0,
 user_created VARCHAR(36) DEFAULT NULL,
@@ -392,19 +402,22 @@ CREATE TABLE transaction_type (
 transaction_type_id INT(11) AUTO_INCREMENT PRIMARY KEY,
 name VARCHAR(255) NOT NULL,
 description TEXT,
-transaction_category ENUM('GASTO', 'INGRESO') NOT NULL, 'GASTO'
+transaction_category ENUM('GASTO', 'INGRESO') NOT NULL
 );
 
-INSERT INTO transaction_type (name, description, transaction_category) VALUES ('COBRO_CUOTA', '', 'INGRESO'); 
-INSERT INTO transaction_type (name, description, transaction_category) VALUES ('COBRO_INSCRIPCION', '', 'INGRESO'); 
-INSERT INTO transaction_type (name, description, transaction_category) VALUES ('INGRESO_MONEDERO', '', 'INGRESO');
-INSERT INTO transaction_type (name, description, transaction_category) VALUES ('DONACION', '', 'INGRESO');
-INSERT INTO transaction_type (name, description, transaction_category) VALUES ('INGRESO_PRESTAMO', '');
-INSERT INTO transaction_type (name, description, transaction_category) VALUES ('ALQUILER', '', 'GASTO'); 
-INSERT INTO transaction_type (name, description, transaction_category) VALUES ('SERVICIOS', '', 'GASTO'); 
-INSERT INTO transaction_type (name, description, transaction_category) VALUES ('ACTIVIDADES', '', 'GASTO');
-INSERT INTO transaction_type (name, description, transaction_category) VALUES ('PRESTAMOS', '', 'GASTO');
-INSERT INTO transaction_type (name, description, transaction_category) VALUES ('RETIRADA_MONEDERO', '', 'GASTO');
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('INGRESO_CUOTA', '', 'INGRESO'); 
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('INGRESO_INSCRIPCION', '', 'INGRESO'); 
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('INGRESO_CUENTA_SOCIO', '', 'INGRESO');
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('INGRESOS_DONACIONES', '', 'INGRESO');
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('INGRESOS_PRESTAMOS', '', 'INGRESO');
+
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('GASTOS_ALQUILER', '', 'GASTO'); 
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('GASTOS_SERVICIOS', '', 'GASTO'); 
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('GASTOS_ACTIVIDADES_ASOCIACION', '', 'GASTO');
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('GASTOS_PRESTAMOS', '', 'GASTO');
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('REINTEGRO_CUENTA_SOCIO', '', 'GASTO');
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('REINTEGRO_CUOTA', '', 'GASTO');
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('REINTEGRO_INSCRIPCION', '', 'GASTO');
 
 
 

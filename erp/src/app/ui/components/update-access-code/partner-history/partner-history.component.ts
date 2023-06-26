@@ -13,6 +13,7 @@ export class PartnerHistoryComponent implements OnInit {
   @Input('fees') fees: IFees[] = [];
   @Input('partner') partner!: IPartner;
   modalRef!: NgbActiveModal;
+  sanctionsModified = false;
 
   constructor(
     public modal: NgbActiveModal,
@@ -23,7 +24,12 @@ export class PartnerHistoryComponent implements OnInit {
     this.modalRef = this.modal;
   }
 
+  onSanctionModified() {
+    this.sanctionsModified = true;
+  }
+
   close(result: boolean) {
+    if (this.sanctionsModified) result = true;
     this.modalRef.close(result);
   }
 

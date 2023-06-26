@@ -3,6 +3,7 @@ import Logger from "../../../apps/utils/logger";
 import { MysqlDataBase } from "../../shared/infraestructure/mysql/mysql";
 import { IPayments, PaymentType } from "../domain/payments";
 import {
+  PaymentCreationError,
   PaymentDoesNotExistError,
   PaymentNotFoundError,
 } from "../domain/payments.exception";
@@ -25,10 +26,22 @@ export class MySqlPaymentsRepository implements IPaymentsRepository {
     return this.paymentsPersistenceMapper.toDomain(rows[0]) as IPayments;
   }
 
-  async getAll(type: PaymentType): Promise<IPayments[]> {
+  async getAllByType(type: PaymentType): Promise<IPayments[]> {
     const rows = await MysqlDataBase.query(
       `SELECT * FROM payments WHERE deleted_at IS NULL AND type = ?`,
       [type]
+    );
+    if (rows.length === 0) {
+      Logger.error(`mysql : getAll : PaymentNotFoundError`);
+      throw new PaymentNotFoundError();
+    }
+    return this.paymentsPersistenceMapper.toDomainList(rows) as IPayments[];
+  }
+
+  async getAllByReference(referenceId: string): Promise<IPayments[]> {
+    const rows = await MysqlDataBase.query(
+      `SELECT * FROM payments WHERE deleted_at IS NULL AND reference_id = ?`,
+      [referenceId]
     );
     if (rows.length === 0) {
       Logger.error(`mysql : getAll : PaymentNotFoundError`);
@@ -43,13 +56,17 @@ export class MySqlPaymentsRepository implements IPaymentsRepository {
     const insertQuery = `INSERT INTO payments (type, reference_id, amount, notes, user_created) VALUES (?,?,?,?, ?)`;
 
     const selectQuery = `SELECT * FROM payments WHERE payment_id = LAST_INSERT_ID()`;
-    const insertResult = await MysqlDataBase.update(insertQuery, [
-      paymentPersistence.type,
-      paymentPersistence.reference_id,
-      paymentPersistence.amount!.toString(),
-      paymentPersistence.notes!,
-      paymentPersistence.user_created!,
-    ]);
+    try {
+      await MysqlDataBase.update(insertQuery, [
+        paymentPersistence.type,
+        paymentPersistence.reference_id,
+        paymentPersistence.amount!.toString(),
+        paymentPersistence.notes!,
+        paymentPersistence.user_created!,
+      ]);
+    } catch (error) {
+      throw new PaymentCreationError();
+    }
     const selectResult = await MysqlDataBase.query(selectQuery);
     const lastPaymentInserted = selectResult[0];
 

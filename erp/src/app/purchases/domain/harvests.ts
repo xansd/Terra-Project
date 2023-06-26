@@ -10,6 +10,7 @@ export interface IHarvests {
   fee_amount?: number;
   quantity?: number;
   notes?: string;
+  stock?: number;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -27,6 +28,7 @@ export class Harvests implements IHarvests {
   fee_amount?: number | undefined;
   quantity?: number | undefined;
   notes?: string | undefined;
+  stock?: number;
   user_created?: string | undefined;
   user_updated?: string | undefined;
   created_at?: string | undefined;
@@ -43,6 +45,7 @@ export class Harvests implements IHarvests {
     this.fee_amount = props.fee_amount;
     this.quantity = props.quantity;
     this.notes = props.notes;
+    this.stock = props.stock;
     this.user_created = props.user_created;
     this.user_updated = props.user_updated;
     this.created_at = props.created_at;

@@ -7,7 +7,13 @@ export class SaleDoesNotExistError extends Error {
 
 export class SaleNotFoundError extends Error {
   constructor() {
-    super(`No hay retiradas/ventas registradas`);
+    super(`No hay retiradas registradas`);
     this.name = "SaleNotFoundError";
+  }
+}
+export class SaleDetailsEnrollError extends Error {
+  constructor() {
+    super(`Error al asignar los detalles a la compra`);
+    this.name = "SaleDetailsEnrollError";
   }
 }

@@ -1,8 +1,11 @@
 import { FeesDTOMapper } from "../../../modules/fees/application/fees.mapper";
 import { FeesUseCases } from "../../../modules/fees/application/use-cases/fees.use-cases";
 import { Request, Response } from "express";
-import { BadRequest, InternalServerError } from "../error/http-error";
-import { FeeNotFoundError } from "../../../modules/fees/domain/fees.exceptions";
+import { BadRequest, Conflict, InternalServerError } from "../error/http-error";
+import {
+  FeeNotFoundError,
+  NotANumberError,
+} from "../../../modules/fees/domain/fees.exceptions";
 
 export class FeesController {
   feesMapper = new FeesDTOMapper();
@@ -71,11 +74,16 @@ export class FeesController {
 
   async payFee(request: Request, response: Response): Promise<void> {
     try {
-      const result = await this.feesUseCases.payFee(request.body);
+      const result = await this.feesUseCases.payFee(
+        request.body,
+        request.auth.id
+      );
       response.send(result);
     } catch (error) {
       if (error instanceof FeeNotFoundError) {
         response.send(BadRequest(error.message));
+      } else if (error instanceof NotANumberError) {
+        response.send(Conflict(error.message));
       } else {
         response.send(InternalServerError(error));
       }

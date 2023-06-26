@@ -30,8 +30,10 @@ export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
     const therapeutic = dto.therapeutic;
     const sanctions = dto.sanctions;
     const fee = dto.fee;
+    const fee_expiration = dto.fee_expiration;
     const inscription = dto.inscription;
     const cash = dto.cash;
+    const debt_limit = dto.debt_limit;
     const user_created = dto.user_created;
     const user_updated = dto.user_updated;
     const props = {
@@ -55,8 +57,10 @@ export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       therapeutic,
       sanctions,
       fee,
+      fee_expiration,
       inscription,
       cash,
+      debt_limit,
       user_created,
       user_updated,
     };
@@ -87,8 +91,10 @@ export class PartnerMapper implements IDTOMapper<IPartner, IPartnerDTO> {
       therapeutic: domain.therapeutic,
       sanctions: domain.sanctions,
       fee: domain.fee,
+      fee_expiration: domain.fee_expiration,
       inscription: domain.inscription,
       cash: domain.cash,
+      debt_limit: domain.debt_limit,
       user_created: domain.user_created,
       user_updated: domain.user_updated,
       created_at: domain.created_at,

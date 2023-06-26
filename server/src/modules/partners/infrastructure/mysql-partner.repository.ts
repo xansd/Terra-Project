@@ -2,11 +2,13 @@ import { isNil } from "../../../../shared/type-checkers";
 import Logger from "../../../apps/utils/logger";
 import { MysqlDataBase } from "../../shared/infraestructure/mysql/mysql";
 import { IPartnerSubsetDTO } from "../application/partner.dto";
-import { IPartner, IPartnersType } from "../domain/partner";
+import { IPartner, IPartnersType, ISanctions } from "../domain/partner";
 import {
   Number20Limit,
   PartnerDoesNotExistError,
   PartnersNotFoundError,
+  SanctionDoesNotExists,
+  SanctionErrorCreate,
 } from "../domain/partner.exceptions";
 import { IPartnerRepository } from "../domain/partner.repository";
 import { PartnerPersistenceMapper } from "./partner-persistence.mapper";
@@ -18,22 +20,28 @@ export class MySqlPartnerRepository implements IPartnerRepository {
   async getById(partnerId: string): Promise<IPartner> {
     const rows = await MysqlDataBase.query(
       `SELECT partners.*, 
-          IF(COUNT(sanctions.sanction_id) > 0,
-            JSON_ARRAYAGG(
-                JSON_OBJECT('sanction_id', sanctions.sanction_id,
+      IF(COUNT(sanctions.sanction_id) > 0,
+         JSON_ARRAYAGG(
+             JSON_OBJECT('sanction_id', sanctions.sanction_id,
                          'partner_id', sanctions.partner_id,
                          'severity', sanctions.severity,
-                         'sanction_date', sanctions.sanction_date,
                          'description', sanctions.description,
-                         'user_created', sanctions.user_created)
-                ),
-            JSON_ARRAY()
-        ) AS sanctions
-      FROM partners
-      LEFT JOIN sanctions ON partners.partner_id = sanctions.partner_id
-      WHERE partners.partner_id = ? AND partners.deleted_at IS NULL
-      GROUP BY partners.partner_id
-      ORDER BY partners.number ASC;
+                         'user_created', sanctions.user_created,
+                         'created_at', sanctions.created_at)
+             ),
+         JSON_ARRAY()
+      ) AS sanctions
+FROM partners
+LEFT JOIN (
+ SELECT *
+ FROM sanctions
+ WHERE deleted_at IS NULL
+) AS sanctions ON partners.partner_id = sanctions.partner_id
+WHERE partners.partner_id = ? 
+ AND partners.deleted_at IS NULL
+GROUP BY partners.partner_id
+ORDER BY partners.number ASC;
+
 `,
       [partnerId]
     );
@@ -48,22 +56,29 @@ export class MySqlPartnerRepository implements IPartnerRepository {
   async getAll(): Promise<IPartner[]> {
     const rows = await MysqlDataBase.query(
       `SELECT partners.*, 
-        IF(COUNT(sanctions.sanction_id) > 0,
+      IF(COUNT(sanctions.sanction_id) > 0,
           JSON_ARRAYAGG(
               JSON_OBJECT('sanction_id', sanctions.sanction_id,
                           'partner_id', sanctions.partner_id,
                           'severity', sanctions.severity,
-                          'sanction_date', sanctions.sanction_date,
                           'description', sanctions.description,
-                          'user_created', sanctions.user_created)
-              ),
-            JSON_ARRAY()
-        ) AS sanctions
-      FROM partners
-      LEFT JOIN sanctions ON partners.partner_id = sanctions.partner_id
-      WHERE partners.deleted_at IS NULL AND partners.leaves IS NULL
-      GROUP BY partners.partner_id
-      ORDER BY partners.number ASC;`
+                          'user_created', sanctions.user_created,
+                          'created_at', sanctions.created_at)
+          ),
+          JSON_ARRAY()
+      ) AS sanctions,
+      (SELECT expiration 
+       FROM fees 
+       WHERE partner_id = partners.partner_id 
+       AND fees_type_id = 1 
+       ORDER BY created_at DESC 
+       LIMIT 1) AS fee_expiration
+  FROM partners
+  LEFT JOIN sanctions ON partners.partner_id = sanctions.partner_id
+  WHERE partners.deleted_at IS NULL 
+  GROUP BY partners.partner_id
+  ORDER BY partners.number ASC;   
+    `
     );
     if (rows.length === 0) {
       Logger.error(`mysql : getAll : PartnersNotFoundError`);
@@ -74,7 +89,8 @@ export class MySqlPartnerRepository implements IPartnerRepository {
 
   async getAllFiltered(): Promise<IPartnerSubsetDTO[]> {
     const rows = await MysqlDataBase.query(
-      `SELECT partner_id, access_code, number, name, surname, dni FROM partners where deleted_at IS NULL  AND leaves IS NULL  ORDER BY number ASC`
+      `SELECT partner_id, access_code, number, name, surname, dni FROM partners
+      where deleted_at IS NULL  AND leaves IS NULL AND active = 1 ORDER BY number ASC`
     );
     // if (rows.length === 0) {
     //   Logger.error(`mysql : getAll : PartnersNotFoundError`);
@@ -125,7 +141,7 @@ export class MySqlPartnerRepository implements IPartnerRepository {
     else partnerNumber = partnerMaxNumbers[1];
     const partnerPersistence =
       this.partnerPersistenceMapper.toPersistence(partner);
-    const insertQuery = `INSERT INTO partners (partner_id, access_code, number, name, surname, email, phone, address, dni, birth_date, cannabis_month, hash_month, extractions_month, others_month, partner_type_id, active, fee, inscription, user_created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?, ?)`;
+    const insertQuery = `INSERT INTO partners (partner_id, access_code, number, name, surname, email, phone, address, dni, birth_date, cannabis_month, hash_month, extractions_month, others_month, partner_type_id, active, fee, inscription, debt_limit, user_created) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, ?, ?)`;
 
     const selectQuery = `SELECT * FROM partners ORDER BY created_at DESC LIMIT 1`;
 
@@ -148,6 +164,7 @@ export class MySqlPartnerRepository implements IPartnerRepository {
       partnerPersistence.active.toString(),
       partnerPersistence.fee!.toString(),
       partnerPersistence.inscription!.toString(),
+      partnerPersistence.debt_limit!.toString(),
       partnerPersistence.user_created!,
     ]);
     const selectResult = await MysqlDataBase.query(selectQuery);
@@ -161,7 +178,7 @@ export class MySqlPartnerRepository implements IPartnerRepository {
     const result = await MysqlDataBase.update(
       `UPDATE partners SET name = ?, surname = ?, email = ?, phone = ?, address = ?, dni = ?, birth_date = ?,
        cannabis_month = ?, hash_month = ?, extractions_month = ?, others_month = ?, partner_type_id = ?,
-        active = ?, therapeutic = ?, fee = ?, cash = ?, inscription = ?, user_updated = ?
+        active = ?, therapeutic = ?, fee = ?, cash = ?, inscription = ?, debt_limit = ?, user_updated = ?
        WHERE partner_id = ?`,
       [
         partnerPersistence.name,
@@ -181,6 +198,7 @@ export class MySqlPartnerRepository implements IPartnerRepository {
         partnerPersistence.fee!.toString(),
         partnerPersistence.cash.toString(),
         partnerPersistence.inscription!.toString(),
+        partnerPersistence.debt_limit!.toString(),
         partnerPersistence.user_updated!,
         partnerPersistence.partner_id,
       ]
@@ -275,5 +293,39 @@ export class MySqlPartnerRepository implements IPartnerRepository {
       [partnerId]
     );
     return rows[0];
+  }
+
+  async createSanction(
+    sanction: ISanctions,
+    user: string
+  ): Promise<ISanctions> {
+    const insertQuery = `INSERT INTO sanctions (partner_id, severity, description, user_created) VALUES (?,?,?,?)`;
+
+    const selectQuery = `SELECT * FROM sanctions ORDER BY created_at DESC LIMIT 1`;
+
+    await MysqlDataBase.update(insertQuery, [
+      sanction.partner_id,
+      sanction.severity.toString(),
+      sanction.description,
+      user,
+    ]);
+    const selectResult = await MysqlDataBase.query(selectQuery);
+    if (!selectResult) {
+      Logger.error(`mysql : createSanction : SanctionErrorCreate`);
+      throw new SanctionErrorCreate();
+    }
+    return selectResult[0];
+  }
+
+  async deleteSanction(id: string, user: string): Promise<void> {
+    const result = await MysqlDataBase.update(
+      `UPDATE sanctions SET deleted_at = NOW(), user_updated = ?  WHERE sanction_id = ?`,
+      [user, id]
+    );
+    if (result.affectedRows === 0) {
+      Logger.error(`mysql : deleteSanction : SanctionDoesNotExists`);
+      throw new SanctionDoesNotExists();
+    }
+    return result;
   }
 }

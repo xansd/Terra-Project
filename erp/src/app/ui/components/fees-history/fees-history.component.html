@@ -1,0 +1,139 @@
+<div class="fees-container">
+  <div class="row justify-content-center">
+    <div class="col-xl-12">
+      <div class="mb-5">
+        <ng-container *ngIf="fees.length === 0; else feesTableView">
+          <div
+            class="d-flex justify-content-center align-items-center py-4 spinner"
+          >
+            <div class="spinner-grow text-success"></div>
+          </div>
+          <p class="text-center fw-600">
+            Todavía no hay registros de cuotas satisfechas...
+          </p>
+        </ng-container>
+        <ng-template #feesTableView>
+          <div class="row">
+            <div class="col-12">
+              <div
+                class="text-inverse text-opacity-50 mb-3 table-container table-responsive"
+              >
+                <mat-table
+                  mat-table
+                  [dataSource]="dataSource"
+                  matSort
+                  multiTemplateDataRows
+                  #feesListTable
+                >
+                  <!-- fee_id column -->
+                  <ng-container matColumnDef="fee_id">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                      >ID</mat-header-cell
+                    >
+                    <mat-cell *matCellDef="let row">
+                      <div class="mobile-label">ID:</div>
+                      <div class="cell-value">{{ row.fee_id }}</div>
+                    </mat-cell>
+                  </ng-container>
+
+                  <!-- fees_type_id column -->
+                  <ng-container matColumnDef="fees_type_id">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                      >Tipo</mat-header-cell
+                    >
+                    <mat-cell *matCellDef="let row">
+                      <div class="mobile-label">Tipo:</div>
+                      <div class="cell-value">
+                        {{ getFeesType(row.fees_type_id) }}
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+
+                  <!-- created column -->
+                  <ng-container matColumnDef="created_at">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                      >Creación</mat-header-cell
+                    >
+                    <mat-cell *matCellDef="let row">
+                      <div class="mobile-label">Creación:</div>
+                      <div class="cell-value">
+                        {{ getFormattedDate(row.created_at) }}
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+
+                  <!-- expiration column -->
+                  <ng-container matColumnDef="expiration">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                      >Vencimiento</mat-header-cell
+                    >
+                    <mat-cell *matCellDef="let row">
+                      <div class="mobile-label">Vencimiento:</div>
+                      <div class="cell-value">
+                        {{ getFormattedDate(row.expiration) }}
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+
+                  <!-- paid column -->
+                  <ng-container matColumnDef="paid">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header
+                      >Pagada</mat-header-cell
+                    >
+                    <mat-cell *matCellDef="let row">
+                      <div class="mobile-label">Pagada:</div>
+                      <div class="cell-value">
+                        {{ getFormattedDate(row.paid) }}
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+
+                  <!-- actions column -->
+                  <ng-container matColumnDef="actions">
+                    <mat-header-cell *matHeaderCellDef>Acción</mat-header-cell>
+                    <mat-cell *matCellDef="let row">
+                      <div
+                        class="btn-group btn-group-toggle"
+                        data-toggle="buttons"
+                      >
+                        <button
+                          type="button"
+                          class="btn btn-danger"
+                          title="Eliminar socio"
+                        >
+                          <i class="bi bi-x"> </i>
+                        </button>
+                      </div>
+                    </mat-cell>
+                  </ng-container>
+                  <mat-header-row
+                    mat-header-row
+                    *matHeaderRowDef="getDisplayedColumns(); sticky: true"
+                  ></mat-header-row>
+                  <mat-row
+                    mat-row
+                    *matRowDef="let row; columns: getDisplayedColumns()"
+                    [ngClass]="{
+                      'selected-row': selectedRowIndex === row.fee_id
+                    }"
+                    (click)="selectRow(row)"
+                  ></mat-row>
+                  <!-- Row shown when there is no matching data. -->
+                  <tr class="mat-row" *matNoDataRow>
+                    <td
+                      class="mat-cell no-data"
+                      [attr.colspan]="getDisplayedColumns().length"
+                      style="width: 100%"
+                    >
+                      Sin datos
+                    </td>
+                  </tr>
+                </mat-table>
+              </div>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

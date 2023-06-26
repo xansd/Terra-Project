@@ -77,9 +77,18 @@
     -ms-flex-direction   : column;
     flex-direction       : column;
 
+    tr {
+        border-color: azure !important;
+    }
 
+    mat-header-row {}
 
+    mat-row {
 
+        background-color: transparent;
+
+        &:hover {}
+    }
 
     .mat-column-actions {
 

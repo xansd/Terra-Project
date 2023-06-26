@@ -10,7 +10,7 @@ export interface ISalesPersistence {
   discount?: number;
   tax?: number;
   total_amount: number;
-  sale_details: ISalesDetails;
+  sale_details: ISalesDetails[];
   notes?: string;
   user_created?: string;
   user_updated?: string;

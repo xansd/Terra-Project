@@ -63,4 +63,7 @@ export default {
     "xlsx",
   ],
   MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
+  FEES_PERIOD: 12,
+  DEBT_LIMIT: -15 * 100,
+  DEB_LIMIT_STRING: "15€",
 };

@@ -13,17 +13,22 @@ import {
 import { PartnerMapper } from "../../../modules/partners/application/partner-dto.mapper";
 import { DomainValidationError } from "../../../modules/shared/domain/domain-validation.exception";
 import {
+  InvalidAmountError,
+  MaxDebtLimitError,
+  MaxRefundLimitError,
+  MinZeroError,
   Number20Limit,
   PartnerAlreadyExistsError,
   PartnerDoesNotExistError,
   PartnersNotFoundError,
+  SanctionDoesNotExists,
+  SanctionErrorCreate,
 } from "../../../modules/partners/domain/partner.exceptions";
 import { UserAlreadyExistsError } from "../../../modules/users/domain";
 import { MysqlFilesRepository } from "../../../modules/files/infrastructure/mysql-files.repository";
 import { FilesCaseUses } from "../../../modules/files/application/files.use-case";
 import { DownloadError } from "../../../modules/files/domain/files.exceptions";
 import { PartnerDocumentsService } from "../../../modules/partners/application/use-cases/partner-documents.service";
-import LocalFileHandler from "../../../modules/files/infrastructure/local-file-handler";
 
 export class PartnerController {
   partnerMapper = new PartnerMapper();
@@ -230,11 +235,12 @@ export class PartnerController {
   }
 
   async updatePartnerCash(request: Request, response: Response): Promise<void> {
-    const { id } = request.params;
     try {
       const result = await this.updatePartnerUseCase.updatePartnerCash(
         request.body.amount,
-        id
+        request.body.operation,
+        request.body.partner,
+        request.auth.id
       );
       response.send(result);
     } catch (error) {
@@ -242,6 +248,14 @@ export class PartnerController {
         response.send(BadRequest(error.message));
       } else if (error instanceof PartnerDoesNotExistError) {
         response.send(NotFound(error.message));
+      } else if (error instanceof MaxDebtLimitError) {
+        response.send(BadRequest(error.message));
+      } else if (error instanceof InvalidAmountError) {
+        response.send(BadRequest(error.message));
+      } else if (error instanceof MaxRefundLimitError) {
+        response.send(BadRequest(error.message));
+      } else if (error instanceof MinZeroError) {
+        response.send(BadRequest(error.message));
       } else {
         response.send(InternalServerError(error));
       }
@@ -264,6 +278,40 @@ export class PartnerController {
     } catch (error) {
       if (error instanceof DownloadError) {
         response.send(NotFound(error.message));
+      } else {
+        response.send(InternalServerError(error));
+      }
+    }
+  }
+
+  async createSanction(request: Request, response: Response): Promise<void> {
+    try {
+      const sanction = await this.createPartnerUseCase.createSanction(
+        request.body,
+        request.auth.id
+      );
+      response.json(sanction);
+    } catch (error) {
+      if (error instanceof SanctionErrorCreate) {
+        response.send(BadRequest(error.message));
+      } else {
+        response.send(InternalServerError(error));
+      }
+    }
+  }
+
+  async deleteSanction(request: Request, response: Response): Promise<void> {
+    const { id } = request.params;
+
+    try {
+      const result = await this.deletePartnerUseCase.deleteSanction(
+        id,
+        request.auth.id
+      );
+      response.send(result);
+    } catch (error) {
+      if (error instanceof SanctionDoesNotExists) {
+        response.send(BadRequest(error.message));
       } else {
         response.send(InternalServerError(error));
       }

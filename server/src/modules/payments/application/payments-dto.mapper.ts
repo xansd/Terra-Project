@@ -2,7 +2,7 @@ import { IDTOMapper } from "../../shared/application/dto-mapper.interface";
 import { IPayments, PaymentType, Payments } from "../domain/payments";
 
 export interface IPaymentsDTO {
-  payment_id: string;
+  payment_id?: string;
   type: PaymentType;
   reference_id: string;
   amount?: number;

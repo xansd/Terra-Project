@@ -1,4 +1,3 @@
-import { IProvider } from "../../providers/domain/providers";
 import { PurchaseCode } from "./value-objects/code-id.value-object";
 import { PurchaseID } from "./value-objects/purchase-id.value.object";
 
@@ -12,6 +11,7 @@ export interface IHarvests {
   fee_amount?: number;
   quantity?: number;
   notes?: string;
+  stock?: number;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -29,6 +29,7 @@ export class Harvests implements IHarvests {
   fee_amount?: number | undefined;
   quantity?: number | undefined;
   notes?: string | undefined;
+  stock?: number;
   user_created?: string | undefined;
   user_updated?: string | undefined;
   created_at?: string | undefined;

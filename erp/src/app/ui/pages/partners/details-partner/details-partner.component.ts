@@ -22,7 +22,7 @@ import { UpdateAccessCodeComponent } from 'src/app/ui/components/update-access-c
 import { FeesTypes } from 'src/app/partners/domain/fees';
 import { DatetimeHelperService } from 'src/app/shared/application/datetime.helper.service';
 import { CreatePartnerComponent } from '../create-partner/create-partner.component';
-import { PartnerHistoryComponent } from 'src/app/ui/components/partner-history/partner-history.component';
+import { PartnerHistoryComponent } from 'src/app/ui/components/update-access-code/partner-history/partner-history.component';
 import { UpdatePartnerCashComponent } from 'src/app/ui/components/update-partner-cash/update-partner-cash.component';
 import { saveAs } from 'file-saver';
 
@@ -274,7 +274,7 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
     modalRef.result
       .then((result) => {
         if (result) {
-          this.notifier.showNotification('success', 'Monedero actualizado');
+          this.notifier.showNotification('success', 'Cuenta actualizada');
           this.isLoading = true;
           this.getPartner();
         }
@@ -410,7 +410,7 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
         classes.push('text-danger border-danger');
         break;
       default:
-        classes.push('text-success');
+        classes.push('text-danger border-danger');
     }
 
     return classes;
@@ -460,6 +460,7 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
     modalRef.result
       .then((result) => {
         if (result) {
+          this.getPartner();
         }
       })
       .catch((error) => {

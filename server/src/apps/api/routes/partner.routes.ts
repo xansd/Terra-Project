@@ -13,6 +13,9 @@ import { ToggleActivePartnerUseCase } from "../../../modules/partners/applicatio
 import { PartnerDocumentsService } from "../../../modules/partners/application/use-cases/partner-documents.service";
 import { ODTGenerator } from "../../../modules/partners/infrastructure/odt-generator";
 import LocalFileHandler from "../../../modules/files/infrastructure/local-file-handler";
+import { MySqlPaymentsRepository } from "../../../modules/payments/infrastructure/mysql-payments.repository";
+import { MySqlTransactionsRepository } from "../../../modules/transactions/infrastructure/mysql-transactions.repository";
+import { PartnerCashService } from "../../../modules/partners/application/services/partner-cash.service";
 
 const router = Router();
 
@@ -21,11 +24,19 @@ const localFileHandler = new LocalFileHandler();
 
 // Repositorio
 const userRepository = new MySqlPartnerRepository();
+const transactionsRepository = new MySqlTransactionsRepository();
+const paymentsRepository = new MySqlPaymentsRepository();
 
 // Casos de uso
 const createPartnerUseCase = new CreatePartnerUseCase(userRepository);
 const getPartnerUseCase = new GetPartnerUseCase(userRepository);
-const updatePartnerUseCase = new UpdatePartnerUseCase(userRepository);
+const cashService = new PartnerCashService();
+const updatePartnerUseCase = new UpdatePartnerUseCase(
+  userRepository,
+  transactionsRepository,
+  paymentsRepository,
+  cashService
+);
 const deletePartnerUseCase = new DeletePartnerUseCase(userRepository);
 const toggleActivePartnerUserCase = new ToggleActivePartnerUseCase(
   userRepository
@@ -137,9 +148,8 @@ router.put(
 
 // UPDATE PARTNER CASH
 router.put(
-  "/cash/:id",
+  "/cash",
   authorize([Role.ADMIN, Role.USER]),
-  [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
   partnerController.updatePartnerCash.bind(partnerController)
 );
 
@@ -149,6 +159,22 @@ router.post(
   "/documents",
   authorize([Role.ADMIN, Role.USER]),
   partnerController.getPartnerDocument.bind(partnerController)
+);
+
+/*****************************SANCTIONS********************************************/
+// CREATE SANCTION
+router.post(
+  "/sanctions",
+  authorize([Role.ADMIN, Role.USER]),
+  partnerController.createSanction.bind(partnerController)
+);
+
+// DELETE SANCTION
+router.delete(
+  "/sanctions/:id",
+  authorize([Role.ADMIN, Role.USER]),
+  [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
+  partnerController.deleteSanction.bind(partnerController)
 );
 
 export { router };

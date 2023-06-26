@@ -11,4 +11,9 @@ export class DeletePartnerUseCase implements IDeletePartner {
     const result = await this.partnerRepository.delete(id);
     return result;
   }
+
+  async deleteSanction(id: string, user: string): Promise<void> {
+    const result = await this.partnerRepository.deleteSanction(id, user);
+    return result;
+  }
 }
