@@ -7,15 +7,26 @@ import { check } from "express-validator";
 import { Role } from "../../../modules/users/domain";
 import { catchValidationErrors } from "../error/validate-fileds";
 import authorize from "../middlewares/authorize";
+import { MySqlTransactionsRepository } from "../../../modules/transactions/infrastructure/mysql-transactions.repository";
+import { MySqlPurchasesRepository } from "../../../modules/purchases/infrastructure/mysql-purchases.repository";
+import { MysqlFeesRepository } from "../../../modules/fees/infrastructure/mysql-fees.repository";
 
 const router = Router();
 
 // Repositorio
 const paymentsRepository = new MySqlPaymentsRepository();
+const transactionsRepository = new MySqlTransactionsRepository();
+const purchasesRepository = new MySqlPurchasesRepository();
+const feesRepository = new MysqlFeesRepository();
 
 // Casos de uso
 const getPaymentsUseCase = new GetPayments(paymentsRepository);
-const updatePaymentsUseCase = new UpdatePayments(paymentsRepository);
+const updatePaymentsUseCase = new UpdatePayments(
+  paymentsRepository,
+  transactionsRepository,
+  purchasesRepository,
+  feesRepository
+);
 
 // Controlador
 const paymentsController = new PaymentsController(

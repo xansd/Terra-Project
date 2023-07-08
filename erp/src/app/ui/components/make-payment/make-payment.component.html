@@ -1,0 +1,48 @@
+<div class="modal-header">
+  <ng-container>
+    <h5 class="modal-title">Introduce la cantidad a abonar</h5>
+  </ng-container>
+  <button type="button" class="btn-close" (click)="close(false)"></button>
+</div>
+<div class="modal-body">
+  <form
+    [formGroup]="paymentForm"
+    (ngSubmit)="submit(paymentForm)"
+    autocomplete="off"
+    #formDirective="ngForm"
+  >
+    <div class="mb-3">
+      <label class="form-label"
+        >Cantidad <span class="text-danger">*</span></label
+      >
+      <div class="amount-container">
+        <input
+          type="number"
+          class="form-control form-control-lg bg-inverse bg-opacity-5"
+          formControlName="amount"
+          matInput
+          placeholder="Escribe la cantidad..."
+          [errorStateMatcher]="matcher"
+          autocomplete="off"
+        />
+        <mat-error *ngIf="amount.invalid && (amount.dirty || amount.touched)">
+          <span *ngIf="amount.hasError('required')">Campo obligatorio.</span>
+          <span *ngIf="amount.hasError('max')">
+            La cantidad supera el límite del abono total.
+          </span>
+          <span *ngIf="amount.hasError('min')"
+            >La cantidad debe ser mayor que cero.</span
+          >
+        </mat-error>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-warning" (click)="close(false)">
+    Cancelar
+  </button>
+  <button (click)="close(true)" type="submit" class="btn btn-outline-theme">
+    Enviar
+  </button>
+</div>

@@ -8,9 +8,9 @@ export interface IUpdateSales {
   create(sale: ISalesDTO): Observable<ISales>;
   delete(id: string): Observable<void>;
 }
-Injectable({
+@Injectable({
   providedIn: 'root',
-});
+})
 export class UpdateSales implements IUpdateSales {
   constructor(
     @Inject('salesAPI') private readonly salesAPI: ISalesRepository

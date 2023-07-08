@@ -2,17 +2,21 @@ export interface IPurchaseDetails {
   purchase_detail_id?: string;
   purchase_id?: string;
   product_id: string;
+  product_name?: string;
   quantity: number;
   amount: number;
+  lot?: number;
 }
 
 export interface IPurchase {
-  purchase_id: string;
+  purchase_id?: string;
   code?: string;
   provider_id: string;
+  provider_name?: string;
   total_amount?: number;
   purchase_details: IPurchaseDetails[];
   notes?: string;
+  paid?: number;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -21,12 +25,14 @@ export interface IPurchase {
 }
 
 export class Purchase implements IPurchase {
-  purchase_id: string;
+  purchase_id?: string;
   code?: string | undefined;
   provider_id: string;
+  provider_name?: string;
   total_amount?: number | undefined;
   purchase_details: IPurchaseDetails[];
   notes?: string | undefined;
+  paid?: number;
   user_created?: string | undefined;
   user_updated?: string | undefined;
   created_at?: string | undefined;
@@ -37,9 +43,11 @@ export class Purchase implements IPurchase {
     this.purchase_id = props.purchase_id;
     this.code = props.code;
     this.provider_id = props.provider_id;
+    this.provider_name = props.provider_name;
     this.total_amount = props.total_amount;
     this.purchase_details = props.purchase_details;
     this.notes = props.notes;
+    this.paid = props.paid;
     this.user_created = props.user_created;
     this.user_updated = props.user_updated;
     this.created_at = props.created_at;

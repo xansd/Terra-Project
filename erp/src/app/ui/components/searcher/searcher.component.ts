@@ -13,7 +13,16 @@ import { IPartner } from 'src/app/partners/domain/partner';
 import { GetPartnerUseCase } from 'src/app/partners/application/get-partners.use-case';
 import { Observable, Subject, of } from 'rxjs';
 import { map, startWith, takeUntil } from 'rxjs/operators';
-import { PartnersSearchTypes, ProductsSearchTypes } from './search.config';
+import {
+  HarvestSearchTypes,
+  PartnersSearchTypes,
+  ProductsSearchTypes,
+  ProviderSearchTypes,
+  PurchasesSearchTypes,
+} from './search.config';
+import { IHarvests } from 'src/app/purchases/domain/harvests';
+import { DatetimeHelperService } from '../../../shared/application/datetime.helper.service';
+import { IPurchase } from 'src/app/purchases/domain/purchases';
 
 @Component({
   selector: 'app-searcher',
@@ -24,7 +33,12 @@ export class SearcherComponent implements OnInit, OnDestroy {
   @Input() options: any[] = [];
   @Input() searchTypes: {
     label: string;
-    value: PartnersSearchTypes | ProductsSearchTypes;
+    value:
+      | PartnersSearchTypes
+      | ProductsSearchTypes
+      | HarvestSearchTypes
+      | ProviderSearchTypes
+      | PurchasesSearchTypes;
   }[] = [];
   @Output() optionSelected = new EventEmitter<any>();
 
@@ -74,6 +88,16 @@ export class SearcherComponent implements OnInit, OnDestroy {
             this.options = this.concatName(this.options);
           }
           this.populateAutocomplete(this.concatName(currentOptions));
+        } else if (currentOptions[0].hasOwnProperty('harvest_id')) {
+          if (this.options.length > 0) {
+            this.options = this.concatCodeNameAndDate(this.options);
+          }
+          this.populateAutocomplete(this.concatName(currentOptions));
+        } else if (currentOptions[0].hasOwnProperty('purchase_id')) {
+          if (this.options.length > 0) {
+            this.options = this.concatCodeProviderAndDate(this.options);
+          }
+          this.populateAutocomplete(this.concatName(currentOptions));
         } else {
           // Es un objeto "products" que no requiere concatenación
           this.populateAutocomplete(currentOptions);
@@ -106,6 +130,34 @@ export class SearcherComponent implements OnInit, OnDestroy {
     const newArray = data.map((obj) => {
       const fullName = obj.surname + ', ' + obj.name;
       return { ...obj, name: fullName };
+    });
+    return newArray;
+  }
+
+  concatCodeNameAndDate(data: IHarvests[]): IHarvests[] {
+    const newArray = data.map((obj) => {
+      const fullCode =
+        obj.code +
+        ' [ ' +
+        obj.product_name +
+        ' ] [ ' +
+        DatetimeHelperService.dateToView(obj.created_at) +
+        ' ]';
+      return { ...obj, code: fullCode };
+    });
+    return newArray;
+  }
+
+  concatCodeProviderAndDate(data: IPurchase[]): IPurchase[] {
+    const newArray = data.map((obj) => {
+      const fullCode =
+        obj.code +
+        ' [ ' +
+        obj.provider_name +
+        ' ] [ ' +
+        DatetimeHelperService.dateToView(obj.created_at) +
+        ' ]';
+      return { ...obj, code: fullCode };
     });
     return newArray;
   }

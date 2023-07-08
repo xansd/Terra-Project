@@ -36,7 +36,7 @@ export class MySqlProvidersRepository implements IProviderRepository {
     }
     return this.providersPersistenceMapper.toDomainList(rows) as IProvider[];
   }
-  async create(provider: IProvider): Promise<IProvider> {
+  async create(provider: IProvider, user: string): Promise<IProvider> {
     const providerPersistence =
       this.providersPersistenceMapper.toPersistence(provider);
     const insertQuery = `INSERT INTO providers (provider_id, name, email, phone, address, type, user_created) VALUES (?,?,?,?,?,?,?)`;
@@ -50,14 +50,15 @@ export class MySqlProvidersRepository implements IProviderRepository {
       providerPersistence.phone!,
       providerPersistence.address!,
       providerPersistence.type,
-      providerPersistence.user_created!,
+      user,
     ]);
     const selectResult = await MysqlDataBase.query(selectQuery);
     const providerSaved = selectResult[0];
 
+    Logger.info(`mysql : createProvider : ${user}`);
     return this.providersPersistenceMapper.toDomain(providerSaved);
   }
-  async update(provider: IProvider): Promise<void> {
+  async update(provider: IProvider, user: string): Promise<void> {
     const providersPersistence =
       this.providersPersistenceMapper.toPersistence(provider);
     const result = await MysqlDataBase.update(
@@ -68,7 +69,7 @@ export class MySqlProvidersRepository implements IProviderRepository {
         providersPersistence.phone!,
         providersPersistence.address!,
         providersPersistence.type!,
-        providersPersistence.user_updated!,
+        user,
         providersPersistence.provider_id,
       ]
     );
@@ -76,17 +77,21 @@ export class MySqlProvidersRepository implements IProviderRepository {
       Logger.error(`mysql : update : ProviderDoesNotExistError`);
       throw new ProviderDoesNotExistError();
     }
+    Logger.info(`mysql : updateProvider : ${user}`);
     return result;
   }
-  async delete(providerId: string): Promise<void> {
+  async delete(providerId: string, user: string): Promise<void> {
     const result = await MysqlDataBase.update(
-      `UPDATE providers SET deleted_at = NOW() WHERE provider_id = ?`,
+      // `UPDATE providers SET deleted_at = NOW(), user_updated = ? WHERE provider_id = ?`,
+      // [user, providerId]
+      `DELETE FROM providers WHERE provider_id = ?`,
       [providerId]
     );
     if (result.affectedRows === 0) {
       Logger.error(`mysql : delete : ProviderDoesNotExistError`);
       throw new ProviderDoesNotExistError();
     }
+    Logger.info(`mysql : deleteProvider : ${user}`);
     return result;
   }
   async checkProviderExistenceByName(name: string): Promise<boolean> {

@@ -35,6 +35,11 @@ import { ImgCropperComponent } from './img-cropper/img-cropper.component';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { WithdrawalsComponent } from './withdrawals/withdrawals.component';
 import { FeesHistoryComponent } from './fees-history/fees-history.component';
+import { MakePaymentComponent } from './make-payment/make-payment.component';
+import { UpdateStockComponent } from './update-stock/update-stock.component';
+import { UpdateManicuredComponent } from './update-manicured/update-manicured.component';
+import { UpdateHarvesFeeComponent } from './update-harves-fee/update-harves-fee.component';
+import { UpdateHarvestLossComponent } from './update-harvest-loss/update-harvest-loss.component';
 
 @NgModule({
   declarations: [
@@ -62,6 +67,11 @@ import { FeesHistoryComponent } from './fees-history/fees-history.component';
     ImgCropperComponent,
     WithdrawalsComponent,
     FeesHistoryComponent,
+    MakePaymentComponent,
+    UpdateStockComponent,
+    UpdateManicuredComponent,
+    UpdateHarvesFeeComponent,
+    UpdateHarvestLossComponent,
   ],
   imports: [
     CommonModule,

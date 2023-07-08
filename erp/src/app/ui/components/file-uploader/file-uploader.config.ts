@@ -7,6 +7,7 @@ export default {
     PageRoutes.VARIETIES_DETAILS,
     PageRoutes.VARIETIES,
     PageRoutes.VARIETIES_STATISTICS,
+    PageRoutes.PRODUCTS_DETAILS,
     PageRoutes.PRODUCTS_LIST,
     PageRoutes.PRODUCTS,
     PageRoutes.PRODUCTS_STATISTICS,

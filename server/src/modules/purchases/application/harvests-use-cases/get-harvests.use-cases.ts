@@ -36,4 +36,20 @@ export class GetHarvests implements IGetHarvests {
 
     return harvests;
   }
+
+  async getAllHarvestsById(id: string, entity: string): Promise<IHarvests[]> {
+    const purchases = await this.harvestsRepository.getAllHarvestsById(
+      id,
+      entity
+    );
+    if (purchases.length === 0) {
+      const purchasesNotFound = new HarvestNotFoundError();
+      Logger.error(
+        `purchases-repository : getAllHarvestsById : ${HarvestNotFoundError}`
+      );
+      throw purchasesNotFound;
+    }
+
+    return purchases;
+  }
 }

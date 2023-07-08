@@ -1,0 +1,36 @@
+<ul
+  #nav
+  class="nav nav-pills mb-3 nav-fill"
+  [ngClass]="{ 'fixed-tabs': isNavFixed }"
+>
+  <li class="nav-item">
+    <a
+      class="nav-link"
+      [routerLink]="pagesRoutes.PROVIDERS_DETAILS"
+      routerLinkActive="active"
+    >
+      <i [class]="icons.PROVIDERS_DETAILS"></i> CONSULTA
+    </a>
+  </li>
+  <li class="nav-item">
+    <a
+      class="nav-link"
+      [routerLink]="pagesRoutes.PROVIDERS_LIST"
+      routerLinkActive="active"
+    >
+      <i [class]="icons.PROVIDERS_LIST"></i> LISTADO PROVEEDORES
+    </a>
+  </li>
+  <li class="nav-item">
+    <a
+      class="nav-link"
+      [routerLink]="pagesRoutes.PROVIDERS_STATISTICS"
+      routerLinkActive="active"
+    >
+      <i [class]="icons.PPROVIDERS_STATISTICS"></i> ESTADÍSTICAS PROVEEDORES
+    </a>
+  </li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+  <router-outlet></router-outlet>
+</div>

@@ -5,5 +5,5 @@ export interface ISalesRepository {
   getAll(): Promise<ISales[]>;
   getAllPartnerSales(id: string): Promise<ISales[]>;
   create(purchase: ISales): Promise<ISales>;
-  delete(id: string): Promise<void>;
+  delete(id: string, user: string): Promise<void>;
 }

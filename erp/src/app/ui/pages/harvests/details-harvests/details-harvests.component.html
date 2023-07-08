@@ -1,0 +1,310 @@
+<div class="container-fluid">
+  <div class="search">
+    <ng-container *ngIf="searchTypes">
+      <app-searcher
+        [options]="options"
+        [searchTypes]="searchTypes"
+        (optionSelected)="handleOptionSelected($event)"
+      ></app-searcher>
+    </ng-container>
+  </div>
+
+  <ng-container *ngIf="isLoading; else harvestSelection">
+    <div class="d-flex justify-content-center align-items-center py-4 spinner">
+      <div class="spinner-grow text-success"></div>
+    </div>
+    <p class="text-center">Esperando cultivo...</p>
+  </ng-container>
+  <ng-template #harvestSelection>
+    <div class="row content">
+      <div class="col-lg-10">
+        <!-- Primer card -->
+        <div class="row row-cols-1 row-cols-xl-2 g-3">
+          <div class="col">
+            <card class="card h-100 data-card mb-4">
+              <card-header class="card-header bg-inverse bg-opacity-10 fw-400">
+                <div class="title">DATOS CULTIVO</div>
+              </card-header>
+              <card-body class="pb-2">
+                <div class="general-info">
+                  <!-- codigo -->
+                  <div class="property code">
+                    <span class="property-name">Código:</span>
+                    <span class="property-value fw-bold text-theme">{{
+                      harvest!.code | uppercase
+                    }}</span>
+                  </div>
+                  <!-- producto -->
+                  <div class="property name">
+                    <span class="property-name">Variedad:</span>
+                    <span class="property-value fw-bold text-theme name">{{
+                      harvest!.product_name | uppercase
+                    }}</span>
+                  </div>
+                  <!-- proveedor -->
+                  <div class="property cultivator">
+                    <span class="property-name">Cultivador:</span>
+                    <span class="property-value fw-bold text-theme">{{
+                      harvest!.provider_name | uppercase
+                    }}</span>
+                  </div>
+
+                  <!-- alta -->
+                  <div class="property">
+                    <span class="property-name">Alta cultivo:</span>
+                    <span class="property-value">{{
+                      formatDate(harvest!.created_at!)
+                    }}</span>
+                  </div>
+                </div>
+
+                <div class="numbers">
+                  <!-- coste -->
+                  <div class="property">
+                    <span class="property-name">Coste:</span>
+                    <span class="property-value fw-bold"
+                      >{{ harvest!.cost_price | number : "1.2-2" }} €/gr.</span
+                    >
+                  </div>
+                  <!-- cuota -->
+                  <div class="property">
+                    <span class="property-name">Cuota :</span>
+                    <span class="property-value fw-bold"
+                      >{{ harvest!.fee_amount | number : "1.2-2" }} €/gr.</span
+                    >
+                  </div>
+                  <!-- Cantidad -->
+                  <div class="property">
+                    <span class="property-name">Cantidad:</span>
+                    <span class="property-value fw-bold"
+                      >{{ harvest!.quantity | number : "1.2-2" }} gr.</span
+                    >
+                  </div>
+
+                  <!-- precio retirada -->
+                  <div class="property">
+                    <span class="property-name">Retirada:</span>
+                    <span class="property-value fw-bold text-info"
+                      >{{ salePrice | number : "1.2-2" }} €/gr.</span
+                    >
+                  </div>
+                </div>
+
+                <div class="stock-data">
+                  <!-- Stock -->
+                  <div class="property stock">
+                    <span
+                      [ngClass]="{
+                        'text-warning': finalStock >= 0 && finalStock <= 10,
+                        'text-primary': finalStock > 10
+                      }"
+                      class="property-name"
+                      >STOCK</span
+                    >
+                    <span
+                      class="property-value fw-bold"
+                      [ngClass]="{
+                        'text-warning': finalStock >= 0 && finalStock <= 10,
+                        'text-primary': finalStock > 10
+                      }"
+                      >{{ finalStock | number : "1.2-2" }} GR.</span
+                    >
+                  </div>
+                  <!-- Loss -->
+                  <div
+                    class="property"
+                    [ngClass]="{
+                      'text-success': harvest!.manicured! == 0,
+                      'text-warning': harvest!.manicured! < 0
+                    }"
+                  >
+                    <span class="property-name">Manicurado</span>
+                    <span class="property-value fw-bold"
+                      >{{ harvest!.manicured | number : "1.2-2" }} gr.</span
+                    >
+                  </div>
+                  <!-- Perdida -->
+                  <div
+                    class="property"
+                    [ngClass]="{
+                      'text-success': harvest!.loss! == 0 || harvest!.loss! > 0,
+                      'text-warning': harvest!.loss! < 0,
+                    }"
+                  >
+                    <span class="property-name">Ajuste</span>
+                    <span class="property-value fw-bold"
+                      >{{ harvest!.loss | number : "1.2-2" }} gr.</span
+                    >
+                  </div>
+                </div>
+
+                <!-- Observaciones -->
+                <div class="property observaciones">
+                  <span class="property-name">Observaciones:</span>
+                  <span class="property-value"
+                    >{{ harvest!.notes || "Sin observaciones" }}
+                  </span>
+                </div>
+              </card-body>
+            </card>
+          </div>
+
+          <!-- Segundo card -->
+          <div class="col">
+            <card class="card h-100 activity-card">
+              <card-header class="card-header bg-inverse bg-opacity-10 fw-400">
+                <div class="title">PAGOS</div>
+              </card-header>
+              <card-body class="pb-2 payments-content">
+                <!-- Montante -->
+                <div class="property total">
+                  <span class="property-name">TOTAL</span>
+                  <span class="property-value fw-bold"
+                    >{{ getTotal(harvest!) | number : "1.2-2" }} €</span
+                  >
+                </div>
+
+                <!-- abonado -->
+                <div class="property">
+                  <span
+                    [ngClass]="{
+                      'text-success': getTotalPending(harvest!, payments) === 0,
+                      'text-warning': getTotalPending(harvest!, payments) > 0
+                    }"
+                    class="property-name"
+                    >ABONOS:</span
+                  >
+                  <span
+                    class="property-value fw-bold total"
+                    [ngClass]="{
+                      'text-success': getTotalPending(harvest!, payments) === 0,
+                      'text-warning': getTotalPending(harvest!, payments) > 0
+                    }"
+                  >
+                    {{ getTotalPaid(payments) | number : "1.2-2" }}
+                    €
+                  </span>
+                </div>
+
+                <!-- Pendiente -->
+                <div class="property">
+                  <span
+                    [ngClass]="{
+                      'text-success': getTotalPending(harvest!, payments) === 0,
+                      'text-danger': getTotalPending(harvest!, payments) > 0
+                    }"
+                    class="property-name"
+                    >PENDIENTE:</span
+                  >
+                  <span
+                    [ngClass]="{
+                      'property-value': true,
+                      'fw-bold': true,
+                      'text-success': getTotalPending(harvest!, payments) === 0,
+                      'text-danger': getTotalPending(harvest!, payments) > 0
+                    }"
+                    class="total"
+                  >
+                    {{
+                      getTotal(harvest!) - getTotalPaid(payments)
+                        | number : "1.2-2"
+                    }}
+                    €
+                  </span>
+                </div>
+                <ng-container *ngIf="payments.length > 0; else noPayments"
+                  ><h6
+                    class="card-subtitle mb-3 text-inverse text-opacity-50"
+                    style="margin-top: 15px"
+                  >
+                    Pagos realizados
+                  </h6>
+                  <div class="list-group">
+                    <a
+                      class="list-group-item list-group-item-action"
+                      *ngFor="let item of payments"
+                    >
+                      <div class="date">
+                        <!-- <span [hidden]="hidden">{{ item.payment_id }}</span> -->
+                        <span class="text-light">{{
+                          formatDate(item.created_at!)
+                        }}</span>
+                      </div>
+                      <div class="amount text-light">
+                        <span>{{ item.amount | number : "1.2-2" }} €</span>
+                        <button
+                          (click)="
+                            openConfirmationDialog(
+                              'El pago seleccionado será eliminado',
+                              item
+                            )
+                          "
+                          mat-mini-fab
+                        >
+                          <i class="fa fa-close"></i>
+                        </button>
+                      </div>
+                    </a>
+                  </div>
+                </ng-container>
+                <ng-template #noPayments>
+                  <div class="no-payments-container text-warning fw-600">
+                    No se ha realizado ningún pago
+                  </div>
+                </ng-template>
+              </card-body>
+            </card>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-2">
+        <div class="button-container">
+          <button
+            class="btn btn-warning payment"
+            (click)="openMakePaymentDialog(harvest!, payments)"
+          >
+            <i class="bi bi-cash-stack"></i> Crear pago
+          </button>
+          <button
+            class="btn btn-info"
+            (click)="openUpdateManicuredHarvestDialog()"
+          >
+            <i class="bi bi-pencil-square"></i> Manicurado
+          </button>
+
+          <button
+            class="btn btn-primary"
+            (click)="openUpdateFeeHarvestDialog()"
+          >
+            <i class="bi bi-cash-stack"></i> Cuota cultivo
+          </button>
+          <button
+            class="btn btn-danger stock-btn"
+            (click)="openUpdateStockHarvestDialog()"
+          >
+            <i class="fa-solid fa-triangle-exclamation"></i> Stock
+          </button>
+          <button
+            class="btn btn-danger"
+            (click)="openUpdateAdjustHarvestDialog()"
+          >
+            <i class="fa-solid fa-triangle-exclamation"></i> Ajuste
+          </button>
+          <button class="btn btn-success" (click)="openCreateHarvestDialog()">
+            <i class="bi bi-cart-plus"></i> Nuevo cultivo
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <!-- Botón creación -->
+  <div
+    *ngIf="!harvest"
+    class="new-harvest-standalone"
+    (click)="openCreateHarvestDialog()"
+  >
+    <button class="btn btn-success new-harvest-btn">
+      <i class="bi bi-plus-circle"></i> Nuevo cultivo
+    </button>
+  </div>
+</div>

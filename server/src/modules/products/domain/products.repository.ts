@@ -7,12 +7,16 @@ export interface IProductRepository {
   getAllFiltered(type: string): Promise<IProductSubsetDTO[]>;
   create(product: IProduct): Promise<IProduct>;
   update(product: IProduct): Promise<void>;
-  delete(productId: string): Promise<void>;
-  makeActive(productId: string): Promise<void>;
-  makeInactive(productId: string): Promise<void>;
+  delete(productId: string, user: string): Promise<void>;
+  makeActive(productId: string, user: string): Promise<void>;
+  makeInactive(productId: string, user: string): Promise<void>;
   checkProductExistenceByName(name: string): Promise<boolean>;
   getProductStock(productId: string): Promise<boolean>;
-  updateProductStock(productId: string, stock: number): Promise<void>;
+  updateProductStock(
+    productId: string,
+    stock: number,
+    user: string
+  ): Promise<void>;
 
   createSubCategory(subcategory: ISubcategories): Promise<void>;
   getAllSubCategories(): Promise<ISubcategories[]>;

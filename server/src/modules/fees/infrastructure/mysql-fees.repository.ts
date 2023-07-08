@@ -21,13 +21,16 @@ export class MysqlFeesRepository implements IFeesRepository {
     return this.feesPersistenceMapper.toDomainList(rows) as IFees[];
   }
 
-  async create(fee: IFees): Promise<IFees> {
+  async create(fee: IFees, user: string): Promise<IFees> {
     const feesPersistence = this.feesPersistenceMapper.toPersistence(fee);
 
-    const insertQueryParts = ["INSERT INTO fees (partner_id, fees_type_id"];
+    const insertQueryParts = [
+      "INSERT INTO fees (partner_id, fees_type_id,user_created",
+    ];
     const insertQueryValues = [
       feesPersistence.partner_id!.toString(),
       feesPersistence.fees_type_id.toString(),
+      user,
     ];
 
     if (
@@ -53,12 +56,13 @@ export class MysqlFeesRepository implements IFeesRepository {
     return this.feesPersistenceMapper.toDomain(_fee);
   }
 
-  async update(fee: IFees): Promise<IFees> {
+  async update(fee: IFees, user: string): Promise<IFees> {
     const feesPersistence = this.feesPersistenceMapper.toPersistence(fee);
     const result = await MysqlDataBase.update(
-      `UPDATE partners SET fees_type_id = ? WHERE fee_id = ?`,
+      `UPDATE partners SET fees_type_id = ?, user_updated = ? WHERE fee_id = ?`,
       [
         feesPersistence.fees_type_id.toString(),
+        user,
         feesPersistence.fee_id?.toString()!,
       ]
     );
@@ -68,10 +72,10 @@ export class MysqlFeesRepository implements IFeesRepository {
     }
     return result;
   }
-  async delete(feeId: string): Promise<void> {
+  async delete(feeId: string, user: string): Promise<void> {
     const result = await MysqlDataBase.update(
-      `UPDATE fees SET deleted_at = NOW() WHERE fee_id = ?`,
-      [feeId]
+      `UPDATE fees SET deleted_at = NOW(), user_updated = ? WHERE fee_id = ?`,
+      [feeId, user]
     );
     if (result.affectedRows === 0) {
       Logger.error(`mysql : deleteFee : FeeNotFoundError`);
@@ -85,10 +89,10 @@ export class MysqlFeesRepository implements IFeesRepository {
     return rows as unknown as FeesVariants[];
   }
 
-  async payFee(feeId: string, paid: string): Promise<any> {
+  async payFee(feeId: string, paid: string, user: string): Promise<any> {
     const result = await MysqlDataBase.update(
-      `UPDATE fees SET paid = ? WHERE fee_id = ?`,
-      [paid, feeId]
+      `UPDATE fees SET paid = ?, user_updated = ? WHERE fee_id = ?`,
+      [paid, user, feeId]
     );
     if (result.affectedRows === 0) {
       Logger.error(`mysql : payFee : FeeNotFoundError`);

@@ -1,6 +1,7 @@
 export enum TransactionCategoryType {
   GASTO = 'GASTO',
   INGRESO = 'INGRESO',
+  TRANSFERENCIA = 'TRANSFERENCIA',
 }
 
 export interface ITransactionType {
@@ -11,15 +12,18 @@ export interface ITransactionType {
 }
 
 export interface ITransactions {
-  transaction_id: string;
+  transaction_id?: string;
   code?: string;
   transaction_type_id: string;
+  transaction_type_name?: string;
   amount: number;
-  recurrence_days?: number;
-  recurrence_times?: number;
-  date_start?: string;
-  interest?: number;
-  notes?: string;
+  recurrence_days?: number | null;
+  recurrence_times?: number | null;
+  date_start?: string | null;
+  interest?: number | null;
+  notes?: string | null;
+  source_account_id?: string | null;
+  destination_account_id?: string | null;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -40,34 +44,42 @@ export enum TransactionsTypes {
   REINTEGRO_CUENTA_SOCIO = 10,
   REINTEGRO_CUOTA = 11,
   REINTEGRO_INSCRIPCION = 12,
+  INGRESO_CUENTA_BANCARIA = 13, // TRANSFERENCIA
+  REINTEGRO_CUENTA_BANCARIA = 14, // TRANSFERENCIA
 }
 
 export class Transactions implements ITransactions {
-  transaction_id: string;
-  code?: string | undefined;
+  transaction_id?: string;
+  code?: string;
   transaction_type_id: string;
+  transaction_type_name?: string;
   amount: number;
-  recurrence_days?: number | undefined;
-  recurrence_times?: number | undefined;
-  date_start?: string | undefined;
-  interest?: number | undefined;
-  notes?: string | undefined;
-  user_created?: string | undefined;
-  user_updated?: string | undefined;
-  created_at?: string | undefined;
-  updated_at?: string | undefined;
-  deleted_at?: string | undefined;
+  recurrence_days?: number | null;
+  recurrence_times?: number | null;
+  date_start?: string | null;
+  interest?: number | null;
+  notes?: string | null;
+  source_account_id?: string | null;
+  destination_account_id?: string | null;
+  user_created?: string;
+  user_updated?: string;
+  created_at?: string;
+  updated_at?: string;
+  deleted_at?: string;
 
   private constructor(props: ITransactions) {
     this.transaction_id = props.transaction_id;
     this.code = props.code;
     this.transaction_type_id = props.transaction_type_id;
+    this.transaction_type_name = props.transaction_type_name;
     this.amount = props.amount;
     this.recurrence_days = props.recurrence_days;
     this.recurrence_times = props.recurrence_times;
     this.date_start = props.date_start;
     this.interest = props.interest;
     this.notes = props.notes;
+    this.source_account_id = props.source_account_id;
+    this.destination_account_id = props.destination_account_id;
     this.user_created = props.user_created;
     this.user_updated = props.user_updated;
     this.created_at = props.created_at;

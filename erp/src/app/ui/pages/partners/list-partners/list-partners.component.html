@@ -217,6 +217,14 @@
                       data-toggle="buttons"
                     >
                       <button
+                        (click)="openDetails(row, row.partner_id)"
+                        type="button"
+                        class="btn btn-info"
+                        title="Consultar ficha"
+                      >
+                        <i class="fa fa-eye"> </i>
+                      </button>
+                      <button
                         (click)="openEditPartnerDialog(row, row.partner_id)"
                         type="button"
                         class="btn btn-primary"

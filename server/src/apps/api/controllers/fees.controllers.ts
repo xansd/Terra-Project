@@ -39,7 +39,10 @@ export class FeesController {
   }
   async create(request: Request, response: Response): Promise<void> {
     try {
-      const fee = await this.feesUseCases.createFee(request.body);
+      const fee = await this.feesUseCases.createFee(
+        request.body,
+        request.auth.id
+      );
       const feeDTOs = this.feesMapper.toDTO(fee!);
       response.json(feeDTOs);
     } catch (error) {
@@ -48,7 +51,10 @@ export class FeesController {
   }
   async update(request: Request, response: Response): Promise<void> {
     try {
-      const result = await this.feesUseCases.updateFee(request.body);
+      const result = await this.feesUseCases.updateFee(
+        request.body,
+        request.auth.id
+      );
       response.send(result);
     } catch (error) {
       if (error instanceof FeeNotFoundError) {
@@ -61,7 +67,7 @@ export class FeesController {
   async delete(request: Request, response: Response): Promise<void> {
     const { id } = request.params;
     try {
-      const result = await this.feesUseCases.deleteFee(id);
+      const result = await this.feesUseCases.deleteFee(id, request.auth.id);
       response.send(result);
     } catch (error) {
       if (error instanceof FeeNotFoundError) {

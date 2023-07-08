@@ -1,5 +1,7 @@
+import { UpdatePayments } from "../../../payments/application/use-cases/update-payments.use-case";
 import { PaymentType } from "../../../payments/domain/payments";
 import { DatetimeHelperService } from "../../../shared/application/datetime.helper.service";
+import { UpdateTransactions } from "../../../transactions/application/use-cases/update-transactions.use-case";
 import { TransactionsTypes } from "../../../transactions/domain/transactions";
 import { OperationPartnerCash, IPartner } from "../../domain/partner";
 import {
@@ -15,8 +17,8 @@ export class PartnerCashService {
     actualCash: number,
     operation: OperationPartnerCash,
     partner: IPartner,
-    incomeObject: any,
-    paymentObject: any,
+    updateTransactions: UpdateTransactions,
+    updatePayments: UpdatePayments,
     user: string
   ): Promise<number> {
     let final = 0;
@@ -42,8 +44,8 @@ export class PartnerCashService {
         operation,
         partner,
         user,
-        incomeObject,
-        paymentObject
+        updateTransactions,
+        updatePayments
       );
     } else if (operation === OperationPartnerCash.WITHDRAWAL) {
       final = actual - income;
@@ -59,8 +61,8 @@ export class PartnerCashService {
         operation,
         partner,
         user,
-        incomeObject,
-        paymentObject
+        updateTransactions,
+        updatePayments
       );
     }
     return final;
@@ -71,10 +73,10 @@ export class PartnerCashService {
     operation: OperationPartnerCash,
     partner: IPartner,
     user: string,
-    incomeObject: any,
-    paymentObject: any
+    updateTransactions: UpdateTransactions,
+    updatePayments: UpdatePayments
   ): Promise<void> {
-    const incomePromise = incomeObject.create({
+    const incomePromise = updateTransactions.create({
       transaction_id: undefined,
       code: undefined,
       amount: amount,
@@ -87,13 +89,15 @@ export class PartnerCashService {
       user_created: user,
     });
 
-    const paymentPromise = paymentObject.create({
-      type: PaymentType.COBRO,
-      reference_id: partner.partner_id.value,
-      amount: amount,
-      notes: operation,
-      user_created: user,
-    });
+    const paymentPromise = updatePayments.create(
+      {
+        type: PaymentType.COBRO,
+        reference_id: partner.partner_id.value,
+        amount: amount,
+        notes: operation,
+      },
+      user
+    );
 
     await Promise.all([incomePromise, paymentPromise]);
   }
@@ -103,10 +107,10 @@ export class PartnerCashService {
     operation: OperationPartnerCash,
     partner: IPartner,
     user: string,
-    incomeObject: any,
-    paymentObject: any
+    updateTransactions: UpdateTransactions,
+    updatePayments: UpdatePayments
   ): Promise<void> {
-    const incomePromise = incomeObject.create({
+    const incomePromise = updateTransactions.create({
       transaction_id: undefined,
       code: undefined,
       amount: amount,
@@ -119,13 +123,15 @@ export class PartnerCashService {
       user_created: user,
     });
 
-    const paymentPromise = paymentObject.create({
-      type: PaymentType.PAGO,
-      reference_id: partner.partner_id.value,
-      amount: amount,
-      notes: operation,
-      user_created: user,
-    });
+    const paymentPromise = updatePayments.create(
+      {
+        type: PaymentType.PAGO,
+        reference_id: partner.partner_id.value,
+        amount: amount,
+        notes: operation,
+      },
+      user
+    );
 
     await Promise.all([incomePromise, paymentPromise]);
   }

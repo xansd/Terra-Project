@@ -1,0 +1,152 @@
+<div class="container-fluid">
+  <div class="search">
+    <ng-container *ngIf="searchTypes">
+      <app-searcher
+        [options]="options"
+        [searchTypes]="searchTypes"
+        (optionSelected)="handleOptionSelected($event)"
+      ></app-searcher>
+    </ng-container>
+  </div>
+
+  <ng-container *ngIf="isLoading; else providerSelection">
+    <div class="d-flex justify-content-center align-items-center py-4 spinner">
+      <div class="spinner-grow text-success"></div>
+    </div>
+    <p class="text-center">Esperando cultivador...</p>
+  </ng-container>
+  <ng-template #providerSelection>
+    <div class="row content">
+      <div class="col-lg-10">
+        <!-- Primer card -->
+        <div class="row row-cols-1 row-cols-xl-2 g-3">
+          <div class="col">
+            <card class="card h-100 data-card mb-4">
+              <card-header class="card-header bg-inverse bg-opacity-10 fw-400">
+                <div class="title">DATOS CULTIVADOR</div>
+              </card-header>
+              <card-body class="pb-2">
+                <!-- nombre -->
+                <div class="property name">
+                  <span class="property-name">Nombre:</span>
+                  <span class="property-value fw-bold text-theme">{{
+                    provider!.name | uppercase
+                  }}</span>
+                </div>
+                <!-- Email -->
+                <div class="property">
+                  <span class="property-name">Email:</span>
+                  <span class="property-value fw-bold">{{
+                    provider!.email?.value || "N/A"
+                  }}</span>
+                </div>
+                <!-- Teléfono -->
+                <div class="property">
+                  <span class="property-name">Teléfono:</span>
+                  <span class="property-value fw-bold">{{
+                    provider!.phone || "N/A"
+                  }}</span>
+                </div>
+                <!-- Teléfono -->
+                <div class="property">
+                  <span class="property-name">Domicilio:</span>
+                  <span class="property-value fw-bold">{{
+                    provider!.address || "N/A"
+                  }}</span>
+                </div>
+                <!-- alta -->
+                <div class="property">
+                  <span class="property-name">Alta:</span>
+                  <span class="property-value fw-bold">{{
+                    formatDate(provider!.created_at!)
+                  }}</span>
+                </div>
+              </card-body>
+            </card>
+          </div>
+
+          <!-- Segundo card -->
+          <div class="col">
+            <card class="card h-100 activity-card">
+              <card-header class="card-header bg-inverse bg-opacity-10 fw-400">
+                <div class="title">CULTIVOS</div>
+              </card-header>
+              <card-body class="pb-2">
+                <!-- <h6
+                      class="card-subtitle mb-3 text-inverse text-opacity-50"
+                      style="margin-top: 15px"
+                    >
+                      CULTIVOS
+                    </h6> -->
+                <ng-container *ngIf="harvests.length === 0; else listHarvest">
+                  <div
+                    class="d-flex justify-content-center align-items-center py-4 spinner"
+                  >
+                    <div class="spinner-grow text-success"></div>
+
+                    <p class="text-center fw-bold text-theme">
+                      Esperando cultivos...
+                    </p>
+                  </div>
+                </ng-container>
+                <ng-template #listHarvest>
+                  <div class="list-group">
+                    <a
+                      (click)="openDetails(item)"
+                      class="list-group-item list-group-item-action"
+                      *ngFor="
+                        let item of harvests
+                          | paginate : { itemsPerPage: 10, currentPage: p }
+                      "
+                    >
+                      <!-- <span class="hide">{{ item.harvest_id }}</span> -->
+                      <span class="text-info">{{ item.code }}</span>
+                      <span
+                        >{{
+                          getProductStock(item) | number : "1.2-2"
+                        }}
+                        gr.</span
+                      >
+                    </a>
+                  </div>
+
+                  <pagination-controls
+                    previousLabel="Anterior"
+                    nextLabel="Siguiente"
+                    (pageChange)="p = $event"
+                    class="pagination"
+                  ></pagination-controls>
+                </ng-template>
+              </card-body>
+            </card>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-2">
+        <div class="button-container">
+          <button class="btn btn-info" (click)="openEditProviderDialog()">
+            <i class="bi bi-pencil-square"></i> Editar
+          </button>
+          <button class="btn btn-success" (click)="openCreateHarvestDialog()">
+            <i class="bi bi-cart-plus"></i> Nuevo cultivo
+          </button>
+          <button
+            (click)="openCreateProviderDialog()"
+            class="btn btn-success new-provider-btn"
+          >
+            <i class="bi bi-plus-circle"></i> Nuevo cultivador
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <!-- Botón creación -->
+  <div *ngIf="!provider" class="new-cultivator-standalone">
+    <button
+      (click)="openCreateProviderDialog()"
+      class="btn btn-success new-cultivator-btn"
+    >
+      <i class="bi bi-plus-circle"></i> Nuevo cultivador
+    </button>
+  </div>
+</div>

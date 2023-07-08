@@ -33,7 +33,7 @@ router.get(
 
 // GET ALL
 router.get(
-  "/all/:type",
+  "/all/type/:type",
   authorize([Role.ADMIN, Role.USER]),
   providersController.getAll.bind(providersController)
 );

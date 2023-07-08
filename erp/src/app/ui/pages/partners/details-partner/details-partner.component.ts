@@ -73,6 +73,7 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     // Carga el buscador
     this.getPartnerList();
+    this.getActiveEntityId();
     if (this.id) this.getPartner();
   }
 
@@ -83,6 +84,10 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
   }
 
   /*********************************BUSCADOR************************************/
+  getActiveEntityId(): string | void {
+    const result = this.activeEntityService.getActiveEntityId() || '';
+    if (result) this.id = result;
+  }
 
   getPartnerList() {
     this.partnerService
@@ -139,7 +144,7 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
         next: (partner: IPartner) => {
           this.id = partner.partner_id!;
           this.partner = partner;
-          this.activeEntityService.setActiveEntity(this.partner, this.id);
+          // this.activeEntityService.setActiveEntity(this.partner, this.id);
           this.getFeesType();
           this.conduct = this.partnerService.getPartnerConduct(partner);
         },

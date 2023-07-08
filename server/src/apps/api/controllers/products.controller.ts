@@ -22,6 +22,10 @@ import {
   Conflict,
 } from "../error/http-error";
 import { ProductType } from "aws-sdk/clients/servicecatalog";
+import {
+  InvalidAmountError,
+  MinZeroError,
+} from "../../../modules/partners/domain/partner.exceptions";
 export class ProductController {
   productMapper = new ProductDTOMapper();
   constructor(
@@ -112,6 +116,8 @@ export class ProductController {
         response.send(BadRequest(error.message));
       } else if (error instanceof ProductAlreadyExistsError) {
         response.send(Conflict(error.message));
+      } else if (error instanceof InvalidAmountError) {
+        response.send(Conflict(error.message));
       } else {
         response.send(InternalServerError(error));
       }
@@ -129,6 +135,35 @@ export class ProductController {
         response.send(BadRequest(error.message));
       } else if (error instanceof ProductDoesNotExistError) {
         response.send(NotFound(error.message));
+      } else if (error instanceof InvalidAmountError) {
+        response.send(Conflict(error.message));
+      } else {
+        response.send(InternalServerError(error));
+      }
+    }
+  }
+
+  async updateProductStock(
+    request: Request,
+    response: Response
+  ): Promise<void> {
+    try {
+      const result = await this.updateProductUseCase.updateProductStock(
+        request.body.product_id,
+        request.body.stock,
+        request.body.operation,
+        request.auth.id
+      );
+      response.send(result);
+    } catch (error) {
+      if (error instanceof DomainValidationError) {
+        response.send(BadRequest(error.message));
+      } else if (error instanceof ProductDoesNotExistError) {
+        response.send(Conflict(error.message));
+      } else if (error instanceof InvalidAmountError) {
+        response.send(Conflict(error.message));
+      } else if (error instanceof MinZeroError) {
+        response.send(Conflict(error.message));
       } else {
         response.send(InternalServerError(error));
       }
@@ -142,13 +177,28 @@ export class ProductController {
 
     try {
       filesUseCase.deleteFiles(id);
-      const result = await this.deleteProductUseCase.deleteProduct(id);
+      const result = await this.deleteProductUseCase.deleteProduct(
+        id,
+        request.auth.id
+      );
       response.send(result);
-    } catch (error) {
-      if (error instanceof DomainValidationError) {
+    } catch (error: any) {
+      if (
+        error.message.includes(
+          "Cannot delete or update a parent row: a foreign key constraint fails"
+        )
+      ) {
+        response.send(
+          Conflict(
+            "La entidad que intentas eliminar esta relaccionada con otras. Debes eliminar las realciones primero. Operación cancelada."
+          )
+        );
+      } else if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));
       } else if (error instanceof ProductDoesNotExistError) {
         response.send(NotFound(error.message));
+      } else if (error instanceof InvalidAmountError) {
+        response.send(Conflict(error.message));
       } else {
         response.send(InternalServerError(error));
       }
@@ -177,7 +227,10 @@ export class ProductController {
 
     try {
       filesUseCase.deleteFiles(id);
-      const result = await this.deleteProductUseCase.deleteProduct(id);
+      const result = await this.deleteProductUseCase.deleteProduct(
+        id,
+        request.auth.id
+      );
       response.send(result);
     } catch (error) {
       if (error instanceof DomainValidationError) {
@@ -193,7 +246,10 @@ export class ProductController {
   async makeActive(request: Request, response: Response): Promise<void> {
     const { id } = request.params;
     try {
-      const result = await this.updateProductUseCase.makeActive(id);
+      const result = await this.updateProductUseCase.makeActive(
+        id,
+        request.auth.id
+      );
       response.send(result);
     } catch (error) {
       if (error instanceof DomainValidationError) {
@@ -209,7 +265,10 @@ export class ProductController {
   async makeInactive(request: Request, response: Response): Promise<void> {
     const { id } = request.params;
     try {
-      const result = await this.updateProductUseCase.makeInactive(id);
+      const result = await this.updateProductUseCase.makeInactive(
+        id,
+        request.auth.id
+      );
       response.send(result);
     } catch (error) {
       if (error instanceof DomainValidationError) {

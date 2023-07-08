@@ -17,9 +17,9 @@
   </ng-container>
   <ng-template #productSelection>
     <div class="row content">
-      <div class="col-lg-10">
+      <div class="col-lg-8">
         <!-- Primer card -->
-        <div class="row row-cols-1 row-cols-xl-2 g-3">
+        <div class="row">
           <div class="col">
             <card class="card h-100 data-card mb-4">
               <card-header class="card-header bg-inverse bg-opacity-10 fw-400">
@@ -36,138 +36,109 @@
                 <!-- code -->
                 <div class="property">
                   <span class="property-name">Código:</span>
-                  <span class="property-value fw-bold">{{
+                  <span class="property-value fw-bold text-theme">{{
                     product!.code
                   }}</span>
                 </div>
+                <!-- activo -->
+                <div class="property">
+                  <span class="property-name">Activo:</span>
+                  <span
+                    class="property-value fw-bold"
+                    [ngClass]="{
+                      'text-success': product!.active,
+                      'text-danger': !product!.active
+                    }"
+                    >{{ product!.active ? "SI" : "NO" }}</span
+                  >
+                </div>
                 <!-- alta -->
                 <div class="property">
-                  <span class="property-name">Fecha de alta:</span>
-                  <span class="property-value fw-bold">{{
+                  <span class="property-name">Alta:</span>
+                  <span class="property-value">{{
                     formatDate(product!.created_at!)
                   }}</span>
                 </div>
                 <!-- categoría -->
-                <!-- <div class="property">
+                <div class="property">
                   <span class="property-name">Categoría:</span>
                   <span class="property-value">{{
                     getCategoryName(product!.category_id)
                   }}</span>
-                </div> -->
+                </div>
                 <!-- subcategorías -->
                 <div class="property">
-                  <span class="property-name">Características:</span>
+                  <span class="property-name">Subcategoría:</span>
                   <span class="property-value">{{
                     getSubcategoryNames(product!.subcategories)
                   }}</span>
+                </div>
+                <div class="numbers">
+                  <!-- lote -->
+                  <!-- <div class="property">
+                    <span class="property-name">Lote:</span>
+                    <span class="property-value fw-bold">{{
+                      product!.lot ? product!.lot + " unidades" : "NO"
+                    }}</span>
+                  </div> -->
+                  <!-- coste -->
+                  <!-- <div class="property">
+                    <span class="property-name">Coste:</span>
+                    <span class="property-value fw-bold"
+                      >{{ product!.cost_price | number : "1.2-2" }}
+                      {{ product!.lot ? "€/lote" : "€/u." }}</span
+                    >
+                  </div> -->
+                  <!-- precio retirada -->
+                  <div class="property retirada">
+                    <span class="property-name">Retirada:</span>
+                    <span class="property-value fw-bold text-info"
+                      >{{ product!.sale_price | number : "1.2-2" }} €/u.</span
+                    >
+                  </div>
+                </div>
+                <div class="stock-data">
+                  <!-- stock -->
+                  <div class="property stock">
+                    <span
+                      [ngClass]="{
+                        'text-warning':
+                          product!.stock! >= 0 && product!.stock! <= 10,
+                        'text-info': product!.stock! > 10
+                      }"
+                      class="property-name"
+                      >Stock</span
+                    >
+                    <span
+                      [ngClass]="{
+                        'text-warning':
+                          product!.stock! >= 0 && product!.stock! <= 10,
+                        'text-info': product!.stock! > 10
+                      }"
+                      class="property-value fw-bold"
+                      >{{ product!.stock }}</span
+                    >
+                  </div>
                 </div>
                 <!-- <h6 class="card-subtitle mb-3 text-inverse text-opacity-50">
                   Genética
                 </h6> -->
                 <!-- Ancestros -->
-                <div class="property ancestors">
-                  <span class="property-name">Ancestros:</span>
-                  <span class="property-value">{{
-                    getProductNames(product!.ancestors!) | titlecase
-                  }}</span>
-                </div>
-                <!-- Sativa -->
-                <div class="property">
-                  <span class="property-name">Sativa:</span>
-                  <span class="property-value fw-bold"
-                    >{{ product!.sativa }} %</span
-                  >
-                </div>
-                <!-- Indica -->
-                <div class="property">
-                  <span class="property-name">Indica:</span>
-                  <span class="property-value fw-bold"
-                    >{{ product!.indica }} %</span
-                  >
-                </div>
-                <!-- THC -->
-                <div class="property">
-                  <span class="property-name">THC:</span>
-                  <span class="property-value fw-bold"
-                    >{{ product!.thc }} %</span
-                  >
-                </div>
-                <!-- CBD -->
-                <div class="property">
-                  <span class="property-name">CBD:</span>
-                  <span class="property-value fw-bold"
-                    >{{ product!.cbd }} %</span
-                  >
-                </div>
-                <!-- BANCO -->
-                <div class="property bank">
-                  <span class="property-name">Banco:</span>
-                  <span class="property-value"
-                    >{{ product!.bank | titlecase }}
-                  </span>
-                </div>
-                <!-- SABOR -->
-                <div class="property">
-                  <span class="property-name">Sabor:</span>
-                  <span class="property-value">{{ product!.flawour }} </span>
-                </div>
-                <!-- EFECTO -->
-                <div class="property">
-                  <span class="property-name">Efecto:</span>
-                  <span class="property-value">{{ product!.effect }} </span>
-                </div>
-              </card-body>
-            </card>
-          </div>
-
-          <!-- Segundo card -->
-          <div class="col">
-            <card class="card h-100 activity-card">
-              <card-header class="card-header bg-inverse bg-opacity-10 fw-400">
-                <div class="title">ACTIVIDAD</div>
-              </card-header>
-              <card-body class="pb-2">
-                <h6
-                  class="card-subtitle mb-3 text-inverse text-opacity-50"
-                  style="margin-top: 15px"
-                >
-                  Últimos cultivos
-                </h6>
-                <div class="list-group">
-                  <a class="list-group-item list-group-item-action"
-                    ><span class="text-info">C-BFFAAEC</span>
-                    <span>120 gr.</span>
-                  </a>
-                  <a class="list-group-item list-group-item-action"
-                    ><span class="text-info">C-BCCBDFE</span>
-                    <span>20 gr.</span>
-                  </a>
-                  <a class="list-group-item list-group-item-action"
-                    ><span class="text-info">C-BBCCAAC</span>
-                    <span>0 gr.</span>
-                  </a>
-                  <a class="list-group-item list-group-item-action"
-                    ><span class="text-info">C-BBCCQLC</span>
-                    <span>0 gr.</span>
-                  </a>
-                  <a class="list-group-item list-group-item-action"
-                    ><span class="text-info">C-BCCCAAC</span>
-                    <span>0 gr.</span>
-                  </a>
-                  <a class="list-group-item list-group-item-action"
-                    ><span class="text-info">C-BFFAAEC</span>
-                    <span>0 gr.</span>
-                  </a>
-                </div>
               </card-body>
             </card>
           </div>
         </div>
       </div>
-      <div class="col-lg-2">
+      <div class="col-lg-2 offset-lg-2">
         <div class="button-container">
           <button class="btn btn-info" (click)="openEditProductDialog()">
-            <i class="bi bi-pencil-square"></i> Editar & Doc.
+            <i class="bi bi-pencil-square"></i> Editar
+          </button>
+          <button
+            class="btn btn-danger stock-btn"
+            (click)="openUpdateStockProductDialog()"
+          >
+            <i class="fa-solid fa-triangle-exclamation"></i> Stock
           </button>
           <button class="btn btn-default">
             <i class="bi bi-cart-plus"></i> Nueva compra
@@ -188,7 +159,7 @@
       (click)="openCreateProductDialog()"
       class="btn btn-success new-product-btn"
     >
-      <i class="bi bi-plus"></i> Nuevo producto
+      <i class="bi bi-plus-circle"></i> Nuevo producto
     </button>
   </div>
 </div>

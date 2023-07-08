@@ -11,6 +11,24 @@ export enum ProductsSearchTypes {
   ID = 'product_id',
 }
 
+export enum HarvestSearchTypes {
+  HARVEST_CODE = 'code',
+  PRODUCT_NAME = 'product_name',
+}
+
+export enum PurchasesSearchTypes {
+  PURCHASE_CODE = 'code',
+  PRODUCT_NAME = 'product_name',
+}
+
+export enum ProviderSearchTypes {
+  PROVIDER_NAME = 'name',
+}
+
+export enum TransactionsSearchTypes {
+  TRANSACTION_CODE = 'code',
+}
+
 export default {
   PARTNERS_TYPES: [
     {
@@ -42,6 +60,30 @@ export default {
     {
       label: 'ID',
       value: ProductsSearchTypes.ID,
+    },
+  ],
+  HARVEST_TYPES: [
+    {
+      label: 'Código',
+      value: HarvestSearchTypes.HARVEST_CODE,
+    },
+  ],
+  PURCHASES_TYPES: [
+    {
+      label: 'Código',
+      value: PurchasesSearchTypes.PURCHASE_CODE,
+    },
+  ],
+  PROVIDERS_TYPES: [
+    {
+      label: 'Nombre',
+      value: ProviderSearchTypes.PROVIDER_NAME,
+    },
+  ],
+  TRANSACTIONS_TYPES: [
+    {
+      label: 'Código',
+      value: TransactionsSearchTypes.TRANSACTION_CODE,
     },
   ],
 };

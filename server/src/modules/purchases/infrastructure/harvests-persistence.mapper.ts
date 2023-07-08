@@ -8,12 +8,17 @@ export interface IHarvestsPersistence {
   code?: string;
   provider_id: string;
   product_id: string;
+  provider_name?: string;
+  product_name?: string;
   cost_price?: number;
   sale_price?: number;
   fee_amount?: number;
   quantity?: number;
   notes?: string;
   stock?: number;
+  loss?: number;
+  manicured?: number;
+  paid?: number;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -34,12 +39,17 @@ export class HarvestsPersistenceMapper
       ),
       provider_id: persistence.provider_id,
       product_id: persistence.product_id,
+      provider_name: persistence.provider_name,
+      product_name: persistence.product_name,
       cost_price: persistence.cost_price,
       sale_price: persistence.sale_price,
       fee_amount: persistence.fee_amount,
       quantity: persistence.quantity,
       notes: persistence.notes,
       stock: persistence.stock,
+      loss: persistence.loss,
+      paid: persistence.paid,
+      manicured: persistence.manicured,
       user_created: persistence.user_created,
       user_updated: persistence.user_updated,
       created_at: persistence.created_at,
@@ -53,12 +63,17 @@ export class HarvestsPersistenceMapper
       code,
       provider_id,
       product_id,
+      product_name,
+      provider_name,
       cost_price,
       sale_price,
       fee_amount,
       quantity,
       notes,
       stock,
+      loss,
+      manicured,
+      paid,
       user_created,
       user_updated,
       created_at,
@@ -70,12 +85,17 @@ export class HarvestsPersistenceMapper
       code: code?.value,
       provider_id: provider_id,
       product_id: product_id,
+      provider_name: provider_name,
+      product_name: product_name,
       cost_price: cost_price,
       sale_price: sale_price,
       fee_amount: fee_amount,
       quantity: quantity,
       notes: notes,
       stock: stock,
+      loss: loss,
+      manicured: manicured,
+      paid: paid,
       user_created: user_created,
       user_updated: user_updated,
       created_at: created_at,

@@ -6,9 +6,9 @@ import { IProviderRepository } from "../../domain/providers.repository";
 import { IProviderDTO, ProviderMapper } from "../provider-dto.mapper";
 
 export interface IUpdateProviders {
-  create(provider: IProviderDTO): Promise<IProvider>;
-  updateProvider(provider: IProviderDTO): Promise<void>;
-  delete(id: string): Promise<void>;
+  create(provider: IProviderDTO, user: string): Promise<IProvider>;
+  updateProvider(provider: IProviderDTO, user: string): Promise<void>;
+  delete(id: string, user: string): Promise<void>;
 }
 
 export class UpdateProviders implements IUpdateProviders {
@@ -17,15 +17,16 @@ export class UpdateProviders implements IUpdateProviders {
 
   constructor(private readonly providersRepository: IProviderRepository) {}
 
-  async create(provider: IProviderDTO): Promise<IProvider> {
+  async create(provider: IProviderDTO, user: string): Promise<IProvider> {
     this.providerDomain = this.providerMapper.toDomain(provider);
     const providerRepository = await this.providersRepository.create(
-      this.providerDomain
+      this.providerDomain,
+      user
     );
     return providerRepository;
   }
 
-  async updateProvider(provider: IProviderDTO): Promise<void> {
+  async updateProvider(provider: IProviderDTO, user: string): Promise<void> {
     try {
       this.providerDomain = this.providerMapper.toDomain(provider);
       // Comprobamos si ya exsite el nombre de proveedor
@@ -50,7 +51,10 @@ export class UpdateProviders implements IUpdateProviders {
         }
       }
 
-      const result = await this.providersRepository.update(this.providerDomain);
+      const result = await this.providersRepository.update(
+        this.providerDomain,
+        user
+      );
       return result;
     } catch (error) {
       if (error instanceof DomainValidationError) {
@@ -63,8 +67,8 @@ export class UpdateProviders implements IUpdateProviders {
     }
   }
 
-  async delete(id: string): Promise<void> {
-    const result = await this.providersRepository.delete(id);
+  async delete(id: string, user: string): Promise<void> {
+    const result = await this.providersRepository.delete(id, user);
     return result;
   }
 }

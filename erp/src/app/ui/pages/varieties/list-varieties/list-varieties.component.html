@@ -117,7 +117,7 @@
                     >Stock</mat-header-cell
                   >
                   <mat-cell *matCellDef="let row">
-                    <div class="mobile-label">Nombre:</div>
+                    <div class="mobile-label">Stock:</div>
                     <div class="cell-value">
                       {{ row.stock | number : "1.2-2" }}
                     </div>
@@ -133,6 +133,15 @@
                       data-toggle="buttons"
                     >
                       <button
+                        (click)="openDetails(row, row.product_id)"
+                        type="button"
+                        class="btn btn-info"
+                        title="Editar socio"
+                      >
+                        <i class="fa fa-eye"> </i>
+                      </button>
+
+                      <button
                         (click)="openEditProductDialog(row, row.product_id)"
                         type="button"
                         class="btn btn-primary"
@@ -145,9 +154,9 @@
                         (click)="openConfirmDialog(row.product_id)"
                         type="button"
                         class="btn btn-danger"
-                        title="Eliminar socio"
+                        title="Eliminar variedad"
                       >
-                        <i class="bi bi-person-x"> </i>
+                        <i class="bi bi-x"> </i>
                       </button>
                     </div>
                   </mat-cell>

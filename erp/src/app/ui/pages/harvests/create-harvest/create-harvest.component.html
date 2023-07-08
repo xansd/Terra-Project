@@ -1,0 +1,213 @@
+<div class="modal-body">
+  <!-- FORMULARIO CREACION CULTIVO -->
+  <card>
+    <card-header
+      class="d-block d-flex align-items-center bg-inverse bg-opacity-10 fw-400"
+      >DATOS DEL CULTIVO</card-header
+    >
+
+    <div class="card-body">
+      <form [formGroup]="createHarvestForm" class="form-container">
+        <div class="form-group first-group">
+          <div class="row">
+            <!-- PRODUCTO -->
+            <label for="product_id" class="col-12 col-form-label"
+              >Variedad</label
+            >
+            <div class="col-12 select-container">
+              <select
+                (change)="onProductChange($event)"
+                id="product_id"
+                formControlName="product_id"
+                class="form-select float-start"
+              >
+                <option *ngFor="let pto of products" [value]="pto.product_id">
+                  {{ pto.name | uppercase }}
+                </option>
+              </select>
+            </div>
+            <!-- PROVEEDOR -->
+            <label for="provider_id" class="col-12 col-form-label"
+              >Cultivador</label
+            >
+            <div class="col-12 col-xl-12 select-container">
+              <select
+                (change)="onProviderChange($event)"
+                id="provider_id"
+                formControlName="provider_id"
+                class="form-select float-start"
+              >
+                <option *ngFor="let p of providers" [value]="p.provider_id">
+                  {{ p.name | uppercase }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="row">
+            <!-- PRECIO COSTE -->
+            <label for="cost_price" class="col-12 col-form-label"
+              >Precio/gr</label
+            >
+            <div class="col-12">
+              <div class="input-group">
+                <input
+                  autocomplete="off"
+                  type="number"
+                  class="form-control"
+                  id="cost_price"
+                  formControlName="cost_price"
+                  [errorStateMatcher]="matcher"
+                  matInput
+                />
+                <div class="input-group-append">
+                  <span class="input-group-text">€</span>
+                </div>
+              </div>
+              <mat-error
+                *ngIf="
+                  costPriceControl.invalid &&
+                  (costPriceControl.dirty || costPriceControl.touched)
+                "
+              >
+                <span *ngIf="costPriceControl.hasError('required')">
+                  Campo obligatorio.</span
+                >
+              </mat-error>
+            </div>
+            <!-- FEE AMOUNT -->
+            <label for="fee_amount" class="col-12 col-form-label"
+              >Cuota retirada</label
+            >
+            <div class="col-12">
+              <div class="input-group">
+                <input
+                  autocomplete="off"
+                  type="number"
+                  class="form-control"
+                  id="fee_amount"
+                  formControlName="fee_amount"
+                  [errorStateMatcher]="matcher"
+                  matInput
+                />
+                <div class="input-group-append">
+                  <span class="input-group-text">€</span>
+                </div>
+              </div>
+              <mat-error
+                *ngIf="
+                  feeAmountControl.invalid &&
+                  (feeAmountControl.dirty || feeAmountControl.touched)
+                "
+              >
+                <span *ngIf="feeAmountControl.hasError('required')">
+                  Campo obligatorio.</span
+                >
+              </mat-error>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="row">
+            <!-- CANTIDAD -->
+            <label for="quantity" class="col-12 col-form-label">Cantidad</label>
+            <div class="col-12">
+              <div class="input-group">
+                <input
+                  autocomplete="off"
+                  type="number"
+                  class="form-control"
+                  id="quantity"
+                  formControlName="quantity"
+                  [errorStateMatcher]="matcher"
+                  matInput
+                />
+                <div class="input-group-append">
+                  <span class="input-group-text">GR</span>
+                </div>
+              </div>
+              <mat-error
+                *ngIf="
+                  quantityControl.invalid &&
+                  (quantityControl.dirty || quantityControl.touched)
+                "
+              >
+                <span *ngIf="quantityControl.hasError('required')">
+                  Campo obligatorio.</span
+                ><span *ngIf="quantityControl.hasError('min')"
+                  >La cantidad debe ser mayor que cero.</span
+                >
+              </mat-error>
+            </div>
+            <!-- MANICURADO -->
+            <!-- <label for="manicured" class="col-12 col-form-label"
+              >Manicurado</label
+            >
+            <div class="col-12">
+              <div class="input-group">
+                <input
+                  autocomplete="off"
+                  type="number"
+                  class="form-control"
+                  id="manicured"
+                  formControlName="manicured"
+                  [errorStateMatcher]="matcher"
+                  matInput
+                />
+                <div class="input-group-append">
+                  <span class="input-group-text">GR</span>
+                </div>
+              </div>
+              <mat-error
+                *ngIf="
+                  manicuredControl.invalid &&
+                  (manicuredControl.dirty || manicuredControl.touched)
+                "
+              >
+                <span *ngIf="manicuredControl.hasError('required')">
+                  Campo obligatorio.</span
+                >
+              </mat-error>
+            </div> -->
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="row">
+            <div class="col-12">
+              <div class="description-container">
+                <label>Observaciones:</label>
+                <textarea
+                  class="form-control"
+                  name="notes"
+                  placeholder="..."
+                  formControlName="notes"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </card>
+</div>
+<div
+  class="modal-footer d-block d-flex align-items-center bg-inverse bg-opacity-10 fw-400"
+>
+  <button
+    type="button"
+    class="btn btn-outline-theme"
+    (click)="close(modalActions.SAVE)"
+  >
+    Guardar
+  </button>
+  <button
+    type="button"
+    class="btn btn-warning"
+    (click)="close(modalActions.CANCEL)"
+  >
+    Cerrar
+  </button>
+</div>

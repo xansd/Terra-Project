@@ -7,9 +7,11 @@ export interface IPurchaseDTO {
   purchase_id: string;
   code?: string;
   provider_id: string;
+  provider_name?: string;
   total_amount?: number;
   purchase_details: IPurchaseDetails[];
   notes?: string;
+  paid?: number;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -28,9 +30,11 @@ export class PurchasesMapper implements IDTOMapper<IPurchase, IPurchaseDTO> {
       ? PurchaseCode.create(purchase_id, dto.code)
       : PurchaseCode.create(purchase_id);
     const provider_id = dto.provider_id;
+    const provider_name = dto.provider_name;
     const total_amount = dto.total_amount;
     const purchase_details = dto.purchase_details;
     const notes = dto.notes;
+    const paid = dto.paid;
     const user_created = dto.user_created;
     const user_updated = dto.user_updated;
     const created_at = dto.created_at;
@@ -41,9 +45,11 @@ export class PurchasesMapper implements IDTOMapper<IPurchase, IPurchaseDTO> {
       purchase_id,
       code,
       provider_id,
+      provider_name,
       total_amount,
       purchase_details,
       notes,
+      paid,
       user_created,
       user_updated,
       created_at,
@@ -59,9 +65,11 @@ export class PurchasesMapper implements IDTOMapper<IPurchase, IPurchaseDTO> {
       purchase_id: domain.purchase_id.value,
       code: domain.code?.value,
       provider_id: domain.provider_id,
+      provider_name: domain.provider_name,
       total_amount: domain.total_amount,
       purchase_details: domain.purchase_details,
       notes: domain.notes,
+      paid: domain.paid,
       user_created: domain.user_created,
       user_updated: domain.user_updated,
       created_at: domain.created_at,

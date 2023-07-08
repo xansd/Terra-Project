@@ -40,6 +40,7 @@ form {
     #subcategories,
     #ancestors {
         min-height: 180px;
+        color     : azure !important;
     }
 
     .save-btn-container {
@@ -69,11 +70,23 @@ form {
         height: 180px;
     }
 
+    .lot-container {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+
+        input {
+            position: relative;
+            top     : 7px;
+
+        }
+    }
+
 
 }
 
 @media (max-width: 1199px) {
-    .active-container {
+    .lot-container {
         margin-top      : 20px;
         -webkit-box-pack: start !important;
         -ms-flex-pack   : start !important;
@@ -93,12 +106,20 @@ form {
 }
 
 @media (min-width: 1200px) {
-    .active-container {
-        position        : relative;
-        left            : -20px;
-        -webkit-box-pack: end;
-        -ms-flex-pack   : end;
-        justify-content : flex-end;
+    .lot-container {
+        margin-bottom: 20px;
+
+        input {
+            position: relative;
+            top     : 7px;
+            left    : 15px !important;
+
+        }
+    }
+
+    .price {
+        margin-left: -20px;
+
     }
 
     .percentages input {
@@ -115,6 +136,10 @@ form {
 
     .categories {
         margin-top: -50px;
+    }
+
+    .lote-label {
+        min-width: none !important;
     }
 }
 

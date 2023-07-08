@@ -153,6 +153,10 @@ CREATE TABLE fees(
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,
+    user_created VARCHAR(36) DEFAULT NULL,
+    user_updated VARCHAR(36) DEFAULT NULL,
+    FOREIGN KEY (user_created) REFERENCES users(user_id),
+    FOREIGN KEY (user_updated) REFERENCES users(user_id),
     FOREIGN KEY (fees_type_id) REFERENCES fees_type(fees_type_id),
     FOREIGN KEY (partner_id) REFERENCES partners (partner_id)       
 );
@@ -270,7 +274,7 @@ CREATE TABLE ancestors (
 CREATE TABLE providers (
 provider_id VARCHAR(36) PRIMARY KEY,
 name VARCHAR(255) NOT NULL,
-email VARCHAR(255) NOT NULL UNIQUE,
+email VARCHAR(255) NOT NULL,
 phone VARCHAR(20) NOT NULL,
 address VARCHAR(255) NOT NULL,
 type ENUM('mancomunados', 'terceros') NOT NULL,
@@ -295,6 +299,7 @@ fee_amount DECIMAL(10,2) DEFAULT 0,
 quantity DECIMAL(10,2) DEFAULT 0,
 manicured DECIMAL(10,2) DEFAULT 0,
 loss DECIMAL(10,2) DEFAULT 0,
+stock DECIMAL(10,2) DEFAULT 0,
 notes TEXT,
 user_created VARCHAR(36) DEFAULT NULL,
 user_updated VARCHAR(36) DEFAULT NULL,
@@ -332,6 +337,7 @@ purchase_id VARCHAR(36) NOT NULL,
 product_id VARCHAR(36) NOT NULL,
 quantity DECIMAL(10,2)  DEFAULT 0,
 amount DECIMAL(10, 2) DEFAULT 0,
+lot INT(11) DEFAULT NULL,
 INDEX purchase_details_product_id (product_id),
 INDEX purchase_details_purchase_id (purchase_id),
 FOREIGN KEY (purchase_id) REFERENCES purchases(purchase_id),
@@ -388,11 +394,15 @@ recurrence_days INT(11) DEFAULT NULL,
 recurrence_times INT(11) DEFAULT NULL,
 date_start DATETIME DEFAULT NULL,
 interest DECIMAL(10,2) DEFAULT 0,
+source_account_id INT(11) DEFAULT NULL,
+destination_account_id INT(11) DEFAULT NULL,
 user_created VARCHAR(36) DEFAULT NULL,
 user_updated VARCHAR(36) DEFAULT NULL,
 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
 deleted_at DATETIME DEFAULT NULL,
+FOREIGN KEY (source_account_id) REFERENCES accounts(account_id),
+FOREIGN KEY (destination_account_id) REFERENCES accounts(account_id),
 FOREIGN KEY (user_created) REFERENCES users(user_id),
 FOREIGN KEY (user_updated) REFERENCES users(user_id),
 FOREIGN KEY (transaction_type_id) REFERENCES transaction_type(transaction_type_id)
@@ -402,7 +412,7 @@ CREATE TABLE transaction_type (
 transaction_type_id INT(11) AUTO_INCREMENT PRIMARY KEY,
 name VARCHAR(255) NOT NULL,
 description TEXT,
-transaction_category ENUM('GASTO', 'INGRESO') NOT NULL
+transaction_category ENUM('GASTO', 'INGRESO', 'TRANSFERENCIA') NOT NULL
 );
 
 INSERT INTO transaction_type (name, description, transaction_category) VALUES ('INGRESO_CUOTA', '', 'INGRESO'); 
@@ -410,6 +420,7 @@ INSERT INTO transaction_type (name, description, transaction_category) VALUES ('
 INSERT INTO transaction_type (name, description, transaction_category) VALUES ('INGRESO_CUENTA_SOCIO', '', 'INGRESO');
 INSERT INTO transaction_type (name, description, transaction_category) VALUES ('INGRESOS_DONACIONES', '', 'INGRESO');
 INSERT INTO transaction_type (name, description, transaction_category) VALUES ('INGRESOS_PRESTAMOS', '', 'INGRESO');
+
 
 INSERT INTO transaction_type (name, description, transaction_category) VALUES ('GASTOS_ALQUILER', '', 'GASTO'); 
 INSERT INTO transaction_type (name, description, transaction_category) VALUES ('GASTOS_SERVICIOS', '', 'GASTO'); 
@@ -420,6 +431,28 @@ INSERT INTO transaction_type (name, description, transaction_category) VALUES ('
 INSERT INTO transaction_type (name, description, transaction_category) VALUES ('REINTEGRO_INSCRIPCION', '', 'GASTO');
 
 
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('INGRESO CUENTA BANCARIA', '', 'TRANSFERENCIA');
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('REINTEGRO CUENTA BANCARIA', '', 'TRANSFERENCIA');
+
+
+CREATE TABLE accounts (
+  account_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  account_type ENUM('CAJA', 'BANCO') NOT NULL,
+  account_number VARCHAR(255) DEFAULT NUL,
+  bank VARCHAR(255) DEFAULT NULL,
+  user_created VARCHAR(36) DEFAULT NULL,
+  user_updated VARCHAR(36) DEFAULT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME DEFAULT NULL,
+  FOREIGN KEY (user_created) REFERENCES users(user_id),
+  FOREIGN KEY (user_updated) REFERENCES users(user_id)
+);
+
+INSERT INTO accounts (name, description, account_type ) VALUES ('CAJA A', 'Caja de la asociación Terra Verde', 'CAJA');
+INSERT INTO accounts (name, description, account_type,account_number,bank ) VALUES ('CUENTA BANCARIA A', 'C/C principal', 'BANCO'. '12345678901234567890', 'BANCO X');
 
 
 /******************************************************GASTOS E INGRESOS*********************************************/
@@ -435,12 +468,14 @@ CREATE TABLE payments (
     reference_id VARCHAR(36) NOT NULL,
     amount DECIMAL(10,2) NOT NULL,
     notes TEXT,
+    account_id INT(11) DEFAULT NULL,
     user_created VARCHAR(36) DEFAULT NULL,
     user_updated VARCHAR(36) DEFAULT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,
     INDEX idx_reference_id (reference_id),
+    FOREIGN KEY (account_id) REFERENCES accounts(account_id),
     FOREIGN KEY (user_created) REFERENCES users(user_id),
     FOREIGN KEY (user_updated) REFERENCES users(user_id)
 );

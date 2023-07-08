@@ -50,6 +50,8 @@ export class CreateProductComponent {
   modalActions = ModalActions;
   newProductCreated!: IProduct;
 
+  lot = false;
+
   createProductForm: UntypedFormGroup = this.formBuilder.group({
     name: [null, [Validators.required]],
     active: [true],
@@ -64,8 +66,9 @@ export class CreateProductComponent {
     bank: [null],
     flawour: [null],
     effect: [null],
-    cost_price: [0, [Validators.required]],
-    sale_price: [0, [Validators.required]],
+    cost_price: [''],
+    sale_price: ['', [Validators.required, Validators.min(0)]],
+    quantity: [0, [Validators.required, Validators.min(0)]],
   });
 
   matcher = new CustomErrorStateMatcher();
@@ -90,6 +93,15 @@ export class CreateProductComponent {
     this.getCategories();
     this.getSubCategories();
     this.getAllFilteredProducts();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete();
+  }
+
+  toggleLot() {
+    this.lot = !this.lot;
   }
 
   onCategoryChange(event: Event) {
@@ -167,10 +179,10 @@ export class CreateProductComponent {
       );
       this.notifier.showNotification('warning', invalidFields);
       throw new FieldValidationError(invalidFields);
-    } else this.newProduct(action);
+    } else this.createProductObject(action);
   }
 
-  newProduct(action: ModalActions) {
+  createProductObject(action: ModalActions) {
     let product!: IProduct;
     try {
       const user = this.createProductService.getCreator();
@@ -258,5 +270,8 @@ export class CreateProductComponent {
   }
   get saleControl(): AbstractControl {
     return this.createProductForm.controls['sale_price'];
+  }
+  get quantityControl(): AbstractControl {
+    return this.createProductForm.controls['quantity'];
   }
 }

@@ -7,7 +7,7 @@ import {
 
 export interface IUpdateTransactions {
   create(transaction: ITransactionsDTO): Promise<ITransactions>;
-  delete(id: string): Promise<void>;
+  delete(id: string, user: string): Promise<void>;
 }
 
 export class UpdateTransactions implements IUpdateTransactions {
@@ -25,8 +25,8 @@ export class UpdateTransactions implements IUpdateTransactions {
     );
     return transactionRepository;
   }
-  async delete(id: string): Promise<void> {
-    const result = await this.transactionsRepository.delete(id);
+  async delete(id: string, user: string): Promise<void> {
+    const result = await this.transactionsRepository.delete(id, user);
     return result;
   }
 }

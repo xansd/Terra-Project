@@ -20,12 +20,44 @@ export class AppMenuService {
         icon: PageIcon.VARIETIES,
         text: PageTitle.VARIETIES,
       },
+      {
+        path: PageRoutes.HARVESTS,
+        icon: PageIcon.HARVESTS,
+        text: PageTitle.HARVESTS,
+      },
+      {
+        path: PageRoutes.CULTIVATORS,
+        icon: PageIcon.CULTIVATORS,
+        text: PageTitle.CULTIVATORS,
+      },
 
       { text: 'Terceros', is_header: true },
       {
         path: PageRoutes.PRODUCTS,
         icon: PageIcon.PRODUCTS,
         text: PageTitle.PRODUCTS,
+      },
+      {
+        path: PageRoutes.PURCHASES,
+        icon: PageIcon.PURCHASES,
+        text: PageTitle.PURCHASES,
+      },
+      {
+        path: PageRoutes.PROVIDERS,
+        icon: PageIcon.PROVIDERS,
+        text: PageTitle.PROVIDERS,
+      },
+      { is_divider: true },
+      { text: 'Contabilidad', is_header: true },
+      {
+        path: PageRoutes.RECORDS,
+        icon: PageIcon.RECORDS,
+        text: PageTitle.RECORDS,
+      },
+      {
+        path: PageRoutes.BALANCE,
+        icon: PageIcon.BALANCE,
+        text: PageTitle.BALANCE,
       },
       { is_divider: true },
       { text: 'Ajustes', is_header: true },

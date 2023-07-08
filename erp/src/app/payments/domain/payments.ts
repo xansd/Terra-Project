@@ -1,14 +1,16 @@
 export enum PaymentType {
-  PAGO = "PAGO",
-  COBRO = "COBRO",
+  PAGO = 'PAGO',
+  COBRO = 'COBRO',
 }
 
 export interface IPayments {
-  payment_id: string;
+  payment_id?: string;
   type: PaymentType;
   reference_id: string;
   amount?: number;
-  notes?: string;
+  notes?: string | null;
+  account_id?: number | string | null;
+  account_name?: string | null;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -17,11 +19,13 @@ export interface IPayments {
 }
 
 export class Payments implements IPayments {
-  payment_id: string;
+  payment_id?: string;
   type: PaymentType;
   reference_id: string;
   amount?: number | undefined;
-  notes?: string | undefined;
+  notes?: string | null;
+  account_id?: number | string | null;
+  account_name?: string | null;
   user_created?: string | undefined;
   user_updated?: string | undefined;
   created_at?: string | undefined;
@@ -34,6 +38,8 @@ export class Payments implements IPayments {
     this.reference_id = props.reference_id;
     this.amount = props.amount;
     this.notes = props.notes;
+    this.account_id = props.account_id;
+    this.account_name = props.account_name;
     this.user_created = props.user_created;
     this.user_updated = props.user_updated;
     this.created_at = props.created_at;

@@ -1,0 +1,140 @@
+<div class="modal-body">
+  <!-- FORMULARIO CREACION PROVEEDOR -->
+  <card>
+    <card-header
+      class="d-block d-flex align-items-center bg-inverse bg-opacity-10 fw-400"
+      >DATOS DEL PROVEEDOR</card-header
+    >
+
+    <div class="card-body">
+      <form [formGroup]="editProviderForm" class="form-container">
+        <div class="form-group">
+          <div class="row">
+            <!-- NOMBRE -->
+            <label for="name" class="col-12 col-form-label">Nombre</label>
+
+            <div class="col-12">
+              <div class="input-group">
+                <input
+                  autocomplete="off"
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  formControlName="name"
+                  [errorStateMatcher]="matcher"
+                  matInput
+                />
+                <mat-error
+                  *ngIf="
+                    nameControl.invalid &&
+                    (nameControl.dirty || nameControl.touched)
+                  "
+                >
+                  <span *ngIf="nameControl.hasError('required')"
+                    >Campo obligatorio.</span
+                  >
+                </mat-error>
+              </div>
+            </div>
+
+            <!-- EMAIL -->
+            <label for="email" class="col-12 col-form-label">Email</label>
+            <div class="input-group">
+              <div class="col-12">
+                <input
+                  autocomplete="off"
+                  type="text"
+                  class="form-control"
+                  id="email"
+                  formControlName="email"
+                  [errorStateMatcher]="matcher"
+                  matInput
+                />
+                <mat-error
+                  *ngIf="
+                    emailControl.invalid &&
+                    (emailControl.dirty || emailControl.touched)
+                  "
+                >
+                  <span *ngIf="emailControl.hasError('required')"
+                    >Campo obligatorio.</span
+                  >
+                </mat-error>
+              </div>
+            </div>
+
+            <!-- TELEFONO -->
+            <label for="phone" class="col-12 col-form-label">Teléfono</label>
+            <div class="input-group">
+              <div class="col-12">
+                <input
+                  autocomplete="off"
+                  type="text"
+                  class="form-control"
+                  id="phone"
+                  formControlName="phone"
+                  [errorStateMatcher]="matcher"
+                  matInput
+                />
+                <mat-error
+                  *ngIf="
+                    phonePriceControl.invalid &&
+                    (phonePriceControl.dirty || phonePriceControl.touched)
+                  "
+                >
+                  <span *ngIf="phonePriceControl.hasError('required')"
+                    >Campo obligatorio.</span
+                  >
+                </mat-error>
+              </div>
+            </div>
+
+            <!-- DOMICILIO -->
+            <label for="address" class="col-12 col-form-label">Domicilio</label>
+            <div class="col-12">
+              <div class="input-group">
+                <input
+                  autocomplete="off"
+                  type="text"
+                  class="form-control"
+                  id="address"
+                  formControlName="address"
+                  [errorStateMatcher]="matcher"
+                  matInput
+                />
+                <mat-error
+                  *ngIf="
+                    addressControl.invalid &&
+                    (addressControl.dirty || addressControl.touched)
+                  "
+                >
+                  <span *ngIf="addressControl.hasError('required')"
+                    >Campo obligatorio.</span
+                  >
+                </mat-error>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </card>
+</div>
+<div
+  class="modal-footer d-block d-flex align-items-center bg-inverse bg-opacity-10 fw-400"
+>
+  <button
+    type="button"
+    class="btn btn-outline-theme"
+    (click)="close(modalActions.SAVE)"
+  >
+    Guardar
+  </button>
+  <button
+    type="button"
+    class="btn btn-warning"
+    (click)="close(modalActions.CANCEL)"
+  >
+    Cerrar
+  </button>
+</div>

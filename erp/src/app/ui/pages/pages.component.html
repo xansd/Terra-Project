@@ -1,6 +1,6 @@
 <ng-container *ngIf="!hideBreadcrumbRoutes.includes(activeRoute)">
   <h1 class="page-header">
-    <i [class]="info.icon"></i> {{ info.pageHeader }}<small></small>
+    <i [class]="info.icon"></i> {{ info.pageHeader | uppercase }}<small></small>
   </h1>
   <hr
 /></ng-container>

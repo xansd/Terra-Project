@@ -36,4 +36,20 @@ export class GetPurchases implements IGetPurchases {
 
     return purchases;
   }
+
+  async getAllPurchasesById(id: string, entity: string): Promise<IPurchase[]> {
+    const purchases = await this.purchasesRepository.getAllPurchasesById(
+      id,
+      entity
+    );
+    if (purchases.length === 0) {
+      const purchasesNotFound = new PurchaseNotFoundError();
+      Logger.error(
+        `purchases-repository : getAllPurchasesById : ${PurchaseNotFoundError}`
+      );
+      throw purchasesNotFound;
+    }
+
+    return purchases;
+  }
 }

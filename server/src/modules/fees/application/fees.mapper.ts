@@ -7,6 +7,8 @@ export interface IFeesDTO {
   fees_type_id: number;
   expiration?: string | null;
   paid?: number | boolean;
+  user_created?: string;
+  user_updated?: string;
   created_at?: string;
   updated_at?: string;
   deleted_at?: string;
@@ -22,6 +24,8 @@ export class FeesDTOMapper implements IDTOMapper<IFees, IFeesDTO> {
       fees_type_id,
       expiration,
       paid,
+      user_created,
+      user_updated,
       created_at,
       updated_at,
       deleted_at,
@@ -36,6 +40,8 @@ export class FeesDTOMapper implements IDTOMapper<IFees, IFeesDTO> {
       expiration: domain.expiration,
       fees_type_id: domain.fees_type_id,
       paid: domain.paid,
+      user_created: domain.user_created,
+      user_updated: domain.user_updated,
       created_at: domain.created_at,
       updated_at: domain.updated_at,
       deleted_at: domain.deleted_at,

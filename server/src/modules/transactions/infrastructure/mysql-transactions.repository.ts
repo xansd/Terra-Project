@@ -14,18 +14,20 @@ export class MySqlTransactionsRepository implements ITransactionsRepository {
   private transactionsPersistenceMapper: TransactionsPersistenceMapper =
     new TransactionsPersistenceMapper();
 
-  async getById(id: string): Promise<ITransactions> {
-    const rows = await MysqlDataBase.query(
-      `SELECT * from transactions WHERE transaction_id = ? AND deleted_at IS NULL`,
-      [id]
-    );
+  async getById(id: string): Promise<ITransactions | null> {
+    const query = `
+        SELECT t.*, tt.name as transaction_type_name
+        FROM transactions t
+        INNER JOIN transaction_type tt ON t.transaction_type_id = tt.transaction_type_id
+        WHERE t.transaction_id = ? AND t.deleted_at IS NULL
+      `;
+    const rows = await MysqlDataBase.query(query, [id]);
     if (isNil(rows[0])) {
       Logger.error(
         `mysql : getTransactionsById : TransactionDoesNotExistError`
       );
-      throw new TransactionDoesNotExistError();
+      return null;
     }
-
     return this.transactionsPersistenceMapper.toDomain(
       rows[0]
     ) as ITransactions;
@@ -33,11 +35,11 @@ export class MySqlTransactionsRepository implements ITransactionsRepository {
 
   async getAllExpenses(): Promise<ITransactions[]> {
     const query = `
-      SELECT t.* 
-      FROM transactions t
-      INNER JOIN transaction_type tt ON t.transaction_type_id = tt.transaction_type_id
-      WHERE tt.transaction_category = '${TransactionCategoryType.GASTO}'
-    `;
+        SELECT t.*, tt.name as transaction_type_name
+        FROM transactions t
+        INNER JOIN transaction_type tt ON t.transaction_type_id = tt.transaction_type_id
+        WHERE tt.transaction_category = '${TransactionCategoryType.GASTO}'
+      `;
     const rows = await MysqlDataBase.query(query);
     if (rows.length === 0) {
       Logger.error(`mysql : getAllExpenses : ExpensesNotFoundError`);
@@ -50,11 +52,11 @@ export class MySqlTransactionsRepository implements ITransactionsRepository {
 
   async getAllIncomes(): Promise<ITransactions[]> {
     const query = `
-      SELECT t.* 
-      FROM transactions t
-      INNER JOIN transaction_type tt ON t.transaction_type_id = tt.transaction_type_id
-      WHERE tt.transaction_category = '${TransactionCategoryType.INGRESO}'
-    `;
+        SELECT t.*, tt.name as transaction_type_name
+        FROM transactions t
+        INNER JOIN transaction_type tt ON t.transaction_type_id = tt.transaction_type_id
+        WHERE tt.transaction_category = '${TransactionCategoryType.INGRESO}'
+      `;
     const rows = await MysqlDataBase.query(query);
     if (rows.length === 0) {
       Logger.error(`mysql : getAllIncomes : IncomesNotFoundError`);
@@ -69,10 +71,11 @@ export class MySqlTransactionsRepository implements ITransactionsRepository {
     transactionType: string
   ): Promise<ITransactions[]> {
     const query = `
-      SELECT *
-      FROM transactions
-      WHERE transaction_type = '${transactionType}'
-    `;
+        SELECT t.*, tt.name as transaction_type_name
+        FROM transactions t
+        INNER JOIN transaction_type tt ON t.transaction_type_id = tt.transaction_type_id
+        WHERE t.transaction_type = '${transactionType}'
+      `;
     const rows = await MysqlDataBase.query(query);
     if (rows.length === 0) {
       Logger.error(
@@ -112,18 +115,22 @@ export class MySqlTransactionsRepository implements ITransactionsRepository {
     const selectResult = await MysqlDataBase.query(selectQuery);
     const lastTransactionInserted = selectResult[0];
 
+    Logger.info(
+      `mysql : createTransaction ${transactionPersistence.user_created}`
+    );
     return this.transactionsPersistenceMapper.toDomain(lastTransactionInserted);
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string, user: string): Promise<void> {
     const result = await MysqlDataBase.update(
-      `UPDATE transactions SET deleted_at = NOW() WHERE transactions_id = ?`,
-      [id]
+      `UPDATE transactions SET deleted_at = NOW(), user = ? WHERE transactions_id = ?`,
+      [user, id]
     );
     if (result.affectedRows === 0) {
       Logger.error(`mysql : delete : TransactionDoesNotExistError`);
       throw new TransactionDoesNotExistError();
     }
+    Logger.info(`mysql : deleteTransaction ${user}`);
     return result;
   }
 }

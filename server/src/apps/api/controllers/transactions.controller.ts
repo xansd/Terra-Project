@@ -106,7 +106,10 @@ export class TransactionsController {
     const { id } = request.params;
 
     try {
-      const result = await this.updateTransactionsService.delete(id);
+      const result = await this.updateTransactionsService.delete(
+        id,
+        request.auth.id
+      );
       response.send(result);
     } catch (error) {
       if (error instanceof DomainValidationError) {

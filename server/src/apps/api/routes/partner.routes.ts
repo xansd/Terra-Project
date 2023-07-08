@@ -16,6 +16,8 @@ import LocalFileHandler from "../../../modules/files/infrastructure/local-file-h
 import { MySqlPaymentsRepository } from "../../../modules/payments/infrastructure/mysql-payments.repository";
 import { MySqlTransactionsRepository } from "../../../modules/transactions/infrastructure/mysql-transactions.repository";
 import { PartnerCashService } from "../../../modules/partners/application/services/partner-cash.service";
+import { MySqlPurchasesRepository } from "../../../modules/purchases/infrastructure/mysql-purchases.repository";
+import { MysqlFeesRepository } from "../../../modules/fees/infrastructure/mysql-fees.repository";
 
 const router = Router();
 
@@ -23,23 +25,27 @@ const odtGenerator = new ODTGenerator();
 const localFileHandler = new LocalFileHandler();
 
 // Repositorio
-const userRepository = new MySqlPartnerRepository();
+const partnerRepository = new MySqlPartnerRepository();
 const transactionsRepository = new MySqlTransactionsRepository();
 const paymentsRepository = new MySqlPaymentsRepository();
+const purchasesRepository = new MySqlPurchasesRepository();
+const feesRepository = new MysqlFeesRepository();
 
 // Casos de uso
-const createPartnerUseCase = new CreatePartnerUseCase(userRepository);
-const getPartnerUseCase = new GetPartnerUseCase(userRepository);
+const createPartnerUseCase = new CreatePartnerUseCase(partnerRepository);
+const getPartnerUseCase = new GetPartnerUseCase(partnerRepository);
 const cashService = new PartnerCashService();
 const updatePartnerUseCase = new UpdatePartnerUseCase(
-  userRepository,
+  partnerRepository,
   transactionsRepository,
   paymentsRepository,
-  cashService
+  purchasesRepository,
+  cashService,
+  feesRepository
 );
-const deletePartnerUseCase = new DeletePartnerUseCase(userRepository);
+const deletePartnerUseCase = new DeletePartnerUseCase(partnerRepository);
 const toggleActivePartnerUserCase = new ToggleActivePartnerUseCase(
-  userRepository
+  partnerRepository
 );
 const documentService = new PartnerDocumentsService(
   odtGenerator,

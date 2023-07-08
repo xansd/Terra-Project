@@ -10,6 +10,10 @@ import {
   ProductsType,
 } from 'src/app/products/domain/products';
 import { ISanctions } from 'src/app/partners/domain/sanctions';
+import { IHarvests } from 'src/app/purchases/domain/harvests';
+import { IProvider } from 'src/app/providers/domain/providers';
+import { IPayments, PaymentType } from 'src/app/payments/domain/payments';
+import { IPurchase } from 'src/app/purchases/domain/purchases';
 
 @Injectable({
   providedIn: 'root',
@@ -152,6 +156,93 @@ export class FormsHelperService {
     }
 
     return productData;
+  }
+
+  createPaymentFormData(
+    form: UntypedFormGroup,
+    type: PaymentType,
+    referenceId: string
+  ): IPayments {
+    const formValues = form.value;
+    const paymentData: IPayments = {
+      amount: formValues.amount,
+      type: type,
+      reference_id: referenceId,
+      notes: formValues.notes || '',
+    };
+
+    return paymentData;
+  }
+
+  createHarvestFormData(form: UntypedFormGroup): IHarvests {
+    const formValues = form.value;
+    const harvestData: IHarvests = {
+      provider_id: formValues.provider_id || '',
+      product_id: formValues.product_id || '',
+      cost_price: formValues.cost_price || 0,
+      sale_price: formValues.sale_price || 0,
+      fee_amount: formValues.fee_amount || 0,
+      quantity: formValues.quantity || 0,
+      notes: formValues.notes || '',
+      stock: formValues.stock || 0,
+      // manicured: formValues.manicured,
+    };
+
+    return harvestData;
+  }
+
+  createPurchaseFormData(form: UntypedFormGroup): IPurchase {
+    const formValues = form.value;
+    const harvestData: IPurchase = {
+      provider_id: formValues.provider_id || '',
+      total_amount: formValues.total_amount || 0,
+      notes: formValues.notes || '',
+      purchase_details: formValues.purchase_details,
+    };
+
+    return harvestData;
+  }
+
+  createProviderFormData(
+    form: UntypedFormGroup,
+    providerId?: string
+  ): IProvider {
+    const formValues = form.value;
+    const id = providerId ? providerId : undefined;
+    const providerData: IProvider = {
+      name: formValues.name || '',
+      email: Email.create(formValues.email) || '',
+      phone: formValues.phone || '',
+      address: formValues.address || '',
+      type: ProductsType.TERCEROS,
+    };
+
+    if (id) {
+      providerData.provider_id = id;
+    }
+
+    return providerData;
+  }
+
+  createCultivatorFormData(
+    form: UntypedFormGroup,
+    providerId?: string
+  ): IProvider {
+    const formValues = form.value;
+    const id = providerId ? providerId : undefined;
+    const providerData: IProvider = {
+      name: formValues.name || '',
+      email: Email.create(formValues.email) || '',
+      phone: formValues.phone || '',
+      address: formValues.address || '',
+      type: ProductsType.MANCOMUNADOS,
+    };
+
+    if (id) {
+      providerData.provider_id = id;
+    }
+
+    return providerData;
   }
 
   getSubcategories(formValues: any): string[] {

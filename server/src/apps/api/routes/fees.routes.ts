@@ -8,15 +8,18 @@ import { check } from "express-validator";
 import { catchValidationErrors } from "../error/validate-fileds";
 import { MySqlTransactionsRepository } from "../../../modules/transactions/infrastructure/mysql-transactions.repository";
 import { MySqlPaymentsRepository } from "../../../modules/payments/infrastructure/mysql-payments.repository";
+import { MySqlPurchasesRepository } from "../../../modules/purchases/infrastructure/mysql-purchases.repository";
 
 const router = Router();
 const feesRepository = new MysqlFeesRepository();
 const transactionsRepository = new MySqlTransactionsRepository();
 const paymentsRepository = new MySqlPaymentsRepository();
+const purchasesRepositrory = new MySqlPurchasesRepository();
 const feesUseCases = new FeesUseCases(
   feesRepository,
   transactionsRepository,
-  paymentsRepository
+  paymentsRepository,
+  purchasesRepositrory
 );
 const feesController = new FeesController(feesUseCases);
 

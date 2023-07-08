@@ -6,6 +6,15 @@ export enum ProductsType {
   TERCEROS = "terceros",
 }
 
+export enum StockOperations {
+  ADD = "ADD",
+  SUBSTRACT = "SUBSTRACT",
+  UPDATE = "UPDATE",
+  ADD_LOSS = "ADD_LOSS",
+  ADD_EXCEDENT = "ADD_EXCEDENT",
+  UPDATE_LOSS = "UPDATE_LOSS",
+}
+
 export interface ICategories {
   category_id: string;
   name: string;
@@ -16,12 +25,6 @@ export interface ISubcategories {
   subcategory_id: string;
   name: string;
   category_id: string;
-}
-
-export enum StockOperations {
-  ADD = 1,
-  SUBSTRACT = 2,
-  UPDATE = 3,
 }
 
 export interface IProduct {

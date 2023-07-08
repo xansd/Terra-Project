@@ -82,10 +82,67 @@ export class PagesComponent implements OnDestroy {
       case PageRoutes.PRODUCTS:
       case PageRoutes.PRODUCTS_LIST:
       case PageRoutes.PRODUCTS_STATISTICS:
-        // case PageRoutes.PRODUCTS_DETAILS:
+      case PageRoutes.PRODUCTS_DETAILS:
         this.info = {
           pageHeader: PageTitle.PRODUCTS,
           icon: PageIcon.PRODUCTS,
+        };
+        break;
+
+      case PageRoutes.HARVESTS:
+      case PageRoutes.HARVESTS_LIST:
+      case PageRoutes.HARVESTS_STATISTICS:
+      case PageRoutes.HARVESTS_DETAILS:
+        this.info = {
+          pageHeader: PageTitle.HARVESTS,
+          icon: PageIcon.HARVESTS,
+        };
+        break;
+
+      case PageRoutes.PURCHASES:
+      case PageRoutes.PURCHASES_LIST:
+      case PageRoutes.PURCHASES_STATISTICS:
+      case PageRoutes.PURCHASES_DETAILS:
+        this.info = {
+          pageHeader: PageTitle.PURCHASES,
+          icon: PageIcon.PURCHASES,
+        };
+        break;
+
+      case PageRoutes.CULTIVATORS:
+      case PageRoutes.CULTIVATORS_LIST:
+      case PageRoutes.CULTIVATORS_STATISTICS:
+      case PageRoutes.CULTIVATORS_DETAILS:
+        this.info = {
+          pageHeader: PageTitle.CULTIVATORS,
+          icon: PageIcon.CULTIVATORS,
+        };
+        break;
+
+      case PageRoutes.PROVIDERS:
+      case PageRoutes.PROVIDERS_LIST:
+      case PageRoutes.PROVIDERS_STATISTICS:
+      case PageRoutes.PROVIDERS_DETAILS:
+        this.info = {
+          pageHeader: PageTitle.PROVIDERS,
+          icon: PageIcon.PROVIDERS,
+        };
+        break;
+
+      case PageRoutes.RECORDS:
+      case PageRoutes.RECORDS_DETAILS:
+      case PageRoutes.TRANSACTIONS_LIST:
+      case PageRoutes.PAYMENTS_LIST:
+        this.info = {
+          pageHeader: PageTitle.RECORDS,
+          icon: PageIcon.RECORDS,
+        };
+        break;
+
+      case PageRoutes.BALANCE:
+        this.info = {
+          pageHeader: PageTitle.BALANCE,
+          icon: PageIcon.BALANCE,
         };
         break;
     }

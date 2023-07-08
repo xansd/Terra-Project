@@ -1,0 +1,36 @@
+<ul
+  #nav
+  class="nav nav-pills mb-3 nav-fill"
+  [ngClass]="{ 'fixed-tabs': isNavFixed }"
+>
+  <li class="nav-item">
+    <a
+      class="nav-link"
+      [routerLink]="pagesRoutes.CULTIVATORS_DETAILS"
+      routerLinkActive="active"
+    >
+      <i [class]="icons.RECORDS_DETAILS"></i> CONSULTA
+    </a>
+  </li>
+  <li class="nav-item">
+    <a
+      class="nav-link"
+      [routerLink]="pagesRoutes.CULTIVATORS_LIST"
+      routerLinkActive="active"
+    >
+      <i [class]="icons.TRANSACTIONS_LIST"></i> TRANSACCIONES
+    </a>
+  </li>
+  <li class="nav-item">
+    <a
+      class="nav-link"
+      [routerLink]="pagesRoutes.CULTIVATORS_STATISTICS"
+      routerLinkActive="active"
+    >
+      <i [class]="icons.PAYMENTS_LIST"></i> PAGOS / COBROS
+    </a>
+  </li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+  <router-outlet></router-outlet>
+</div>

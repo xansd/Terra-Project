@@ -3,6 +3,7 @@ import { IProductAPIPort } from '../domain/products.repository';
 import { IProductDTO } from '../infrastructure/products-dto.mapper';
 import { Inject, Injectable } from '@angular/core';
 import { IAuthToken } from 'src/app/auth/domain/token';
+import { StockOperations } from '../domain/products';
 
 export interface IUpdateProductUseCase {
   updateProduct(product: IProductDTO): Observable<void>;
@@ -63,5 +64,13 @@ export class UpdateProductUseCase
 
   getUpdater(): string {
     return this.authTokenService.getUserID();
+  }
+
+  updateProductStock(
+    prodcutId: string,
+    stock: number,
+    operation: StockOperations
+  ): Observable<void> {
+    return this.productsAPI.updateProductStock(prodcutId, stock, operation);
   }
 }

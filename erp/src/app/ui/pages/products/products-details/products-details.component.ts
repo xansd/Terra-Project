@@ -18,6 +18,10 @@ import { CreateProductComponent } from '../create-product/create-product.compone
 import { EditProductComponent } from '../edit-product/edit-product.component';
 import config from '../../../../config/client.config';
 import { DatetimeHelperService } from 'src/app/shared/application/datetime.helper.service';
+import {
+  StockType,
+  UpdateStockComponent,
+} from 'src/app/ui/components/update-stock/update-stock.component';
 
 const modalEditOptions: NgbModalOptions = {
   backdrop: 'static',
@@ -60,6 +64,7 @@ export class ProductsDetailsComponent {
     // Carga el buscador
     this.getCategories();
     this.getProductsList();
+    this.getActiveEntityId();
     if (this.id) this.getProduct();
   }
 
@@ -71,6 +76,10 @@ export class ProductsDetailsComponent {
 
   /*********************************BUSCADOR************************************/
 
+  getActiveEntityId(): string | void {
+    const result = this.activeEntityService.getActiveEntityId() || '';
+    if (result) this.id = result;
+  }
   getProductsList() {
     this.productsService
       .getAllProductsFiltered(ProductsType.TERCEROS)
@@ -126,7 +135,7 @@ export class ProductsDetailsComponent {
         next: (product: IProduct) => {
           this.id = product.product_id!;
           this.product = product;
-          this.activeEntityService.setActiveEntity(this.product, this.id);
+          // this.activeEntityService.setActiveEntity(this.product, this.id);
           this.isLoading = false;
         },
       });
@@ -231,5 +240,20 @@ export class ProductsDetailsComponent {
       .map((product) => product.name);
 
     return productsName.length > 0 ? productsName.join(', ') : 'Sin ancestros';
+  }
+
+  openUpdateStockProductDialog() {
+    const modalRef = this.modalService.open(UpdateStockComponent, modalOptions);
+    modalRef.componentInstance.id = this.id;
+    modalRef.componentInstance.type = StockType.PRODUCT;
+    modalRef.result
+      .then((result) => {
+        if (result) {
+          this.getProduct();
+        }
+      })
+      .catch((error) => {
+        if (error) console.error(error);
+      });
   }
 }

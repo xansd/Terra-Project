@@ -15,6 +15,8 @@ import { ConfirmDialogComponent } from 'src/app/ui/shared/components/confirm-dia
 import { DatetimeHelperService } from 'src/app/shared/application/datetime.helper.service';
 import { CreateVarietiesComponent } from '../create-varieties/create-varieties.component';
 import { EditVarietiesComponent } from '../edit-varieties/edit-varieties.component';
+import { Router } from '@angular/router';
+import { PageRoutes } from '../../pages-info.config';
 
 const modalOptions: NgbModalOptions = {
   backdrop: 'static',
@@ -70,7 +72,8 @@ export class ListVarietiesComponent {
     private getService: GetProductsUseCase,
     private notifier: NotificationAdapter,
     private errorHandler: ErrorHandlerService,
-    private activeEntityService: ActiveEntityService
+    private activeEntityService: ActiveEntityService,
+    private router: Router
   ) {
     this.dataSource = new MatTableDataSource(this.productsList);
     this.dataSource.paginator = this.paginator;
@@ -82,7 +85,6 @@ export class ListVarietiesComponent {
   }
 
   ngOnDestroy(): void {
-    this.activeEntityService.clearActiveEntity();
     this.destroy$.next(true);
     this.destroy$.complete();
   }
@@ -100,6 +102,17 @@ export class ListVarietiesComponent {
           this.tableHasChanged = false;
           this.isLoading = false;
         },
+        error: (error: any) => {
+          if (error.statusCode) {
+            if (
+              error.statusCode === 404 &&
+              error.message === 'No hay productos registrados'
+            ) {
+              this.productsList = [];
+              this.renderTable();
+            }
+          }
+        },
       });
   }
 
@@ -110,7 +123,7 @@ export class ListVarietiesComponent {
       .subscribe({
         next: (res: any) => {
           if (res.affectedRows > 0) {
-            this.notifier.showNotification('success', 'Producto eliminado');
+            this.notifier.showNotification('success', 'Variedad eliminada');
             this.tableHasChanged = true;
             this.getProducts();
           } else {
@@ -169,6 +182,11 @@ export class ListVarietiesComponent {
       .catch((error) => {
         if (error) console.error(error);
       });
+  }
+
+  openDetails(entity: IProduct, id: string) {
+    this.activeEntityService.setActiveEntity(entity, id);
+    this.router.navigateByUrl(PageRoutes.VARIETIES_DETAILS);
   }
 
   private renderTable() {

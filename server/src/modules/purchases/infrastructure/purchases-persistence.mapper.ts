@@ -7,9 +7,11 @@ export interface IPurchasePersistence {
   purchase_id: string;
   code?: string;
   provider_id: string;
+  provider_name?: string;
   total_amount?: number;
   purchase_details: IPurchaseDetails[];
   notes?: string;
+  paid?: number;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -29,9 +31,11 @@ export class PurchasePersistenceMapper
         persistence.code
       ),
       provider_id: persistence.provider_id,
+      provider_name: persistence.provider_name,
       total_amount: persistence.total_amount,
       purchase_details: persistence.purchase_details,
       notes: persistence.notes,
+      paid: persistence.paid,
       user_created: persistence.user_created,
       user_updated: persistence.user_updated,
       created_at: persistence.created_at,
@@ -44,9 +48,11 @@ export class PurchasePersistenceMapper
       purchase_id,
       code,
       provider_id,
+      provider_name,
       total_amount,
       purchase_details,
       notes,
+      paid,
       user_created,
       user_updated,
       created_at,
@@ -57,9 +63,11 @@ export class PurchasePersistenceMapper
       purchase_id: purchase_id.value,
       code: code?.value,
       provider_id: provider_id,
+      provider_name: provider_name,
       total_amount: total_amount,
       purchase_details: purchase_details,
       notes: notes,
+      paid: paid,
       user_created: user_created,
       user_updated: user_updated,
       created_at: created_at,

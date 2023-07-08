@@ -9,6 +9,7 @@ import {
 } from "../domain/payments.exception";
 import { IPaymentsRepository } from "../domain/payments.repository";
 import { PaymentsPersistenceMapper } from "./payments-persistence.mapper";
+import { Request, Response } from "express";
 
 export class MySqlPaymentsRepository implements IPaymentsRepository {
   private paymentsPersistenceMapper: PaymentsPersistenceMapper =
@@ -43,14 +44,16 @@ export class MySqlPaymentsRepository implements IPaymentsRepository {
       `SELECT * FROM payments WHERE deleted_at IS NULL AND reference_id = ?`,
       [referenceId]
     );
-    if (rows.length === 0) {
-      Logger.error(`mysql : getAll : PaymentNotFoundError`);
-      throw new PaymentNotFoundError();
-    }
-    return this.paymentsPersistenceMapper.toDomainList(rows) as IPayments[];
+    // if (rows.length === 0) {
+    //   Logger.error(`mysql : getAll : PaymentNotFoundError`);
+    //   throw new PaymentNotFoundError();
+    // }
+    return (
+      (this.paymentsPersistenceMapper.toDomainList(rows) as IPayments[]) || []
+    );
   }
 
-  async create(payment: IPayments): Promise<IPayments> {
+  async create(payment: IPayments, user: string): Promise<IPayments> {
     const paymentPersistence =
       this.paymentsPersistenceMapper.toPersistence(payment);
     const insertQuery = `INSERT INTO payments (type, reference_id, amount, notes, user_created) VALUES (?,?,?,?, ?)`;
@@ -62,26 +65,27 @@ export class MySqlPaymentsRepository implements IPaymentsRepository {
         paymentPersistence.reference_id,
         paymentPersistence.amount!.toString(),
         paymentPersistence.notes!,
-        paymentPersistence.user_created!,
+        user,
       ]);
     } catch (error) {
       throw new PaymentCreationError();
     }
     const selectResult = await MysqlDataBase.query(selectQuery);
     const lastPaymentInserted = selectResult[0];
-
+    Logger.info(`mysql : createPayment : ${user}`);
     return this.paymentsPersistenceMapper.toDomain(lastPaymentInserted);
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string, user: string): Promise<void> {
     const result = await MysqlDataBase.update(
-      `UPDATE payments SET deleted_at = NOW() WHERE payment_id = ?`,
-      [id]
+      `UPDATE payments SET deleted_at = NOW(), user_updated = ? WHERE payment_id = ?`,
+      [user, id]
     );
     if (result.affectedRows === 0) {
       Logger.error(`mysql : delete : PaymentDoesNotExistError`);
       throw new PaymentDoesNotExistError();
     }
+    Logger.info(`mysql : deletePayment : ${user}`);
     return result;
   }
 }

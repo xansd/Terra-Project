@@ -39,7 +39,8 @@ export class ProviderController {
   }
   async getAll(request: Request, response: Response): Promise<void> {
     try {
-      const provider = await this.getProviderService.getAll(request.body.type);
+      const { type } = request.params;
+      const provider = await this.getProviderService.getAll(type);
       const providerDTOs = this.providerMapper.toDTOList(provider);
       response.json(providerDTOs);
     } catch (error: any) {
@@ -54,7 +55,10 @@ export class ProviderController {
   }
   async create(request: Request, response: Response): Promise<void> {
     try {
-      const provider = await this.updateProviderService.create(request.body);
+      const provider = await this.updateProviderService.create(
+        request.body,
+        request.auth.id
+      );
       const providerDTOs = this.providerMapper.toDTO(provider!);
       response.json(providerDTOs);
     } catch (error) {
@@ -65,7 +69,8 @@ export class ProviderController {
   async update(request: Request, response: Response): Promise<void> {
     try {
       const result = await this.updateProviderService.updateProvider(
-        request.body
+        request.body,
+        request.auth.id
       );
       response.send(result);
     } catch (error) {
@@ -83,10 +88,23 @@ export class ProviderController {
     const { id } = request.params;
 
     try {
-      const result = await this.updateProviderService.delete(id);
+      const result = await this.updateProviderService.delete(
+        id,
+        request.auth.id
+      );
       response.send(result);
-    } catch (error) {
-      if (error instanceof DomainValidationError) {
+    } catch (error: any) {
+      if (
+        error.message.includes(
+          "Cannot delete or update a parent row: a foreign key constraint fails"
+        )
+      ) {
+        response.send(
+          Conflict(
+            "La entidad que intentas eliminar esta relaccionada con otras. Debes eliminar las realciones primero. Operación cancelada."
+          )
+        );
+      } else if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));
       } else if (error instanceof ProviderDoesNotExistError) {
         response.send(NotFound(error.message));

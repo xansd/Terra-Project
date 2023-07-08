@@ -18,6 +18,7 @@ export class UpdatePayments implements IUpdatePayments {
   create(payment: IPayments): Observable<IPayments> {
     return this.paymentsAPI.create(payment);
   }
+
   delete(id: string): Observable<void> {
     return this.paymentsAPI.delete(id);
   }

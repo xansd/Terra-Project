@@ -1,0 +1,270 @@
+<div class="container-fluid">
+  <div class="search">
+    <ng-container *ngIf="searchTypes">
+      <app-searcher
+        [options]="options"
+        [searchTypes]="searchTypes"
+        (optionSelected)="handleOptionSelected($event)"
+      ></app-searcher>
+    </ng-container>
+  </div>
+
+  <ng-container *ngIf="isLoading; else purchaseSelection">
+    <div class="d-flex justify-content-center align-items-center py-4 spinner">
+      <div class="spinner-grow text-success"></div>
+    </div>
+    <p class="text-center">Esperando compras...</p>
+  </ng-container>
+  <ng-template #purchaseSelection>
+    <div class="row content">
+      <div class="col-lg-10">
+        <!-- Primer card -->
+        <div class="row row-cols-1 row-cols-xl-2 g-3">
+          <div class="col">
+            <card class="card h-100 data-card mb-4">
+              <card-header class="card-header bg-inverse bg-opacity-10 fw-400">
+                <div class="title">DATOS COMPRA</div>
+              </card-header>
+              <card-body class="pb-2">
+                <div class="general-info">
+                  <!-- producto -->
+                  <!-- <div class="property name">
+                      <span class="property-name">Variedad:</span>
+                      <span class="property-value fw-bold text-theme name">{{
+                        purchase!.product_name | uppercase
+                      }}</span>
+                    </div> -->
+                  <!-- codigo -->
+                  <div class="property code">
+                    <span class="property-name">Código:</span>
+                    <span class="property-value fw-bold text-theme">{{
+                      purchase!.code | uppercase
+                    }}</span>
+                  </div>
+                  <!-- proveedor -->
+                  <div class="property">
+                    <span class="property-name">Proveedor:</span>
+                    <span class="property-value fw-bold text-theme">{{
+                      purchase!.provider_name | uppercase
+                    }}</span>
+                  </div>
+
+                  <!-- alta -->
+                  <div class="property">
+                    <span class="property-name">Fecha compra</span>
+                    <span class="property-value">{{
+                      formatDate(purchase!.created_at!)
+                    }}</span>
+                  </div>
+                </div>
+
+                <!-- Observaciones -->
+                <div class="property">
+                  <span class="property-name">Observaciones:</span>
+                  <span class="property-value"
+                    >{{ purchase!.notes || "Sin observaciones" }}
+                  </span>
+                </div>
+                <div class="numbers">
+                  <!-- coste -->
+                  <div class="property purchase-amount">
+                    <span class="property-name">Total:</span>
+                    <span class="property-value fw-bold text-info"
+                      >{{ purchase!.total_amount | number : "1.2-2" }} €</span
+                    >
+                  </div>
+                  <!-- Cantidad -->
+                  <!-- <div class="property">
+                      <span class="property-name">Cantidad:</span>
+                      <span class="property-value fw-bold"
+                        >{{ purchase!.quantity | number : "1.2-2" }} gr.</span
+                      >
+                    </div> -->
+                </div>
+
+                <!-- DETALLES -->
+                <h6 class="card-subtitle mb-3 text-inverse text-opacity-50">
+                  DETALLES
+                </h6>
+                <!-- Tabla de detalles de compra -->
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Producto</th>
+                        <th>Lotes</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <ng-container
+                        *ngFor="let detail of purchase!.purchase_details"
+                      >
+                        <tr>
+                          <td>{{ detail.product_name }}</td>
+                          <td>{{ detail.lot !== 0 ? detail.lot : "NO" }}</td>
+                          <td *ngIf="detail.lot == 0">{{ detail.quantity }}</td>
+                          <td *ngIf="detail.lot !== 0">
+                            {{
+                              getTotalQuantityProductLine(detail)
+                                | number : "1.2-2"
+                            }}
+                            ({{ detail.quantity }} * {{ detail.lot }})
+                          </td>
+                          <td>{{ detail.amount | number : "1.2-2" }} €</td>
+                          <td>
+                            {{
+                              getTotalAmountOfProductLine(detail)
+                                | number : "1.2-2"
+                            }}
+                            €
+                          </td>
+                        </tr>
+                      </ng-container>
+                    </tbody>
+                  </table>
+                </div>
+              </card-body>
+            </card>
+          </div>
+
+          <!-- Segundo card -->
+          <div class="col">
+            <card class="card h-100 activity-card">
+              <card-header class="card-header bg-inverse bg-opacity-10 fw-400">
+                <div class="title">PAGOS</div>
+              </card-header>
+              <card-body class="pb-2 payments-content">
+                <!-- Montante -->
+                <div class="property total">
+                  <span class="property-name">TOTAL</span>
+                  <span class="property-value fw-bold"
+                    >{{ getTotal(purchase!) | number : "1.2-2" }} €</span
+                  >
+                </div>
+
+                <!-- abonado -->
+                <div class="property">
+                  <span
+                    [ngClass]="{
+                      'text-success':
+                        getTotalPending(purchase!, payments) === 0,
+                      'text-warning': getTotalPending(purchase!, payments) > 0
+                    }"
+                    class="property-name"
+                    >PAGOS:</span
+                  >
+                  <span
+                    class="property-value fw-bold total"
+                    [ngClass]="{
+                      'text-success':
+                        getTotalPending(purchase!, payments) === 0,
+                      'text-warning': getTotalPending(purchase!, payments) > 0
+                    }"
+                  >
+                    {{ getTotalPaid(payments) | number : "1.2-2" }}
+                    €
+                  </span>
+                </div>
+
+                <!-- Pendiente -->
+                <div class="property">
+                  <span
+                    [ngClass]="{
+                      'text-success':
+                        getTotalPending(purchase!, payments) === 0,
+                      'text-danger': getTotalPending(purchase!, payments) > 0
+                    }"
+                    class="property-name"
+                    >PENDIENTE:</span
+                  >
+                  <span
+                    [ngClass]="{
+                      'property-value': true,
+                      'fw-bold': true,
+                      'text-success':
+                        getTotalPending(purchase!, payments) === 0,
+                      'text-danger': getTotalPending(purchase!, payments) > 0
+                    }"
+                    class="total"
+                  >
+                    {{
+                      getTotal(purchase!) - getTotalPaid(payments)
+                        | number : "1.2-2"
+                    }}
+                    €
+                  </span>
+                </div>
+                <ng-container *ngIf="payments.length > 0; else noPayments"
+                  ><h6
+                    class="card-subtitle mb-3 text-inverse text-opacity-50"
+                    style="margin-top: 15px"
+                  >
+                    Pagos realizados
+                  </h6>
+                  <div class="list-group">
+                    <a
+                      class="list-group-item list-group-item-action"
+                      *ngFor="let item of payments"
+                    >
+                      <div class="date">
+                        <!-- <span [hidden]="hidden">{{ item.payment_id }}</span> -->
+                        <span class="text-light">{{
+                          formatDate(item.created_at!)
+                        }}</span>
+                      </div>
+                      <div class="amount text-light">
+                        <span>{{ item.amount | number : "1.2-2" }} €</span>
+                        <button
+                          (click)="
+                            openConfirmationDialog(
+                              'El pago seleccionado será eliminado',
+                              item
+                            )
+                          "
+                          mat-mini-fab
+                        >
+                          <i class="fa fa-close"></i>
+                        </button>
+                      </div>
+                    </a>
+                  </div>
+                </ng-container>
+                <ng-template #noPayments>
+                  <div class="no-payments-container text-warning fw-600">
+                    No se ha realizado ningún pago
+                  </div>
+                </ng-template>
+              </card-body>
+            </card>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-2">
+        <div class="button-container">
+          <button
+            class="btn btn-warning payment"
+            (click)="openMakePaymentDialog(purchase!, payments)"
+          >
+            <i class="bi bi-cash-stack"></i> Crear pago
+          </button>
+          <button class="btn btn-success" (click)="openCreatePurchaseDialog()">
+            <i class="bi bi-cart-plus"></i> Nueva compra
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <!-- Botón creación -->
+  <div
+    *ngIf="!purchase"
+    class="new-purchase-standalone"
+    (click)="openCreatePurchaseDialog()"
+  >
+    <button class="btn btn-success new-purchase-btn">
+      <i class="bi bi-plus-circle"></i> Nueva compra
+    </button>
+  </div>
+</div>

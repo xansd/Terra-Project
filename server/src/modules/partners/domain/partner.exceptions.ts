@@ -47,9 +47,7 @@ export class MaxRefundLimitError extends Error {
 
 export class InvalidAmountError extends Error {
   constructor() {
-    super(
-      `No se han podido realizar los calculos sobre la cuenta del socio debido a que los valores son incorrectos`
-    );
+    super(`Valores para el cálculo no válidos`);
     this.name = "InvalidAmountError";
   }
 }

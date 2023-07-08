@@ -154,10 +154,23 @@ export class PartnerController {
 
     try {
       filesUseCase.deleteFiles(id);
-      const result = await this.deletePartnerUseCase.deletePartner(id);
+      const result = await this.deletePartnerUseCase.deletePartner(
+        id,
+        request.auth.id
+      );
       response.send(result);
-    } catch (error) {
-      if (error instanceof DomainValidationError) {
+    } catch (error: any) {
+      if (
+        error.message.includes(
+          "Cannot delete or update a parent row: a foreign key constraint fails"
+        )
+      ) {
+        response.send(
+          Conflict(
+            "La entidad que intentas eliminar esta relaccionada con otras. Debes eliminar las realciones primero. Operación cancelada."
+          )
+        );
+      } else if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));
       } else if (error instanceof PartnerDoesNotExistError) {
         response.send(NotFound(error.message));
@@ -170,7 +183,10 @@ export class PartnerController {
   async makeActive(request: Request, response: Response): Promise<void> {
     const { id } = request.params;
     try {
-      const result = await this.toggleActivePartnerUserCase.makeActive(id);
+      const result = await this.toggleActivePartnerUserCase.makeActive(
+        id,
+        request.auth.id
+      );
       response.send(result);
     } catch (error) {
       if (error instanceof DomainValidationError) {
@@ -186,7 +202,10 @@ export class PartnerController {
   async makeInactive(request: Request, response: Response): Promise<void> {
     const { id } = request.params;
     try {
-      const result = await this.toggleActivePartnerUserCase.makeInactive(id);
+      const result = await this.toggleActivePartnerUserCase.makeInactive(
+        id,
+        request.auth.id
+      );
       response.send(result);
     } catch (error) {
       if (error instanceof DomainValidationError) {
@@ -202,7 +221,10 @@ export class PartnerController {
   async partnerLeaves(request: Request, response: Response): Promise<void> {
     const { id } = request.params;
     try {
-      const result = await this.toggleActivePartnerUserCase.partnerLeaves(id);
+      const result = await this.toggleActivePartnerUserCase.partnerLeaves(
+        id,
+        request.auth.id
+      );
       response.send(result);
     } catch (error) {
       if (error instanceof DomainValidationError) {
@@ -220,7 +242,8 @@ export class PartnerController {
     try {
       const result = await this.updatePartnerUseCase.updateAccessCode(
         request.body.access_code,
-        id
+        id,
+        request.auth.id
       );
       response.send(result);
     } catch (error) {

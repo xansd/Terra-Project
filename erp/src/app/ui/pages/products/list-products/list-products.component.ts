@@ -15,6 +15,8 @@ import { ConfirmDialogComponent } from 'src/app/ui/shared/components/confirm-dia
 import { CreateProductComponent } from '../create-product/create-product.component';
 import { EditProductComponent } from '../edit-product/edit-product.component';
 import { DatetimeHelperService } from 'src/app/shared/application/datetime.helper.service';
+import { Router } from '@angular/router';
+import { PageRoutes } from '../../pages-info.config';
 
 const modalOptions: NgbModalOptions = {
   backdrop: 'static',
@@ -70,7 +72,8 @@ export class ListProductsComponent implements OnDestroy, OnInit {
     private getService: GetProductsUseCase,
     private notifier: NotificationAdapter,
     private errorHandler: ErrorHandlerService,
-    private activeEntityService: ActiveEntityService
+    private activeEntityService: ActiveEntityService,
+    private router: Router
   ) {
     this.dataSource = new MatTableDataSource(this.productsList);
     this.dataSource.paginator = this.paginator;
@@ -82,9 +85,14 @@ export class ListProductsComponent implements OnDestroy, OnInit {
   }
 
   ngOnDestroy(): void {
-    this.activeEntityService.clearActiveEntity();
+    // this.activeEntityService.clearActiveEntity();
     this.destroy$.next(true);
     this.destroy$.complete();
+  }
+
+  openDetails(entity: IProduct, id: string) {
+    this.activeEntityService.setActiveEntity(entity, id);
+    this.router.navigateByUrl(PageRoutes.PRODUCTS_DETAILS);
   }
 
   getProducts(): void {
@@ -134,7 +142,7 @@ export class ListProductsComponent implements OnDestroy, OnInit {
   openConfirmDialog(id: string): void {
     const modalRef = this.modalService.open(ConfirmDialogComponent);
     modalRef.componentInstance.message =
-      'El producto será eliminado junto con sus ficheros.';
+      'ATENCIÓN: El producto será eliminado junto con sus ficheros. Si el producto ya ha sido vinculado a alguna compra o transacción se recomienda marcarlo como inactivo en lugar de eliminarlo';
     modalRef.result
       .then((result) => {
         if (result) {

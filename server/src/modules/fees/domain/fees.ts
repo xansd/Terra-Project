@@ -17,6 +17,8 @@ export interface IFees {
   fees_type_id: FeesVariants;
   expiration?: string | null;
   paid?: number | boolean;
+  user_created?: string;
+  user_updated?: string;
   created_at?: string;
   updated_at?: string;
   deleted_at?: string;
@@ -35,6 +37,8 @@ export class Fees implements IFees {
   fees_type_id: FeesVariants;
   expiration?: string | null;
   paid?: number | boolean;
+  user_created?: string;
+  user_updated?: string;
   created_at?: string;
   updated_at?: string;
   deleted_at?: string;
@@ -45,6 +49,8 @@ export class Fees implements IFees {
     this.fees_type_id = props.fees_type_id;
     this.expiration = props.expiration;
     this.paid = props.paid;
+    this.user_created = props.user_created;
+    this.user_updated = props.user_updated;
     this.created_at = props.created_at ? props.created_at : undefined;
     this.updated_at = props.updated_at ? props.updated_at : undefined;
     this.deleted_at = props.deleted_at ? props.deleted_at : undefined;

@@ -1,20 +1,20 @@
 export class ProviderDoesNotExistError extends Error {
   constructor() {
-    super(`El proveedor no existe`);
+    super(`El proveedor/cultivador no existe`);
     this.name = "ProviderDoesNotExistError";
   }
 }
 
 export class ProvidersNotFoundError extends Error {
   constructor() {
-    super(`No hay proveedores registrados`);
+    super(`No hay proveedores/cultivadores registrados`);
     this.name = "ProvidersNotFoundError";
   }
 }
 
 export class ProviderAlreadyExistsError extends Error {
   constructor(name: string) {
-    super(`El proveedor ${name} ya existe`);
+    super(`El proveedor/cultivador ${name} ya existe`);
     this.name = "ProviderAlreadyExistsError";
   }
 }

@@ -14,7 +14,7 @@ export class ProductsService {
     const currentURL = this.appState.state.activeRoute;
     if (
       currentURL === PageRoutes.PRODUCTS_LIST ||
-      // currentURL === PageRoutes.PRODUCTS_DETAILS ||
+      currentURL === PageRoutes.PRODUCTS_DETAILS ||
       currentURL === PageRoutes.PRODUCTS ||
       currentURL === PageRoutes.PRODUCTS_STATISTICS
     ) {

@@ -7,6 +7,7 @@ import {
   ISubcategories,
   ICategories,
   ProductsType,
+  StockOperations,
 } from '../domain/products';
 import {
   IProductDTO,
@@ -140,6 +141,24 @@ export class ProductAPIRepository implements IProductAPIPort {
     return this.http.put<void>(
       `${API_URI}/products/enroll/ancestors/`,
       { ancestorIds, productId },
+      {
+        withCredentials: true,
+      }
+    );
+  }
+
+  updateProductStock(
+    productId: string,
+    stock: number,
+    operation: StockOperations
+  ): Observable<void> {
+    return this.http.put<void>(
+      `${API_URI}/products/update/stock`,
+      {
+        product_id: productId,
+        stock: stock,
+        operation: operation,
+      },
       {
         withCredentials: true,
       }

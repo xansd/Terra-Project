@@ -9,6 +9,15 @@ export interface ICategories {
   type: ProductsType;
 }
 
+export enum StockOperations {
+  ADD = 'ADD',
+  SUBSTRACT = 'SUBSTRACT',
+  UPDATE = 'UPDATE',
+  ADD_LOSS = 'ADD_LOSS',
+  ADD_EXCEDENT = 'ADD_EXCEDENT',
+  UPDATE_LOSS = 'UPDATE_LOSS',
+}
+
 export interface ISubcategories {
   subcategory_id: string;
   name: string;

@@ -61,9 +61,9 @@ export class CreateVarietiesComponent {
     indica: [0],
     thc: [0],
     cbd: [0],
-    bank: [null],
-    flawour: [null],
-    effect: [null],
+    bank: ['', [Validators.required]],
+    flawour: ['', [Validators.required]],
+    effect: ['', [Validators.required]],
     cost_price: [0, [Validators.required]],
     sale_price: [0, [Validators.required]],
   });
@@ -90,6 +90,11 @@ export class CreateVarietiesComponent {
     this.getCategories();
     this.getSubCategories();
     this.getAllFilteredProducts();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   onCategoryChange(event: Event) {

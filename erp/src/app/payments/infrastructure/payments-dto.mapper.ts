@@ -1,12 +1,14 @@
-import { IDTOMapper } from "../../shared/application/dto-mapper.interface";
-import { IPayments, PaymentType, Payments } from "../domain/payments";
+import { IDTOMapper } from '../../shared/application/dto-mapper.interface';
+import { IPayments, PaymentType, Payments } from '../domain/payments';
 
 export interface IPaymentsDTO {
-  payment_id: string;
+  payment_id?: string;
   type: PaymentType;
   reference_id: string;
   amount?: number;
-  notes?: string;
+  notes?: string | null;
+  account_id?: number | string | null;
+  account_name?: string | null;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -24,6 +26,8 @@ export class PaymentMapper implements IDTOMapper<IPayments, IPaymentsDTO> {
       reference_id,
       amount,
       notes,
+      account_id,
+      account_name,
       user_created,
       user_updated,
       created_at,
@@ -37,6 +41,8 @@ export class PaymentMapper implements IDTOMapper<IPayments, IPaymentsDTO> {
       reference_id,
       amount,
       notes,
+      account_id,
+      account_name,
       user_created,
       user_updated,
       created_at,
@@ -54,6 +60,8 @@ export class PaymentMapper implements IDTOMapper<IPayments, IPaymentsDTO> {
       reference_id: domain.reference_id,
       amount: domain.amount,
       notes: domain.notes,
+      account_id: domain.account_id,
+      account_name: domain.account_name,
       user_created: domain.user_created,
       user_updated: domain.user_updated,
       created_at: domain.created_at,

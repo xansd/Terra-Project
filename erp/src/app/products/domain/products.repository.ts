@@ -5,6 +5,7 @@ import {
   IProduct,
   ISubcategories,
   ProductsType,
+  StockOperations,
 } from './products';
 
 export interface IProductAPIPort {
@@ -25,6 +26,10 @@ export interface IProductAPIPort {
     subcategoryIds: string[],
     productId: string
   ): Observable<void>;
-
+  updateProductStock(
+    prodcutId: string,
+    stock: number,
+    operation: StockOperations
+  ): Observable<void>;
   enrollAncestors(ancestorIds: string[], productId: string): Observable<void>;
 }

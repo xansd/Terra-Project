@@ -2,16 +2,21 @@ import { IDTOMapper } from '../../shared/application/dto-mapper.interface';
 import { IHarvests, Harvests } from '../domain/harvests';
 
 export interface IHarvestsDTO {
-  harvest_id: string;
+  harvest_id?: string;
   code?: string;
   provider_id: string;
   product_id: string;
+  provider_name?: string;
+  product_name?: string;
   cost_price?: number;
   sale_price?: number;
   fee_amount?: number;
   quantity?: number;
   notes?: string;
   stock?: number;
+  loss?: number;
+  paid?: number;
+  manicured?: number;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -27,12 +32,17 @@ export class HarvestsMapper implements IDTOMapper<IHarvests, IHarvestsDTO> {
     const code = dto.code;
     const provider_id = dto.provider_id;
     const product_id = dto.product_id;
+    const provider_name = dto.provider_name;
+    const product_name = dto.product_name;
     const cost_price = dto.cost_price;
     const sale_price = dto.sale_price;
     const fee_amount = dto.fee_amount;
     const quantity = dto.quantity;
     const notes = dto.notes;
     const stock = dto.stock;
+    const manicured = dto.manicured;
+    const loss = dto.loss;
+    const paid = dto.paid;
     const user_created = dto.user_created;
     const user_updated = dto.user_updated;
     const created_at = dto.created_at;
@@ -44,12 +54,17 @@ export class HarvestsMapper implements IDTOMapper<IHarvests, IHarvestsDTO> {
       code,
       provider_id,
       product_id,
+      provider_name,
+      product_name,
       cost_price,
       sale_price,
       fee_amount,
       quantity,
       notes,
       stock,
+      manicured,
+      loss,
+      paid,
       user_created,
       user_updated,
       created_at,
@@ -72,6 +87,9 @@ export class HarvestsMapper implements IDTOMapper<IHarvests, IHarvestsDTO> {
       quantity: domain.quantity,
       notes: domain.notes,
       stock: domain.stock,
+      manicured: domain.manicured,
+      loss: domain.loss,
+      paid: domain.paid,
       user_created: domain.user_created,
       user_updated: domain.user_updated,
       created_at: domain.created_at,

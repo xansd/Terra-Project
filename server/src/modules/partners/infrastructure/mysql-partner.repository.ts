@@ -170,6 +170,7 @@ ORDER BY partners.number ASC;
     const selectResult = await MysqlDataBase.query(selectQuery);
     const partnerSaved = selectResult[0];
 
+    Logger.info(`mysql : createPartner : ${partnerPersistence.user_created!}`);
     return this.partnerPersistenceMapper.toDomain(partnerSaved);
   }
   async update(partner: IPartner): Promise<void> {
@@ -207,63 +208,82 @@ ORDER BY partners.number ASC;
       Logger.error(`mysql : updatePartner : PartnerDoesNotExistError`);
       throw new PartnerDoesNotExistError();
     }
+    Logger.info(`mysql : updatePartner : ${partnerPersistence.user_updated!}`);
     return result;
   }
-  async delete(partnerId: string): Promise<void> {
+
+  async delete(partnerId: string, user: string): Promise<void> {
+    const deleteFees = await MysqlDataBase.update(
+      `DELETE FROM fees WHERE partner_id = ?`,
+      [partnerId]
+    );
+
+    Logger.info(`mysql : deletePartnerFees : ${user}`);
     const result = await MysqlDataBase.update(
-      `UPDATE partners SET deleted_at = NOW() WHERE partner_id = ?`,
+      // `UPDATE partners SET deleted_at = NOW(), user_updated = ? WHERE partner_id = ?`,
+      // [user, partnerId]
+      `DELETE FROM partners WHERE partner_id = ?`,
       [partnerId]
     );
     if (result.affectedRows === 0) {
       Logger.error(`mysql : deletePartner : PartnerDoesNotExistError`);
       throw new PartnerDoesNotExistError();
     }
+    Logger.info(`mysql : deletePartner : ${user}`);
     return result;
   }
-  async makeActive(partnerId: string): Promise<void> {
+  async makeActive(partnerId: string, user: string): Promise<void> {
     const result = await MysqlDataBase.update(
-      "UPDATE partners SET active = ? WHERE partner_id = ?",
-      ["1", partnerId]
+      "UPDATE partners SET active = ?, user_updated = ? WHERE partner_id = ?",
+      ["1", user, partnerId]
     );
     if (result.affectedRows === 0) {
       Logger.error(`mysql : activatePartner : PartnerDoesNotExistError`);
       throw new PartnerDoesNotExistError();
     }
+    Logger.info(`mysql : makeActive : ${user}`);
     return result;
   }
-  async makeInactive(partnerId: string): Promise<void> {
+  async makeInactive(partnerId: string, user: string): Promise<void> {
     const result = await MysqlDataBase.update(
-      "UPDATE partners SET active = ? WHERE partner_id = ?",
-      ["0", partnerId]
+      "UPDATE partners SET active = ?, user_updated = ? WHERE partner_id = ?",
+      ["0", user, partnerId]
     );
     if (result.affectedRows === 0) {
       Logger.error(`mysql : blockPartner : PartnerDoesNotExistError`);
       throw new PartnerDoesNotExistError();
     }
+    Logger.info(`mysql : makeInactive : ${user}`);
     return result;
   }
 
-  async partnerLeaves(partnerId: string): Promise<void> {
+  async partnerLeaves(partnerId: string, user: string): Promise<void> {
     const result = await MysqlDataBase.update(
-      "UPDATE partners SET leaves = NOW(), active = ?  WHERE partner_id = ?",
-      ["0", partnerId]
+      "UPDATE partners SET leaves = NOW(), active = ?, user_updated = ?  WHERE partner_id = ?",
+      ["0", user, partnerId]
     );
     if (result.affectedRows === 0) {
       Logger.error(`mysql : partnerLeaves : PartnerDoesNotExistError`);
       throw new PartnerDoesNotExistError();
     }
+    Logger.info(`mysql : partnerLeaves : ${user}`);
     return result;
   }
 
-  async updateAccessCode(accessCode: string, partnerId: string): Promise<void> {
+  async updateAccessCode(
+    accessCode: string,
+    partnerId: string,
+    user: string
+  ): Promise<void> {
     const result = await MysqlDataBase.update(
-      "UPDATE partners SET access_code = ? WHERE partner_id = ?",
-      [accessCode, partnerId]
+      "UPDATE partners SET access_code = ?, user_updated = ? WHERE partner_id = ?",
+      [accessCode, partnerId, user]
     );
     if (result.affectedRows === 0) {
       Logger.error(`mysql : partnerLeaves : PartnerDoesNotExistError`);
       throw new PartnerDoesNotExistError();
     }
+    Logger.info(`mysql : updateAccessCode : ${user}`);
     return result;
   }
 
@@ -275,7 +295,11 @@ ORDER BY partners.number ASC;
     return !!partner.length;
   }
 
-  async updatePartnerCash(amount: number, partnerId: string): Promise<void> {
+  async updatePartnerCash(
+    amount: number,
+    partnerId: string,
+    user: string
+  ): Promise<void> {
     const result = await MysqlDataBase.update(
       "UPDATE partners SET cash = ? WHERE partner_id = ?",
       [amount.toString(), partnerId]
@@ -284,6 +308,7 @@ ORDER BY partners.number ASC;
       Logger.error(`mysql : partnerLeaves : PartnerDoesNotExistError`);
       throw new PartnerDoesNotExistError();
     }
+    Logger.info(`mysql : updatePartnerCash : ${user}`);
     return result;
   }
 
@@ -314,6 +339,7 @@ ORDER BY partners.number ASC;
       Logger.error(`mysql : createSanction : SanctionErrorCreate`);
       throw new SanctionErrorCreate();
     }
+    Logger.info(`mysql : createSanction : ${user}`);
     return selectResult[0];
   }
 
@@ -326,6 +352,7 @@ ORDER BY partners.number ASC;
       Logger.error(`mysql : deleteSanction : SanctionDoesNotExists`);
       throw new SanctionDoesNotExists();
     }
+    Logger.info(`mysql : deleteSanction : ${user}`);
     return result;
   }
 }

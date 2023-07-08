@@ -1,0 +1,65 @@
+::ng-deep .modal-xl {
+    width    : 90% !important;
+    max-width: 1900px;
+    margin   : inherit auto;
+}
+
+::ng-deep .modal-body {
+    padding: 0 !important;
+}
+
+::ng-deep .dropdown-menu {
+    background-color: rgb(53, 67, 74) !important;
+}
+
+::ng-deep card-header {
+    z-index: 1 !important;
+}
+
+
+form {
+
+    padding: 15px;
+}
+
+.save-btn-container {
+    margin-top: 30px;
+
+    button {
+        margin-left: 15px;
+    }
+}
+
+.row {
+    margin-bottom: 30px !important;
+}
+
+label {
+    text-transform  : uppercase;
+    display         : -webkit-box;
+    display         : -ms-flexbox;
+    display         : flex;
+    -webkit-box-pack: start;
+    -ms-flex-pack   : start;
+    justify-content : flex-start;
+
+
+
+}
+
+@media (max-width: 1199px) {
+
+    label {
+        -webkit-box-pack: start;
+        -ms-flex-pack   : start;
+        justify-content : flex-start;
+    }
+
+}
+
+@media (min-width: 1200px) {}
+
+
+::ng-deep .dropdown-menu.show {
+    z-index: 1090 !important;
+}

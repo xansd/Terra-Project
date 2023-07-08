@@ -14,10 +14,14 @@ import searchConfig, {
   ProductsSearchTypes,
 } from 'src/app/ui/components/searcher/search.config';
 import { ActiveEntityService } from 'src/app/ui/services/active-entity-service.service';
-import config from '../../../../config/client.config';
 import { DatetimeHelperService } from 'src/app/shared/application/datetime.helper.service';
 import { CreateVarietiesComponent } from '../create-varieties/create-varieties.component';
 import { EditVarietiesComponent } from '../edit-varieties/edit-varieties.component';
+import { CreateHarvestComponent } from '../../harvests/create-harvest/create-harvest.component';
+import { IHarvests } from 'src/app/purchases/domain/harvests';
+import { GetHarvests } from 'src/app/purchases/application/get-harvests.use-cases';
+import { Router } from '@angular/router';
+import { PageRoutes } from '../../pages-info.config';
 
 const modalEditOptions: NgbModalOptions = {
   backdrop: 'static',
@@ -35,6 +39,8 @@ const modalOptions: NgbModalOptions = {
   styleUrls: ['./varieties-details.component.scss'],
 })
 export class VarietiesDetailsComponent {
+  p = 1;
+  harvests: IHarvests[] = [];
   id!: string;
   product!: IProduct | undefined;
   options: IProductSubsetDTO[] = [];
@@ -44,8 +50,8 @@ export class VarietiesDetailsComponent {
   private destroy$ = new Subject();
   isLoading: boolean = true;
   selectInProgress = false;
-  cover: any;
-  defaultImage = config.DEFAULT_IMAGE;
+  // cover: any;
+  // defaultImage = config.DEFAULT_IMAGE;
   categories: ICategories[] = [];
   subcategories: ISubcategories[] = [];
 
@@ -53,23 +59,33 @@ export class VarietiesDetailsComponent {
     private productsService: GetProductsUseCase,
     private modalService: NgbModal,
     private activeEntityService: ActiveEntityService,
-    private notifier: NotificationAdapter
+    private notifier: NotificationAdapter,
+    private harvestService: GetHarvests,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     // Carga el buscador
     this.getCategories();
     this.getProductsList();
+    this.getActiveEntityId();
     if (this.id) this.getProduct();
   }
 
   ngOnDestroy(): void {
-    this.activeEntityService.clearActiveEntity();
+    //this.activeEntityService.clearActiveEntity();
     this.destroy$.next(true);
     this.destroy$.complete();
   }
 
   /*********************************BUSCADOR************************************/
+
+  getActiveEntityId(): string | void {
+    const result = this.activeEntityService.getActiveEntityId() || '';
+    if (result) {
+    }
+    this.id = result;
+  }
 
   getProductsList() {
     this.productsService
@@ -126,10 +142,27 @@ export class VarietiesDetailsComponent {
         next: (product: IProduct) => {
           this.id = product.product_id!;
           this.product = product;
-          this.activeEntityService.setActiveEntity(this.product, this.id);
+          //this.activeEntityService.setActiveEntity(this.product, this.id);
           this.isLoading = false;
+          this.getAllHarvestByVariety();
         },
       });
+  }
+
+  getAllHarvestByVariety() {
+    this.harvestService
+      .getAllHarvestsByVariety(this.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (harvests: IHarvests[]) => {
+          this.harvests = harvests;
+        },
+      });
+  }
+
+  openDetails(harvest: IHarvests) {
+    this.activeEntityService.setActiveEntity(harvest, harvest.harvest_id!);
+    this.router.navigateByUrl(PageRoutes.HARVESTS_DETAILS);
   }
 
   getCategories(): void {
@@ -200,6 +233,22 @@ export class VarietiesDetailsComponent {
         if (error) console.error(error);
       });
   }
+
+  openCreateHarvestDialog() {
+    const modalRef = this.modalService.open(
+      CreateHarvestComponent,
+      modalOptions
+    );
+    modalRef.componentInstance.varietyId = this.id;
+    modalRef.result
+      .then((result) => {
+        if (result) {
+        }
+      })
+      .catch((error) => {
+        if (error) console.error(error);
+      });
+  }
   /*************************************CARGA PRODUCTO**************************************/
 
   formatDate(date: string): string {
@@ -231,5 +280,9 @@ export class VarietiesDetailsComponent {
       .map((product) => product.name);
 
     return productsName.length > 0 ? productsName.join(', ') : 'Sin ancestros';
+  }
+
+  getProductStock(harvest: IHarvests) {
+    return this.harvestService.getHarvestFinalStock(harvest);
   }
 }

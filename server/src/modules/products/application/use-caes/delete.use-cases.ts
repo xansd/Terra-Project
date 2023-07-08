@@ -1,11 +1,11 @@
 import { IProductRepository } from "../../domain/products.repository";
 
 export interface IDeleteProduct {
-  deleteProduct(id: string): Promise<void>;
+  deleteProduct(id: string, user: string): Promise<void>;
 }
 
 export interface IDeleteSubcategorie {
-  deleteProduct(id: string): Promise<void>;
+  deleteSubcategories(id: string): Promise<void>;
 }
 
 export class DeleteProductUseCase
@@ -13,12 +13,12 @@ export class DeleteProductUseCase
 {
   constructor(private readonly productRepository: IProductRepository) {}
 
-  async deleteProduct(id: string): Promise<void> {
-    const result = await this.productRepository.delete(id);
+  async deleteProduct(id: string, user: string): Promise<void> {
+    const result = await this.productRepository.delete(id, user);
     return result;
   }
 
-  async deleteSubcategorie(id: string): Promise<void> {
+  async deleteSubcategories(id: string): Promise<void> {
     const result = await this.productRepository.deleteSubCategory(id);
     return result;
   }

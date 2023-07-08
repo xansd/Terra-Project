@@ -111,6 +111,7 @@ export class MySqlSalesRepository implements ISalesRepository {
     const selectResult = await MysqlDataBase.query(selectQuery);
     const lastSaleInserted = selectResult[0];
 
+    Logger.info(`mysql : createSale: ${salePersistence.user_created}`);
     return this.salesPersistenceMapper.toDomain(lastSaleInserted);
   }
 
@@ -143,15 +144,16 @@ export class MySqlSalesRepository implements ISalesRepository {
     }
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: string, user: string): Promise<void> {
     const result = await MysqlDataBase.update(
-      `UPDATE sales SET deleted_at = NOW() WHERE sale_id = ?`,
-      [id]
+      `UPDATE sales SET deleted_at = NOW(), user_updated = ? WHERE sale_id = ?`,
+      [user, id]
     );
     if (result.affectedRows === 0) {
       Logger.error(`mysql : delete : SaleDoesNotExistError`);
       throw new SaleDoesNotExistError();
     }
+    Logger.info(`mysql : deleteSale ${user}`);
     return result;
   }
 }

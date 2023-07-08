@@ -16,6 +16,8 @@ import { ConfirmDialogComponent } from 'src/app/ui/shared/components/confirm-dia
 import { ActiveEntityService } from 'src/app/ui/services/active-entity-service.service';
 import { DatetimeHelperService } from 'src/app/shared/application/datetime.helper.service';
 import { FeesUseCases } from 'src/app/partners/application/fees.use-case';
+import { PageRoutes } from '../../pages-info.config';
+import { Router } from '@angular/router';
 
 const modalOptions: NgbModalOptions = {
   backdrop: 'static',
@@ -82,7 +84,8 @@ export class ListPartnersComponent implements OnDestroy, OnInit {
     private notifier: NotificationAdapter,
     private errorHandler: ErrorHandlerService,
     private activeEntityService: ActiveEntityService,
-    private feesService: FeesUseCases
+    private feesService: FeesUseCases,
+    private router: Router
   ) {
     this.dataSource = new MatTableDataSource(this.partnersList);
     this.dataSource.paginator = this.paginator;
@@ -94,7 +97,7 @@ export class ListPartnersComponent implements OnDestroy, OnInit {
   }
 
   ngOnDestroy(): void {
-    this.activeEntityService.clearActiveEntity();
+    // this.activeEntityService.clearActiveEntity();
     this.destroy$.next(true);
     this.destroy$.complete();
   }
@@ -154,7 +157,7 @@ export class ListPartnersComponent implements OnDestroy, OnInit {
   openConfirmDialog(id: string): void {
     const modalRef = this.modalService.open(ConfirmDialogComponent);
     modalRef.componentInstance.message =
-      'El socio será eliminado junto con todos sus documentos.';
+      'ATENCIÓN: El socio será eliminado junto con sus ficheros y cuotas. Si el socio está vinculado a alguna venta será necesario eliminarla primero';
     modalRef.result
       .then((result) => {
         if (result) {
@@ -227,6 +230,11 @@ export class ListPartnersComponent implements OnDestroy, OnInit {
   //   this.partnersList.splice(index, 1);
   //   this.renderTable();
   // }
+
+  openDetails(entity: IPartner, id: string) {
+    this.activeEntityService.setActiveEntity(entity, id);
+    this.router.navigateByUrl(PageRoutes.PARTNER_DETAILS);
+  }
 
   private renderTable() {
     this.dataSource = new MatTableDataSource(this.partnersList);

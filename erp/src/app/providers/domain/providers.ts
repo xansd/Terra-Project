@@ -2,7 +2,7 @@ import { ProductsType } from '../../products/domain/products';
 import { Email } from '../../shared/domain/value-objects/email.value-object';
 
 export interface IProvider {
-  provider_id: string;
+  provider_id?: string;
   name?: string;
   email?: Email;
   phone?: string;
@@ -16,7 +16,7 @@ export interface IProvider {
 }
 
 export class Provider implements IProvider {
-  provider_id: string;
+  provider_id?: string;
   name?: string | undefined;
   email?: Email | undefined;
   phone?: string | undefined;

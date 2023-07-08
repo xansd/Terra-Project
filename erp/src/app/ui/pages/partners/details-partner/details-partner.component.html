@@ -55,7 +55,7 @@
 
                 <div class="property">
                   <span class="property-name">Terapéutico:</span>
-                  <span class="property-value fw-bold">{{
+                  <span class="property-value fw-bold text-theme">{{
                     partner!.therapeutic ? "SI" : "NO"
                   }}</span>
                 </div>
@@ -89,7 +89,9 @@
                 </div>
                 <div class="property" *ngIf="partner!.leaves">
                   <span class="property-name">Baja:</span>
-                  <span class="property-value">{{ partner!.leaves }}</span>
+                  <span class="property-value text-danger">{{
+                    formatDate(partner!.leaves)
+                  }}</span>
                 </div>
                 <!-- TOPES -->
                 <h6 class="card-subtitle mb-3 text-inverse text-opacity-50">
@@ -124,7 +126,7 @@
                 </div>
                 <div class="property" style="font-weight: bold">
                   <span class="property-name">Tope total/mes:</span>
-                  <span class="property-value"
+                  <span class="property-value text-info"
                     >{{ getTotalTopMonth() | number : "1.2-2" }} gr.</span
                   >
                 </div>
@@ -302,11 +304,12 @@
       <!-- Botones -->
       <div class="col-lg-2">
         <div class="button-container">
-          <button class="btn btn-primary">
+          <button [disabled]="partner!.leaves" class="btn btn-primary">
             <i class="bi bi-cart3"></i> Dispensar
           </button>
           <div class="btn-gr">
             <button
+              [disabled]="partner!.leaves"
               class="btn btn-success"
               (click)="updatePartnersCash(cashOperation.INCOME)"
             >
@@ -314,7 +317,7 @@
             </button>
 
             <button
-              [disabled]="partner!.cash <= 0"
+              [disabled]="partner!.cash <= 0 || partner!.leaves"
               class="btn btn-danger"
               (click)="updatePartnersCash(cashOperation.REFUND)"
             >
@@ -324,7 +327,9 @@
                 !(
                   isExpired(lastCuotaFee.expiration!) ||
                   isCurrentMonth(lastCuotaFee.expiration!)
-                ) || isFeeExent(lastCuotaFee)
+                ) ||
+                isFeeExent(lastCuotaFee) ||
+                partner!.leaves
               "
               class="btn btn-success"
               (click)="payFeeConfirm(lastCuotaFee)"
@@ -332,6 +337,7 @@
               <i class="bi bi-shield-check"></i> Abonar cuota
             </button>
             <button
+              [disabled]="partner!.leaves"
               class="btn btn-success"
               (click)="payFeeConfirm(lastInscriptionFee)"
               *ngIf="
@@ -346,13 +352,25 @@
             <button class="btn btn-default" (click)="openPartnerHistory()">
               <i class="bi bi-person-badge"></i> Historial
             </button>
-            <button class="btn btn-info" (click)="openEditPartnerDialog()">
+            <button
+              [disabled]="partner!.leaves"
+              class="btn btn-info"
+              (click)="openEditPartnerDialog()"
+            >
               <i class="bi bi-pencil-square"></i> Editar & Doc.
             </button>
-            <button class="btn btn-warning" (click)="updateAccessCode()">
+            <button
+              [disabled]="partner!.leaves"
+              class="btn btn-warning"
+              (click)="updateAccessCode()"
+            >
               <i class="bi bi-door-open"></i> Acceso
             </button>
-            <button class="btn btn-danger" (click)="partnersLeavesConfirm()">
+            <button
+              [disabled]="partner!.leaves"
+              class="btn btn-danger"
+              (click)="partnersLeavesConfirm()"
+            >
               <i class="bi bi-person-down"></i> Baja socio
             </button>
           </div>

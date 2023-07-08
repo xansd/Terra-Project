@@ -7,6 +7,7 @@ import { IPurchaseDTO, PurchasesMapper } from './purchases-dto.mapper';
 import { IPurchasesRepository } from '../domain/purchases.repository';
 import { IHarvests } from '../domain/harvests';
 import { IPurchase } from '../domain/purchases';
+import { StockOperations } from 'src/app/products/domain/products';
 
 const API_URI = SERVER.API_URI;
 
@@ -18,9 +19,10 @@ export class PurchasesAPIRepository implements IPurchasesRepository {
     this.purchasesMapper = new PurchasesMapper();
     this.harvestsMapper = new HarvestsMapper();
   }
+
   getPurchaseById(id: string): Observable<IPurchase> {
     return this.http
-      .get<IPurchaseDTO>(`${API_URI}/purchases/single/${id}`, {
+      .get<IPurchaseDTO>(`${API_URI}/procurement/purchases/single/${id}`, {
         withCredentials: true,
       })
       .pipe(
@@ -30,7 +32,7 @@ export class PurchasesAPIRepository implements IPurchasesRepository {
 
   getAllPurchases(): Observable<IPurchase[]> {
     return this.http
-      .get<IPurchaseDTO[]>(`${API_URI}/purchases/all`, {
+      .get<IPurchaseDTO[]>(`${API_URI}/procurement/purchases/all`, {
         withCredentials: true,
       })
       .pipe(
@@ -40,29 +42,82 @@ export class PurchasesAPIRepository implements IPurchasesRepository {
       );
   }
 
+  getAllByProvider(id: string): Observable<IPurchase[]> {
+    return this.http
+      .get<IPurchaseDTO[]>(
+        `${API_URI}/procurement/purchases/all/provider/${id}`,
+        {
+          withCredentials: true,
+        }
+      )
+      .pipe(
+        map((purchaseList: IPurchaseDTO[]) =>
+          this.purchasesMapper.toDomainList(purchaseList)
+        )
+      );
+  }
+
+  getAllByCultivator(id: string): Observable<IHarvests[]> {
+    return this.http
+      .get<IHarvestsDTO[]>(
+        `${API_URI}/procurement/purchases/all/cultivator/${id}`,
+        {
+          withCredentials: true,
+        }
+      )
+      .pipe(
+        map((purchaseList: IHarvestsDTO[]) =>
+          this.harvestsMapper.toDomainList(purchaseList)
+        )
+      );
+  }
+
+  getAllByVariety(id: string): Observable<IHarvests[]> {
+    return this.http
+      .get<IHarvestsDTO[]>(
+        `${API_URI}/procurement/purchases/all/variety/${id}`,
+        {
+          withCredentials: true,
+        }
+      )
+      .pipe(
+        map((purchaseList: IHarvestsDTO[]) =>
+          this.harvestsMapper.toDomainList(purchaseList)
+        )
+      );
+  }
+
   createPurchase(purchase: IPurchase): Observable<IPurchase> {
     const purchaseDTO = this.purchasesMapper.toDTO(purchase);
-    return this.http.post<IPurchase>(`${API_URI}/purchases`, purchaseDTO, {
-      withCredentials: true,
-    });
+    return this.http.post<IPurchase>(
+      `${API_URI}/procurement/purchases`,
+      purchaseDTO,
+      {
+        withCredentials: true,
+      }
+    );
   }
 
   updatePurchase(purchase: IPurchase): Observable<void> {
     const purchaseDTO = this.purchasesMapper.toDTO(purchase);
-    return this.http.put<void>(`${API_URI}/purchases`, purchaseDTO, {
-      withCredentials: true,
-    });
+    return this.http.put<void>(
+      `${API_URI}/procurement/purchases`,
+      purchaseDTO,
+      {
+        withCredentials: true,
+      }
+    );
   }
 
   deletePurchase(id: string): Observable<void> {
-    return this.http.delete<void>(`${API_URI}/purchases/${id}`, {
+    return this.http.delete<void>(`${API_URI}/procurement/purchases/${id}`, {
       withCredentials: true,
     });
   }
 
   getHarvestById(id: string): Observable<IHarvests> {
     return this.http
-      .get<IHarvestsDTO>(`${API_URI}/harvests/single/${id}`, {
+      .get<IHarvestsDTO>(`${API_URI}/procurement/harvests/single/${id}`, {
         withCredentials: true,
       })
       .pipe(
@@ -72,7 +127,7 @@ export class PurchasesAPIRepository implements IPurchasesRepository {
 
   getAllHarvests(): Observable<IHarvests[]> {
     return this.http
-      .get<IHarvestsDTO[]>(`${API_URI}/harvests/all`, {
+      .get<IHarvestsDTO[]>(`${API_URI}/procurement/harvests/all`, {
         withCredentials: true,
       })
       .pipe(
@@ -84,20 +139,82 @@ export class PurchasesAPIRepository implements IPurchasesRepository {
 
   createHarvest(harvest: IHarvests): Observable<IHarvests> {
     const harvestsDTO = this.harvestsMapper.toDTO(harvest);
-    return this.http.post<IHarvests>(`${API_URI}/harvests`, harvestsDTO, {
-      withCredentials: true,
-    });
+    return this.http.post<IHarvests>(
+      `${API_URI}/procurement/harvests`,
+      harvestsDTO,
+      {
+        withCredentials: true,
+      }
+    );
   }
 
-  updateHarvest(harvest: IHarvests): Observable<void> {
-    const harvestsDTO = this.harvestsMapper.toDTO(harvest);
-    return this.http.put<void>(`${API_URI}/harvests`, harvestsDTO, {
-      withCredentials: true,
-    });
+  updateHarvestStock(
+    harvestId: string,
+    stock: number,
+    operation: StockOperations
+  ): Observable<void> {
+    return this.http.put<void>(
+      `${API_URI}/procurement/harvests/stock`,
+      {
+        harvest_id: harvestId,
+        stock: stock,
+        operation: operation,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+  }
+
+  updateHarvestLoss(
+    harvestId: string,
+    loss: number,
+    operation: StockOperations
+  ): Observable<void> {
+    return this.http.put<void>(
+      `${API_URI}/procurement/harvests/loss`,
+      {
+        harvest_id: harvestId,
+        loss: loss,
+        operation: operation,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+  }
+
+  updateHarvestFee(harvestId: string, fee: number): Observable<void> {
+    return this.http.put<void>(
+      `${API_URI}/procurement/harvests/fee/`,
+      {
+        harvest_id: harvestId,
+        fee: fee,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+  }
+
+  updateHarvestManicured(
+    harvestId: string,
+    manicured: number
+  ): Observable<void> {
+    return this.http.put<void>(
+      `${API_URI}/procurement/harvests/manicured`,
+      {
+        harvest_id: harvestId,
+        manicured: manicured,
+      },
+      {
+        withCredentials: true,
+      }
+    );
   }
 
   deleteHarvest(id: string): Observable<void> {
-    return this.http.delete<void>(`${API_URI}/harvests/${id}`, {
+    return this.http.delete<void>(`${API_URI}/procurement/harvests/${id}`, {
       withCredentials: true,
     });
   }

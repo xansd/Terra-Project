@@ -18,3 +18,17 @@ export class PaymentCreationError extends Error {
     this.name = "PaymentCreationError";
   }
 }
+
+export class PaymentReferenceNotFoundError extends Error {
+  constructor() {
+    super(`No se ha encontrado un referencia válida`);
+    this.name = "PaymentReferenceNotFoundError";
+  }
+}
+
+export class PaymentLimitExceededError extends Error {
+  constructor() {
+    super(`El pago es superior al abono pendiente`);
+    this.name = "PaymentLimitExceded";
+  }
+}

@@ -8,6 +8,7 @@ import { SharedModule } from '../shared/shared.module';
 import { JwtTokenDecoder } from 'src/app/auth/infrastructure/jwtTokenDecoder.adapter';
 import { ComponentsModule } from '../components/components.module';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { CurrencyPipe } from '@angular/common';
 
 // Components
 import { HomePage } from './home/home';
@@ -52,6 +53,37 @@ import { PaymentsAPIRepository } from 'src/app/payments/infrastructure/payments-
 import { PurchasesAPIRepository } from 'src/app/purchases/infrastructure/purchases-api.repository';
 import { SalesAPIRepository } from 'src/app/sales/infrastructure/sales-api.repository';
 import { ProvidersAPIRepository } from 'src/app/providers/infrastructure/providers-api.repository';
+import { PurchasesComponent } from './purchases/purchases.component';
+import { HarvestsComponent } from './harvests/harvests.component';
+import { CreateHarvestComponent } from './harvests/create-harvest/create-harvest.component';
+import { EditHarvestComponent } from './harvests/edit-harvest/edit-harvest.component';
+import { ListHarvestsComponent } from './harvests/list-harvests/list-harvests.component';
+import { DetailsHarvestsComponent } from './harvests/details-harvests/details-harvests.component';
+import { StatisticsHarvestsComponent } from './harvests/statistics-harvests/statistics-harvests.component';
+import { ListPurchasesComponent } from './purchases/list-purchases/list-purchases.component';
+import { StatisticsPurchasesComponent } from './purchases/statistics-purchases/statistics-purchases.component';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { MaterialModule } from '../shared/material.module';
+import { ProvidersComponent } from './providers/providers.component';
+import { CultivatorsComponent } from './cultivators/cultivators.component';
+import { CreateCultivatorComponent } from './cultivators/create-cultivator/create-cultivator.component';
+import { EditCultivatorComponent } from './cultivators/edit-cultivator/edit-cultivator.component';
+import { ListCultivatorComponent } from './cultivators/list-cultivator/list-cultivator.component';
+import { DetailsCultivatorComponent } from './cultivators/details-cultivator/details-cultivator.component';
+import { CreateProviderComponent } from './providers/create-provider/create-provider.component';
+import { EditProviderComponent } from './providers/edit-provider/edit-provider.component';
+import { ListProviderComponent } from './providers/list-provider/list-provider.component';
+import { StatisticsProviderComponent } from './providers/statistics-provider/statistics-provider.component';
+import { StatisticsCultivatorComponent } from './cultivators/statistics-cultivator/statistics-cultivator.component';
+import { CreatePurchaseComponent } from './purchases/create-purchase/create-purchase.component';
+import { EditPurchaseComponent } from './purchases/edit-purchase/edit-purchase.component';
+import { DetailsProviderComponent } from './providers/details-provider/details-provider.component';
+import { DetailsPurchasesComponent } from './purchases/details-purchases/details-purchases.component';
+import { AccountingComponent } from './accounting/accounting.component';
+import { ListTransactionsComponent } from './accounting/list-transactions/list-transactions.component';
+import { ListPaymentsComponent } from './accounting/list-payments/list-payments.component';
+import { AccountingDetailsComponent } from './accounting/accounting-details/accounting-details.component';
+import { BalanceComponent } from './accounting/balance/balance.component';
 
 @NgModule({
   declarations: [
@@ -84,8 +116,38 @@ import { ProvidersAPIRepository } from 'src/app/providers/infrastructure/provide
     ListVarietiesComponent,
     VarietiesDetailsComponent,
     VarietiesStatisticsComponent,
+    PurchasesComponent,
+    HarvestsComponent,
+    CreateHarvestComponent,
+    EditHarvestComponent,
+    ListHarvestsComponent,
+    DetailsHarvestsComponent,
+    StatisticsHarvestsComponent,
+    ListPurchasesComponent,
+    StatisticsPurchasesComponent,
+    ProvidersComponent,
+    CultivatorsComponent,
+    CreateCultivatorComponent,
+    EditCultivatorComponent,
+    ListCultivatorComponent,
+    DetailsCultivatorComponent,
+    CreateProviderComponent,
+    EditProviderComponent,
+    ListProviderComponent,
+    StatisticsProviderComponent,
+    StatisticsCultivatorComponent,
+    CreatePurchaseComponent,
+    EditPurchaseComponent,
+    DetailsProviderComponent,
+    DetailsPurchasesComponent,
+    AccountingComponent,
+    ListTransactionsComponent,
+    ListPaymentsComponent,
+    AccountingDetailsComponent,
+    BalanceComponent,
   ],
   imports: [
+    NgxPaginationModule,
     CommonModule,
     RouterModule,
     ReactiveFormsModule,
@@ -93,6 +155,7 @@ import { ProvidersAPIRepository } from 'src/app/providers/infrastructure/provide
     ComponentsModule,
     SharedModule,
     NgbModule,
+    MaterialModule,
   ],
   providers: [
     AuthToken,

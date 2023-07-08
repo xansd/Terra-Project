@@ -133,10 +133,18 @@
                       data-toggle="buttons"
                     >
                       <button
+                        (click)="openDetails(row, row.product_id)"
+                        type="button"
+                        class="btn btn-info"
+                        title="Consultar ficha"
+                      >
+                        <i class="fa fa-eye"> </i>
+                      </button>
+                      <button
                         (click)="openEditProductDialog(row, row.product_id)"
                         type="button"
                         class="btn btn-primary"
-                        title="Editar socio"
+                        title="Editar producto"
                       >
                         <i class="bi bi-pencil-square"> </i>
                       </button>
@@ -145,9 +153,9 @@
                         (click)="openConfirmDialog(row.product_id)"
                         type="button"
                         class="btn btn-danger"
-                        title="Eliminar socio"
+                        title="Eliminar producto"
                       >
-                        <i class="bi bi-person-x"> </i>
+                        <i class="bi bi-x"> </i>
                       </button>
                     </div>
                   </mat-cell>

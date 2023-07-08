@@ -52,7 +52,7 @@ export class ODTGenerator implements IODTGenerator {
       surname: partner.surname,
       name: partner.name,
       dni: partner.dni || "",
-      birth_date: DatetimeHelperService._toString(partner.birthday),
+      birth_date: DatetimeHelperService.__toString(partner.birthday),
       phone: partner.phone,
       email: partner.email.value,
       date: "20/09/2023",

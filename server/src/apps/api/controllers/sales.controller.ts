@@ -92,7 +92,7 @@ export class SalesController {
     const { id } = request.params;
 
     try {
-      const result = await this.updateSalesService.delete(id);
+      const result = await this.updateSalesService.delete(id, request.auth.id);
       response.send(result);
     } catch (error) {
       if (error instanceof DomainValidationError) {

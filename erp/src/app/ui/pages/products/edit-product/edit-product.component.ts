@@ -33,6 +33,7 @@ import { FormsHelperService } from 'src/app/ui/shared/helpers/forms-helper.servi
 })
 export class EditProductComponent {
   switchEventActive = true;
+  lot = false;
   editProductForm: UntypedFormGroup = this.formBuilder.group({
     name: [null, [Validators.required]],
     category_id: [1, [Validators.required]],
@@ -47,8 +48,8 @@ export class EditProductComponent {
     bank: [null],
     flawour: [null],
     effect: [null],
-    cost_price: [0],
-    sale_price: [0],
+    cost_price: [''],
+    sale_price: [0, [Validators.min(0)]],
   });
   productEdited!: IProduct;
   modalActions = ModalActions;
@@ -89,6 +90,10 @@ export class EditProductComponent {
     this.destroy$.next(true);
     this.destroy$.complete();
     this.formsHelperService.clearFormMeta();
+  }
+
+  toggleLot() {
+    this.lot = !this.lot;
   }
 
   getAllFilteredProducts(): void {

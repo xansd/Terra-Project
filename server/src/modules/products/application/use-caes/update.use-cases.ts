@@ -1,9 +1,10 @@
 import Logger from "../../../../apps/utils/logger";
 import { DomainValidationError } from "../../../shared/domain/domain-validation.exception";
-import { IProduct } from "../../domain/products";
+import { IProduct, StockOperations } from "../../domain/products";
 import { ProductAlreadyExistsError } from "../../domain/products.exception";
 import { IProductRepository } from "../../domain/products.repository";
 import { IProductDTO, ProductDTOMapper } from "../products-dto.mapper";
+import { UpdateStockService } from "../services/update-stock.service";
 
 export interface IUpdateProductUseCase {
   updateProduct(product: IProductDTO): Promise<void>;
@@ -21,11 +22,11 @@ export interface IEnrollAncestorsUseCase {
 }
 
 export interface IMakeActive {
-  makeActive(id: string): Promise<void>;
+  makeActive(id: string, user: string): Promise<void>;
 }
 
 export interface IMakeInactive {
-  makeInactive(id: string): Promise<void>;
+  makeInactive(id: string, user: string): Promise<void>;
 }
 
 export class UpdateProductUseCase
@@ -38,6 +39,9 @@ export class UpdateProductUseCase
 {
   private productMapper: ProductDTOMapper = new ProductDTOMapper();
   productDomain!: IProduct;
+  private stockService: UpdateStockService = new UpdateStockService(
+    this.productRepository
+  );
 
   constructor(private readonly productRepository: IProductRepository) {}
   async updateProduct(product: IProductDTO): Promise<void> {
@@ -76,6 +80,32 @@ export class UpdateProductUseCase
     }
   }
 
+  async updateProductStock(
+    productId: string,
+    stock: number,
+    operation: StockOperations,
+    user: string
+  ): Promise<void> {
+    let newStockValue = 0;
+    switch (operation) {
+      // case StockOperations.SUBSTRACT:
+      //   newStockValue = await this.stockService.subtractProductStock(
+      //     productId,
+      //     stock
+      //   );
+      //   break;
+      case StockOperations.UPDATE:
+        newStockValue = this.stockService.validateUpdateProductStock(stock);
+        break;
+    }
+    const result = await this.productRepository.updateProductStock(
+      productId,
+      stock,
+      user
+    );
+    return result;
+  }
+
   async enrollSubcategories(
     subcategoryIds: string[],
     productId: string
@@ -98,13 +128,13 @@ export class UpdateProductUseCase
     return result;
   }
 
-  async makeActive(id: string): Promise<void> {
-    const result = await this.productRepository.makeActive(id);
+  async makeActive(id: string, user: string): Promise<void> {
+    const result = await this.productRepository.makeActive(id, user);
     return result;
   }
 
-  async makeInactive(id: string): Promise<void> {
-    const result = await this.productRepository.makeInactive(id);
+  async makeInactive(id: string, user: string): Promise<void> {
+    const result = await this.productRepository.makeInactive(id, user);
     return result;
   }
 }

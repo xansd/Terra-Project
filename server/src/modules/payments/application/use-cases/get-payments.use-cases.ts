@@ -39,13 +39,13 @@ export class GetPayments implements IGetPayments {
     const payments = await this.paymentsRepository.getAllByReference(
       referenceId
     );
-    if (payments.length === 0) {
-      const paymentNotFound = new PaymentDoesNotExistError();
-      Logger.error(
-        `payment-repository : getAllByType : ${PaymentDoesNotExistError}`
-      );
-      throw paymentNotFound;
-    }
+    // if (payments.length === 0) {
+    //   const paymentNotFound = new PaymentDoesNotExistError();
+    //   Logger.error(
+    //     `payment-repository : getAllByType : ${PaymentDoesNotExistError}`
+    //   );
+    //   throw paymentNotFound;
+    // }
 
     return payments;
   }

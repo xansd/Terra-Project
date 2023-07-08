@@ -81,7 +81,7 @@ export class AppServer {
     this.app.use("/api/products", productsRoutes);
     this.app.use("/api/payments", paymentsRoutes);
     this.app.use("/api/providers", providersRoutes);
-    this.app.use("/api/purchases", purchasesRoutes);
+    this.app.use("/api/procurement", purchasesRoutes);
     this.app.use("/api/sales", salesRoutes);
     this.app.use("/api/transactions", transactionsRoutes);
 

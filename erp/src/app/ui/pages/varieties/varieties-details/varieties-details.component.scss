@@ -71,7 +71,21 @@
 
 
 .spinner {
-    margin-top: 150px;
+    height               : 100%;
+    display              : -webkit-box;
+    display              : -ms-flexbox;
+    display              : flex;
+    -webkit-box-align    : center;
+    -ms-flex-align       : center;
+    align-items          : center;
+    -webkit-box-pack     : center;
+    -ms-flex-pack        : center;
+    justify-content      : center;
+    -webkit-box-orient   : vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction   : column;
+    flex-direction       : column;
+    row-gap              : 15px;
 }
 
 .name {
@@ -136,7 +150,8 @@
 }
 
 .list-group {
-    max-height   : 400px;
+    max-height   : 500px;
+    min-height   : 500px;
     overflow-y   : auto;
     margin-bottom: 20px;
 
@@ -162,5 +177,44 @@
             }
         }
 
+    }
+}
+
+::ng-deep .pagination {
+    margin-top      : 20px !important;
+    display         : -webkit-box;
+    display         : -ms-flexbox;
+    display         : flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack   : center;
+    justify-content : center;
+}
+
+::ng-deep .pagination a {
+    color: #FFF !important;
+}
+
+::ng-deep .pagination span {
+    color: #FFF !important;
+}
+
+::ng-deep .pagination a:hover {
+    background-color: transparent !important;
+    color           : #3cd2a5 !important;
+}
+
+::ng-deep .pagination span:hover {
+    background-color: transparent !important;
+    color           : #3cd2a5 !important;
+}
+
+.stock-data {
+    margin-top   : 40px;
+    border-top   : 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    padding      : 15px 0 10px 0;
+
+    .stock {
+        font-size: 1rem;
     }
 }

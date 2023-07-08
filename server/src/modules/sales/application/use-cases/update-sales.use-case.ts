@@ -4,7 +4,7 @@ import { ISalesDTO, SalesMapper } from "../sales-dto.mapper";
 
 export interface IUpdateSales {
   create(sale: ISalesDTO): Promise<ISales>;
-  delete(id: string): Promise<void>;
+  delete(id: string, user: string): Promise<void>;
 }
 
 export class UpdateSales implements IUpdateSales {
@@ -19,8 +19,8 @@ export class UpdateSales implements IUpdateSales {
     return SaleRepository;
   }
 
-  async delete(id: string): Promise<void> {
-    const result = await this.SaleRepository.delete(id);
+  async delete(id: string, user: string): Promise<void> {
+    const result = await this.SaleRepository.delete(id, user);
     return result;
   }
 }

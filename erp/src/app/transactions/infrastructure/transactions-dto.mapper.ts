@@ -2,15 +2,18 @@ import { IDTOMapper } from '../../shared/application/dto-mapper.interface';
 import { ITransactions, Transactions } from '../domain/transactions';
 
 export interface ITransactionsDTO {
-  transaction_id: string;
+  transaction_id?: string;
   code?: string;
   transaction_type_id: string;
+  transaction_type_name?: string;
   amount: number;
-  recurrence_days?: number;
-  recurrence_times?: number;
-  date_start?: string;
-  interest?: number;
-  notes?: string;
+  recurrence_days?: number | null;
+  recurrence_times?: number | null;
+  date_start?: string | null;
+  interest?: number | null;
+  notes?: string | null;
+  source_account_id?: string | null;
+  destination_account_id?: string | null;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -27,12 +30,15 @@ export class TransactionsMapper
     const transaction_id = dto.transaction_id;
     const code = dto.code;
     const transaction_type_id = dto.transaction_type_id;
+    const transaction_type_name = dto.transaction_type_name;
     const amount = dto.amount;
     const recurrence_days = dto.recurrence_days;
     const recurrence_times = dto.recurrence_times;
     const date_start = dto.date_start;
     const interest = dto.interest;
     const notes = dto.notes;
+    const source_account_id = dto.source_account_id;
+    const destination_account_id = dto.destination_account_id;
     const user_created = dto.user_created;
     const user_updated = dto.user_updated;
     const created_at = dto.created_at;
@@ -43,12 +49,15 @@ export class TransactionsMapper
       transaction_id,
       code,
       transaction_type_id,
+      transaction_type_name,
       amount,
       recurrence_days,
       recurrence_times,
       date_start,
       interest,
       notes,
+      source_account_id,
+      destination_account_id,
       user_created,
       user_updated,
       created_at,
@@ -64,6 +73,7 @@ export class TransactionsMapper
       transaction_id: domain.transaction_id,
       code: domain.code,
       transaction_type_id: domain.transaction_type_id,
+      transaction_type_name: domain.transaction_type_name,
       amount: domain.amount,
       recurrence_days: domain.recurrence_days,
       recurrence_times: domain.recurrence_times,

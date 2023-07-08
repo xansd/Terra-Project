@@ -65,6 +65,17 @@ router.put(
   productController.update.bind(productController)
 );
 
+// UPDATE STOCK
+router.put(
+  "/update/stock/",
+  authorize([Role.ADMIN, Role.USER]),
+  [
+    check("product_id", "El id es obligatorio").not().isEmpty(),
+    catchValidationErrors,
+  ],
+  productController.updateProductStock.bind(productController)
+);
+
 // DELETE
 router.delete(
   "/:id",

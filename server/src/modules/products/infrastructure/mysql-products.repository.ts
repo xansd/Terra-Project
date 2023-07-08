@@ -84,8 +84,10 @@ export class MySQLProductRepository implements IProductRepository {
   async create(product: IProduct): Promise<IProduct> {
     const productPersistence =
       this.productPersistenceMapper.toPersistence(product);
-    const insertQuery = `INSERT INTO products (product_id, code, active, name, type, category_id, description, cost_price, sale_price, sativa, indica, thc, cbd, bank, flawour, effect, user_created)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    const insertQuery = `INSERT INTO products 
+    (product_id, code, active, name, type,category_id, description, cost_price, sale_price, sativa, indica, thc, cbd, bank, flawour, effect, lot, user_created)
+    VALUES
+    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     const selectQuery = `SELECT * FROM products WHERE product_id = ?`;
 
@@ -106,6 +108,7 @@ export class MySQLProductRepository implements IProductRepository {
       null, // bank (conditional)
       null, // flawour (conditional)
       null, // effect (conditional)
+      null, // lot (conditional)
       productPersistence.user_created!,
     ];
 
@@ -143,6 +146,7 @@ export class MySQLProductRepository implements IProductRepository {
     ]);
     const productSaved = selectResult[0];
 
+    Logger.info(`mysql : createProduct : ${productPersistence.user_created}`);
     return this.productPersistenceMapper.toDomain(productSaved);
   }
 
@@ -209,12 +213,15 @@ export class MySQLProductRepository implements IProductRepository {
       throw new ProductDoesNotExistError();
     }
 
+    Logger.info(`mysql : updateProduct : ${productPersistence.user_updated}`);
     return result;
   }
 
-  async delete(productId: string): Promise<void> {
+  async delete(productId: string, user: string): Promise<void> {
     const result = await MysqlDataBase.update(
-      `UPDATE products SET deleted_at = NOW() WHERE product_id = ?`,
+      // `UPDATE products SET deleted_at = NOW(), user_updated = ? WHERE product_id = ?`,
+      //[user, productId]
+      `DELETE FROM products WHERE product_id = ?`,
       [productId]
     );
     if (result.affectedRows === 0) {
@@ -223,26 +230,28 @@ export class MySQLProductRepository implements IProductRepository {
     }
     return result;
   }
-  async makeActive(productId: string): Promise<void> {
+  async makeActive(productId: string, user: string): Promise<void> {
     const result = await MysqlDataBase.update(
-      "UPDATE products SET active = ? WHERE product_id = ?",
-      ["1", productId]
+      "UPDATE products SET active = ?, user_updated = ? WHERE product_id = ?",
+      ["1", user, productId]
     );
     if (result.affectedRows === 0) {
       Logger.error(`mysql : makeActive : ProductDoesNotExistError`);
       throw new ProductDoesNotExistError();
     }
+    Logger.info(`mysql : makeActiveProduct : ${user}`);
     return result;
   }
-  async makeInactive(productId: string): Promise<void> {
+  async makeInactive(productId: string, user: string): Promise<void> {
     const result = await MysqlDataBase.update(
-      "UPDATE products SET active = ? WHERE product_id = ?",
-      ["0", productId]
+      "UPDATE products SET active = ?, user_updated = ? WHERE product_id = ?",
+      ["0", user, productId]
     );
     if (result.affectedRows === 0) {
       Logger.error(`mysql : makeInactive : ProductDoesNotExistError`);
       throw new ProductDoesNotExistError();
     }
+    Logger.info(`mysql : makeInactiveProduct : ${user}`);
     return result;
   }
   async checkProductExistenceByName(name: string): Promise<boolean> {
@@ -254,22 +263,27 @@ export class MySQLProductRepository implements IProductRepository {
   }
 
   async getProductStock(productId: string): Promise<boolean> {
-    const product = await MysqlDataBase.query(
+    const stock = await MysqlDataBase.query(
       `SELECT stock FROM products WHERE product_id = ?`,
       [productId]
     );
-    return !!product.length;
+    return stock[0];
   }
 
-  async updateProductStock(productId: string, stock: number): Promise<void> {
+  async updateProductStock(
+    productId: string,
+    stock: number,
+    user: string
+  ): Promise<void> {
     const result = await MysqlDataBase.update(
-      "UPDATE products SET stock = ? WHERE product_id = ?",
-      [stock.toString(), productId]
+      "UPDATE products SET stock = ?, user_updated = ? WHERE product_id = ?",
+      [stock.toString(), user, productId]
     );
     if (result.affectedRows === 0) {
       Logger.error(`mysql : updateProductStock : ProductDoesNotExistError`);
       throw new ProductDoesNotExistError();
     }
+    Logger.info(`mysql : updateProductStock : ${user}`);
     return result;
   }
   /*************************************PRODUCTS***************************************/

@@ -1,0 +1,49 @@
+<div class="modal-header">
+  <ng-container>
+    <h5 class="modal-title">¡Atención! Te dispones a actualizar el stock.</h5>
+  </ng-container>
+  <button type="button" class="btn-close" (click)="close(false)"></button>
+</div>
+<div class="modal-body">
+  <form
+    [formGroup]="stockForm"
+    (ngSubmit)="submit(stockForm)"
+    autocomplete="off"
+    #formDirective="ngForm"
+  >
+    <p class="text-danger">
+      El cálculo del stock está automatizado y solo debe actualizarse
+      manualmente en casos extraordinarios.
+    </p>
+    <div class="mb-3">
+      <label class="form-label"
+        >Cantidad <span class="text-danger">*</span></label
+      >
+      <div class="amount-container">
+        <input
+          type="number"
+          class="form-control form-control-lg bg-inverse bg-opacity-5"
+          formControlName="amount"
+          matInput
+          placeholder="Nuevo stock..."
+          [errorStateMatcher]="matcher"
+          autocomplete="off"
+        />
+        <mat-error *ngIf="amount.invalid && (amount.dirty || amount.touched)">
+          <span *ngIf="amount.hasError('required')">Campo obligatorio.</span>
+          <span *ngIf="amount.hasError('min')"
+            >La cantidad debe ser mayor que cero.</span
+          >
+        </mat-error>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-warning" (click)="close(false)">
+    Cancelar
+  </button>
+  <button (click)="close(true)" type="submit" class="btn btn-outline-theme">
+    Enviar
+  </button>
+</div>

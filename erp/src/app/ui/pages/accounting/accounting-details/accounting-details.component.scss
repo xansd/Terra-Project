@@ -1,0 +1,209 @@
+.search {
+    height       : 50px;
+    margin-bottom: 30px;
+}
+
+.content {
+    margin-top: 50px;
+}
+
+.new-accounting-btn {
+    min-height    : 50px;
+    letter-spacing: .7px;
+    width         : 100%;
+    max-width     : 200px;
+}
+
+.button-container {
+    position             : -webkit-sticky;
+    position             : sticky;
+    top                  : 150px;
+    width                : 100%;
+    display              : -webkit-box;
+    display              : -ms-flexbox;
+    display              : flex;
+    -webkit-box-orient   : vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction   : column;
+    flex-direction       : column;
+    row-gap              : 15px;
+    -webkit-box-pack     : center;
+    -ms-flex-pack        : center;
+    justify-content      : center;
+    -webkit-box-align    : center;
+    -ms-flex-align       : center;
+    align-items          : center;
+
+    button {
+        min-height    : 50px;
+        letter-spacing: .7px;
+        width         : 100%;
+        max-width     : 200px;
+
+
+        &:nth-child(2),
+        &:nth-child(3),
+        &:nth-child(4),
+        &:nth-child(5),
+        &:nth-child(6),
+        &:nth-child(7) {
+            i {
+                font-size: 20px;
+                position : relative;
+                top      : 0;
+            }
+
+        }
+
+        &:last-child {
+            margin-top: 30px;
+        }
+
+        &:nth-child(1) {
+            i {
+                position : relative;
+                top      : 1px;
+                font-size: 18px;
+            }
+        }
+    }
+}
+
+
+.spinner {
+    height               : 100%;
+    display              : -webkit-box;
+    display              : -ms-flexbox;
+    display              : flex;
+    -webkit-box-align    : center;
+    -ms-flex-align       : center;
+    align-items          : center;
+    -webkit-box-pack     : center;
+    -ms-flex-pack        : center;
+    justify-content      : center;
+    -webkit-box-orient   : vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction   : column;
+    flex-direction       : column;
+    row-gap              : 15px;
+}
+
+.name {
+    .property-value {
+        font-size: 1.2rem;
+
+    }
+
+    margin-bottom: 20px !important;
+}
+
+.bank {
+    margin-top: 30px !important;
+}
+
+.ancestors {
+    margin-bottom: 30px !important;
+}
+
+.data-card,
+.activity-card {
+    h6 {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+
+    .property {
+        display         : -webkit-box;
+        display         : -ms-flexbox;
+        display         : flex;
+        -webkit-box-pack: justify;
+        -ms-flex-pack   : justify;
+        justify-content : space-between;
+        margin-bottom   : 10px;
+
+        .property-name {
+            font-weight: bold;
+            width      : -webkit-fit-content;
+            width      : -moz-fit-content;
+        }
+
+        .property-value {
+            -webkit-box-flex : 1;
+            -ms-flex-positive: 1;
+            flex-grow        : 1;
+            margin-left      : 10px;
+            width            : -webkit-fit-content;
+            width            : -moz-fit-content;
+            text-align       : right;
+        }
+    }
+}
+
+.new-accounting-standalone {
+    display         : -webkit-box;
+    display         : -ms-flexbox;
+    display         : flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack   : center;
+    justify-content : center;
+}
+
+.list-group {
+    max-height   : 500px;
+    min-height   : 500px;
+    overflow-y   : auto;
+    margin-bottom: 20px;
+
+
+    a {
+        display         : -webkit-box;
+        display         : -ms-flexbox;
+        display         : flex;
+        -ms-flex-pack   : distribute;
+        -webkit-box-pack: justify;
+        justify-content : space-between;
+
+        &:hover {
+            cursor: pointer;
+        }
+
+
+        span {
+            display: block;
+
+            &:nth-child(2) {
+                font-weight: 600;
+            }
+        }
+
+    }
+}
+
+::ng-deep .pagination {
+    margin-top      : 20px !important;
+    display         : -webkit-box;
+    display         : -ms-flexbox;
+    display         : flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack   : center;
+    justify-content : center;
+}
+
+::ng-deep .pagination a {
+    color: #FFF !important;
+}
+
+::ng-deep .pagination span {
+    color: #FFF !important;
+}
+
+::ng-deep .pagination a:hover {
+    background-color: transparent !important;
+    color           : #3cd2a5 !important;
+}
+
+::ng-deep .pagination span:hover {
+    background-color: transparent !important;
+    color           : #3cd2a5 !important;
+}

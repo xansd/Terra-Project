@@ -4,7 +4,7 @@ import { Email } from '../../shared/domain/value-objects/email.value-object';
 import { IProvider, Provider } from '../domain/providers';
 
 export interface IProviderDTO {
-  provider_id: string;
+  provider_id?: string;
   name?: string;
   email?: string;
   phone?: string;

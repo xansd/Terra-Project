@@ -9,17 +9,25 @@ import { UpdateHarvests } from "../../../modules/purchases/application/harvests-
 import { GetPurchases } from "../../../modules/purchases/application/purchases-use-cases/get-purchases.use-cases";
 import { UpdatePurchase } from "../../../modules/purchases/application/purchases-use-cases/update-purchases.use-case";
 import { MySqlPurchasesRepository } from "../../../modules/purchases/infrastructure/mysql-purchases.repository";
+import { MySQLProductRepository } from "../../../modules/products/infrastructure/mysql-products.repository";
 
 const router = Router();
 
 // Repositorio
 const purchasesRepository = new MySqlPurchasesRepository();
+const productRepository = new MySQLProductRepository();
 
 // Casos de uso
 const getPurchasesUseCase = new GetPurchases(purchasesRepository);
-const updatePurchasesUseCase = new UpdatePurchase(purchasesRepository);
+const updatePurchasesUseCase = new UpdatePurchase(
+  purchasesRepository,
+  productRepository
+);
 const getHarvestsUseCase = new GetHarvests(purchasesRepository);
-const updateHarvestsUseCase = new UpdateHarvests(purchasesRepository);
+const updateHarvestsUseCase = new UpdateHarvests(
+  purchasesRepository,
+  productRepository
+);
 
 // Controlador
 const purchasesController = new PurchasesController(
@@ -44,6 +52,13 @@ router.get(
   purchasesController.getAllPurchases.bind(purchasesController)
 );
 
+// GET ALL PURCHASES BY PROVIDEER
+router.get(
+  "/purchases/all/provider/:id",
+  authorize([Role.ADMIN, Role.USER]),
+  purchasesController.getAllPurchasesByProvider.bind(purchasesController)
+);
+
 // CREATE
 router.post(
   "/purchases",
@@ -65,6 +80,7 @@ router.delete(
   [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
   purchasesController.deletePurchase.bind(purchasesController)
 );
+
 // GET BY ID
 router.get(
   "/harvests/single/:id",
@@ -80,6 +96,20 @@ router.get(
   purchasesController.getAllHarvests.bind(purchasesController)
 );
 
+// GET ALL HARVEST BY CULTIVATOR
+router.get(
+  "/purchases/all/cultivator/:id",
+  authorize([Role.ADMIN, Role.USER]),
+  purchasesController.getAllHarvestsByCultivator.bind(purchasesController)
+);
+
+// GET ALL HARVEST BY VARIETY
+router.get(
+  "/purchases/all/variety/:id",
+  authorize([Role.ADMIN, Role.USER]),
+  purchasesController.getAllHarvestsByVariety.bind(purchasesController)
+);
+
 // CREATE
 router.post(
   "/harvests",
@@ -87,11 +117,32 @@ router.post(
   purchasesController.createHarvest.bind(purchasesController)
 );
 
-// UPDATE
+// UPDATE STOCK
 router.put(
-  "/harvests",
+  "/harvests/stock",
   authorize([Role.ADMIN, Role.USER]),
-  purchasesController.updateHarvest.bind(purchasesController)
+  purchasesController.updateHarvestStock.bind(purchasesController)
+);
+
+// UPDATE LOSS
+router.put(
+  "/harvests/loss",
+  authorize([Role.ADMIN, Role.USER]),
+  purchasesController.updateHarvestLoss.bind(purchasesController)
+);
+
+// UPDATE MANICURED
+router.put(
+  "/harvests/manicured",
+  authorize([Role.ADMIN, Role.USER]),
+  purchasesController.updateHarvestManicured.bind(purchasesController)
+);
+
+// UPDATE FEE
+router.put(
+  "/harvests/fee",
+  authorize([Role.ADMIN, Role.USER]),
+  purchasesController.updateHarvestFee.bind(purchasesController)
 );
 
 // DELETE
