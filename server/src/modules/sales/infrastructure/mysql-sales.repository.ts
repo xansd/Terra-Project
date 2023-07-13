@@ -70,7 +70,7 @@ export class MySqlSalesRepository implements ISalesRepository {
 
   async getAll(): Promise<ISales[]> {
     const rows = await MysqlDataBase.query(
-      `SELECT * FROM sales WHERE deleted_at IS NULL`
+      `SELECT * FROM sales WHERE deleted_at IS NULL  ORDER BY created_at ASC`
     );
     if (rows.length === 0) {
       Logger.error(`mysql : getAll : SaleNotFoundError`);

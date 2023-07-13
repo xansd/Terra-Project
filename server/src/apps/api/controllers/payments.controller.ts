@@ -13,9 +13,18 @@ import {
   PaymentDoesNotExistError,
   PaymentLimitExceededError,
   PaymentNotFoundError,
+  PaymentReferenceNotFoundError,
 } from "../../../modules/payments/domain/payments.exception";
 import { DomainValidationError } from "../../../modules/shared/domain/domain-validation.exception";
-import { InvalidAmountError } from "../../../modules/partners/domain/partner.exceptions";
+import {
+  InvalidAmountError,
+  MinZeroError,
+} from "../../../modules/partners/domain/partner.exceptions";
+import {
+  AccountDoesNotExistError,
+  AccountInsufficientBalance,
+  AccountNotFoundError,
+} from "../../../modules/transactions/domain/transactions.exception";
 
 export class PaymentsController {
   paymentMapper = new PaymentMapper();
@@ -38,11 +47,45 @@ export class PaymentsController {
         response.send(BadRequest(error.message));
       } else if (error instanceof PaymentDoesNotExistError) {
         response.send(NotFound(error.message));
+      } else if (error instanceof PaymentReferenceNotFoundError) {
+        response.send(Conflict(error.message));
       } else {
         response.send(InternalServerError(error));
       }
     }
   }
+
+  async getAccountById(request: Request, response: Response): Promise<void> {
+    const { id } = request.params;
+    try {
+      const account = await this.getPaymentsService.getAccountById(id);
+      response.json(account);
+    } catch (error) {
+      if (error instanceof DomainValidationError) {
+        response.send(BadRequest(error.message));
+      } else if (error instanceof AccountDoesNotExistError) {
+        response.send(NotFound(error.message));
+      } else {
+        response.send(InternalServerError(error));
+      }
+    }
+  }
+
+  async getAllAccounts(request: Request, response: Response): Promise<void> {
+    try {
+      const accounts = await this.getPaymentsService.getAllAccounts();
+      response.json(accounts);
+    } catch (error: any) {
+      if (error instanceof DomainValidationError) {
+        response.send(BadRequest(error.message));
+      } else if (error instanceof AccountNotFoundError) {
+        response.send(NotFound(error.message));
+      } else {
+        response.send(InternalServerError(error));
+      }
+    }
+  }
+
   async getAllByType(request: Request, response: Response): Promise<void> {
     try {
       const payments = await this.getPaymentsService.getAllByType(
@@ -55,6 +98,8 @@ export class PaymentsController {
         response.send(BadRequest(error.message));
       } else if (error instanceof PaymentNotFoundError) {
         response.send(NotFound(error.message));
+      } else if (error instanceof PaymentReferenceNotFoundError) {
+        response.send(Conflict(error.message));
       } else {
         response.send(InternalServerError(error));
       }
@@ -72,6 +117,8 @@ export class PaymentsController {
     } catch (error: any) {
       if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));
+      } else if (error instanceof PaymentReferenceNotFoundError) {
+        response.send(Conflict(error.message));
       } else if (error instanceof PaymentNotFoundError) {
         response.send(NotFound(error.message));
       } else {
@@ -94,6 +141,16 @@ export class PaymentsController {
         response.send(Conflict(error.message));
       } else if (error instanceof InvalidAmountError) {
         response.send(Conflict(error.message));
+      } else if (error instanceof PaymentReferenceNotFoundError) {
+        response.send(Conflict(error.message));
+      } else if (error instanceof AccountDoesNotExistError) {
+        response.send(NotFound(error.message));
+      } else if (error instanceof AccountInsufficientBalance) {
+        response.send(Conflict(error.message));
+      } else if (error instanceof InvalidAmountError) {
+        response.send(Conflict(error.message));
+      } else if (error instanceof MinZeroError) {
+        response.send(Conflict(error.message));
       } else response.send(InternalServerError(error));
     }
   }
@@ -111,6 +168,43 @@ export class PaymentsController {
         response.send(BadRequest(error.message));
       } else if (error instanceof PaymentDoesNotExistError) {
         response.send(NotFound(error.message));
+      } else if (error instanceof PaymentReferenceNotFoundError) {
+        response.send(Conflict(error.message));
+      } else if (error instanceof AccountDoesNotExistError) {
+        response.send(NotFound(error.message));
+      } else if (error instanceof AccountInsufficientBalance) {
+        response.send(Conflict(error.message));
+      } else if (error instanceof InvalidAmountError) {
+        response.send(Conflict(error.message));
+      } else if (error instanceof MinZeroError) {
+        response.send(Conflict(error.message));
+      } else {
+        response.send(InternalServerError(error));
+      }
+    }
+  }
+
+  async updateAccountBalance(
+    request: Request,
+    response: Response
+  ): Promise<void> {
+    try {
+      const result = await this.updatePaymentsService.updateAccountBalance(
+        request.body.account_id,
+        request.body.value,
+        request.body.operation,
+        request.auth.id
+      );
+      response.send(result);
+    } catch (error) {
+      if (error instanceof DomainValidationError) {
+        response.send(BadRequest(error.message));
+      } else if (error instanceof PaymentDoesNotExistError) {
+        response.send(Conflict(error.message));
+      } else if (error instanceof InvalidAmountError) {
+        response.send(Conflict(error.message));
+      } else if (error instanceof MinZeroError) {
+        response.send(Conflict(error.message));
       } else {
         response.send(InternalServerError(error));
       }

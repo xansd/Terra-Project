@@ -54,7 +54,6 @@ export class UpdateStockService {
       throw new InvalidAmountError();
     }
     if (newStock < 0) {
-      newStock = 0;
       Logger.error(
         `subtractProductStock : MinZeroError : valor inferior a cero`
       );

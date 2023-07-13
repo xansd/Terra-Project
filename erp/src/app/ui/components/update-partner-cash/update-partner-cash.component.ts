@@ -17,6 +17,8 @@ import {
   IPartner,
   OperationPartnerCash,
 } from 'src/app/partners/domain/partner';
+import { IAccount } from 'src/app/payments/domain/payments';
+import { GetPayments } from 'src/app/payments/application/get-payments.use-cases';
 
 @Component({
   selector: 'app-update-partner-cash',
@@ -26,10 +28,12 @@ import {
 export class UpdatePartnerCashComponent {
   @Input('partner') partner!: IPartner;
   @Input('operation') operation!: OperationPartnerCash;
+  accounts: IAccount[] = [];
   cashOperation = OperationPartnerCash;
   matcher = new CustomErrorStateMatcher();
   cashUpdateForm: FormGroup = this.fb.group({
     amount: ['', Validators.compose([Validators.required])],
+    account_id: ['', Validators.required],
   });
   private destroy$ = new Subject();
   constructor(
@@ -38,9 +42,17 @@ export class UpdatePartnerCashComponent {
     private partnerService: UpdatePartnerUseCase,
     private notifier: NotificationAdapter,
     private formsHelperService: FormsHelperService,
-    private errorHandler: ErrorHandlerService
+    private errorHandler: ErrorHandlerService,
+    private getAccountService: GetPayments
   ) {}
 
+  ngOnInit(): void {
+    this.getAccounts();
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete();
+  }
   ngAfterViewInit(): void {
     this.cashUpdateForm = this.fb.group({
       amount: [
@@ -53,6 +65,26 @@ export class UpdatePartnerCashComponent {
             : null,
         ]),
       ],
+      account_id: [null, Validators.required],
+    });
+  }
+
+  getAccounts() {
+    this.getAccountService
+      .getAllAccounts()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (accounts) => {
+          this.accounts = accounts;
+          this.patchAccount();
+        },
+      });
+  }
+
+  patchAccount(): void {
+    let patchAccount = this.accounts[0].account_id;
+    this.cashUpdateForm.patchValue({
+      account_id: patchAccount?.toString(),
     });
   }
 
@@ -63,12 +95,14 @@ export class UpdatePartnerCashComponent {
       throw new FieldValidationError(invalidFields);
     }
 
-    let amount = form.controls['amount'].value;
+    const amount = form.controls['amount'].value;
+    const account = form.controls['account_id'].value;
     this.partnerService
       .updatePartnersCash({
         amount: amount,
         operation: this.operation,
         partner: this.partner,
+        account: account,
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -89,5 +123,8 @@ export class UpdatePartnerCashComponent {
 
   get amount(): AbstractControl {
     return this.cashUpdateForm.controls['amount'];
+  }
+  get account(): AbstractControl {
+    return this.cashUpdateForm.controls['account_id'];
   }
 }

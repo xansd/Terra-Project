@@ -58,16 +58,22 @@ export class UpdateHarvestStockService {
     if (isNaN(newStock)) throw new InvalidAmountError();
     if (newStock < 0) {
       // Añadimos excedente en caso de que el stock sea negativo !!
-      excedente = Math.abs(newStock);
-      this.validateLossOperation(
-        harvestId,
-        StockOperations.ADD_EXCEDENT,
-        excedente
-      );
-      newStock = 0;
+      // excedente = Math.abs(newStock);
+      // this.validateLossOperation(
+      //   harvestId,
+      //   StockOperations.ADD_EXCEDENT,
+      //   excedente
+      // );
+      // newStock = 0;
+      // Logger.error(
+      //   `substractHarvestStock : MinZeroError : valor inferior a cero`
+      // );
+
+      // Si no hay stock suficinete se lanza error
       Logger.error(
-        `substractHarvestStock : MinZeroError : valor inferior a cero`
+        `subtractProductStock : MinZeroError : valor inferior a cero`
       );
+      throw new MinZeroError();
     }
     return newStock;
   }

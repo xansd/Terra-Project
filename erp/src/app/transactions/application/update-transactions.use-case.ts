@@ -7,9 +7,9 @@ export interface IUpdateTransactions {
   create(transaction: ITransactions): Observable<ITransactions>;
   delete(id: string): Observable<void>;
 }
-Injectable({
+@Injectable({
   providedIn: 'root',
-});
+})
 export class UpdateTransactions implements IUpdateTransactions {
   constructor(
     @Inject('transactionsAPI')

@@ -150,6 +150,7 @@ CREATE TABLE fees(
     fees_type_id INT(11) NOT NULL,
     expiration datetime DEFAULT NULL,
     paid datetime DEFAULT NULL,
+    payment_transaction_id VARCHAR(36) DEFAULT NULL,
     created_at datetime DEFAULT CURRENT_TIMESTAMP,
     updated_at datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     deleted_at datetime DEFAULT NULL,
@@ -396,11 +397,15 @@ date_start DATETIME DEFAULT NULL,
 interest DECIMAL(10,2) DEFAULT 0,
 source_account_id INT(11) DEFAULT NULL,
 destination_account_id INT(11) DEFAULT NULL,
+partner_id VARCHAR(36) DEFAULT NULL,
+fee_id INT(11) DEFAULT NULL,
 user_created VARCHAR(36) DEFAULT NULL,
 user_updated VARCHAR(36) DEFAULT NULL,
 created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
 updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
 deleted_at DATETIME DEFAULT NULL,
+FOREIGN KEY (fee_id) REFERENCES fees(fee_id),
+FOREIGN KEY (partner_id) REFERENCES partners(partner_id),
 FOREIGN KEY (source_account_id) REFERENCES accounts(account_id),
 FOREIGN KEY (destination_account_id) REFERENCES accounts(account_id),
 FOREIGN KEY (user_created) REFERENCES users(user_id),
@@ -431,28 +436,10 @@ INSERT INTO transaction_type (name, description, transaction_category) VALUES ('
 INSERT INTO transaction_type (name, description, transaction_category) VALUES ('REINTEGRO_INSCRIPCION', '', 'GASTO');
 
 
-INSERT INTO transaction_type (name, description, transaction_category) VALUES ('INGRESO CUENTA BANCARIA', '', 'TRANSFERENCIA');
-INSERT INTO transaction_type (name, description, transaction_category) VALUES ('REINTEGRO CUENTA BANCARIA', '', 'TRANSFERENCIA');
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('TRANSFERENCIA ENTRANTE', '', 'TRANSFERENCIA');
+INSERT INTO transaction_type (name, description, transaction_category) VALUES ('TRANSFERENCIA SALIENTE', '', 'TRANSFERENCIA');
 
 
-CREATE TABLE accounts (
-  account_id INT(11) AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  description TEXT,
-  account_type ENUM('CAJA', 'BANCO') NOT NULL,
-  account_number VARCHAR(255) DEFAULT NUL,
-  bank VARCHAR(255) DEFAULT NULL,
-  user_created VARCHAR(36) DEFAULT NULL,
-  user_updated VARCHAR(36) DEFAULT NULL,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  deleted_at DATETIME DEFAULT NULL,
-  FOREIGN KEY (user_created) REFERENCES users(user_id),
-  FOREIGN KEY (user_updated) REFERENCES users(user_id)
-);
-
-INSERT INTO accounts (name, description, account_type ) VALUES ('CAJA A', 'Caja de la asociación Terra Verde', 'CAJA');
-INSERT INTO accounts (name, description, account_type,account_number,bank ) VALUES ('CUENTA BANCARIA A', 'C/C principal', 'BANCO'. '12345678901234567890', 'BANCO X');
 
 
 /******************************************************GASTOS E INGRESOS*********************************************/
@@ -479,6 +466,27 @@ CREATE TABLE payments (
     FOREIGN KEY (user_created) REFERENCES users(user_id),
     FOREIGN KEY (user_updated) REFERENCES users(user_id)
 );
+
+CREATE TABLE accounts (
+  account_id INT(11) AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  account_type ENUM('CAJA', 'BANCO') NOT NULL,
+  account_number VARCHAR(255) DEFAULT NULL,
+  bank VARCHAR(255) DEFAULT NULL,
+  balance  DECIMAL(10,2) DEFAULT 0,
+  user_created VARCHAR(36) DEFAULT NULL,
+  user_updated VARCHAR(36) DEFAULT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  updated_at DATETIME DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  deleted_at DATETIME DEFAULT NULL,
+  FOREIGN KEY (user_created) REFERENCES users(user_id),
+  FOREIGN KEY (user_updated) REFERENCES users(user_id)
+);
+
+INSERT INTO accounts (name, description, account_type ) VALUES ('CAJA', 'Caja de la asociación Terra Verde', 'CAJA');
+INSERT INTO accounts (name, description, account_type,account_number,bank ) VALUES ('CUENTA BANCARIA A', 'C/C principal', 'BANCO', '12345678901234567890', 'BANCO X');
+
 
 /******************************************************PAGOS Y COBROS*********************************************/
 

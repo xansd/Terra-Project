@@ -17,6 +17,19 @@ export class TransactionsAPIRepository implements ITransactionsRepository {
   constructor(private http: HttpClient) {
     this.transactionsMapper = new TransactionsMapper();
   }
+
+  getAllTransactions(): Observable<ITransactions[]> {
+    return this.http
+      .get<ITransactionsDTO[]>(`${API_URI}/transactions`, {
+        withCredentials: true,
+      })
+      .pipe(
+        map((TransactionsList: ITransactionsDTO[]) =>
+          this.transactionsMapper.toDomainList(TransactionsList)
+        )
+      );
+  }
+
   getById(id: string): Observable<ITransactions> {
     return this.http
       .get<ITransactionsDTO>(`${API_URI}/transactions/${id}`, {
@@ -25,6 +38,18 @@ export class TransactionsAPIRepository implements ITransactionsRepository {
       .pipe(
         map((purchase: ITransactionsDTO) =>
           this.transactionsMapper.toDomain(purchase)
+        )
+      );
+  }
+
+  getPartnerAccountTransactions(id: string): Observable<ITransactions[]> {
+    return this.http
+      .get<ITransactionsDTO[]>(`${API_URI}/transactions/partner/${id}`, {
+        withCredentials: true,
+      })
+      .pipe(
+        map((TransactionsList: ITransactionsDTO[]) =>
+          this.transactionsMapper.toDomainList(TransactionsList)
         )
       );
   }

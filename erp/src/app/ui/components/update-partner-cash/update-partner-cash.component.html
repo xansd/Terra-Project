@@ -40,6 +40,19 @@
           >
         </mat-error>
       </div>
+
+      <div class="account-container">
+        <label for="account_id">Cuenta</label>
+        <select
+          id="account_id"
+          formControlName="account_id"
+          class="form-control"
+        >
+          <option *ngFor="let account of accounts" [value]="account.account_id">
+            {{ account.name }}
+          </option>
+        </select>
+      </div>
     </div>
   </form>
 </div>

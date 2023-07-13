@@ -70,7 +70,7 @@ export class MySqlPurchasesRepository implements IPurchasesRepository {
       LEFT JOIN providers pr ON p.provider_id = pr.provider_id
       LEFT JOIN payments pm ON pm.reference_id = p.purchase_id AND pm.type = 'PAGO'
       WHERE p.deleted_at IS NULL AND pm.deleted_at IS NULL
-      GROUP BY p.purchase_id`
+      GROUP BY p.purchase_id  ORDER BY p.created_at ASC`
     );
 
     if (rows.length === 0) {

@@ -19,10 +19,12 @@ import {
   ProductsSearchTypes,
   ProviderSearchTypes,
   PurchasesSearchTypes,
+  TransactionsSearchTypes,
 } from './search.config';
 import { IHarvests } from 'src/app/purchases/domain/harvests';
 import { DatetimeHelperService } from '../../../shared/application/datetime.helper.service';
 import { IPurchase } from 'src/app/purchases/domain/purchases';
+import { ITransactions } from 'src/app/transactions/domain/transactions';
 
 @Component({
   selector: 'app-searcher',
@@ -38,7 +40,8 @@ export class SearcherComponent implements OnInit, OnDestroy {
       | ProductsSearchTypes
       | HarvestSearchTypes
       | ProviderSearchTypes
-      | PurchasesSearchTypes;
+      | PurchasesSearchTypes
+      | TransactionsSearchTypes;
   }[] = [];
   @Output() optionSelected = new EventEmitter<any>();
 
@@ -98,6 +101,11 @@ export class SearcherComponent implements OnInit, OnDestroy {
             this.options = this.concatCodeProviderAndDate(this.options);
           }
           this.populateAutocomplete(this.concatName(currentOptions));
+        } else if (currentOptions[0].hasOwnProperty('transaction_id')) {
+          if (this.options.length > 0) {
+            this.options = this.concatCodeTypeAndDate(this.options);
+          }
+          this.populateAutocomplete(this.concatName(currentOptions));
         } else {
           // Es un objeto "products" que no requiere concatenación
           this.populateAutocomplete(currentOptions);
@@ -140,6 +148,20 @@ export class SearcherComponent implements OnInit, OnDestroy {
         obj.code +
         ' [ ' +
         obj.product_name +
+        ' ] [ ' +
+        DatetimeHelperService.dateToView(obj.created_at) +
+        ' ]';
+      return { ...obj, code: fullCode };
+    });
+    return newArray;
+  }
+
+  concatCodeTypeAndDate(data: ITransactions[]): ITransactions[] {
+    const newArray = data.map((obj) => {
+      const fullCode =
+        obj.code +
+        ' [ ' +
+        obj.transaction_type_name +
         ' ] [ ' +
         DatetimeHelperService.dateToView(obj.created_at) +
         ' ]';

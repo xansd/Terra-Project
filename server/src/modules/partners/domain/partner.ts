@@ -34,6 +34,8 @@ export enum OperationPartnerCash {
   INCOME = "INGRESO_CUENTA_SOCIO",
   REFUND = "REINTEGRO_CUENTA_SOCIO",
   WITHDRAWAL = "RETIRADA_DISPENSARIO",
+  FEE_PAYMENT = "PAGO_CUOTA",
+  FEE_REFUND = "REINTEGRO_CUOTA",
 }
 
 export interface IOperationPartnerCash {

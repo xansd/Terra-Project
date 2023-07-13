@@ -1,0 +1,41 @@
+@import '../../tables.scss';
+
+.transactions-container {
+    margin-top: 70px;
+    width     : 100%;
+
+
+    .row {
+        width: 100%;
+
+        .col-12 {
+            width           : 100%;
+            display         : -webkit-box;
+            display         : -ms-flexbox;
+            display         : flex;
+            -webkit-box-pack: center;
+            -ms-flex-pack   : center;
+            justify-content : center;
+
+            .table-container {
+                width    : 100%;
+                max-width: 1200px;
+
+                mat-row {
+                    background-color: transparent;
+                }
+            }
+        }
+    }
+}
+
+.green-row {
+    color      : #3cd2a5 !important;
+    font-weight: 600 !important;
+}
+
+.red-row {
+    color      : #e57676 !important;
+    font-weight: 600 !important;
+    ;
+}

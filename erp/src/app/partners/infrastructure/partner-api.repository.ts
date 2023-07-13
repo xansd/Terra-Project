@@ -185,10 +185,14 @@ export class PartnerAPIRepository implements IPartnerAPIPort {
     });
   }
 
-  payFee(fee: IFees): Observable<void> {
-    return this.http.put<void>(`${API_URI}/fees/payFee`, fee, {
-      withCredentials: true,
-    });
+  payFee(fee: IFees, account: string): Observable<void> {
+    return this.http.put<void>(
+      `${API_URI}/fees/payFee`,
+      { fee, account },
+      {
+        withCredentials: true,
+      }
+    );
   }
   /**************************************FEES************************************************/
 

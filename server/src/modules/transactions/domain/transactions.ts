@@ -35,6 +35,7 @@ export interface ITransactions {
   code?: TransactionsCode;
   transaction_type_id: string;
   transaction_type_name?: string;
+  transaction_category?: string | null;
   amount: number;
   recurrence_days?: number | null;
   recurrence_times?: number | null;
@@ -43,6 +44,8 @@ export interface ITransactions {
   notes?: string | null;
   source_account_id?: string | null;
   destination_account_id?: string | null;
+  partner_id?: string | null;
+  fee_id?: number;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -55,6 +58,7 @@ export class Transactions implements ITransactions {
   code?: TransactionsCode;
   transaction_type_id: string;
   transaction_type_name?: string;
+  transaction_category?: string | null;
   amount: number;
   recurrence_days?: number | null;
   recurrence_times?: number | null;
@@ -63,6 +67,8 @@ export class Transactions implements ITransactions {
   notes?: string | null;
   source_account_id?: string | null;
   destination_account_id?: string | null;
+  partner_id?: string | null;
+  fee_id?: number;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -74,6 +80,7 @@ export class Transactions implements ITransactions {
     this.code = props.code;
     this.transaction_type_id = props.transaction_type_id;
     this.transaction_type_name = props.transaction_type_name;
+    this.transaction_category = props.transaction_category;
     this.amount = props.amount;
     this.recurrence_days = props.recurrence_days;
     this.recurrence_times = props.recurrence_times;
@@ -82,6 +89,8 @@ export class Transactions implements ITransactions {
     this.notes = props.notes;
     this.source_account_id = props.source_account_id;
     this.destination_account_id = props.destination_account_id;
+    this.partner_id = props.partner_id;
+    this.fee_id = props.fee_id;
     this.user_created = props.user_created;
     this.user_updated = props.user_updated;
     this.created_at = props.created_at;

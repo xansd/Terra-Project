@@ -26,7 +26,7 @@ import { FileDownloaderComponent } from './file-downloader/file-downloader.compo
 import { SearcherComponent } from './searcher/searcher.component';
 import { NgbTypeaheadModule } from '@ng-bootstrap/ng-bootstrap';
 import { UpdateAccessCodeComponent } from './update-access-code/update-access-code.component';
-import { PartnerHistoryComponent } from './update-access-code/partner-history/partner-history.component';
+import { PartnerHistoryComponent } from './partner-history/partner-history.component';
 import { SanctionsComponent } from './sanctions/sanctions.component';
 import { UpdatePartnerCashComponent } from './update-partner-cash/update-partner-cash.component';
 import { TextEditorComponent } from './text-editor/text-editor.component';
@@ -40,6 +40,8 @@ import { UpdateStockComponent } from './update-stock/update-stock.component';
 import { UpdateManicuredComponent } from './update-manicured/update-manicured.component';
 import { UpdateHarvesFeeComponent } from './update-harves-fee/update-harves-fee.component';
 import { UpdateHarvestLossComponent } from './update-harvest-loss/update-harvest-loss.component';
+import { PayFeeComponent } from './pay-fee/pay-fee.component';
+import { PartnerAccountHistoryComponent } from './partner-account-history/partner-account-history.component';
 
 @NgModule({
   declarations: [
@@ -72,6 +74,8 @@ import { UpdateHarvestLossComponent } from './update-harvest-loss/update-harvest
     UpdateManicuredComponent,
     UpdateHarvesFeeComponent,
     UpdateHarvestLossComponent,
+    PayFeeComponent,
+    PartnerAccountHistoryComponent,
   ],
   imports: [
     CommonModule,
@@ -139,6 +143,7 @@ import { UpdateHarvestLossComponent } from './update-harvest-loss/update-harvest
     SearcherComponent,
     PartnerHistoryComponent,
     TextEditorComponent,
+    PartnerAccountHistoryComponent,
   ],
   providers: [
     {

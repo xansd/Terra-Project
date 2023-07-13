@@ -1,5 +1,5 @@
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { Component, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource, MatTable } from '@angular/material/table';
@@ -17,7 +17,7 @@ import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.ada
   templateUrl: './withdrawals.component.html',
   styleUrls: ['./withdrawals.component.scss'],
 })
-export class WithdrawalsComponent {
+export class WithdrawalsComponent implements AfterViewInit {
   @Input('partner') partner!: IPartner;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -195,9 +195,11 @@ export class WithdrawalsComponent {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
+  ngAfterViewInit(): void {
+    this.renderTable();
+  }
 
   ngOnInit(): void {
-    this.renderTable();
     // this.getSales();
   }
 

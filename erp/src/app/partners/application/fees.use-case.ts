@@ -19,7 +19,7 @@ export interface IFeesUseCases {
   updateFee(fee: IFees): Observable<void>;
   deleteFee(feeId: string): Observable<void>;
   getTypes(): Observable<IFeesType[]>;
-  payFee(fee: Fees): Observable<void>;
+  payFee(fee: Fees, account: string): Observable<void>;
 }
 @Injectable({
   providedIn: 'root',
@@ -48,8 +48,8 @@ export class FeesUseCases implements IFeesUseCases {
     return this.partnersAPI.getFeesTypes();
   }
 
-  payFee(fee: IFees): Observable<void> {
-    return this.partnersAPI.payFee(fee);
+  payFee(fee: IFees, account: string): Observable<void> {
+    return this.partnersAPI.payFee(fee, account);
   }
   createPartnerFee(fee: IFees): Observable<void> {
     return this.partnersAPI.createPartnerFee(fee);

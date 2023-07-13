@@ -64,6 +64,7 @@ export interface IOperationPartnerCash {
   amount: number;
   operation: OperationPartnerCash;
   partner: IPartnerDTO | IPartner;
+  account: string;
 }
 
 export class Partner implements IPartner {

@@ -7,6 +7,8 @@ export interface IPaymentsPersistence {
   reference_id: string;
   amount?: number;
   notes?: string | null;
+  source_account_id?: string | null;
+  source_account_name?: string | null;
   account_id?: number | string | null;
   account_name?: string | null;
   user_created?: string;
@@ -27,6 +29,8 @@ export class PaymentsPersistenceMapper
       reference_id: persistence.reference_id,
       amount: persistence.amount,
       notes: persistence.notes,
+      source_account_id: persistence.source_account_id,
+      source_account_name: persistence.source_account_name,
       account_id: persistence.account_id,
       account_name: persistence.account_name,
       user_created: persistence.user_created,
@@ -43,6 +47,8 @@ export class PaymentsPersistenceMapper
       reference_id,
       amount,
       notes,
+      source_account_id,
+      source_account_name,
       account_id,
       account_name,
       user_created,
@@ -57,6 +63,8 @@ export class PaymentsPersistenceMapper
       reference_id: reference_id,
       amount: amount,
       notes: notes,
+      source_account_id: source_account_id,
+      source_account_name: source_account_name,
       account_id: account_id,
       account_name: account_name,
       user_created: user_created,

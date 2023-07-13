@@ -22,9 +22,10 @@ import { UpdateAccessCodeComponent } from 'src/app/ui/components/update-access-c
 import { FeesTypes } from 'src/app/partners/domain/fees';
 import { DatetimeHelperService } from 'src/app/shared/application/datetime.helper.service';
 import { CreatePartnerComponent } from '../create-partner/create-partner.component';
-import { PartnerHistoryComponent } from 'src/app/ui/components/update-access-code/partner-history/partner-history.component';
+import { PartnerHistoryComponent } from 'src/app/ui/components/partner-history/partner-history.component';
 import { UpdatePartnerCashComponent } from 'src/app/ui/components/update-partner-cash/update-partner-cash.component';
 import { saveAs } from 'file-saver';
+import { PayFeeComponent } from 'src/app/ui/components/pay-fee/pay-fee.component';
 
 const modalEditOptions: NgbModalOptions = {
   backdrop: 'static',
@@ -78,7 +79,7 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.activeEntityService.clearActiveEntity();
+    //this.activeEntityService.clearActiveEntity();
     this.destroy$.next(true);
     this.destroy$.complete();
   }
@@ -279,7 +280,10 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
     modalRef.result
       .then((result) => {
         if (result) {
-          this.notifier.showNotification('success', 'Cuenta actualizada');
+          this.notifier.showNotification(
+            'success',
+            'Cuenta del socio actualizada'
+          );
           this.isLoading = true;
           this.getPartner();
         }
@@ -328,7 +332,7 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
   // Dialogo confirmación pago cuotas e inscripciones
   payFeeConfirm(fee: IFees): void {
     if (!this.checkPartnerSelected()) return;
-    const modalRef = this.modalService.open(ConfirmDialogComponent);
+    const modalRef = this.modalService.open(PayFeeComponent);
     if (this.isFee(fee))
       modalRef.componentInstance.message = '¿Abonar cuota de socio?';
     else if (this.isInscription(fee))
@@ -336,7 +340,7 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
     modalRef.result
       .then((result) => {
         if (result) {
-          this.payFee(fee);
+          this.payFee(fee, result);
         }
       })
       .catch((error) => {
@@ -345,9 +349,9 @@ export class DetailsPartnerComponent implements OnInit, OnDestroy {
   }
 
   // Pagar cuotas e inscripciones
-  payFee(fee: IFees) {
+  payFee(fee: IFees, account: string) {
     this.feesService
-      .payFee(fee)
+      .payFee(fee, account)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (res: any) => {

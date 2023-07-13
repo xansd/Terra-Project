@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, map, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { IPaymentsRepository } from '../domain/payments.repository';
-import { IPayments, PaymentType } from '../domain/payments';
+import { IAccount, IPayments, PaymentType } from '../domain/payments';
 import { IPaymentsDTO, PaymentMapper } from './payments-dto.mapper';
 
 const API_URI = SERVER.API_URI;
@@ -25,6 +25,21 @@ export class PaymentsAPIRepository implements IPaymentsRepository {
         )
       );
   }
+
+  getAccountById(id: string): Observable<IAccount> {
+    return this.http.get<IAccount>(
+      `${API_URI}/payments/accounts/single/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
+  }
+  getAllAccounts(): Observable<IAccount[]> {
+    return this.http.get<IAccount[]>(`${API_URI}/payments/accounts/all`, {
+      withCredentials: true,
+    });
+  }
+
   getAllByType(type: PaymentType): Observable<IPayments[]> {
     return this.http
       .get<IPaymentsDTO[]>(`${API_URI}/payments/all/type/${type}`, {
@@ -52,6 +67,24 @@ export class PaymentsAPIRepository implements IPaymentsRepository {
     return this.http.post<IPaymentsDTO>(`${API_URI}/payments`, paymentDTO, {
       withCredentials: true,
     });
+  }
+
+  updateAccountBalance(
+    accountId: string,
+    value: number,
+    operation: PaymentType
+  ): Observable<void> {
+    return this.http.put<void>(
+      `${API_URI}/payments/accounts`,
+      {
+        account_id: accountId,
+        value: value,
+        operation: operation,
+      },
+      {
+        withCredentials: true,
+      }
+    );
   }
 
   delete(id: string): Observable<void> {

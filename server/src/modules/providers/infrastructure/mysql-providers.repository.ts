@@ -27,7 +27,7 @@ export class MySqlProvidersRepository implements IProviderRepository {
   }
   async getAll(type: string): Promise<IProvider[]> {
     const rows = await MysqlDataBase.query(
-      `SELECT * FROM providers WHERE type = ? AND deleted_at IS NULL`,
+      `SELECT * FROM providers WHERE type = ? AND deleted_at IS NULL ORDER BY created_at ASC`,
       [type]
     );
     if (rows.length === 0) {

@@ -9,6 +9,7 @@ import {
   TransactionDoesNotExistError,
   TransactionNotFoundError,
 } from "../../../modules/transactions/domain/transactions.exception";
+import { DeleteFeeTransactionError } from "../../../modules/fees/domain/fees.exceptions";
 
 export class TransactionsController {
   transactionsMapper = new TransactionsMapper();
@@ -66,6 +67,26 @@ export class TransactionsController {
     }
   }
 
+  async getAllTransactions(
+    request: Request,
+    response: Response
+  ): Promise<void> {
+    try {
+      const transactions =
+        await this.getTransactionsService.getAllTransactions();
+      const transactionsDTOs = this.transactionsMapper.toDTOList(transactions);
+      response.json(transactionsDTOs);
+    } catch (error: any) {
+      if (error instanceof DomainValidationError) {
+        response.send(BadRequest(error.message));
+      } else if (error instanceof TransactionNotFoundError) {
+        response.send(NotFound(error.message));
+      } else {
+        response.send(InternalServerError(error));
+      }
+    }
+  }
+
   async getAllTransactionsByType(
     request: Request,
     response: Response
@@ -75,6 +96,27 @@ export class TransactionsController {
         await this.getTransactionsService.getAllTransactionsByType(
           request.body.type
         );
+      const transactionsDTOs = this.transactionsMapper.toDTOList(transactions);
+      response.json(transactionsDTOs);
+    } catch (error: any) {
+      if (error instanceof DomainValidationError) {
+        response.send(BadRequest(error.message));
+      } else if (error instanceof TransactionNotFoundError) {
+        response.send(NotFound(error.message));
+      } else {
+        response.send(InternalServerError(error));
+      }
+    }
+  }
+
+  async getPartnerAccountTransactions(
+    request: Request,
+    response: Response
+  ): Promise<void> {
+    const { id } = request.params;
+    try {
+      const transactions =
+        await this.getTransactionsService.getPartnerAccountTransactions(id);
       const transactionsDTOs = this.transactionsMapper.toDTOList(transactions);
       response.json(transactionsDTOs);
     } catch (error: any) {
@@ -115,6 +157,8 @@ export class TransactionsController {
       if (error instanceof DomainValidationError) {
         response.send(BadRequest(error.message));
       } else if (error instanceof TransactionDoesNotExistError) {
+        response.send(NotFound(error.message));
+      } else if (error instanceof DeleteFeeTransactionError) {
         response.send(NotFound(error.message));
       } else {
         response.send(InternalServerError(error));

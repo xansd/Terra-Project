@@ -50,14 +50,19 @@ export class AppMenuService {
       { is_divider: true },
       { text: 'Contabilidad', is_header: true },
       {
-        path: PageRoutes.RECORDS,
-        icon: PageIcon.RECORDS,
-        text: PageTitle.RECORDS,
-      },
-      {
         path: PageRoutes.BALANCE,
         icon: PageIcon.BALANCE,
         text: PageTitle.BALANCE,
+      },
+      {
+        path: PageRoutes.ACCOUNTS,
+        icon: PageIcon.ACCOUNTS,
+        text: PageTitle.ACCOUNTS,
+      },
+      {
+        path: PageRoutes.TRANSACTIONS,
+        icon: PageIcon.TRANSACTIONS,
+        text: PageTitle.TRANSACTIONS,
       },
       { is_divider: true },
       { text: 'Ajustes', is_header: true },

@@ -29,6 +29,7 @@ import { MysqlFilesRepository } from "../../../modules/files/infrastructure/mysq
 import { FilesCaseUses } from "../../../modules/files/application/files.use-case";
 import { DownloadError } from "../../../modules/files/domain/files.exceptions";
 import { PartnerDocumentsService } from "../../../modules/partners/application/use-cases/partner-documents.service";
+import { AccountInsufficientBalance } from "../../../modules/transactions/domain/transactions.exception";
 
 export class PartnerController {
   partnerMapper = new PartnerMapper();
@@ -263,6 +264,7 @@ export class PartnerController {
         request.body.amount,
         request.body.operation,
         request.body.partner,
+        request.body.account,
         request.auth.id
       );
       response.send(result);
@@ -278,6 +280,8 @@ export class PartnerController {
       } else if (error instanceof MaxRefundLimitError) {
         response.send(BadRequest(error.message));
       } else if (error instanceof MinZeroError) {
+        response.send(BadRequest(error.message));
+      } else if (error instanceof AccountInsufficientBalance) {
         response.send(BadRequest(error.message));
       } else {
         response.send(InternalServerError(error));

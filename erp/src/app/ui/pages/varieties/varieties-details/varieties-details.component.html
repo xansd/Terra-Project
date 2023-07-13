@@ -10,7 +10,9 @@
   </div>
 
   <ng-container *ngIf="isLoading; else productSelection">
-    <div class="d-flex justify-content-center align-items-center py-4 spinner">
+    <div
+      class="d-flex justify-content-center align-items-center py-4 spinner spinner-top"
+    >
       <div class="spinner-grow text-success"></div>
     </div>
     <p class="text-center">Esperando variedad...</p>

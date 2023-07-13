@@ -129,13 +129,13 @@ export class PagesComponent implements OnDestroy {
         };
         break;
 
-      case PageRoutes.RECORDS:
-      case PageRoutes.RECORDS_DETAILS:
+      case PageRoutes.TRANSACTIONS:
+      case PageRoutes.TRANSACTIONS_DETAILS:
+      case PageRoutes.TRANSACTIONS_STATISTICS:
       case PageRoutes.TRANSACTIONS_LIST:
-      case PageRoutes.PAYMENTS_LIST:
         this.info = {
-          pageHeader: PageTitle.RECORDS,
-          icon: PageIcon.RECORDS,
+          pageHeader: PageTitle.TRANSACTIONS,
+          icon: PageIcon.TRANSACTIONS,
         };
         break;
 
@@ -143,6 +143,13 @@ export class PagesComponent implements OnDestroy {
         this.info = {
           pageHeader: PageTitle.BALANCE,
           icon: PageIcon.BALANCE,
+        };
+        break;
+
+      case PageRoutes.ACCOUNTS:
+        this.info = {
+          pageHeader: PageTitle.ACCOUNTS,
+          icon: PageIcon.ACCOUNTS,
         };
         break;
     }

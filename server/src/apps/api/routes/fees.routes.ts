@@ -9,17 +9,20 @@ import { catchValidationErrors } from "../error/validate-fileds";
 import { MySqlTransactionsRepository } from "../../../modules/transactions/infrastructure/mysql-transactions.repository";
 import { MySqlPaymentsRepository } from "../../../modules/payments/infrastructure/mysql-payments.repository";
 import { MySqlPurchasesRepository } from "../../../modules/purchases/infrastructure/mysql-purchases.repository";
+import { MySqlPartnerRepository } from "../../../modules/partners/infrastructure/mysql-partner.repository";
 
 const router = Router();
 const feesRepository = new MysqlFeesRepository();
 const transactionsRepository = new MySqlTransactionsRepository();
 const paymentsRepository = new MySqlPaymentsRepository();
 const purchasesRepositrory = new MySqlPurchasesRepository();
+const partnerRepository = new MySqlPartnerRepository();
 const feesUseCases = new FeesUseCases(
   feesRepository,
   transactionsRepository,
   paymentsRepository,
-  purchasesRepositrory
+  purchasesRepositrory,
+  partnerRepository
 );
 const feesController = new FeesController(feesUseCases);
 

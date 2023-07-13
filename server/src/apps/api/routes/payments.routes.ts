@@ -42,6 +42,20 @@ router.get(
   paymentsController.getById.bind(paymentsController)
 );
 
+// GET ALL ACCOUNTS
+router.get(
+  "/accounts/all/",
+  authorize([Role.ADMIN, Role.USER]),
+  paymentsController.getAllAccounts.bind(paymentsController)
+);
+
+// GET ACCOUNT BY ID
+router.get(
+  "/accounts/single/:id",
+  authorize([Role.ADMIN, Role.USER]),
+  paymentsController.getAccountById.bind(paymentsController)
+);
+
 // GET ALL BY TYPE
 router.get(
   "/all/type/:type",
@@ -76,6 +90,13 @@ router.delete(
   authorize([Role.ADMIN, Role.USER]),
   [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
   paymentsController.delete.bind(paymentsController)
+);
+
+// UPDATE
+router.put(
+  "/accounts",
+  authorize([Role.ADMIN, Role.USER]),
+  paymentsController.updateAccountBalance.bind(paymentsController)
 );
 
 export { router };

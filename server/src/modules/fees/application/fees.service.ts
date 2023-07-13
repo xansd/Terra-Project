@@ -1,5 +1,5 @@
 import { TransactionsTypes } from "../../transactions/domain/transactions";
-import { IFees, FeesVariants } from "../domain/fees";
+import { IFees, FeesVariants, FeesAmount } from "../domain/fees";
 
 export class FeesService {
   isFee(fee: IFees): boolean {
@@ -41,5 +41,22 @@ export class FeesService {
   getTransactionsTypeId(fee: IFees): number {
     if (this.isInscription(fee)) return TransactionsTypes.INGRESO_INSCRIPCION;
     return TransactionsTypes.INGRESO_CUOTA;
+  }
+
+  getAmountByFeesType(feesTypeId: FeesVariants): number | undefined {
+    switch (feesTypeId) {
+      case FeesVariants.CUOTA_20:
+        return FeesAmount.CUOTA_20;
+      case FeesVariants.CUOTA_EXENTA:
+        return FeesAmount.CUOTA_EXENTA;
+      case FeesVariants.INSCRIPCION_EXENTA:
+        return FeesAmount.INSCRIPCION_EXENTA;
+      case FeesVariants.INSCRIPCION_20:
+        return FeesAmount.INSCRIPCION_20;
+      case FeesVariants.INSCRIPCION_10:
+        return FeesAmount.INSCRIPCION_10;
+      default:
+        return undefined;
+    }
   }
 }

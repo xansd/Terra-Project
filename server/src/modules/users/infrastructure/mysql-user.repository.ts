@@ -31,7 +31,7 @@ export class MySqlUserRepository implements IUserRepository {
   async getAll(): Promise<IUser[]> {
     const rows = await MysqlDataBase.query(`SELECT 
     user_id, email, password, role_id, active, password_last_reset, user_created, user_updated, created_at, updated_at 
-    FROM users where deleted_at IS NULL`);
+    FROM users where deleted_at IS NULL  ORDER BY created_at ASC`);
     if (rows.length === 0) {
       Logger.error(`mysql : getAll : UsersNotFoundError`);
       throw new UsersNotFoundError();

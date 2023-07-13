@@ -8,6 +8,7 @@ export interface IFeesPersistence {
   fees_type_id: number;
   expiration?: string;
   paid?: number | boolean;
+  payment_transaction_id?: string;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -25,6 +26,7 @@ export class FeesPersistenceMapper
       fees_type_id: persistence.fees_type_id,
       expiration: persistence.expiration,
       paid: persistence.paid,
+      payment_transaction_id: persistence.payment_transaction_id,
       user_created: persistence.user_created,
       user_updated: persistence.user_updated,
       created_at: persistence.created_at,
@@ -39,6 +41,7 @@ export class FeesPersistenceMapper
       expiration: domain.expiration!,
       fees_type_id: domain.fees_type_id,
       paid: domain.paid,
+      payment_transaction_id: domain.payment_transaction_id,
       user_created: domain.user_created,
       user_updated: domain.user_updated,
       created_at: domain.created_at,

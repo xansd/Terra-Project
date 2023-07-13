@@ -37,11 +37,12 @@ import { StatisticsCultivatorComponent } from './cultivators/statistics-cultivat
 import { DetailsProviderComponent } from './providers/details-provider/details-provider.component';
 import { ProductsDetailsComponent } from './products/products-details/products-details.component';
 import { DetailsPurchasesComponent } from './purchases/details-purchases/details-purchases.component';
-import { AccountingDetailsComponent } from './accounting/accounting-details/accounting-details.component';
-import { AccountingComponent } from './accounting/accounting.component';
-import { ListTransactionsComponent } from './accounting/list-transactions/list-transactions.component';
-import { ListPaymentsComponent } from './accounting/list-payments/list-payments.component';
-import { BalanceComponent } from './accounting/balance/balance.component';
+import { ListTransactionsComponent } from './transactions/list-transactions/list-transactions.component';
+import { BalanceComponent } from './transactions/balance/balance.component';
+import { AccountsComponent } from './transactions/accounts/accounts.component';
+import { TransactionsComponent } from './transactions/transactions.component';
+import { DetailsTransactionsComponent } from './transactions/details-transactions/details-transactions.component';
+import { StatisticsTransactionsComponent } from './transactions/statistics-transactions/statistics-transactions.component';
 const routes: Routes = [
   { path: '', redirectTo: 'inicio', pathMatch: 'full' },
   {
@@ -287,8 +288,8 @@ const routes: Routes = [
         ],
       },
       {
-        path: 'registros-contables',
-        component: AccountingComponent,
+        path: 'transacciones',
+        component: TransactionsComponent,
         children: [
           {
             path: '',
@@ -297,29 +298,29 @@ const routes: Routes = [
           },
           {
             path: 'detalles',
-            component: AccountingDetailsComponent,
+            component: DetailsTransactionsComponent,
             canActivate: [AuthGuard],
             data: { roles: [Roles.ADMIN, Roles.USER] },
           },
           {
-            path: 'transacciones/listado',
+            path: 'listado',
             component: ListTransactionsComponent,
             canActivate: [AuthGuard],
             data: { roles: [Roles.ADMIN, Roles.USER] },
           },
           {
-            path: 'pagos/listado',
-            component: ListPaymentsComponent,
-            canActivate: [AuthGuard],
-            data: { roles: [Roles.ADMIN, Roles.USER] },
-          },
-          {
-            path: 'balance',
-            component: BalanceComponent,
+            path: 'estadisticas',
+            component: StatisticsTransactionsComponent,
             canActivate: [AuthGuard],
             data: { roles: [Roles.ADMIN, Roles.USER] },
           },
         ],
+      },
+      {
+        path: 'cuentas',
+        component: AccountsComponent,
+        canActivate: [AuthGuard],
+        data: { roles: [Roles.ADMIN, Roles.USER] },
       },
       {
         path: 'balance',

@@ -13,7 +13,8 @@ import { NotificationAdapter } from 'src/app/shared/infraestructure/notifier.ada
 import { CustomErrorStateMatcher } from '../../shared/helpers/custom-error-state-macher';
 import { FormsHelperService } from '../../shared/helpers/forms-helper.service';
 import { UpdatePayments } from 'src/app/payments/application/update-payments.use-case';
-import { PaymentType } from 'src/app/payments/domain/payments';
+import { IAccount, PaymentType } from 'src/app/payments/domain/payments';
+import { GetPayments } from 'src/app/payments/application/get-payments.use-cases';
 
 @Component({
   selector: 'app-make-payment',
@@ -23,6 +24,7 @@ import { PaymentType } from 'src/app/payments/domain/payments';
 export class MakePaymentComponent implements AfterViewInit {
   @Input('id') id!: string;
   @Input('pending') pending!: number;
+  accounts: IAccount[] = [];
   matcher = new CustomErrorStateMatcher();
   paymentForm = this.fb.group({
     amount: [
@@ -33,6 +35,7 @@ export class MakePaymentComponent implements AfterViewInit {
         Validators.max(this.pending!),
       ],
     ],
+    account_id: ['', Validators.required],
   });
   private destroy$ = new Subject();
   constructor(
@@ -41,11 +44,20 @@ export class MakePaymentComponent implements AfterViewInit {
     private notifier: NotificationAdapter,
     private formsHelperService: FormsHelperService,
     private errorHandler: ErrorHandlerService,
-    private paymentService: UpdatePayments
+    private paymentService: UpdatePayments,
+    private getAccountService: GetPayments
   ) {}
 
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete();
+  }
+
+  ngOnInit(): void {
+    this.getAccounts();
+  }
+
   ngAfterViewInit(): void {
-    console.log(this.pending);
     this.paymentForm = this.fb.group({
       amount: [
         '',
@@ -55,7 +67,27 @@ export class MakePaymentComponent implements AfterViewInit {
           Validators.max(this.pending!),
         ],
       ],
+      account_id: [this.accounts[0].account_id, Validators.required],
     });
+  }
+
+  patchAccount(): void {
+    let patchAccount = this.accounts[0].account_id;
+    this.paymentForm.patchValue({
+      account_id: patchAccount?.toString(),
+    });
+  }
+
+  getAccounts() {
+    this.getAccountService
+      .getAllAccounts()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (accounts) => {
+          this.accounts = accounts;
+          this.patchAccount();
+        },
+      });
   }
 
   submit(form: FormGroup) {
@@ -92,5 +124,9 @@ export class MakePaymentComponent implements AfterViewInit {
 
   get amount(): AbstractControl {
     return this.paymentForm.controls['amount'];
+  }
+
+  get account(): AbstractControl {
+    return this.paymentForm.controls['account_id'];
   }
 }

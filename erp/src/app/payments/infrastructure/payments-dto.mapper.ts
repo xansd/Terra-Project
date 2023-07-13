@@ -7,6 +7,8 @@ export interface IPaymentsDTO {
   reference_id: string;
   amount?: number;
   notes?: string | null;
+  source_account_id?: string | null;
+  source_account_name?: string | null;
   account_id?: number | string | null;
   account_name?: string | null;
   user_created?: string;
@@ -26,6 +28,8 @@ export class PaymentMapper implements IDTOMapper<IPayments, IPaymentsDTO> {
       reference_id,
       amount,
       notes,
+      source_account_id,
+      source_account_name,
       account_id,
       account_name,
       user_created,
@@ -41,6 +45,8 @@ export class PaymentMapper implements IDTOMapper<IPayments, IPaymentsDTO> {
       reference_id,
       amount,
       notes,
+      source_account_id,
+      source_account_name,
       account_id,
       account_name,
       user_created,
@@ -60,6 +66,8 @@ export class PaymentMapper implements IDTOMapper<IPayments, IPaymentsDTO> {
       reference_id: domain.reference_id,
       amount: domain.amount,
       notes: domain.notes,
+      source_account_id: domain.source_account_id,
+      source_account_name: domain.source_account_name,
       account_id: domain.account_id,
       account_name: domain.account_name,
       user_created: domain.user_created,

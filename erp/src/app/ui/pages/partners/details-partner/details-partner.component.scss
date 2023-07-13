@@ -15,8 +15,7 @@
 }
 
 
-.button-container,
-.btn-gr {
+.button-container {
     position             : -webkit-sticky;
     position             : sticky;
     top                  : 150px;
@@ -35,14 +34,32 @@
     -webkit-box-align    : center;
     -ms-flex-align       : center;
     align-items          : center;
+    margin-top           : -10px;
+
+
+
+
 
     .btn-gr {
-        margin       : 20px auto;
-        margin-bottom: 0;
+        width                : 100%;
+        display              : -webkit-box;
+        display              : -ms-flexbox;
+        display              : flex;
+        -webkit-box-orient   : vertical;
+        -webkit-box-direction: normal;
+        -ms-flex-direction   : column;
+        flex-direction       : column;
+        row-gap              : 15px;
+        -webkit-box-pack     : center;
+        -ms-flex-pack        : center;
+        justify-content      : center;
+        -webkit-box-align    : center;
+        -ms-flex-align       : center;
+        align-items          : center;
+        margin               : 15px auto;
+        margin-bottom        : 0;
 
-        &:last-child {
-            margin-top: 30px;
-        }
+
     }
 
     button {
@@ -76,7 +93,7 @@
     }
 }
 
-.spinner {
+.spinner-top {
     margin-top: 150px;
 }
 
@@ -220,4 +237,30 @@
     }
 
 
+}
+
+.sell-button {
+    height              : 100px !important;
+    display             : -webkit-box !important;
+    display             : -ms-flexbox !important;
+    display             : flex !important;
+    -webkit-box-pack    : center;
+    -ms-flex-pack       : center;
+    justify-content     : center;
+    -webkit-box-align   : center;
+    -ms-flex-align      : center;
+    align-items         : center;
+    // min-height       : inherit !important;
+    // letter-spacing   : inherit !important;
+    // max-width        : inherit !important;
+    margin-top          : 20px;
+    cursor              : pointer;
+
+    i {
+        font-size: 36px !important;
+    }
+}
+
+.sell {
+    margin-top: -10px !important;
 }

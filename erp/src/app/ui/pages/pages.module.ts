@@ -79,11 +79,13 @@ import { CreatePurchaseComponent } from './purchases/create-purchase/create-purc
 import { EditPurchaseComponent } from './purchases/edit-purchase/edit-purchase.component';
 import { DetailsProviderComponent } from './providers/details-provider/details-provider.component';
 import { DetailsPurchasesComponent } from './purchases/details-purchases/details-purchases.component';
-import { AccountingComponent } from './accounting/accounting.component';
-import { ListTransactionsComponent } from './accounting/list-transactions/list-transactions.component';
-import { ListPaymentsComponent } from './accounting/list-payments/list-payments.component';
-import { AccountingDetailsComponent } from './accounting/accounting-details/accounting-details.component';
-import { BalanceComponent } from './accounting/balance/balance.component';
+import { ListTransactionsComponent } from './transactions/list-transactions/list-transactions.component';
+import { BalanceComponent } from './transactions/balance/balance.component';
+import { AccountsComponent } from './transactions/accounts/accounts.component';
+import { CreateTransactionComponent } from './transactions/create-transaction/create-transaction.component';
+import { TransactionsComponent } from './transactions/transactions.component';
+import { DetailsTransactionsComponent } from './transactions/details-transactions/details-transactions.component';
+import { StatisticsTransactionsComponent } from './transactions/statistics-transactions/statistics-transactions.component';
 
 @NgModule({
   declarations: [
@@ -140,11 +142,13 @@ import { BalanceComponent } from './accounting/balance/balance.component';
     EditPurchaseComponent,
     DetailsProviderComponent,
     DetailsPurchasesComponent,
-    AccountingComponent,
     ListTransactionsComponent,
-    ListPaymentsComponent,
-    AccountingDetailsComponent,
     BalanceComponent,
+    AccountsComponent,
+    CreateTransactionComponent,
+    TransactionsComponent,
+    DetailsTransactionsComponent,
+    StatisticsTransactionsComponent,
   ],
   imports: [
     NgxPaginationModule,

@@ -1,7 +1,11 @@
 import { isNil } from "../../../../shared/type-checkers";
 import Logger from "../../../apps/utils/logger";
 import { MysqlDataBase } from "../../shared/infraestructure/mysql/mysql";
-import { IPayments, PaymentType } from "../domain/payments";
+import {
+  AccountDoesNotExistError,
+  AccountNotFoundError,
+} from "../../transactions/domain/transactions.exception";
+import { IAccount, IPayments, PaymentType } from "../domain/payments";
 import {
   PaymentCreationError,
   PaymentDoesNotExistError,
@@ -9,9 +13,26 @@ import {
 } from "../domain/payments.exception";
 import { IPaymentsRepository } from "../domain/payments.repository";
 import { PaymentsPersistenceMapper } from "./payments-persistence.mapper";
-import { Request, Response } from "express";
 
 export class MySqlPaymentsRepository implements IPaymentsRepository {
+  async getAccountById(id: string): Promise<IAccount | null> {
+    const query = `SELECT * FROM accounts WHERE account_id = ? AND deleted_at IS NULL`;
+    const rows = await MysqlDataBase.query(query, [id]);
+    if (isNil(rows[0])) {
+      Logger.error(`mysql : getAccountById : AccountDoesNotExistError`);
+      throw new AccountDoesNotExistError();
+    }
+    return rows[0];
+  }
+  async getAllAccounts(): Promise<IAccount[]> {
+    const query = `SELECT * FROM accounts WHERE deleted_at IS NULL`;
+    const rows = await MysqlDataBase.query(query);
+    if (rows.length === 0) {
+      Logger.error(`mysql : getAllAccounts : AccountNotFoundError`);
+      throw new AccountNotFoundError();
+    }
+    return rows;
+  }
   private paymentsPersistenceMapper: PaymentsPersistenceMapper =
     new PaymentsPersistenceMapper();
 
@@ -39,6 +60,18 @@ export class MySqlPaymentsRepository implements IPaymentsRepository {
     return this.paymentsPersistenceMapper.toDomainList(rows) as IPayments[];
   }
 
+  async getAllByAccount(account: string): Promise<IPayments[]> {
+    const rows = await MysqlDataBase.query(
+      `SELECT * FROM payments WHERE deleted_at IS NULL AND account_id = ?`,
+      [account]
+    );
+    if (rows.length === 0) {
+      Logger.error(`mysql : getAll : PaymentNotFoundError`);
+      throw new PaymentNotFoundError();
+    }
+    return this.paymentsPersistenceMapper.toDomainList(rows) as IPayments[];
+  }
+
   async getAllByReference(referenceId: string): Promise<IPayments[]> {
     const rows = await MysqlDataBase.query(
       `SELECT * FROM payments WHERE deleted_at IS NULL AND reference_id = ?`,
@@ -56,7 +89,7 @@ export class MySqlPaymentsRepository implements IPaymentsRepository {
   async create(payment: IPayments, user: string): Promise<IPayments> {
     const paymentPersistence =
       this.paymentsPersistenceMapper.toPersistence(payment);
-    const insertQuery = `INSERT INTO payments (type, reference_id, amount, notes, user_created) VALUES (?,?,?,?, ?)`;
+    const insertQuery = `INSERT INTO payments (type, reference_id, amount, notes, account_id, user_created) VALUES (?,?,?,?,?,?)`;
 
     const selectQuery = `SELECT * FROM payments WHERE payment_id = LAST_INSERT_ID()`;
     try {
@@ -65,6 +98,7 @@ export class MySqlPaymentsRepository implements IPaymentsRepository {
         paymentPersistence.reference_id,
         paymentPersistence.amount!.toString(),
         paymentPersistence.notes!,
+        paymentPersistence.account_id!.toString(),
         user,
       ]);
     } catch (error) {
@@ -86,6 +120,23 @@ export class MySqlPaymentsRepository implements IPaymentsRepository {
       throw new PaymentDoesNotExistError();
     }
     Logger.info(`mysql : deletePayment : ${user}`);
+    return result;
+  }
+
+  async updateAccountBalance(
+    accountId: string,
+    value: number,
+    user: string
+  ): Promise<void> {
+    const result = await MysqlDataBase.update(
+      `UPDATE accounts SET balance = ?, user_updated = ? WHERE account_id = ?`,
+      [value.toString(), user, accountId]
+    );
+    if (result.affectedRows === 0) {
+      Logger.error(`mysql : updateAccountBalance : AccountDoesNotExistError`);
+      throw new AccountDoesNotExistError();
+    }
+    Logger.info(`mysql : updateAccountBalance : ${user}`);
     return result;
   }
 }

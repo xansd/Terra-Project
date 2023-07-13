@@ -45,11 +45,12 @@ export enum PageRoutes {
   PROVIDERS_STATISTICS = '/proveedores/estadisticas',
   PROVIDERS_DETAILS = '/proveedores/detalles',
 
+  TRANSACTIONS = '/transacciones',
+  TRANSACTIONS_LIST = '/transacciones/listado',
+  TRANSACTIONS_DETAILS = '/transacciones/detalles',
+  TRANSACTIONS_STATISTICS = '/transacciones/estadisticas',
+  ACCOUNTS = '/cuentas',
   BALANCE = '/balance',
-  RECORDS = '/registros-contables',
-  TRANSACTIONS_LIST = '/registro-contables/transacciones/listado',
-  PAYMENTS_LIST = '/registros-contables/pagos/listado',
-  RECORDS_DETAILS = '/registros-contables/detalles',
 }
 
 export enum PageTitle {
@@ -62,8 +63,9 @@ export enum PageTitle {
   PURCHASES = 'Compras',
   CULTIVATORS = 'Cultivadores',
   PROVIDERS = 'Proveedores',
-  RECORDS = 'Registros contables',
+  TRANSACTIONS = 'Ingresos y Gastos',
   BALANCE = 'Balance',
+  ACCOUNTS = 'Cuentas',
 }
 
 export enum PageIcon {
@@ -123,10 +125,10 @@ export enum PageIcon {
   PPROVIDERS_STATISTICS = 'bi bi-bar-chart-fill',
   PROVIDERS_DETAILS = 'bi bi-search',
 
+  TRANSACTIONS = 'fa fa-exchange',
+  TRANSACTIONS_LIST = 'bi bi-list-stars',
+  TRANSACTIONS_STATISTICS = 'bi bi-bar-chart-fill',
+  TRANSACTIONS_DETAILS = 'bi bi-search',
+  ACCOUNTS = 'fa fa-cash-register',
   BALANCE = 'fa fa-balance-scale',
-  RECORDS = 'fa fa-book',
-  TRANSACTIONS_LIST = 'fa fa-exchange',
-  PAYMENTS_LIST = 'fa fa-cash-register',
-  RECORDS_STATISTICS = 'bi bi-bar-chart-fill',
-  RECORDS_DETAILS = 'bi bi-search',
 }

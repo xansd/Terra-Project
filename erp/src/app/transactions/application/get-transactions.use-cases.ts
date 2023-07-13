@@ -12,9 +12,9 @@ export interface IGetTransactions {
   ): Observable<ITransactions[]>;
 }
 
-Injectable({
+@Injectable({
   providedIn: 'root',
-});
+})
 export class GetTransactions implements IGetTransactions {
   constructor(
     @Inject('transactionsAPI')
@@ -22,6 +22,13 @@ export class GetTransactions implements IGetTransactions {
   ) {}
   getById(id: string): Observable<ITransactions> {
     return this.transactionsAPI.getById(id);
+  }
+
+  getPartnerAccountTransactions(id: string): Observable<ITransactions[]> {
+    return this.transactionsAPI.getPartnerAccountTransactions(id);
+  }
+  getAllTransactions(): Observable<ITransactions[]> {
+    return this.transactionsAPI.getAllTransactions();
   }
   getAllIncomes(): Observable<ITransactions[]> {
     return this.transactionsAPI.getAllIncomes();

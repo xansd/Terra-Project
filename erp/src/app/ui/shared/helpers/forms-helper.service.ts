@@ -169,6 +169,7 @@ export class FormsHelperService {
       type: type,
       reference_id: referenceId,
       notes: formValues.notes || '',
+      account_id: formValues.account_id || null,
     };
 
     return paymentData;

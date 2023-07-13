@@ -2,11 +2,11 @@ import { Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import { PageIcon, PageRoutes } from '../pages-info.config';
 
 @Component({
-  selector: 'app-accounting',
-  templateUrl: './accounting.component.html',
-  styleUrls: ['./accounting.component.scss'],
+  selector: 'app-transactions',
+  templateUrl: './transactions.component.html',
+  styleUrls: ['./transactions.component.scss'],
 })
-export class AccountingComponent {
+export class TransactionsComponent {
   @ViewChild('nav') nav!: ElementRef;
   isNavFixed = false;
   icons = PageIcon;

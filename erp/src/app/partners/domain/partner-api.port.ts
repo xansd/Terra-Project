@@ -33,7 +33,7 @@ export interface IPartnerAPIPort {
   updateFee(fee: IFees): Observable<void>;
   deleteFee(feeId: string): Observable<void>;
   getFeesTypes(): Observable<IFeesType[]>;
-  payFee(fee: IFees): Observable<void>;
+  payFee(fee: IFees, account: string): Observable<void>;
 
   createSanction(sanction: ISanctions): Observable<ISanctions>;
   deleteSanction(id: number): Observable<void>;

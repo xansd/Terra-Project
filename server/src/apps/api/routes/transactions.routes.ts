@@ -7,11 +7,13 @@ import { GetTransactions } from "../../../modules/transactions/application/use-c
 import { UpdateTransactions } from "../../../modules/transactions/application/use-cases/update-transactions.use-case";
 import { MySqlTransactionsRepository } from "../../../modules/transactions/infrastructure/mysql-transactions.repository";
 import { TransactionsController } from "../controllers/transactions.controller";
+import { MysqlFeesRepository } from "../../../modules/fees/infrastructure/mysql-fees.repository";
 
 const router = Router();
 
 // Repositorio
 const transactionsRepository = new MySqlTransactionsRepository();
+const feesRepository = new MysqlFeesRepository();
 
 // Casos de uso
 const getTransactionsUseCase = new GetTransactions(transactionsRepository);
@@ -31,6 +33,22 @@ router.get(
   authorize([Role.ADMIN, Role.USER]),
   [check("id", "El id es obligatorio").not().isEmpty(), catchValidationErrors],
   transactionsController.getById.bind(transactionsController)
+);
+
+// GET ALL TRANSACTIONS
+router.get(
+  "/",
+  authorize([Role.ADMIN, Role.USER]),
+  transactionsController.getAllTransactions.bind(transactionsController)
+);
+
+// GET ALL PARTNER ACCOUNT TRANSACTIONS
+router.get(
+  "/partner/:id",
+  authorize([Role.ADMIN, Role.USER]),
+  transactionsController.getPartnerAccountTransactions.bind(
+    transactionsController
+  )
 );
 
 // GET ALL INCOMES

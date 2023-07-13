@@ -1,0 +1,222 @@
+<div class="container-fluid">
+  <div class="search">
+    <ng-container *ngIf="searchTypes">
+      <app-searcher
+        [options]="options"
+        [searchTypes]="searchTypes"
+        (optionSelected)="handleOptionSelected($event)"
+      ></app-searcher>
+    </ng-container>
+  </div>
+
+  <ng-container *ngIf="isLoading; else transactionSelection">
+    <div
+      class="d-flex justify-content-center align-items-center py-4 spinner spinner-top"
+    >
+      <div class="spinner-grow text-success"></div>
+    </div>
+    <p class="text-center">Esperando transacciones...</p>
+  </ng-container>
+  <ng-template #transactionSelection>
+    <div class="row content">
+      <div class="col-lg-10">
+        <!-- Primer card -->
+        <div class="row row-cols-1 row-cols-xl-2 g-3">
+          <div class="col">
+            <card class="card h-100 data-card mb-4">
+              <card-header class="card-header bg-inverse bg-opacity-10 fw-400">
+                <div class="title">TRANSACCIÓN</div>
+              </card-header>
+              <card-body class="pb-2">
+                <!-- nombre -->
+                <div class="property">
+                  <span class="property-name">Código:</span>
+                  <span class="property-value fw-bold text-theme">{{
+                    transaction!.code | uppercase
+                  }}</span>
+                </div>
+                <!-- tipo -->
+                <div class="property">
+                  <span class="property-name">Transacción:</span>
+                  <span class="property-value fw-bold text-theme">{{
+                    transaction!.transaction_type_name
+                  }}</span>
+                </div>
+                <!-- categoria -->
+                <div class="property">
+                  <span class="property-name">Movimiento:</span>
+                  <span
+                    class="property-value fw-bold text-warning"
+                    [ngClass]="{
+                      'text-warning':
+                        transaction!.transaction_category == 'GASTO',
+                      'text-info':
+                        transaction!.transaction_category == 'INGRESO'
+                    }"
+                    >{{
+                      transaction!.transaction_category === "GASTO"
+                        ? "ABONO"
+                        : "INGRESO"
+                    }}</span
+                  >
+                </div>
+                <!-- Cantidad -->
+                <div class="property">
+                  <span class="property-name">Cuantía:</span>
+                  <span
+                    class="property-value fw-bold"
+                    [ngClass]="{
+                      'text-warning':
+                        transaction!.transaction_category == 'GASTO',
+                      'text-info':
+                        transaction!.transaction_category == 'INGRESO'
+                    }"
+                    >{{ transaction!.amount | number : "1.2-2" }} €</span
+                  >
+                </div>
+                <div class="property">
+                  <span class="property-name">Fecha:</span>
+                  <span class="property-value">{{
+                    formatDate(transaction!.created_at!)
+                  }}</span>
+                </div>
+                <div class="property notes">
+                  <span class="property-name">Observaciones:</span>
+                  <span class="property-value">{{
+                    transaction!.notes || "N/A"
+                  }}</span>
+                </div>
+                <!-- SOCIO -->
+                <ng-container *ngIf="partner">
+                  <div class="partner">
+                    <h6 class="card-subtitle mb-3 text-inverse text-opacity-50">
+                      Socio
+                    </h6>
+                    <!-- numero -->
+                    <div class="property">
+                      <span class="property-name">Número:</span>
+                      <span class="property-value">{{ partner!.number }} </span>
+                    </div>
+                    <!-- nombre -->
+                    <div class="property">
+                      <span class="property-name">Nombre:</span>
+                      <span class="property-value"
+                        >{{ partner!.surname | uppercase }},
+                        {{ partner!.name | uppercase }}</span
+                      >
+                    </div>
+                  </div>
+                </ng-container>
+                <ng-container *ngIf="!partner"
+                  ><div class="property recurrence">
+                    <span class="property-name">Recurrente:</span>
+                    <span class="property-value fw-bold">{{
+                      transaction!.recurrence_days || "N/A"
+                    }}</span>
+                  </div>
+                  <div class="property">
+                    <span class="property-name"
+                      >Número de pagos recurrentes:</span
+                    >
+                    <span class="property-value fw-bold">{{
+                      transaction!.recurrence_times || "N/A"
+                    }}</span>
+                  </div>
+                  <div class="property">
+                    <span class="property-name">Inicio pagos:</span>
+                    <span class="property-value fw-bold">{{
+                      transaction!.recurrence_times
+                        ? transaction!.date_start
+                        : "N/A"
+                    }}</span>
+                  </div>
+                  <!-- alta -->
+                  <div class="property">
+                    <span class="property-name">Interes:</span>
+                    <span class="property-value fw-bold">{{
+                      transaction!.interest || "N/A"
+                    }}</span>
+                  </div>
+                </ng-container>
+                <!-- Recurrente -->
+              </card-body>
+            </card>
+          </div>
+
+          <!-- Segundo card -->
+          <div class="col">
+            <card class="card h-100 activity-card">
+              <card-header class="card-header bg-inverse bg-opacity-10 fw-400">
+                <div class="title">MOVIMIENTOS</div>
+              </card-header>
+              <card-body class="pb-2">
+                <!-- <h6
+                          class="card-subtitle mb-3 text-inverse text-opacity-50"
+                          style="margin-top: 15px"
+                        >
+                          CULTIVOS
+                        </h6> -->
+                <ng-container *ngIf="payments.length === 0; else listPayments">
+                  <div
+                    class="d-flex justify-content-center align-items-center py-4 spinner"
+                  >
+                    <div class="spinner-grow text-success"></div>
+
+                    <p class="text-center fw-bold text-theme">Sin datos...</p>
+                  </div>
+                </ng-container>
+                <ng-template #listPayments>
+                  <div class="list-group">
+                    <a
+                      class="list-group-item list-group-item-action"
+                      *ngFor="
+                        let item of payments
+                          | paginate : { itemsPerPage: 10, currentPage: p }
+                      "
+                    >
+                      <!-- <span class="hide">{{ item.harvest_id }}</span> -->
+                      <span class="text-info">{{ item.reference_id }}</span>
+                      <span>{{ item.amount | number : "1.2-2" }} gr.</span>
+                    </a>
+                  </div>
+
+                  <pagination-controls
+                    previousLabel="Anterior"
+                    nextLabel="Siguiente"
+                    (pageChange)="p = $event"
+                    class="pagination"
+                  ></pagination-controls>
+                </ng-template>
+              </card-body>
+            </card>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-2">
+        <div class="button-container">
+          <button
+            (click)="openConfirmDialog()"
+            class="btn btn-danger new-transaction-btn"
+          >
+            <i class="bi bi-x-circle"></i> Eliminar transacción
+          </button>
+          <button
+            (click)="openCreateTransactionsDialog()"
+            class="btn btn-success new-transaction-btn"
+          >
+            <i class="bi bi-plus-circle"></i> Nueva transacción
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-template>
+  <!-- Botón creación -->
+  <div *ngIf="!transaction" class="new-accounting-standalone">
+    <button
+      (click)="openCreateTransactionsDialog()"
+      class="btn btn-success new-accounting-btn"
+    >
+      <i class="bi bi-plus-circle"></i> Nueva transacción
+    </button>
+  </div>
+</div>

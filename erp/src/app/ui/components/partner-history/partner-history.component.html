@@ -12,10 +12,10 @@
     <li class="nav-item">
       <a
         class="nav-link fw-600"
-        id="pills-profile-tab"
+        id="pills-contact-tab"
         data-bs-toggle="pill"
-        href="#sanciones"
-        >SANCIONES</a
+        href="#cuenta"
+        >MOVIMIENTOS CUENTA</a
       >
     </li>
     <li class="nav-item">
@@ -25,6 +25,15 @@
         data-bs-toggle="pill"
         href="#cuotas"
         >CUOTAS</a
+      >
+    </li>
+    <li class="nav-item">
+      <a
+        class="nav-link fw-600"
+        id="pills-profile-tab"
+        data-bs-toggle="pill"
+        href="#sanciones"
+        >SANCIONES</a
       >
     </li>
   </ul>
@@ -37,6 +46,11 @@
         (sanctionModified)="onSanctionModified()"
         [partner]="partner"
       ></app-sanctions>
+    </div>
+    <div class="tab-pane fade" id="cuenta">
+      <app-partner-account-history
+        [partner]="partner"
+      ></app-partner-account-history>
     </div>
     <div class="tab-pane fade" id="cuotas">
       <app-fees-history [fees]="fees" [partner]="partner"></app-fees-history>

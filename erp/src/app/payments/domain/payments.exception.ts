@@ -18,3 +18,10 @@ export class InvalidAmountError extends Error {
     this.name = 'InvalidAmountError';
   }
 }
+
+export class MinZeroError extends Error {
+  constructor() {
+    super(`No se permiten valores negativos en esta operación`);
+    this.name = 'MaxRefundLimitError';
+  }
+}

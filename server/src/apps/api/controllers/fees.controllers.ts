@@ -4,8 +4,14 @@ import { Request, Response } from "express";
 import { BadRequest, Conflict, InternalServerError } from "../error/http-error";
 import {
   FeeNotFoundError,
+  FeePaymentError,
   NotANumberError,
 } from "../../../modules/fees/domain/fees.exceptions";
+import {
+  PartnerDoesNotExistError,
+  PartnerInsufficientBalance,
+} from "../../../modules/partners/domain/partner.exceptions";
+import { AccountInsufficientBalance } from "../../../modules/transactions/domain/transactions.exception";
 
 export class FeesController {
   feesMapper = new FeesDTOMapper();
@@ -81,7 +87,8 @@ export class FeesController {
   async payFee(request: Request, response: Response): Promise<void> {
     try {
       const result = await this.feesUseCases.payFee(
-        request.body,
+        request.body.fee,
+        request.body.account,
         request.auth.id
       );
       response.send(result);
@@ -89,6 +96,12 @@ export class FeesController {
       if (error instanceof FeeNotFoundError) {
         response.send(BadRequest(error.message));
       } else if (error instanceof NotANumberError) {
+        response.send(Conflict(error.message));
+      } else if (error instanceof PartnerDoesNotExistError) {
+        response.send(Conflict(error.message));
+      } else if (error instanceof PartnerInsufficientBalance) {
+        response.send(Conflict(error.message));
+      } else if (error instanceof FeePaymentError) {
         response.send(Conflict(error.message));
       } else {
         response.send(InternalServerError(error));

@@ -11,11 +11,20 @@ export enum FeesTypes {
   INSCRIPTION = 'inscription',
 }
 
+export enum FeesAmount {
+  CUOTA_20 = 20,
+  CUOTA_EXENTA = 0,
+  INSCRIPCION_EXENTA = 0,
+  INSCRIPCION_20 = 20,
+  INSCRIPCION_10 = 10,
+}
+
 export interface IFeesType {
   fees_type_id: number;
   name: string;
   description: string;
   type: FeesTypes;
+  amount?: number;
 }
 
 export interface IFees {
@@ -24,6 +33,7 @@ export interface IFees {
   fees_type_id: FeesVariants;
   expiration?: string;
   paid?: string;
+  payment_transaction_id?: string;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -37,6 +47,7 @@ export class Fees implements IFees {
   fees_type_id: FeesVariants;
   expiration?: string;
   paid?: string;
+  payment_transaction_id?: string;
   user_created?: string;
   user_updated?: string;
   created_at?: string | undefined;
@@ -49,6 +60,7 @@ export class Fees implements IFees {
     this.fees_type_id = props.fees_type_id;
     this.expiration = props.expiration;
     this.paid = props.paid;
+    this.payment_transaction_id = props.payment_transaction_id;
     this.user_created = props.user_created;
     this.user_updated = props.user_updated;
     this.created_at = props.created_at;

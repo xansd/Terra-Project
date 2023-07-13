@@ -5,10 +5,31 @@ export class TransactionDoesNotExistError extends Error {
   }
 }
 
+export class AccountDoesNotExistError extends Error {
+  constructor() {
+    super(`La cuenta no existe`);
+    this.name = "AccountDoesNotExistError";
+  }
+}
+
 export class TransactionNotFoundError extends Error {
   constructor() {
     super(`No hay ingresos/gastos registrados`);
     this.name = "TransactionNotFoundError";
+  }
+}
+
+export class AccountNotFoundError extends Error {
+  constructor() {
+    super(`No hay cuentas registradas`);
+    this.name = "AccountNotFoundError";
+  }
+}
+
+export class AccountInsufficientBalance extends Error {
+  constructor() {
+    super(`No hay saldo suficiente en la cuenta de la Asociación`);
+    this.name = "AccountInsufficientBalance";
   }
 }
 

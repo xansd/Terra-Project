@@ -21,6 +21,9 @@ import { FeesVariants, IFees } from 'src/app/partners/domain/fees';
 import { FeesUseCases } from 'src/app/partners/application/fees.use-case';
 import { IPartner } from 'src/app/partners/domain/partner';
 import { DatetimeHelperService } from 'src/app/shared/application/datetime.helper.service';
+import { Router } from '@angular/router';
+import { PageRoutes } from '../../pages/pages-info.config';
+import { ActiveEntityService } from '../../services/active-entity-service.service';
 
 const modalOptions: NgbModalOptions = {
   backdrop: 'static',
@@ -57,7 +60,7 @@ export class FeesHistoryComponent implements AfterViewInit {
     { def: 'fees_type_id', show: true },
     { def: 'expiration', show: true },
     { def: 'paid', show: true },
-    { def: 'actions', show: false },
+    { def: 'actions', show: true },
   ];
   isLargeScreen = false;
   selectedRowIndex: number | null = null;
@@ -69,7 +72,10 @@ export class FeesHistoryComponent implements AfterViewInit {
   constructor(
     public modal: NgbActiveModal,
     private feesService: FeesUseCases,
-    private breakpointObserver: BreakpointObserver
+    private breakpointObserver: BreakpointObserver,
+    private activeEntityService: ActiveEntityService,
+    private router: Router,
+    private notifier: NotificationAdapter
   ) {
     this.dataSource = new MatTableDataSource(this.fees);
     this.dataSource.paginator = this.paginator;
@@ -78,6 +84,19 @@ export class FeesHistoryComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     this.fees = this.getNonExentFees(this.fees);
     this.renderTable();
+  }
+
+  openDetails(entity: IFees, id: string) {
+    if (!entity.paid) {
+      this.notifier.showNotification(
+        'warning',
+        'La entrada seleccionada todavía no ha sido abonada'
+      );
+      return;
+    }
+    this.activeEntityService.setActiveEntity(entity, id);
+    this.modal.close();
+    this.router.navigateByUrl(PageRoutes.TRANSACTIONS_DETAILS);
   }
 
   getNonExentAndPaidFees(fees: IFees[]): IFees[] {

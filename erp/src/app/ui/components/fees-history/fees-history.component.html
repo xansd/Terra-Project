@@ -97,11 +97,12 @@
                         data-toggle="buttons"
                       >
                         <button
+                          (click)="openDetails(row, row.payment_transaction_id)"
                           type="button"
-                          class="btn btn-danger"
-                          title="Eliminar socio"
+                          class="btn btn-info"
+                          title="Consultar transacción"
                         >
-                          <i class="bi bi-x"> </i>
+                          <i class="fa fa-eye"> </i>
                         </button>
                       </div>
                     </mat-cell>

@@ -21,31 +21,31 @@ export interface IUpdatePartner {
 }
 
 export class UpdatePartnerUseCase implements IUpdatePartner {
-  incomeObject = new UpdateTransactions(this.transactionsRepository);
+  incomeObject = new UpdateTransactions(this.transactionsRepository!);
   paymentObject = new UpdatePayments(
-    this.paymentsRepository,
-    this.transactionsRepository,
-    this.purchasesRepository,
-    this.feesRepository
+    this.paymentsRepository!,
+    this.transactionsRepository!,
+    this.purchasesRepository!,
+    this.feesRepository!
   );
 
   private partnerMapper: PartnerMapper = new PartnerMapper();
   partnerDomain!: IPartner;
 
   constructor(
-    private readonly partnerRepository: IPartnerRepository,
-    private readonly transactionsRepository: ITransactionsRepository,
-    private readonly paymentsRepository: IPaymentsRepository,
-    private readonly purchasesRepository: IPurchasesRepository,
-    private readonly cashService: PartnerCashService,
-    private readonly feesRepository: IFeesRepository
+    private readonly partnerRepository?: IPartnerRepository,
+    private readonly transactionsRepository?: ITransactionsRepository,
+    private readonly paymentsRepository?: IPaymentsRepository,
+    private readonly purchasesRepository?: IPurchasesRepository,
+    private readonly cashService?: PartnerCashService,
+    private readonly feesRepository?: IFeesRepository
   ) {}
 
   async updatePartner(partner: IPartnerDTO): Promise<void> {
     try {
       this.partnerDomain = this.partnerMapper.toDomain(partner);
       // Comprobamos si ya exsite el email
-      const partnerExists = await this.partnerRepository.getById(
+      const partnerExists = await this.partnerRepository!.getById(
         partner.partner_id
       );
       const originalEmail = partnerExists.email.value.toLowerCase();
@@ -53,7 +53,7 @@ export class UpdatePartnerUseCase implements IUpdatePartner {
       if (partner.email.toLowerCase() !== originalEmail) {
         // Realizar la consulta para verificar duplicados
         const isEmailDuplicate =
-          await this.partnerRepository.checkPartnerExistenceByEmail(
+          await this.partnerRepository!.checkPartnerExistenceByEmail(
             partner.email
           );
 
@@ -65,7 +65,7 @@ export class UpdatePartnerUseCase implements IUpdatePartner {
         }
       }
 
-      const result = await this.partnerRepository.update(this.partnerDomain);
+      const result = await this.partnerRepository!.update(this.partnerDomain);
       return result;
     } catch (error) {
       if (error instanceof DomainValidationError) {
@@ -83,7 +83,7 @@ export class UpdatePartnerUseCase implements IUpdatePartner {
     partnerId: string,
     user: string
   ): Promise<void> {
-    const result = await this.partnerRepository.updateAccessCode(
+    const result = await this.partnerRepository!.updateAccessCode(
       accessCode,
       partnerId,
       user
@@ -95,24 +95,26 @@ export class UpdatePartnerUseCase implements IUpdatePartner {
     amount: string,
     operation: OperationPartnerCash,
     partner: IPartnerDTO,
+    account: string,
     user: string
   ): Promise<void> {
     const partnerDomain = this.partnerMapper.toDomain(partner);
     let final = 0;
-    const getActualCash = await this.partnerRepository.getPartnerCash(
+    const getActualCash = await this.partnerRepository!.getPartnerCash(
       partner.partner_id
     );
-    final = await this.cashService.updatePartnerCash(
+    final = await this.cashService!.updatePartnerCash(
       amount,
       getActualCash.cash,
       operation,
       partnerDomain,
       this.incomeObject,
       this.paymentObject,
+      account,
       user
     );
 
-    const result = await this.partnerRepository.updatePartnerCash(
+    const result = await this.partnerRepository!.updatePartnerCash(
       final,
       partner.partner_id,
       user

@@ -1,6 +1,8 @@
 export enum PaymentType {
   PAGO = 'PAGO',
   COBRO = 'COBRO',
+  // TRANSFERENCIA_SALIENTE = 'TRANSFERENCIA_SALIENTE',
+  // TRANSFERENCIA_ENTRANTE = 'TRANSFERENCIA_ENTRANTE',
 }
 
 export interface IPayments {
@@ -9,8 +11,30 @@ export interface IPayments {
   reference_id: string;
   amount?: number;
   notes?: string | null;
+  source_account_id?: string | null;
+  source_account_name?: string | null;
   account_id?: number | string | null;
   account_name?: string | null;
+  user_created?: string;
+  user_updated?: string;
+  created_at?: string;
+  updated_at?: string;
+  deleted_at?: string;
+}
+
+export enum AccountType {
+  CAJA = 'CAJA',
+  BANCO = 'BANCO',
+}
+
+export interface IAccount {
+  account_id?: string;
+  name?: string;
+  description: string | null;
+  account_type?: AccountType;
+  account_number: string | null;
+  bank?: string | null;
+  balance?: number | 0;
   user_created?: string;
   user_updated?: string;
   created_at?: string;
@@ -24,6 +48,8 @@ export class Payments implements IPayments {
   reference_id: string;
   amount?: number | undefined;
   notes?: string | null;
+  source_account_id?: string | null;
+  source_account_name?: string | null;
   account_id?: number | string | null;
   account_name?: string | null;
   user_created?: string | undefined;
@@ -38,6 +64,8 @@ export class Payments implements IPayments {
     this.reference_id = props.reference_id;
     this.amount = props.amount;
     this.notes = props.notes;
+    this.source_account_id = props.source_account_id;
+    this.source_account_name = props.source_account_name;
     this.account_id = props.account_id;
     this.account_name = props.account_name;
     this.user_created = props.user_created;

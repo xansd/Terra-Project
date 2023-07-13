@@ -60,7 +60,7 @@ export class MySQLProductRepository implements IProductRepository {
       LEFT JOIN product_subcategory ps ON products.product_id = ps.product_id
       LEFT JOIN ancestors a ON products.product_id = a.product_id
       WHERE products.type = ? AND deleted_at IS NULL
-      GROUP BY products.product_id;
+      GROUP BY products.product_id  ORDER BY products.created_at ASC;
       `,
       [type]
     );
@@ -85,9 +85,9 @@ export class MySQLProductRepository implements IProductRepository {
     const productPersistence =
       this.productPersistenceMapper.toPersistence(product);
     const insertQuery = `INSERT INTO products 
-    (product_id, code, active, name, type,category_id, description, cost_price, sale_price, sativa, indica, thc, cbd, bank, flawour, effect, lot, user_created)
+    (product_id, code, active, name, type,category_id, description, cost_price, sale_price, sativa, indica, thc, cbd, bank, flawour, effect, user_created)
     VALUES
-    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
     const selectQuery = `SELECT * FROM products WHERE product_id = ?`;
 
@@ -108,7 +108,6 @@ export class MySQLProductRepository implements IProductRepository {
       null, // bank (conditional)
       null, // flawour (conditional)
       null, // effect (conditional)
-      null, // lot (conditional)
       productPersistence.user_created!,
     ];
 

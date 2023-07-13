@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IPayments, PaymentType } from '../domain/payments';
+import { IAccount, IPayments, PaymentType } from '../domain/payments';
 import { IPaymentsRepository } from '../domain/payments.repository';
 import { IHarvests } from 'src/app/purchases/domain/harvests';
 import { IPurchase } from 'src/app/purchases/domain/purchases';
@@ -10,6 +10,8 @@ export interface IGetPayments {
   getById(id: string): Observable<IPayments>;
   getAllByType(type: PaymentType): Observable<IPayments[]>;
   getAllByReference(referenceId: string): Observable<IPayments[]>;
+  getAccountById(id: string): Observable<IAccount>;
+  getAllAccounts(): Observable<IAccount[]>;
 }
 
 @Injectable({
@@ -22,6 +24,12 @@ export class GetPayments implements IGetPayments {
 
   getById(id: string): Observable<IPayments> {
     return this.paymentsAPI.getById(id);
+  }
+  getAccountById(id: string): Observable<IAccount> {
+    return this.paymentsAPI.getAccountById(id);
+  }
+  getAllAccounts(): Observable<IAccount[]> {
+    return this.paymentsAPI.getAllAccounts();
   }
   getAllByType(type: PaymentType): Observable<IPayments[]> {
     return this.paymentsAPI.getAllByType(type);
